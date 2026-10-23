@@ -3,3 +3,121 @@
   height: 24px;
   width: auto;
 }
+
+/* Homepage styles stay scoped so reference and article pages use Mintlify's layout. */
+#amlok-docs-home {
+  --amlok-ink: #101828;
+  --amlok-muted: #536176;
+  --amlok-blue: #052698;
+  --amlok-border: #dce4f1;
+  --amlok-surface: #ffffff;
+  --amlok-art: #f2f6ff;
+  --amlok-grid: rgba(5, 38, 152, .07);
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 32px 40px;
+  color: var(--amlok-ink);
+}
+.dark #amlok-docs-home {
+  --amlok-ink: #f1f5ff;
+  --amlok-muted: #acb9ce;
+  --amlok-blue: #a8c2ff;
+  --amlok-border: #283a56;
+  --amlok-surface: #101b2c;
+  --amlok-art: #122342;
+  --amlok-grid: rgba(148, 180, 255, .08);
+}
+#amlok-docs-home .icon { background-color: currentColor; }
+.amlok-home-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding: 64px 80px 58px;
+  margin-bottom: 36px;
+  text-align: center;
+}
+.amlok-hero-grid {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: linear-gradient(var(--amlok-grid) 1px, transparent 1px), linear-gradient(90deg, var(--amlok-grid) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse, #000 5%, transparent 72%);
+}
+.amlok-eyebrow {
+  display: block;
+  margin-bottom: 20px;
+  color: var(--amlok-blue);
+  font: 500 11px/1.5 ui-monospace, monospace;
+  letter-spacing: .14em;
+}
+#amlok-home-title {
+  margin: 0 0 22px;
+  color: var(--amlok-ink);
+  font-size: clamp(36px, 4vw, 52px);
+  line-height: 1.08;
+  font-weight: 600;
+  letter-spacing: -.045em;
+}
+.amlok-home-hero > p {
+  max-width: 540px;
+  margin: 0 auto;
+  color: var(--amlok-muted);
+  font-size: 17px;
+  line-height: 1.65;
+}
+.amlok-hero-symbol {
+  position: absolute;
+  z-index: -1;
+  top: 88px;
+  color: var(--amlok-blue);
+  opacity: .08;
+}
+.amlok-hero-symbol-left { left: -10px; transform: rotate(-12deg); }
+.amlok-hero-symbol-right { right: -10px; transform: rotate(12deg); }
+.amlok-entry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.amlok-entry-card {
+  display: block;
+  overflow: hidden;
+  color: var(--amlok-ink);
+  background: var(--amlok-surface);
+  border: 1px solid var(--amlok-border);
+  text-decoration: none !important;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.amlok-entry-card:hover { border-color: var(--amlok-blue); box-shadow: 0 6px 24px rgba(5, 38, 152, .06); }
+.amlok-entry-card:focus-visible { outline: 2px solid #2567ff; outline-offset: 5px; }
+.amlok-card-art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 168px;
+  overflow: hidden;
+  color: var(--amlok-blue);
+  border-bottom: 1px solid var(--amlok-border);
+  background-color: var(--amlok-art);
+  background-image: linear-gradient(var(--amlok-grid) 1px, transparent 1px), linear-gradient(90deg, var(--amlok-grid) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.amlok-icon-plane { display: grid; place-items: center; width: 112px; height: 112px; border: 1px solid var(--amlok-border); background: var(--amlok-surface); box-shadow: 8px 8px 0 var(--amlok-grid); }
+.amlok-card-index { position: absolute; top: 16px; left: 18px; font: 500 9px/1.5 ui-monospace, monospace; letter-spacing: .09em; }
+.amlok-card-cross { position: absolute; bottom: 12px; right: 18px; font: 400 20px/1 ui-monospace, monospace; }
+.amlok-card-copy { padding: 24px 26px 26px; }
+.amlok-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.amlok-card-heading h2 { margin: 0; padding: 0; color: var(--amlok-ink); font-size: 21px; font-weight: 600; line-height: 1.35; letter-spacing: -.025em; }
+.amlok-card-heading > span { display: flex; color: var(--amlok-blue); }
+.amlok-card-copy p { margin: 12px 0 0; color: var(--amlok-muted); font-size: 15px; line-height: 1.65; }
+.amlok-home-signoff { margin: 32px 0 0; color: var(--amlok-muted); text-align: center; font-size: 12px; }
+@media (max-width: 640px) {
+  #amlok-docs-home { padding: 8px 20px 32px; }
+  .amlok-home-hero { padding: 40px 8px 36px; margin-bottom: 20px; }
+  .amlok-home-hero > p { font-size: 16px; }
+  .amlok-hero-symbol { display: none; }
+  .amlok-entry-grid { grid-template-columns: 1fr; gap: 20px; }
+  .amlok-card-art { height: 150px; }
+  .amlok-card-copy { padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .amlok-entry-card { transition: none; }
+}
