@@ -1,0 +1,13 @@
+---
+title: "Create wallet"
+openapi: "/openapi/amlok-v1.json POST /v1/wallets"
+playground: simple
+---
+
+**Required scope:** `wallets:write`
+
+Create a CAD wallet under the authenticated institution and its onboarded legal owner. The client cannot supply another tenant or owner.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

@@ -1,0 +1,83 @@
+---
+title: "Consumption reporting"
+description: "Reconcile product usage, pricing, wallet deductions, statements, and exports."
+---
+
+Use consumption reporting to answer three questions: **what was used, what it cost, and how the wallet changed**.
+
+| Question | Resource |
+| --- | --- |
+| What are our agreed rates and minimum? | [Billing account](/api-reference/endpoints/billing/retrieve-billing-account) and [rate card](/api-reference/endpoints/billing/retrieve-billing-rate-card) |
+| What triggered each charge? | [Usage records](/api-reference/endpoints/billing/list-usage-records) |
+| How much did each product and tier consume? | [Consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
+| What changed the wallet? | [Ledger entries](/api-reference/endpoints/wallets/list-wallet-ledger-entries) |
+| How do we reconcile a period? | [Billing statements](/api-reference/endpoints/billing/list-billing-statements) |
+| How do we download a full dataset? | [Billing reports](/api-reference/endpoints/billing/create-billing-report) |
+
+## Billable usage
+
+Each usage record contains the wallet, product, complexity tier, source application or account, billable unit, quantity, effective unit rate, amount, period, timestamps, rate-card ID, and ledger reference.
+
+| Product | Billable unit | Standard | Advanced | Complex |
+| --- | --- | ---: | ---: | ---: |
+| AMLOK Insights | Completed underwriting | CAD 5 | CAD 15 | CAD 35 |
+| AMLOK Signal | Active account-month | CAD 3 | CAD 5 | CAD 8 |
+
+The effective rate card reflects agreed discounts. Signal account counting and proration follow the signed agreement; a fractional quantity must reflect that policy. Reporting does not create a different billing event or add a fee.
+
+`charge amount = billable quantity × effective unit rate`
+
+Calculate with decimal arithmetic and round each billed line to two decimal places using decimal half-up rounding. Sum posted line amounts to obtain totals. The agreed billing policy must use the same rule; do not recompute historic charges using today's rate card.
+
+Usage records are created by the billing process. Client integrations cannot submit arbitrary usage debits. A correction is a new `reversal` linked through `reverses_usage_id`, with a negative amount and its own ledger reference. The original charge remains visible. Cumulative reversals cannot exceed the original charge; a replacement charge is recorded separately.
+
+## Time windows and provisional data
+
+All windows use UTC and `[from, to)`: the start is inclusive and the end is exclusive. `from` must precede `to`.
+
+- `occurred_at` groups usage by when the billable event happened.
+- `posted_at` groups usage by when its charge entered the ledger.
+- `as_of` identifies the report snapshot.
+- `pending` usage does not enter posted totals.
+- Late usage and corrections can change a provisional event-period report.
+
+Every aggregation retains product, tier and unit. `group_by=day` or `month` adds calendar buckets; it never adds underwritings and monitored account-months into a shared quantity.
+
+The [consumption endpoint](/api-reference/endpoints/billing/retrieve-consumption-summary) includes complete cURL, Python, and Node.js requests with the required date window, time basis and grouping.
+
+For a synthetic month with 100 Standard Insights underwritings and 200 Standard Signal account-months, the totals are CAD 500 and CAD 600, or **CAD 1,100**. This consumes CAD 1,100 from the wallet; it is not an extra platform charge.
+
+## Reconcile the wallet
+
+Wallet statements use posted time and signed ledger entries:
+
+`closing = opening + funding + transfers in - transfers out - usage - withdrawals - refunds - fees + adjustments`
+
+The named debit and credit columns are nonnegative magnitudes. `adjustments` is signed and includes compensating credits. Usage reversals reconcile through ledger adjustments; they are not counted a second time as negative usage in this statement formula.
+
+| Synthetic period movement | CAD |
+| --- | ---: |
+| Opening balance | 12,000.00 |
+| Posted Insights usage | -500.00 |
+| Posted Signal usage | -600.00 |
+| Settled withdrawal | -1,000.00 |
+| Closing posted balance | **9,900.00** |
+| Still held for a separate pending withdrawal | 500.00 |
+| Available balance | **9,400.00** |
+
+A pending incoming top-up of CAD 250 does not change these totals. A hold is not a second debit. Capture it once when posting the movement; release it only when cancelled or definitively failed without moving funds.
+
+Internal transfers net to zero across the institution's wallets, except for quoted fees. They are not consumption revenue. A withdrawal or refund also does not count as product usage.
+
+## Export and finalize
+
+1. Create a report for `usage`, `ledger`, or `statement`, with its wallet, window, format and time basis.
+2. Poll its returned ID until `ready`; `202` only acknowledges the job.
+3. Create a short-lived [download link](/api-reference/endpoints/billing/create-billing-report-download-link).
+4. Validate the file hash, store it under your institution's access policy, and retain the report's `as_of` value.
+
+JSON exports retain decimal strings. CSV exports escape formula-like cells and contain no API keys or payment credentials. Expired exports require a new report request; they must not redirect silently to a newer snapshot.
+
+Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Read the cancellation record alongside the final statement for remaining obligations and unresolved balances.
+
+See [wallet lifecycle](/api-reference/wallets) and [refunds and payouts](/pricing/refunds-and-payouts).

@@ -88,11 +88,12 @@ for (const c of cases) {
             check_sample(language,code);counts['guideCodeBlocks']+=1
 
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
-assert sum(len(group['item']) for group in collection['item'])==164
+assert sum(len(group['item']) for group in collection['item'])==sum(len(methods) for methods in spec['paths'].values())
 variables={item['key']:item['value'] for item in collection['variable']}
 assert variables['api_key']=='' and variables['base_url']==''
 pages=list((ROOT/'api-reference').rglob('*.mdx'))
-assert len(pages)==183
+index=json.loads((ROOT/'data/api-reference-index.json').read_text())
+assert len(pages)==len(index)+21
 assert all('\u2014' not in page.read_text() for page in pages)
 (ROOT/'artifacts/api-code-validation.json').write_text(json.dumps(counts,indent=2)+'\n')
 print(json.dumps(counts))

@@ -1,0 +1,13 @@
+---
+title: "Disable wallet payment method"
+openapi: "/openapi/amlok-v1.json POST /v1/wallet-payment-methods/{id}/disable"
+playground: simple
+---
+
+**Required scope:** `wallets:funding`
+
+Disable future use. Reject while an active mandate or pending movement requires the method.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

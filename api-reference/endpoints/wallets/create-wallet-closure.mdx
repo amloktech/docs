@@ -1,0 +1,13 @@
+---
+title: "Create wallet closure"
+openapi: "/openapi/amlok-v1.json POST /v1/wallet-closures"
+playground: simple
+---
+
+**Required scope:** `wallets:write`
+
+Close a wallet only after its balance, holds, disputes and in-flight settlements are resolved. Disables automatic funding and new debits; settlement and reconciliation remain possible. Does not itself cancel the commercial agreement, move funds or delete records.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

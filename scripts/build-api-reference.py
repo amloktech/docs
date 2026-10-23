@@ -448,6 +448,9 @@ for op in OPS:
     POSTMAN_GROUPS[group].append(item)
     OP_INDEX.append({'id':oid,'method':method,'path':path,'title':title,'scope':op['Scope'],'group':group,'page':page,'resource':resource,'request':request,'response':response_example,'success':success})
 
+from wallet_contract import extend
+WALLET_OPS = extend(globals())
+
 SPEC['tags']=[{'name':g,'description':g+' operations.'} for g in NAV_GROUPS]
 SPEC['webhooks']={'resourceEvent':{'post':{'summary':'AMLOK resource event','description':'Signed at-least-once delivery. Verify the exact raw body before parsing.','security':[],'parameters':[parameter('X-AMLOK-Signature','header','string','HMAC-SHA256 of timestamp + period + raw body. Tolerance: 300 seconds.',True,'t=1792764000,v1=<hex_digest>')],'requestBody':{'required':True,'content':{'application/json':{'schema':ref('WebhookEvent'),'example':EXAMPLES['WebhookEvent']}}},'responses':{'200':{'description':'Acknowledged after durable acceptance.'}}}}}
 
@@ -458,12 +461,37 @@ write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
 GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
-ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-right-arrow-left', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-right-arrow-left', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Billing and wallets', 'wallet', ['wallets', 'consumption-reporting']), ('Security and versioning', 'lock', ['security', 'versioning'])]
 api_tab['groups'] = [
     {'group': 'Get started', 'pages': ['api-reference/' + p for p in GUIDES[:4]]},
     {'group': 'Endpoints', 'pages': [{'group': g, 'expanded': False, 'pages': pages} for g, pages in NAV_GROUPS.items()]},
     {'group': 'Essentials', 'pages': [{'group': name, 'icon': icon, 'expanded': False, 'pages': ['api-reference/' + p for p in pages]} for name, icon, pages in ESSENTIAL_GROUPS]},
 ]
+# Keep wallet endpoints navigable as the operation count grows.
+endpoint_groups = api_tab['groups'][1]['pages']
+for section in endpoint_groups:
+    if section['group'] == 'Wallets':
+        section['icon'] = 'wallet'
+        sections = defaultdict(list)
+        for op in WALLET_OPS:
+            if op['group'] != 'Wallets': continue
+            path = op['path']
+            category = ('Transfers' if path.startswith('/v1/wallet-transfers') else
+                        'Withdrawals and payouts' if path.startswith(('/v1/wallet-withdrawals','/v1/wallet-payouts')) else
+                        'Refunds' if path.startswith('/v1/wallet-refunds') else
+                        'Approvals' if path.startswith('/v1/wallet-approvals') else
+                        'Closure' if path.startswith('/v1/wallet-closures') else
+                        'Quotes' if path.startswith('/v1/wallet-quotes') else
+                        'Funding and destinations' if path.startswith(('/v1/wallet-sessions','/v1/wallet-payment-methods','/v1/wallet-top-ups')) or path.endswith('/auto-top-up') else
+                        'Balances and ledger')
+            sections[category].append(op['page'])
+        section['pages'] = [{'group':name,'expanded':False,'pages':pages} for name,pages in sections.items()]
+    elif section['group'] == 'Billing':
+        section['icon'] = 'receipt'
+        section['pages'] = [
+            {'group':'Usage and reporting','expanded':False,'pages':[op['page'] for op in WALLET_OPS if op['path'].startswith('/v1/billing/')]},
+            {'group':'Agreement cancellation','expanded':False,'pages':[op['page'] for op in WALLET_OPS if op['path'].startswith('/v1/agreement-')]},
+        ]
 config['api']={'playground':{'display':'simple'},'examples':{'languages':['curl','python','javascript']}}
 write('docs.json',dump(config))
-print(dump({'operations':len(OPS),'resources':len(ENTITIES),'schemas':len(SCHEMAS),'events':len(EVENTS),'guides':len(GUIDES),'sourceFields':sum(map(len,FIELDS.values()))}))
+print(dump({'operations':len(OP_INDEX),'resources':len(ENTITIES),'schemas':len(SCHEMAS),'events':len(SCHEMAS['WebhookEvent']['properties']['type']['enum']),'guides':len(GUIDES),'sourceFields':sum(map(len,FIELDS.values()))}))

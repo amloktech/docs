@@ -1,0 +1,13 @@
+---
+title: "Create agreement cancellation quote"
+openapi: "/openapi/amlok-v1.json POST /v1/agreement-cancellation-quotes"
+playground: simple
+---
+
+**Required scope:** `billing:manage`
+
+Estimate final usage, pending holds and remaining agreement obligations at the requested effective date. A quote neither cancels services nor pays funds. It is provisional until reconciliation.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

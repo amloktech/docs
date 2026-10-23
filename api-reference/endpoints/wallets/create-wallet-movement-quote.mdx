@@ -1,0 +1,13 @@
+---
+title: "Create wallet movement quote"
+openapi: "/openapi/amlok-v1.json POST /v1/wallet-quotes"
+playground: simple
+---
+
+**Required scope:** `wallets:read`
+
+Quote transfer, withdrawal or original-source refund. No balance is reserved. Binds amount, fees, source, destination, currency, policy and expiry; eligibility is rechecked atomically on submission. Same-currency CAD routes only.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

@@ -1,0 +1,13 @@
+---
+title: "Create billing report download link"
+openapi: "/openapi/amlok-v1.json POST /v1/billing/reports/{id}/download-link"
+playground: simple
+---
+
+**Required scope:** `billing:export`
+
+Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

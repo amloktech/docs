@@ -1,0 +1,13 @@
+---
+title: "Withdraw agreement cancellation"
+openapi: "/openapi/amlok-v1.json POST /v1/agreement-cancellations/{id}/cancel"
+playground: simple
+---
+
+**Required scope:** `billing:manage`
+
+Withdraw a cancellation request before its effective boundary, subject to agreement terms. This does not reverse already stopped services or completed payments.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

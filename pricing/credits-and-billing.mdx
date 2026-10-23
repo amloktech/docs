@@ -23,11 +23,11 @@ The examples express credits as a **CAD monetary balance**. Deduct the contracte
 - **Insights:** completed underwritings multiplied by the applicable tier rate.
 - **Signal:** billable active account-months multiplied by the applicable tier rate, using the account-counting and proration rules in your order form.
 
-`Closing balance = opening balance + purchased credits - billable usage + agreed adjustments`
+`Closing balance = opening balance + settled funding + transfers in - transfers out - usage - withdrawals - refunds - fees + agreed adjustments`
 
 For a 10% contracted unit-rate discount, a Standard Insights underwriting would use **CAD 4.50** instead of CAD 5. This is an illustration, not a published discount offer.
 
-Your order form should identify the usage records used to reconcile each debit: product, application or account identifier, billing period or event date, tier, quantity, contracted rate, and amount. The billing mechanism and reporting format are agreed during onboarding.
+Your order form should identify the usage records used to reconcile each debit: product, application or account identifier, billing period or event date, tier, quantity, contracted rate, and amount. Use [consumption reporting](/api-reference/consumption-reporting) to retrieve charges, product and tier totals, ledger movements, statements, and CSV or JSON exports.
 
 ## Flexible allocation
 
@@ -49,10 +49,18 @@ You can purchase additional credits when the prepaid balance runs out. Automatic
 
 For automatic top-ups, agree the trigger balance, purchase amount, funding method, spending limits, and treatment of a failed payment. Your order form should also define what happens to billable processing when there are insufficient credits and no authorized top-up.
 
-A top-up increases the available wallet balance. It does not by itself change the agreed product rates or create a new 12-month term; any change to those terms belongs in a separate agreement.
+A top-up increases the available wallet balance once the funding payment settles. Pending funds are not spendable. It does not by itself change the agreed product rates or create a new 12-month term; any change to those terms belongs in a separate agreement.
 
 ## Currency and separate charges
 
 Prices and wallet examples are in **Canadian dollars (CAD)**. If you pay in another currency, agree the conversion rate source, conversion date, fees, and credited CAD amount before payment.
 
 Third-party provider fees are outside the AMLOK processing rates. Your order form separately specifies those charges and the treatment of applicable taxes. Do not deduct an unagreed provider charge from the wallet.
+
+## Withdrawals and internal transfers
+
+Unused settled committed credits and additional funds can be withdrawn to a verified bank destination owned by the same legal entity. Amounts already spent or held are unavailable. Promotional credits cannot be withdrawn as cash.
+
+Transfers are limited to wallets owned by the same customer institution and legal entity. Funding history and restrictions follow the balance. A transfer does not create additional credit or reset refund eligibility.
+
+Withdrawing credits does not cancel the agreement, reduce the minimum monthly commitment, or waive remaining term obligations. See [refunds and payouts](/pricing/refunds-and-payouts) for cancellation, refund review, fees, settlement and returned funds, and [wallet lifecycle](/api-reference/wallets) for API behavior.

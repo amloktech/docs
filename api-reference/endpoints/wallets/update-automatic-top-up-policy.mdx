@@ -1,0 +1,13 @@
+---
+title: "Update automatic top-up policy"
+openapi: "/openapi/amlok-v1.json PATCH /v1/wallets/{id}/auto-top-up"
+playground: simple
+---
+
+**Required scope:** `wallets:funding`
+
+Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. Closure disables automatic funding.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

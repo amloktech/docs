@@ -44,8 +44,10 @@ for name,webhook in spec['webhooks'].items():
 for name,schema in spec['components']['schemas'].items():Draft202012Validator.check_schema(schema)
 if errors:
     print('\n'.join(errors));raise SystemExit(f'{len(errors)} invalid examples')
-assert counts['operations']==164
-assert len({op['operationId'] for methods in spec['paths'].values() for op in methods.values()})==164
+index=json.loads((root/'data/api-reference-index.json').read_text())
+wallet_index=json.loads((root/'data/wallet-api-index.json').read_text())
+assert counts['operations']==164+len(wallet_index)==len(index)
+assert len({op['operationId'] for methods in spec['paths'].values() for op in methods.values()})==len(index)
 assert spec['servers'][0]['url']=='https://api.example.com'
 assert spec['info']['version']=='1.4.2'
 assert '0.1.0-draft' not in json.dumps(spec)

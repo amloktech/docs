@@ -1,0 +1,13 @@
+---
+title: "Cancel wallet transfer"
+openapi: "/openapi/amlok-v1.json POST /v1/wallet-transfers/{id}/cancel"
+playground: simple
+---
+
+**Required scope:** `wallets:transfer`
+
+Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

@@ -11,7 +11,7 @@ Every POST operation requires an `Idempotency-Key`. Generate it once for one int
 Idempotency-Key: onboarding-connection-1001
 ```
 
-The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
+The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`. Wallet money commands also enforce a durable `client_reference` for the institution, environment and operation beyond this request-key window. See [wallet retry and reconciliation rules](/api-reference/wallets#safe-retries-and-approvals).
 
 | Situation | Client behavior |
 | --- | --- |
