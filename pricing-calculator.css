@@ -1,0 +1,77 @@
+/* Scoped to the interactive pricing calculator. */
+.amlok-pricing-calc {
+  --apc-text: #17233b;
+  --apc-muted: #57657b;
+  --apc-border: #dce4f1;
+  --apc-surface: #fff;
+  --apc-tint: #f4f7ff;
+  --apc-blue: #052698;
+  --apc-error: #b42318;
+  margin: 24px 0 36px;
+  color: var(--apc-text);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.dark .amlok-pricing-calc {
+  --apc-text: #edf3ff;
+  --apc-muted: #aebbd0;
+  --apc-border: #30405a;
+  --apc-surface: #111c2d;
+  --apc-tint: #162643;
+  --apc-blue: #aac6ff;
+  --apc-error: #ffaca4;
+}
+.amlok-pricing-calc * { box-sizing: border-box; }
+.amlok-pricing-calc .apc-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.amlok-pricing-calc .apc-badge { color: var(--apc-muted); font-size: 12px; font-weight: 600; }
+.amlok-pricing-calc .apc-reset { padding: 8px 12px; border: 1px solid var(--apc-border); border-radius: 8px; color: var(--apc-blue); background: var(--apc-surface); cursor: pointer; font: inherit; font-size: 13px; }
+.amlok-pricing-calc .apc-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(270px, 1fr); gap: 24px; align-items: start; }
+.amlok-pricing-calc .apc-inputs { display: grid; gap: 16px; min-width: 0; }
+.amlok-pricing-calc .apc-panel { border: 1px solid var(--apc-border); border-radius: 14px; background: var(--apc-surface); overflow: hidden; }
+.amlok-pricing-calc .apc-product-header { padding: 18px 20px 14px; border-bottom: 1px solid var(--apc-border); }
+.amlok-pricing-calc .apc-product-toggle { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 650; cursor: pointer; }
+.amlok-pricing-calc input[type="checkbox"] { width: 18px; height: 18px; accent-color: #052698; flex-shrink: 0; }
+.dark .amlok-pricing-calc input[type="checkbox"] { accent-color: #8eafff; }
+.amlok-pricing-calc .apc-product-header p { margin: 6px 0 0 28px; color: var(--apc-muted); font-size: 12px; }
+.amlok-pricing-calc .apc-tiers { border: 0; margin: 0; padding: 2px 20px; min-width: 0; }
+.amlok-pricing-calc .apc-tiers:disabled { opacity: .45; }
+.amlok-pricing-calc .apc-tier { display: grid; grid-template-columns: minmax(0, 1fr) 105px; gap: 4px 12px; align-items: center; padding: 12px 0; }
+.amlok-pricing-calc .apc-tier + .apc-tier { border-top: 1px solid var(--apc-border); }
+.amlok-pricing-calc .apc-tier label { display: grid; gap: 2px; }
+.amlok-pricing-calc .apc-tier label strong { font-weight: 600; }
+.amlok-pricing-calc .apc-tier label span { color: var(--apc-muted); font-size: 12px; }
+.amlok-pricing-calc input[type="number"] { display: block; width: 100%; min-width: 0; border: 1px solid var(--apc-border); border-radius: 8px; padding: 9px 10px; color: var(--apc-text); background: var(--apc-surface); font: inherit; font-variant-numeric: tabular-nums; }
+.amlok-pricing-calc input[aria-invalid="true"] { border-color: var(--apc-error); }
+.amlok-pricing-calc :is(input, button):focus-visible { outline: 2px solid #2567ff; outline-offset: 3px; }
+.amlok-pricing-calc .apc-error { color: var(--apc-error); font-size: 12px; margin: 4px 0 0; grid-column: 1 / -1; }
+.amlok-pricing-calc .apc-error:empty { display: none; }
+.amlok-pricing-calc .apc-terms { padding: 20px; }
+.amlok-pricing-calc .apc-terms h2, .amlok-pricing-calc .apc-summary h2 { margin: 0 0 16px; font-size: 17px; font-weight: 650; line-height: 1.4; }
+.amlok-pricing-calc .apc-terms-grid { display: grid; gap: 18px; }
+.amlok-pricing-calc .apc-terms-grid label { display: block; margin-bottom: 6px; font-weight: 600; }
+.amlok-pricing-calc .apc-terms-grid p { margin: 6px 0 0; font-size: 12px; color: var(--apc-muted); }
+.amlok-pricing-calc .apc-terms-grid .apc-error { color: var(--apc-error); }
+.amlok-pricing-calc .apc-summary { position: sticky; top: 120px; border: 1px solid var(--apc-border); border-radius: 14px; padding: 24px; background: var(--apc-tint); min-width: 0; }
+.amlok-pricing-calc .apc-hero-amount { display: grid; gap: 5px; }
+.amlok-pricing-calc .apc-hero-amount span { font-size: 12px; color: var(--apc-muted); }
+.amlok-pricing-calc .apc-hero-amount strong { font-size: clamp(24px, 2.3vw, 32px); font-weight: 650; letter-spacing: -.035em; color: var(--apc-blue); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.amlok-pricing-calc .apc-breakdown { display: grid; gap: 12px; margin: 22px 0; }
+.amlok-pricing-calc .apc-breakdown > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 3px 12px; }
+.amlok-pricing-calc .apc-breakdown dt { color: var(--apc-muted); font-size: 12px; }
+.amlok-pricing-calc .apc-breakdown dd { margin: 0; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.amlok-pricing-calc .apc-total-row { padding-top: 12px; border-top: 1px solid var(--apc-border); }
+.amlok-pricing-calc .apc-total-row dt { color: var(--apc-text); font-weight: 600; }
+.amlok-pricing-calc .apc-payment { padding: 16px; border: 1px solid var(--apc-border); border-radius: 10px; background: var(--apc-surface); }
+.amlok-pricing-calc .apc-payment span { display: block; font-weight: 600; font-size: 12px; }
+.amlok-pricing-calc .apc-payment strong { display: block; margin-top: 4px; font-size: 23px; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.amlok-pricing-calc .apc-payment p, .amlok-pricing-calc .apc-footnote, .amlok-pricing-calc .apc-explanation { margin: 8px 0 0; color: var(--apc-muted); font-size: 12px; }
+.amlok-pricing-calc .apc-footnote { margin-top: 16px; }
+.amlok-pricing-calc .apc-invalid-summary { color: var(--apc-muted); }
+.amlok-pricing-calc .apc-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@media (max-width: 760px) {
+  .amlok-pricing-calc .apc-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .amlok-pricing-calc .apc-summary { position: static; padding: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .amlok-pricing-calc * { scroll-behavior: auto; }
+}
