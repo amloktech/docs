@@ -1,0 +1,95 @@
+---
+title: "Data model"
+sidebarTitle: "Start here"
+description: "Understand the proposed normalized data contract and find the right reference."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+The model organizes data from provider systems into consistent resources while preserving source evidence. Use it to understand record meaning, field definitions, and candidate coverage.
+
+| Reference | Draft scope |
+| --- | --- |
+| Domains | 11 |
+| Resource types | 67 + inherited common metadata |
+| Field definitions | 987 |
+| Shared-type fields | 134 |
+| Derived attributes | 56 |
+| Field mappings | 107 |
+| Candidate provider/resource links | 2,085 |
+
+## Read the model
+
+<Columns cols={2}>
+  <Card title="Domains" icon="layers" href="/data-model/domains">The 11 data domains that organize the normalized AMLOK contract.</Card>
+  <Card title="Entities" icon="boxes" href="/data-model/entities">Record meaning, identity, and population conditions for 67 resources and shared metadata.</Card>
+  <Card title="Field Dictionary" icon="list-tree" href="/data-model/field-dictionary">987 proposed field definitions, organized by domain and resource.</Card>
+  <Card title="Provider Coverage" icon="plug" href="/data-model/provider-coverage">Candidate data scope and evidence for 241 catalog and supplemental providers.</Card>
+</Columns>
+
+## How to interpret the definitions
+
+### Source / derived / managed
+
+**Three distinct origins**
+
+Normalized source records preserve provider evidence. Derived attributes require calculations. AMLOK-managed records describe workflows and governance.
+
+### Availability
+
+**Conditional per source and entitlement**
+
+Assuming all integrations are built does not make all fields universally available. Optional data depends on source, country, module, permissions and history.
+
+### Required fields
+
+**Contract requirement when a resource exists**
+
+Required does not mean the upstream provider guarantees this field. Reject or quarantine records that cannot meet identity requirements.
+
+### Missing values
+
+**Null is not zero**
+
+Use missing\_fields reasons; \[\] means a known empty collection. Partial results remain partial.
+
+### Resource prefixes
+
+**Documentation context**
+
+bank\_transaction.amount.amount refers to data.amount.amount on a bank\_transaction response. Common fields are inherited at the same object level.
+
+### Excluded assumptions
+
+**No invented credit-bureau, payroll, tax-authority or title feeds**
+
+These require additional sources or explicit lender-supplied evidence. See Release Gaps.
+
+### Change control
+
+**Version definitions and mappings together**
+
+Changes to meanings, types, requiredness or calculations require review and versioned client communication.
+
+## Reference pages
+
+- [Domains](/data-model/domains) — The 11 data domains that organize the normalized AMLOK contract.
+- [Entities](/data-model/entities) — Record meaning, identity, and population conditions for 67 resources and shared metadata.
+- [Field Dictionary](/data-model/field-dictionary) — 987 proposed field definitions, organized by domain and resource.
+- [Shared Types](/data-model/shared-types) — 134 reusable nested fields for addresses, money, provenance, and other shared structures.
+- [Derived Attributes](/data-model/derived-attributes) — 56 proposed attributes with inputs, calculations, units, and availability rules.
+- [Enumerations](/data-model/enumerations) — Allowed values and handling rules for normalized statuses and categories.
+- [Relationships](/data-model/relationships) — How resources connect, including cardinality and integrity rules.
+- [Events](/data-model/events) — Proposed event names, resource triggers, and minimal event details.
+- [Normalization rules](/data-model/normalization-rules) — Rules for evidence, missing values, money, identity, and normalized data.
+- [Workflow Guide](/data-model/workflow-guide) — How data supports Verify, Underwrite, Fund, Monitor, Service, Investigate, and Re-underwrite.
+- [Provider Coverage](/data-model/provider-coverage) — Candidate data scope and evidence for 241 catalog and supplemental providers.
+- [Resource Coverage](/data-model/resource-coverage) — 2,085 candidate provider-to-resource relationships and their validation needs.
+- [Field Mappings](/data-model/field-mappings) — 107 documented upstream field mappings with proposed transformations.
+- [Release Gaps](/data-model/release-gaps) — Open implementation, evidence, coverage, and release requirements.
+
+<Info>
+API endpoints, parameters, error codes, and request/response examples are deferred. This section focuses on the data model.
+</Info>

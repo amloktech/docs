@@ -1,0 +1,1097 @@
+---
+title: "Entities"
+description: "Record meaning, identity, and population conditions for 67 resources and shared metadata."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+Every top-level resource inherits `common` metadata. `common` is not a separately listable resource.
+
+## Platform
+
+<AccordionGroup>
+
+<Accordion title="common" id="common">
+
+Fields inherited by every top-level resource. The \* resource prefix in documentation is not a JSON nesting level.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | Inherited metadata, not a separately listable resource |
+| Source families | AMLOK |
+| Lifecycle | Full lifecycle |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#common)
+
+</Accordion>
+
+<Accordion title="connection" id="connection">
+
+One authorized link to a provider tenant or financial institution.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One connection per source record / observation |
+| Source families | All inventory families |
+| Lifecycle | Full lifecycle |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#connection)
+
+</Accordion>
+
+<Accordion title="consent" id="consent">
+
+Authorization and permitted use linked to a subject and client.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One consent per source record / observation |
+| Source families | AMLOK; provider authorization |
+| Lifecycle | Full lifecycle |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#consent)
+
+</Accordion>
+
+<Accordion title="sync_job" id="sync-job">
+
+Bounded ingestion run, including partial results and source outages.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One sync job per source record / observation |
+| Source families | All inventory families |
+| Lifecycle | Full lifecycle |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#sync-job)
+
+</Accordion>
+
+<Accordion title="reconciliation_link" id="reconciliation-link">
+
+Evidence-based allocation connecting records without collapsing distinct economic events.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One reconciliation link per source record / observation |
+| Source families | AMLOK; source-provided linkage |
+| Lifecycle | Full lifecycle |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#reconciliation-link)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Identity
+
+<AccordionGroup>
+
+<Accordion title="business" id="business">
+
+A legal organization or sole-proprietor business profile.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One business per source record / observation |
+| Source families | Didit; Baselayer; ACC; INV; LEND; client |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#business)
+
+</Accordion>
+
+<Accordion title="person" id="person">
+
+Individual applicant, owner, officer, guarantor or authorized party.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One person per source record / observation |
+| Source families | Didit; LEND; client; authorized BANK identity |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#person)
+
+</Accordion>
+
+<Accordion title="relationship" id="relationship">
+
+Directed, evidenced link between two entities.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One relationship per source record / observation |
+| Source families | Didit; Baselayer; LEND; client; AMLOK |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#relationship)
+
+</Accordion>
+
+<Accordion title="verification" id="verification">
+
+KYC or KYB session and its aggregate result.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One verification per source record / observation |
+| Source families | Didit; Baselayer; client |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#verification)
+
+</Accordion>
+
+<Accordion title="verification_check" id="verification-check">
+
+Individual document, biometric, address, registry or contact check.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One verification check per source record / observation |
+| Source families | Didit; Baselayer |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#verification-check)
+
+</Accordion>
+
+<Accordion title="screening_match" id="screening-match">
+
+Candidate watchlist, sanctions, PEP or adverse-media match.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One screening match per source record / observation |
+| Source families | Didit; Baselayer |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#screening-match)
+
+</Accordion>
+
+<Accordion title="document" id="document">
+
+Evidence file metadata and extraction context.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One document per source record / observation |
+| Source families | All inventory families; client uploads |
+| Lifecycle | Verify; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#document)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Banking
+
+<AccordionGroup>
+
+<Accordion title="bank_account" id="bank-account">
+
+Permissioned bank, credit or loan account identity.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One bank account per source record / observation |
+| Source families | BANK |
+| Lifecycle | Verify; Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#bank-account)
+
+</Accordion>
+
+<Accordion title="account_balance" id="account-balance">
+
+Timestamped balance snapshot; asset and liability meanings remain explicit.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One account balance per source record / observation |
+| Source families | BANK; authorized financial ledger |
+| Lifecycle | Verify; Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#account-balance)
+
+</Accordion>
+
+<Accordion title="bank_transaction" id="bank-transaction">
+
+One movement on one financial account; no automatic cross-source deduplication.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One bank transaction per source record / observation |
+| Source families | BANK |
+| Lifecycle | Verify; Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#bank-transaction)
+
+</Accordion>
+
+<Accordion title="recurring_stream" id="recurring-stream">
+
+Evidence-based grouping of repeated inflows or outflows.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One recurring stream per source record / observation |
+| Source families | BANK optional products; AMLOK |
+| Lifecycle | Verify; Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#recurring-stream)
+
+</Accordion>
+
+<Accordion title="income_observation" id="income-observation">
+
+Income evidence from an entitled income product or an explicitly labeled inference.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One income observation per source record / observation |
+| Source families | BANK entitled income products; client; AMLOK |
+| Lifecycle | Verify; Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#income-observation)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Payments
+
+<AccordionGroup>
+
+<Accordion title="merchant_account" id="merchant-account">
+
+Merchant processing relationship and settlement context.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One merchant account per source record / observation |
+| Source families | PAY; ECOM marketplace settlement |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#merchant-account)
+
+</Accordion>
+
+<Accordion title="payment" id="payment">
+
+Payment authorization, capture or collection record.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One payment per source record / observation |
+| Source families | PAY; ECOM; ACC |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#payment)
+
+</Accordion>
+
+<Accordion title="processor_transaction" id="processor-transaction">
+
+Ledger event on a processor balance, separate from bank movements.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One processor transaction per source record / observation |
+| Source families | PAY |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#processor-transaction)
+
+</Accordion>
+
+<Accordion title="payout" id="payout">
+
+Settlement from a processor or marketplace to a destination account.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One payout per source record / observation |
+| Source families | PAY; ECOM |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#payout)
+
+</Accordion>
+
+<Accordion title="refund" id="refund">
+
+Return of money linked to a payment or order.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One refund per source record / observation |
+| Source families | PAY; ECOM |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#refund)
+
+</Accordion>
+
+<Accordion title="dispute" id="dispute">
+
+Chargeback or payment dispute and its evidence deadlines.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One dispute per source record / observation |
+| Source families | PAY; ECOM |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#dispute)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Commerce
+
+<AccordionGroup>
+
+<Accordion title="counterparty" id="counterparty">
+
+Customer or supplier in a commercial source system; not automatically a verified legal entity.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One counterparty per source record / observation |
+| Source families | ECOM; PAY; ACC; INV |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#counterparty)
+
+</Accordion>
+
+<Accordion title="order" id="order">
+
+Commercial sale order with amounts distinct from payment and accounting revenue.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One order per source record / observation |
+| Source families | ECOM; PAY POS; INV OMS |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#order)
+
+</Accordion>
+
+<Accordion title="order_line" id="order-line">
+
+Product or service line belonging to an order.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One order line per source record / observation |
+| Source families | ECOM; PAY POS; INV OMS |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#order-line)
+
+</Accordion>
+
+<Accordion title="subscription" id="subscription">
+
+Recurring commercial contract when the source exposes subscription records.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One subscription per source record / observation |
+| Source families | ECOM subscription modules; PAY billing products |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Only if the connected provider and licensed module expose subscriptions; an order feed alone is insufficient. |
+
+[Read field definitions](/data-model/field-dictionary#subscription)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Accounting
+
+<AccordionGroup>
+
+<Accordion title="ledger_account" id="ledger-account">
+
+Chart-of-accounts entry and classification.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One ledger account per source record / observation |
+| Source families | ACC; INV financial modules |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#ledger-account)
+
+</Accordion>
+
+<Accordion title="journal" id="journal">
+
+Accounting posting header or source journal entry.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One journal per source record / observation |
+| Source families | ACC; INV financial modules |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#journal)
+
+</Accordion>
+
+<Accordion title="journal_line" id="journal-line">
+
+One debit or credit posting to a ledger account.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One journal line per source record / observation |
+| Source families | ACC; INV financial modules |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#journal-line)
+
+</Accordion>
+
+<Accordion title="invoice" id="invoice">
+
+Accounts receivable invoice; sale made on credit.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One invoice per source record / observation |
+| Source families | ACC; INV; ECOM invoicing |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#invoice)
+
+</Accordion>
+
+<Accordion title="bill" id="bill">
+
+Accounts payable invoice; amount owed to a supplier.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One bill per source record / observation |
+| Source families | ACC; INV |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#bill)
+
+</Accordion>
+
+<Accordion title="credit_note" id="credit-note">
+
+Adjustment reducing a receivable or payable.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One credit note per source record / observation |
+| Source families | ACC; INV; ECOM |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#credit-note)
+
+</Accordion>
+
+<Accordion title="accounting_payment" id="accounting-payment">
+
+Ledger allocation of a customer receipt or supplier payment.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One accounting payment per source record / observation |
+| Source families | ACC; INV |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#accounting-payment)
+
+</Accordion>
+
+<Accordion title="financial_statement" id="financial-statement">
+
+Financial report with explicit period, basis and source.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One financial statement per source record / observation |
+| Source families | ACC; INV financial modules; client documents |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#financial-statement)
+
+</Accordion>
+
+<Accordion title="statement_line" id="statement-line">
+
+One classified line of a financial report.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One statement line per source record / observation |
+| Source families | ACC; INV financial modules; document extraction |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#statement-line)
+
+</Accordion>
+
+<Accordion title="tax_obligation" id="tax-obligation">
+
+Tax payable or reported obligation from an accounting system or supplied return.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One tax obligation per source record / observation |
+| Source families | ACC; INV financial modules; client documents |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Accounting or supplied-return evidence only; no direct CRA/IRS account integration is established by the inventory. |
+
+[Read field definitions](/data-model/field-dictionary#tax-obligation)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Inventory
+
+<AccordionGroup>
+
+<Accordion title="product" id="product">
+
+Catalog item or inventory SKU with ownership and costing context.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One product per source record / observation |
+| Source families | INV; ECOM; PAY POS; ACC items |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#product)
+
+</Accordion>
+
+<Accordion title="location" id="location">
+
+Store, warehouse, branch or operating location.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One location per source record / observation |
+| Source families | INV; ECOM; PAY POS |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#location)
+
+</Accordion>
+
+<Accordion title="inventory_balance" id="inventory-balance">
+
+Quantity and value snapshot by item, location and owner.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One inventory balance per source record / observation |
+| Source families | INV; ECOM inventory modules; PAY POS |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Quantity, cost, history and stock ownership depend on product, module and tenant. A WMS balance need not be borrower-owned collateral. |
+
+[Read field definitions](/data-model/field-dictionary#inventory-balance)
+
+</Accordion>
+
+<Accordion title="inventory_movement" id="inventory-movement">
+
+A receipt, issue, transfer or adjustment to stock.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One inventory movement per source record / observation |
+| Source families | INV; ECOM inventory modules |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#inventory-movement)
+
+</Accordion>
+
+<Accordion title="purchase_order" id="purchase-order">
+
+Supplier purchase commitment, separate from invoices and cash payments.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One purchase order per source record / observation |
+| Source families | INV; ACC purchasing modules |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#purchase-order)
+
+</Accordion>
+
+<Accordion title="shipment" id="shipment">
+
+Physical receipt or dispatch linked to orders and stock.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One shipment per source record / observation |
+| Source families | INV WMS/OMS; ECOM fulfillment |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#shipment)
+
+</Accordion>
+
+<Accordion title="production_order" id="production-order">
+
+Manufacturing work order when licensed ERP/MES modules expose it.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One production order per source record / observation |
+| Source families | INV manufacturing ERP/MES |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#production-order)
+
+</Accordion>
+
+<Accordion title="project" id="project">
+
+Construction or service job with cost and billing information.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One project per source record / observation |
+| Source families | ACC project/construction; INV project ERP |
+| Lifecycle | Underwrite; Monitor |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#project)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Lending
+
+<AccordionGroup>
+
+<Accordion title="application" id="application">
+
+Credit request and its lifecycle.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One application per source record / observation |
+| Source families | LEND origination; client API |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#application)
+
+</Accordion>
+
+<Accordion title="credit_facility" id="credit-facility">
+
+Approved credit agreement and aggregate exposure.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One credit facility per source record / observation |
+| Source families | LEND; client |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#credit-facility)
+
+</Accordion>
+
+<Accordion title="loan" id="loan">
+
+Loan contract and current servicing state.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One loan per source record / observation |
+| Source families | LEND; client |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#loan)
+
+</Accordion>
+
+<Accordion title="installment" id="installment">
+
+One scheduled repayment obligation.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One installment per source record / observation |
+| Source families | LEND |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#installment)
+
+</Accordion>
+
+<Accordion title="repayment" id="repayment">
+
+A servicing payment event and its allocation.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One repayment per source record / observation |
+| Source families | LEND; client payment system |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#repayment)
+
+</Accordion>
+
+<Accordion title="collateral" id="collateral">
+
+Asset pledged or proposed to secure an obligation.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One collateral per source record / observation |
+| Source families | LEND; client; INV evidence |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#collateral)
+
+</Accordion>
+
+<Accordion title="guarantee" id="guarantee">
+
+Documented personal or corporate guarantee.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One guarantee per source record / observation |
+| Source families | LEND; client documents |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#guarantee)
+
+</Accordion>
+
+<Accordion title="covenant" id="covenant">
+
+Contractual test with a versioned threshold and observed result.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One covenant per source record / observation |
+| Source families | LEND; client; AMLOK derived |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#covenant)
+
+</Accordion>
+
+<Accordion title="decision" id="decision">
+
+Versioned lender decision or AMLOK recommendation with attributable evidence.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One decision per source record / observation |
+| Source families | LEND decision engines; client; AMLOK |
+| Lifecycle | Underwrite; Monitor; Service |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#decision)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Liens
+
+<AccordionGroup>
+
+<Accordion title="lien_search" id="lien-search">
+
+A search request with explicit debtor, jurisdiction and coverage.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One lien search per source record / observation |
+| Source families | Baselayer US; PPSA Canada candidate; client registry reports |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | US UCC and Canadian provincial PPSA/RDPRM are separate products. Contract, jurisdiction, search type and redistribution rights must be established. |
+
+[Read field definitions](/data-model/field-dictionary#lien-search)
+
+</Accordion>
+
+<Accordion title="lien" id="lien">
+
+A security registration or other lien record from a stated registry.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One lien per source record / observation |
+| Source families | Baselayer US; PPSA Canada candidate; client registry reports |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Registry and provider dependent; no guaranteed balance, collateral detail, priority or certified coverage. |
+
+[Read field definitions](/data-model/field-dictionary#lien)
+
+</Accordion>
+
+<Accordion title="filing_event" id="filing-event">
+
+Amendment, continuation, assignment or termination in a registration chain.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One filing event per source record / observation |
+| Source families | Baselayer US; PPSA Canada candidate; client registry reports |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#filing-event)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Risk
+
+<AccordionGroup>
+
+<Accordion title="attribute" id="attribute">
+
+Computed or provider-supplied risk attribute with transparent inputs.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One attribute per source record / observation |
+| Source families | AMLOK derived; licensed provider analytics |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#attribute)
+
+</Accordion>
+
+<Accordion title="risk_snapshot" id="risk-snapshot">
+
+Immutable assessment at a point in time, preserving subsequent changes separately.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One risk snapshot per source record / observation |
+| Source families | AMLOK |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#risk-snapshot)
+
+</Accordion>
+
+<Accordion title="monitor" id="monitor">
+
+Configured monitoring scope, baseline and refresh policy.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One monitor per source record / observation |
+| Source families | AMLOK; contracted provider monitoring |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#monitor)
+
+</Accordion>
+
+<Accordion title="alert" id="alert">
+
+Material change or risk signal with evidence and review state.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One alert per source record / observation |
+| Source families | AMLOK; provider alerts |
+| Lifecycle | Underwrite; Monitor; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#alert)
+
+</Accordion>
+
+</AccordionGroup>
+
+## Operations
+
+<AccordionGroup>
+
+<Accordion title="case" id="case">
+
+Investigation, servicing or review case.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One case per source record / observation |
+| Source families | AMLOK; LEND CRM/servicing |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#case)
+
+</Accordion>
+
+<Accordion title="task" id="task">
+
+Agent or human work item, including approval before external effects.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One task per source record / observation |
+| Source families | AMLOK; LEND workflow |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#task)
+
+</Accordion>
+
+<Accordion title="communication" id="communication">
+
+Borrower-facing communication record; drafting is separate from sending.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One communication per source record / observation |
+| Source families | AMLOK; LEND CRM/servicing |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#communication)
+
+</Accordion>
+
+<Accordion title="payment_promise" id="payment-promise">
+
+Borrower repayment commitment and observed fulfillment.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One payment promise per source record / observation |
+| Source families | LEND servicing; AMLOK |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#payment-promise)
+
+</Accordion>
+
+<Accordion title="workflow_run" id="workflow-run">
+
+Coordinated execution of Verify, Underwrite, Monitor, Service or Investigate.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One workflow run per source record / observation |
+| Source families | AMLOK |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#workflow-run)
+
+</Accordion>
+
+<Accordion title="requirement" id="requirement">
+
+Evidence or approval required to complete a workflow.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One requirement per source record / observation |
+| Source families | AMLOK; LEND |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#requirement)
+
+</Accordion>
+
+<Accordion title="audit_event" id="audit-event">
+
+Append-only record of actions, versions and access.
+
+| Property | Definition |
+| --- | --- |
+| Grain / identity | One audit event per source record / observation |
+| Source families | AMLOK |
+| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Population conditions | Source, module, country, consent and contracted permissions determine population. |
+
+[Read field definitions](/data-model/field-dictionary#audit-event)
+
+</Accordion>
+
+</AccordionGroup>
+

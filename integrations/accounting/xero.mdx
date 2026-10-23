@@ -1,0 +1,87 @@
+---
+title: "Xero"
+description: "Cloud accounting — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | ACC-03 |
+| Category | Accounting |
+| Product type | Cloud accounting |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+OAuth 2.0 Accounting API/reports; some endpoints, including journals, have additional access gates.
+
+## Access and approval
+
+Published security-assessment guidance: about 5 working days to complete, then 5–10 working days for Xero review. Full certification/use-case approval ETA ND. Review source.
+
+**Documentation availability:** Public Accounting API/docs.
+
+*ND means the source catalog does not disclose an approval estimate.*
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [business](/data-model/field-dictionary#business) | Candidate | Mapping pending |
+| [ledger\_account](/data-model/field-dictionary#ledger-account) | Candidate | Mapping pending |
+| [journal](/data-model/field-dictionary#journal) | Candidate | Mapping pending |
+| [journal\_line](/data-model/field-dictionary#journal-line) | Candidate | Mapping pending |
+| [counterparty](/data-model/field-dictionary#counterparty) | Candidate | Mapping pending |
+| [invoice](/data-model/field-dictionary#invoice) | Candidate | Selected fields documented |
+| [bill](/data-model/field-dictionary#bill) | Candidate | Mapping pending |
+| [credit\_note](/data-model/field-dictionary#credit-note) | Candidate | Mapping pending |
+| [accounting\_payment](/data-model/field-dictionary#accounting-payment) | Candidate | Mapping pending |
+| [financial\_statement](/data-model/field-dictionary#financial-statement) | Candidate | Mapping pending |
+| [statement\_line](/data-model/field-dictionary#statement-line) | Candidate | Mapping pending |
+| [tax\_obligation](/data-model/field-dictionary#tax-obligation) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
+| History | Not established; validate per endpoint and account. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Selected documented mappings; remainder pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Documented field mappings
+
+These source fields are documented; the proposed adapter transformations are not production-tested.
+
+| Mapping | Source field | AMLOK target |
+| --- | --- | --- |
+| [M050](/data-model/field-mappings#m050) | `InvoiceID` | `common.source_refs[].source_record_id` |
+| [M051](/data-model/field-mappings#m051) | `InvoiceNumber` | `invoice.number` |
+| [M052](/data-model/field-mappings#m052) | `Contact.ContactID` | `invoice.counterparty_id` |
+| [M053](/data-model/field-mappings#m053) | `Date` | `invoice.issued_on` |
+| [M054](/data-model/field-mappings#m054) | `DueDate` | `invoice.due_on` |
+| [M055](/data-model/field-mappings#m055) | `Status` | `invoice.status` |
+| [M056](/data-model/field-mappings#m056) | `Total` | `invoice.total.amount` |
+| [M057](/data-model/field-mappings#m057) | `CurrencyCode` | `invoice.total.currency` |
+| [M058](/data-model/field-mappings#m058) | `AmountDue` | `invoice.amount_due.amount` |
+| [M059](/data-model/field-mappings#m059) | `AmountPaid` | `invoice.amount_paid.amount` |
+| [M060](/data-model/field-mappings#m060) | `AmountCredited` | `invoice.amount_credited.amount` |
+| [M061](/data-model/field-mappings#m061) | `Type` | `invoice / bill (resource routing)` |
+
+## Provider documentation
+
+- [developer.xero.com/documentation/api/accounting/overview](https://developer.xero.com/documentation/api/accounting/overview/)
+- [developer.xero.com/faq/xero-ecosystem-security-requirements-update](https://developer.xero.com/faq/xero-ecosystem-security-requirements-update)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#acc-03)
+- [Resource coverage](/data-model/resource-coverage#acc-03)
+- [Field dictionary](/data-model/field-dictionary)

@@ -1,0 +1,83 @@
+---
+title: "Shopify POS"
+description: "POS — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | PAY-05 |
+| Category | Payments and POS |
+| Product type | POS |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+Shared Shopify Admin GraphQL authorization; distinguish POS orders by channel/location; assess payment payout scopes separately.
+
+## Access and approval
+
+Public distribution requires Shopify app review; ETA ND; custom distribution has narrower eligibility. Review source.
+
+**Documentation availability:** Public API/docs.
+
+*ND means the source catalog does not disclose an approval estimate.*
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [merchant\_account](/data-model/field-dictionary#merchant-account) | Candidate | Mapping pending |
+| [order](/data-model/field-dictionary#order) | Candidate | Selected fields documented |
+| [order\_line](/data-model/field-dictionary#order-line) | Candidate | Mapping pending |
+| [payment](/data-model/field-dictionary#payment) | Candidate | Mapping pending |
+| [refund](/data-model/field-dictionary#refund) | Candidate | Mapping pending |
+| [counterparty](/data-model/field-dictionary#counterparty) | Candidate | Mapping pending |
+| [product](/data-model/field-dictionary#product) | Candidate | Mapping pending |
+| [location](/data-model/field-dictionary#location) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
+| History | 60-day default orders; older-history permission required. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Selected documented mappings; remainder pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Documented field mappings
+
+These source fields are documented; the proposed adapter transformations are not production-tested.
+
+| Mapping | Source field | AMLOK target |
+| --- | --- | --- |
+| [M038](/data-model/field-mappings#m038) | `id` | `order.source_order_id` |
+| [M039](/data-model/field-mappings#m039) | `name` | `order.order_number` |
+| [M040](/data-model/field-mappings#m040) | `createdAt` | `order.placed_at` |
+| [M041](/data-model/field-mappings#m041) | `cancelledAt` | `order.cancelled_at` |
+| [M042](/data-model/field-mappings#m042) | `displayFinancialStatus` | `order.payment_status` |
+| [M043](/data-model/field-mappings#m043) | `displayFulfillmentStatus` | `order.fulfillment_status` |
+| [M044](/data-model/field-mappings#m044) | `totalPriceSet.shopMoney` | `order.total.amount` |
+| [M045](/data-model/field-mappings#m045) | `currentTotalPriceSet.shopMoney` | `order.current_total.amount` |
+| [M046](/data-model/field-mappings#m046) | `totalRefundedSet.shopMoney` | `order.refunded_total.amount` |
+| [M047](/data-model/field-mappings#m047) | `totalTaxSet.shopMoney` | `order.tax_total.amount` |
+| [M048](/data-model/field-mappings#m048) | `taxesIncluded` | `order.taxes_included` |
+| [M049](/data-model/field-mappings#m049) | `test` | `order.is_test` |
+
+## Provider documentation
+
+- [shopify.dev/docs/api/admin-graphql/latest/queries/orders](https://shopify.dev/docs/api/admin-graphql/latest/queries/orders)
+- [shopify.dev/docs/apps/launch/app-store-review/review-process](https://shopify.dev/docs/apps/launch/app-store-review/review-process)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#pay-05)
+- [Resource coverage](/data-model/resource-coverage#pay-05)
+- [Field dictionary](/data-model/field-dictionary)

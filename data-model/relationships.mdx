@@ -1,0 +1,585 @@
+---
+title: "Relationships"
+description: "How resources connect, including cardinality and integrity rules."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+## `business`
+
+<Accordion title="business → relationship" id="business-relationship">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | business |
+| Child / to | relationship |
+| Cardinality | 1:N |
+| Join / link | relationship.to\_entity\_id |
+| Meaning | Business ownership/officer links |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `person`
+
+<Accordion title="person → relationship" id="person-relationship">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | person |
+| Child / to | relationship |
+| Cardinality | 1:N |
+| Join / link | relationship.from\_entity\_id |
+| Meaning | Owner, director or guarantor roles |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `business/person`
+
+<Accordion title="business/person → connection" id="business-person-connection">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | business/person |
+| Child / to | connection |
+| Cardinality | 1:N |
+| Join / link | common.subject\_id |
+| Meaning | Permissioned data connections |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `consent`
+
+<Accordion title="consent → connection" id="consent-connection">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | consent |
+| Child / to | connection |
+| Cardinality | 1:N |
+| Join / link | connection.consent\_id |
+| Meaning | Authorization can govern multiple source connections |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `connection`
+
+<Accordion title="connection → bank_account" id="connection-bank-account">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | connection |
+| Child / to | bank\_account |
+| Cardinality | 1:N |
+| Join / link | bank\_account.connection\_id |
+| Meaning | Provider account scope |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `bank_account`
+
+<Accordion title="bank_account → account_balance" id="bank-account-account-balance">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | bank\_account |
+| Child / to | account\_balance |
+| Cardinality | 1:N |
+| Join / link | account\_balance.account\_id |
+| Meaning | Timestamped balance history |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="bank_account → bank_transaction" id="bank-account-bank-transaction">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | bank\_account |
+| Child / to | bank\_transaction |
+| Cardinality | 1:N |
+| Join / link | bank\_transaction.account\_id |
+| Meaning | One movement on one account |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `verification`
+
+<Accordion title="verification → verification_check" id="verification-verification-check">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | verification |
+| Child / to | verification\_check |
+| Cardinality | 1:N |
+| Join / link | verification\_check.verification\_id |
+| Meaning | Per-feature evidence |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="verification → screening_match" id="verification-screening-match">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | verification |
+| Child / to | screening\_match |
+| Cardinality | 1:N |
+| Join / link | screening\_match.verification\_id |
+| Meaning | Screening candidates |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `merchant_account`
+
+<Accordion title="merchant_account → payment" id="merchant-account-payment">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | merchant\_account |
+| Child / to | payment |
+| Cardinality | 1:N |
+| Join / link | payment.merchant\_account\_id |
+| Meaning | Processing relationship |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="merchant_account → payout" id="merchant-account-payout">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | merchant\_account |
+| Child / to | payout |
+| Cardinality | 1:N |
+| Join / link | payout.merchant\_account\_id |
+| Meaning | Settlement events |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `payment`
+
+<Accordion title="payment → refund" id="payment-refund">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | payment |
+| Child / to | refund |
+| Cardinality | 1:N |
+| Join / link | refund.payment\_id |
+| Meaning | Partial or full refunds |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="payment → dispute" id="payment-dispute">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | payment |
+| Child / to | dispute |
+| Cardinality | 1:N |
+| Join / link | dispute.payment\_id |
+| Meaning | Payment disputes |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `payout`
+
+<Accordion title="payout → bank_transaction" id="payout-bank-transaction">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | payout |
+| Child / to | bank\_transaction |
+| Cardinality | N:M |
+| Join / link | Reconciliation links / provenance |
+| Meaning | Partial/aggregated deposits require allocations; scalar link only for a verified one-to-one match |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `order`
+
+<Accordion title="order → order_line" id="order-order-line">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | order |
+| Child / to | order\_line |
+| Cardinality | 1:N |
+| Join / link | order\_line.order\_id |
+| Meaning | Item-level commercial detail |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="order → payment" id="order-payment">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | order |
+| Child / to | payment |
+| Cardinality | 1:N |
+| Join / link | payment.order\_id |
+| Meaning | Split tenders and installments |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `counterparty`
+
+<Accordion title="counterparty → invoice" id="counterparty-invoice">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | counterparty |
+| Child / to | invoice |
+| Cardinality | 1:N |
+| Join / link | invoice.counterparty\_id |
+| Meaning | Customer receivables |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="counterparty → bill" id="counterparty-bill">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | counterparty |
+| Child / to | bill |
+| Cardinality | 1:N |
+| Join / link | bill.counterparty\_id |
+| Meaning | Supplier payables |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `accounting_payment`
+
+<Accordion title="accounting_payment → invoice/bill" id="accounting-payment-invoice-bill">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | accounting\_payment |
+| Child / to | invoice/bill |
+| Cardinality | N:M |
+| Join / link | accounting\_payment.allocations\[\] |
+| Meaning | Partial and multi-document allocations |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `journal`
+
+<Accordion title="journal → journal_line" id="journal-journal-line">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | journal |
+| Child / to | journal\_line |
+| Cardinality | 1:N |
+| Join / link | journal\_line.journal\_id |
+| Meaning | Double-entry postings |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `ledger_account`
+
+<Accordion title="ledger_account → journal_line" id="ledger-account-journal-line">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | ledger\_account |
+| Child / to | journal\_line |
+| Cardinality | 1:N |
+| Join / link | journal\_line.ledger\_account\_id |
+| Meaning | Account activity |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `financial_statement`
+
+<Accordion title="financial_statement → statement_line" id="financial-statement-statement-line">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | financial\_statement |
+| Child / to | statement\_line |
+| Cardinality | 1:N |
+| Join / link | statement\_line.statement\_id |
+| Meaning | Classified report lines |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `product`
+
+<Accordion title="product → inventory_balance" id="product-inventory-balance">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | product |
+| Child / to | inventory\_balance |
+| Cardinality | 1:N |
+| Join / link | inventory\_balance.product\_id |
+| Meaning | Split by location, owner and lot |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `location`
+
+<Accordion title="location → inventory_balance" id="location-inventory-balance">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | location |
+| Child / to | inventory\_balance |
+| Cardinality | 1:N |
+| Join / link | inventory\_balance.location\_id |
+| Meaning | Stock custody location |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `application`
+
+<Accordion title="application → decision" id="application-decision">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | application |
+| Child / to | decision |
+| Cardinality | 1:N |
+| Join / link | decision.application\_id |
+| Meaning | Versioned assessments and reassessments |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="application → loan" id="application-loan">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | application |
+| Child / to | loan |
+| Cardinality | 1:N |
+| Join / link | loan.application\_id |
+| Meaning | Approved facilities can produce multiple loans |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `credit_facility`
+
+<Accordion title="credit_facility → loan" id="credit-facility-loan">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | credit\_facility |
+| Child / to | loan |
+| Cardinality | 1:N |
+| Join / link | loan.facility\_id |
+| Meaning | Draws within a facility |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `loan`
+
+<Accordion title="loan → installment" id="loan-installment">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | loan |
+| Child / to | installment |
+| Cardinality | 1:N |
+| Join / link | installment.loan\_id |
+| Meaning | Contractual schedule |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+<Accordion title="loan → repayment" id="loan-repayment">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | loan |
+| Child / to | repayment |
+| Cardinality | 1:N |
+| Join / link | repayment.loan\_id |
+| Meaning | Payment events |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `loan/facility`
+
+<Accordion title="loan/facility → collateral" id="loan-facility-collateral">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | loan/facility |
+| Child / to | collateral |
+| Cardinality | 1:N |
+| Join / link | collateral.loan\_id / facility\_id |
+| Meaning | A pledge record must declare the actual obligation; reuse asset identity carefully |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `lien_search`
+
+<Accordion title="lien_search → lien" id="lien-search-lien">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | lien\_search |
+| Child / to | lien |
+| Cardinality | N:M |
+| Join / link | Search evidence contexts |
+| Meaning | A filing can recur in many searches; keep registry+filing identity stable |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `lien`
+
+<Accordion title="lien → filing_event" id="lien-filing-event">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | lien |
+| Child / to | filing\_event |
+| Cardinality | 1:N |
+| Join / link | filing\_event.lien\_id |
+| Meaning | Chronological registration chain |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `monitor`
+
+<Accordion title="monitor → alert" id="monitor-alert">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | monitor |
+| Child / to | alert |
+| Cardinality | 1:N |
+| Join / link | alert.monitor\_id |
+| Meaning | Signal review queue |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `risk_snapshot`
+
+<Accordion title="risk_snapshot → attribute" id="risk-snapshot-attribute">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | risk\_snapshot |
+| Child / to | attribute |
+| Cardinality | N:M |
+| Join / link | risk\_snapshot.attribute\_ids\[\] |
+| Meaning | Snapshot references immutable value versions |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `workflow_run`
+
+<Accordion title="workflow_run → task" id="workflow-run-task">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | workflow\_run |
+| Child / to | task |
+| Cardinality | 1:N |
+| Join / link | task.workflow\_run\_id |
+| Meaning | Agent and human orchestration |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `case`
+
+<Accordion title="case → communication" id="case-communication">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | case |
+| Child / to | communication |
+| Cardinality | 1:N |
+| Join / link | communication.case\_id |
+| Meaning | Borrower interaction evidence |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+
+## `common`
+
+<Accordion title="common → document" id="common-document">
+
+| Property | Definition |
+| --- | --- |
+| Parent / from | common |
+| Child / to | document |
+| Cardinality | N:M |
+| Join / link | Evidence document IDs in source/provenance |
+| Meaning | Documents can support multiple fields without duplicate storage |
+| Integrity rule | All references must resolve within the authenticated tenant; unresolved source IDs stay in provenance. |
+
+
+</Accordion>
+

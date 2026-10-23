@@ -1,0 +1,2300 @@
+---
+title: "Field Mappings"
+description: "107 documented upstream field mappings with proposed transformations."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+“Documented” describes the upstream field evidence. Transformations remain proposed, and adapter testing is not verified by this workbook.
+
+## Plaid — Canada (CA) / Plaid — United States (US)
+
+<AccordionGroup>
+
+<Accordion title="M001 · bank_account.source_account_id" id="m001">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].account\_id |
+| AMLOK target | bank\_account.source\_account\_id |
+| Transformation proposal | Keep case and connection context. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M002 · bank_account.name" id="m002">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].name |
+| AMLOK target | bank\_account.name |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M003 · bank_account.official_name" id="m003">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].official\_name |
+| AMLOK target | bank\_account.official\_name |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M004 · bank_account.mask" id="m004">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].mask |
+| AMLOK target | bank\_account.mask |
+| Transformation proposal | Preserve as string, not identity key. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M005 · bank_account.account_type" id="m005">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].type |
+| AMLOK target | bank\_account.account\_type |
+| Transformation proposal | Map explicit enum. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M006 · bank_account.account_subtype" id="m006">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].subtype |
+| AMLOK target | bank\_account.account\_subtype |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M007 · account_balance.current.amount" id="m007">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].balances.current |
+| AMLOK target | account\_balance.current.amount |
+| Transformation proposal | Serialize exact decimal; retain asset/liability basis. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M008 · account_balance.available.amount" id="m008">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].balances.available |
+| AMLOK target | account\_balance.available.amount |
+| Transformation proposal | Null stays unavailable. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M009 · account_balance.credit_limit.amount" id="m009">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].balances.limit |
+| AMLOK target | account\_balance.credit\_limit.amount |
+| Transformation proposal | Preserve null and product context. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M010 · account_balance.current.currency" id="m010">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].balances.iso\_currency\_code |
+| AMLOK target | account\_balance.current.currency |
+| Transformation proposal | Retain unofficial currency separately if applicable. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M011 · account_balance.as_of" id="m011">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | accounts\[\].balances.last\_updated\_datetime |
+| AMLOK target | account\_balance.as\_of |
+| Transformation proposal | Do not invent missing timestamp. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M012 · connection.institution_id" id="m012">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /accounts/get |
+| Upstream field / value | item.institution\_id |
+| AMLOK target | connection.institution\_id |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Cached account balances; selected institution/product controls optional fields. No entitlement inferred. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/accounts](https://plaid.com/docs/api/accounts/)
+
+
+</Accordion>
+
+<Accordion title="M013 · bank_transaction.source_transaction_id" id="m013">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].transaction\_id |
+| AMLOK target | bank\_transaction.source\_transaction\_id |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M014 · bank_transaction.account_id" id="m014">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].account\_id |
+| AMLOK target | bank\_transaction.account\_id |
+| Transformation proposal | Resolve via connection account mapping. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M015 · bank_transaction.amount.amount" id="m015">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].amount |
+| AMLOK target | bank\_transaction.amount.amount |
+| Transformation proposal | Absolute decimal magnitude. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M016 · bank_transaction.direction" id="m016">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].amount |
+| AMLOK target | bank\_transaction.direction |
+| Transformation proposal | Positive outflow; negative inflow; zero neutral. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M017 · bank_transaction.amount.currency" id="m017">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].iso\_currency\_code |
+| AMLOK target | bank\_transaction.amount.currency |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M018 · bank_transaction.posted_on" id="m018">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].date |
+| AMLOK target | bank\_transaction.posted\_on |
+| Transformation proposal | Map only posted records; pending is not posted. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M019 · bank_transaction.authorized_on" id="m019">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].authorized\_date |
+| AMLOK target | bank\_transaction.authorized\_on |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M020 · bank_transaction.description" id="m020">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].name |
+| AMLOK target | bank\_transaction.description |
+| Transformation proposal | Preserve legacy description; not merchant identity. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M021 · bank_transaction.merchant_name" id="m021">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].merchant\_name |
+| AMLOK target | bank\_transaction.merchant\_name |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M022 · bank_transaction.status" id="m022">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].pending |
+| AMLOK target | bank\_transaction.status |
+| Transformation proposal | true=pending; false=posted. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M023 · bank_transaction.pending_transaction_id" id="m023">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].pending\_transaction\_id |
+| AMLOK target | bank\_transaction.pending\_transaction\_id |
+| Transformation proposal | Resolve prior pending ID; supersede correctly. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M024 · bank_transaction.payment_channel" id="m024">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].payment\_channel |
+| AMLOK target | bank\_transaction.payment\_channel |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M025 · bank_transaction.source_category" id="m025">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | added\[\].personal\_finance\_category.detailed |
+| AMLOK target | bank\_transaction.source\_category |
+| Transformation proposal | AMLOK category requires separate classification. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+<Accordion title="M026 · common.deleted_at" id="m026">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | BANK-02; BANK-13 |
+| Upstream object / API | /transactions/sync |
+| Upstream field / value | removed\[\].transaction\_id |
+| AMLOK target | common.deleted\_at |
+| Transformation proposal | Create tombstone with observed removal time. |
+| Source evidence | Documented |
+| Availability conditions | Product-specific sign convention; sync added/modified/removed sets must all be applied. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [plaid.com/docs/api/products/transactions](https://plaid.com/docs/api/products/transactions/)
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Stripe
+
+<AccordionGroup>
+
+<Accordion title="M027 · processor_transaction.source_transaction_id" id="m027">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | id |
+| AMLOK target | processor\_transaction.source\_transaction\_id |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M028 · processor_transaction.gross.amount" id="m028">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | amount |
+| AMLOK target | processor\_transaction.gross.amount |
+| Transformation proposal | Minor units to exact major units; retain sign. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M029 · processor_transaction.fee.amount" id="m029">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | fee |
+| AMLOK target | processor\_transaction.fee.amount |
+| Transformation proposal | Minor units to exact major units. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M030 · processor_transaction.net.amount" id="m030">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | net |
+| AMLOK target | processor\_transaction.net.amount |
+| Transformation proposal | Minor units to exact major units; retain sign. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M031 · processor_transaction.net.currency" id="m031">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | currency |
+| AMLOK target | processor\_transaction.net.currency |
+| Transformation proposal | Uppercase currency; apply to all event money. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M032 · processor_transaction.event_type" id="m032">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | type |
+| AMLOK target | processor\_transaction.event\_type |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M033 · processor_transaction.reporting_category" id="m033">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | reporting\_category |
+| AMLOK target | processor\_transaction.reporting\_category |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M034 · processor_transaction.availability_status" id="m034">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | status |
+| AMLOK target | processor\_transaction.availability\_status |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M035 · processor_transaction.available_on" id="m035">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | available\_on |
+| AMLOK target | processor\_transaction.available\_on |
+| Transformation proposal | Unix timestamp to documented calendar date. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M036 · processor_transaction.occurred_at" id="m036">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | created |
+| AMLOK target | processor\_transaction.occurred\_at |
+| Transformation proposal | Unix seconds to UTC timestamp. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+<Accordion title="M037 · processor_transaction.source_object_id" id="m037">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | PAY-02 |
+| Upstream object / API | BalanceTransaction |
+| Upstream field / value | source |
+| AMLOK target | processor\_transaction.source\_object\_id |
+| Transformation proposal | Retain expanded-object ID if expanded. |
+| Source evidence | Documented |
+| Availability conditions | Merchant authorization required; this ledger is separate from a bank-account transaction feed. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.stripe.com/api/balance\_transactions/object](https://docs.stripe.com/api/balance_transactions/object)
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Shopify / Shopify POS
+
+<AccordionGroup>
+
+<Accordion title="M038 · order.source_order_id" id="m038">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | id |
+| AMLOK target | order.source\_order\_id |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M039 · order.order_number" id="m039">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | name |
+| AMLOK target | order.order\_number |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M040 · order.placed_at" id="m040">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | createdAt |
+| AMLOK target | order.placed\_at |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M041 · order.cancelled_at" id="m041">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | cancelledAt |
+| AMLOK target | order.cancelled\_at |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M042 · order.payment_status" id="m042">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | displayFinancialStatus |
+| AMLOK target | order.payment\_status |
+| Transformation proposal | Preserve provider financial-state meaning. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M043 · order.fulfillment_status" id="m043">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | displayFulfillmentStatus |
+| AMLOK target | order.fulfillment\_status |
+| Transformation proposal | Map versioned enum. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M044 · order.total.amount" id="m044">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | totalPriceSet.shopMoney |
+| AMLOK target | order.total.amount |
+| Transformation proposal | Use amount member and currencyCode companion. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M045 · order.current_total.amount" id="m045">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | currentTotalPriceSet.shopMoney |
+| AMLOK target | order.current\_total.amount |
+| Transformation proposal | Keep current total distinct from original. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M046 · order.refunded_total.amount" id="m046">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | totalRefundedSet.shopMoney |
+| AMLOK target | order.refunded\_total.amount |
+| Transformation proposal | Use amount and currencyCode. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M047 · order.tax_total.amount" id="m047">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | totalTaxSet.shopMoney |
+| AMLOK target | order.tax\_total.amount |
+| Transformation proposal | Use amount and currencyCode. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M048 · order.taxes_included" id="m048">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | taxesIncluded |
+| AMLOK target | order.taxes\_included |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+<Accordion title="M049 · order.is_test" id="m049">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ECOM-01; PAY-05 |
+| Upstream object / API | Order; Admin GraphQL 2026-10 |
+| Upstream field / value | test |
+| AMLOK target | order.is\_test |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | read\_orders and relevant protected-data permissions; older than 60 days requires appropriate all-orders access. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [shopify.dev/docs/api/admin-graphql/latest/objects/Order](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order)
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Xero
+
+<AccordionGroup>
+
+<Accordion title="M050 · common.source_refs[].source_record_id" id="m050">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | InvoiceID |
+| AMLOK target | common.source\_refs\[\].source\_record\_id |
+| Transformation proposal | Qualified by Xero organization. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M051 · invoice.number" id="m051">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | InvoiceNumber |
+| AMLOK target | invoice.number |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M052 · invoice.counterparty_id" id="m052">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | Contact.ContactID |
+| AMLOK target | invoice.counterparty\_id |
+| Transformation proposal | Resolve counterparty within organization. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M053 · invoice.issued_on" id="m053">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | Date |
+| AMLOK target | invoice.issued\_on |
+| Transformation proposal | Preserve date; parse source encoding. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M054 · invoice.due_on" id="m054">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | DueDate |
+| AMLOK target | invoice.due\_on |
+| Transformation proposal | Preserve calendar date. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M055 · invoice.status" id="m055">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | Status |
+| AMLOK target | invoice.status |
+| Transformation proposal | Map enum; preserve original. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M056 · invoice.total.amount" id="m056">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | Total |
+| AMLOK target | invoice.total.amount |
+| Transformation proposal | Exact decimal. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M057 · invoice.total.currency" id="m057">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | CurrencyCode |
+| AMLOK target | invoice.total.currency |
+| Transformation proposal | Apply to document money fields. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M058 · invoice.amount_due.amount" id="m058">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | AmountDue |
+| AMLOK target | invoice.amount\_due.amount |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M059 · invoice.amount_paid.amount" id="m059">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | AmountPaid |
+| AMLOK target | invoice.amount\_paid.amount |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M060 · invoice.amount_credited.amount" id="m060">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | AmountCredited |
+| AMLOK target | invoice.amount\_credited.amount |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+<Accordion title="M061 · invoice / bill (resource routing)" id="m061">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-03 |
+| Upstream object / API | Invoices |
+| Upstream field / value | Type |
+| AMLOK target | invoice / bill (resource routing) |
+| Transformation proposal | Routing: ACCREC to invoice; ACCPAY to bill; Type is not status. |
+| Source evidence | Documented |
+| Availability conditions | The final Type row documents routing, not a direct status assignment. Line detail may require individual or paged reads. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.xero.com/documentation/api/accounting/invoices](https://developer.xero.com/documentation/api/accounting/invoices)
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## QuickBooks Online
+
+<AccordionGroup>
+
+<Accordion title="M062 · common.source_refs[].source_record_id" id="m062">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | Id |
+| AMLOK target | common.source\_refs\[\].source\_record\_id |
+| Transformation proposal | Qualified by QBO company/realm. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M063 · invoice.number" id="m063">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | DocNumber |
+| AMLOK target | invoice.number |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M064 · invoice.counterparty_id" id="m064">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | CustomerRef.value |
+| AMLOK target | invoice.counterparty\_id |
+| Transformation proposal | Resolve customer reference. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M065 · invoice.issued_on" id="m065">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | TxnDate |
+| AMLOK target | invoice.issued\_on |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M066 · invoice.due_on" id="m066">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | DueDate |
+| AMLOK target | invoice.due\_on |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M067 · invoice.total.amount" id="m067">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | TotalAmt |
+| AMLOK target | invoice.total.amount |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M068 · invoice.amount_due.amount" id="m068">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | Balance |
+| AMLOK target | invoice.amount\_due.amount |
+| Transformation proposal | Zero does not establish void status. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M069 · invoice.total.currency" id="m069">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | CurrencyRef.value |
+| AMLOK target | invoice.total.currency |
+| Transformation proposal | Use documented home currency if no currency ref. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M070 · invoice.home_total.amount" id="m070">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | HomeTotalAmt |
+| AMLOK target | invoice.home\_total.amount |
+| Transformation proposal | Pair with company home currency. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+<Accordion title="M071 · invoice.exchange_rate" id="m071">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | ACC-01 |
+| Upstream object / API | Invoice |
+| Upstream field / value | ExchangeRate |
+| AMLOK target | invoice.exchange\_rate |
+| Transformation proposal | Home units per document unit. |
+| Source evidence | Documented |
+| Availability conditions | QBO company scope, multicurrency settings and authorized Accounting API access determine population. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [developer.intuit.com/docs/api/accounting/invoice](https://developer.intuit.com/docs/api/accounting/invoice)
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Didit
+
+<AccordionGroup>
+
+<Accordion title="M072 · business.legal_name" id="m072">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | company\_name |
+| AMLOK target | business.legal\_name |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M073 · business.registration_number" id="m073">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | registration\_number |
+| AMLOK target | business.registration\_number |
+| Transformation proposal | Preserve registry formatting. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M074 · business.incorporation_country" id="m074">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | country\_code |
+| AMLOK target | business.incorporation\_country |
+| Transformation proposal | Alpha-3 to alpha-2 via explicit lookup. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M075 · business.legal_form" id="m075">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | company\_type |
+| AMLOK target | business.legal\_form |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M076 · business.raw_legal_status" id="m076">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | registry\_status |
+| AMLOK target | business.raw\_legal\_status |
+| Transformation proposal | Separate versioned normalized status mapping. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M077 · business.incorporation_date" id="m077">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | incorporation\_date |
+| AMLOK target | business.incorporation\_date |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M078 · business.registered_address" id="m078">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | registered\_address |
+| AMLOK target | business.registered\_address |
+| Transformation proposal | Parse only structured evidence. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M079 · business.lei" id="m079">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | legal\_entity\_identifier |
+| AMLOK target | business.lei |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M080 · business.business_description" id="m080">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | nature\_of\_business |
+| AMLOK target | business.business\_description |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M081 · business.is_registry_sourced" id="m081">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | KYB company data; relative field names |
+| Upstream field / value | is\_from\_registry |
+| AMLOK target | business.is\_registry\_sourced |
+| Transformation proposal | Retain subsequent edit provenance. |
+| Source evidence | Documented |
+| Availability conditions | Relative field names from guide; confirm full v3 response nesting in integration tests. Tier and registry determine fields. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/business-verification/company-data](https://docs.didit.me/business-verification/company-data)
+
+
+</Accordion>
+
+<Accordion title="M082 · verification.status" id="m082">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Not Started |
+| AMLOK target | verification.status |
+| Transformation proposal | not\_started |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M083 · verification.status" id="m083">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: In Progress |
+| AMLOK target | verification.status |
+| Transformation proposal | in\_progress |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M084 · verification.status" id="m084">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Awaiting User |
+| AMLOK target | verification.status |
+| Transformation proposal | awaiting\_user |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M085 · verification.status" id="m085">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: In Review |
+| AMLOK target | verification.status |
+| Transformation proposal | in\_review |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M086 · verification.status" id="m086">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Approved |
+| AMLOK target | verification.status |
+| Transformation proposal | approved |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M087 · verification.status" id="m087">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Declined |
+| AMLOK target | verification.status |
+| Transformation proposal | declined |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M088 · verification.status" id="m088">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Resubmitted |
+| AMLOK target | verification.status |
+| Transformation proposal | resubmission\_requested |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M089 · verification.status" id="m089">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Expired |
+| AMLOK target | verification.status |
+| Transformation proposal | expired |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M090 · verification.status" id="m090">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Abandoned |
+| AMLOK target | verification.status |
+| Transformation proposal | abandoned |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+<Accordion title="M091 · verification.status" id="m091">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-01 |
+| Upstream object / API | Session decision status |
+| Upstream field / value | status: Kyc Expired |
+| AMLOK target | verification.status |
+| Transformation proposal | verification\_expired |
+| Source evidence | Documented |
+| Availability conditions | Strict case-sensitive mapping; preserve raw status and per-check evidence. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.didit.me/integration/verification-statuses](https://docs.didit.me/integration/verification-statuses)
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Baselayer
+
+<AccordionGroup>
+
+<Accordion title="M092 · lien.filing_number" id="m092">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].filing\_number |
+| AMLOK target | lien.filing\_number |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M093 · lien.jurisdiction" id="m093">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].state |
+| AMLOK target | lien.jurisdiction |
+| Transformation proposal | Prefix US-; CA state means California. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M094 · lien.lien_type" id="m094">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].filing\_type |
+| AMLOK target | lien.lien\_type |
+| Transformation proposal | Map consensual.ucc to ucc; keep tax separate. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M095 · lien.filed_on" id="m095">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].filing\_date |
+| AMLOK target | lien.filed\_on |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M096 · lien.lapse_on" id="m096">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].lapse\_date |
+| AMLOK target | lien.lapse\_on |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M097 · lien.status" id="m097">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].status |
+| AMLOK target | lien.status |
+| Transformation proposal | Map documented enum; preserve source. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M098 · lien.debtors[]" id="m098">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].parties |
+| AMLOK target | lien.debtors\[\] |
+| Transformation proposal | Select recorded Debtor roles. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M099 · lien.secured_parties[]" id="m099">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].parties |
+| AMLOK target | lien.secured\_parties\[\] |
+| Transformation proposal | Select recorded Secured Party roles. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M100 · lien.collateral_description" id="m100">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].collateral\_statements\[\].text |
+| AMLOK target | lien.collateral\_description |
+| Transformation proposal | Preserve ordered text and evidence. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M101 · filing_event.filing_number" id="m101">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].amendments\[\].filing\_number |
+| AMLOK target | filing\_event.filing\_number |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M102 · filing_event.event_type" id="m102">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].amendments\[\].filing\_type |
+| AMLOK target | filing\_event.event\_type |
+| Transformation proposal | Map event enum. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M103 · filing_event.effective_on" id="m103">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search response |
+| Upstream field / value | filings\[\].amendments\[\].filing\_date |
+| AMLOK target | filing\_event.effective\_on |
+| Transformation proposal | Preserve value. |
+| Source evidence | Documented |
+| Availability conditions | Commercial redistribution not granted by standard terms; geographic coverage and freshness vary. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-api-quickstart](https://docs.baselayer.com/docs/lien-search-api-quickstart)
+
+
+</Accordion>
+
+<Accordion title="M104 · lien_search.jurisdictions_completed[]" id="m104">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search request/result |
+| Upstream field / value | searched\_states |
+| AMLOK target | lien\_search.jurisdictions\_completed\[\] |
+| Transformation proposal | Prefix US- only after successful completion. |
+| Source evidence | Documented |
+| Availability conditions | Default search targets domestic state; requested national capability does not mean each query searches all states. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-basics](https://docs.baselayer.com/docs/lien-search-basics)
+
+
+</Accordion>
+
+<Accordion title="M105 · lien_search.status" id="m105">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search request/result |
+| Upstream field / value | state |
+| AMLOK target | lien\_search.status |
+| Transformation proposal | Map request state; failure is not no-hit. |
+| Source evidence | Documented |
+| Availability conditions | Default search targets domestic state; requested national capability does not mean each query searches all states. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-basics](https://docs.baselayer.com/docs/lien-search-basics)
+
+
+</Accordion>
+
+<Accordion title="M106 · lien_search.result_count" id="m106">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search request/result |
+| Upstream field / value | filings |
+| AMLOK target | lien\_search.result\_count |
+| Transformation proposal | Count returned filings in completed scope. |
+| Source evidence | Documented |
+| Availability conditions | Default search targets domestic state; requested national capability does not mean each query searches all states. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-basics](https://docs.baselayer.com/docs/lien-search-basics)
+
+
+</Accordion>
+
+<Accordion title="M107 · lien_search.debtor_name" id="m107">
+
+| Property | Definition |
+| --- | --- |
+| Provider IDs | SUP-02 |
+| Upstream object / API | Lien search request/result |
+| Upstream field / value | search\_entities\[\].name |
+| AMLOK target | lien\_search.debtor\_name |
+| Transformation proposal | Preserve one search-subject context per entity. |
+| Source evidence | Documented |
+| Availability conditions | Default search targets domestic state; requested national capability does not mean each query searches all states. |
+| Adapter test status | Not tested |
+| Reviewed on | 2026-10-22 |
+
+**Source documentation**
+
+- [docs.baselayer.com/docs/lien-search-basics](https://docs.baselayer.com/docs/lien-search-basics)
+
+
+</Accordion>
+
+</AccordionGroup>
+

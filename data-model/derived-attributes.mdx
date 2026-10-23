@@ -1,0 +1,1185 @@
+---
+title: "Derived Attributes"
+description: "56 proposed attributes with inputs, calculations, units, and availability rules."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+An attribute is available only when its required inputs, observation window, and coverage rules are satisfied. Preserve the definition version with each calculation.
+
+## Banking
+
+<AccordionGroup>
+
+<Accordion title="total_inflows" id="total-inflows">
+
+Total posted account inflows over a covered interval.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A001 |
+| Required inputs | bank\_transaction.amount, direction, status |
+| Calculation | Sum absolute amounts where direction=inflow and status=posted. |
+| Unit | currency |
+| Window / as-of | 30, 90 or 365 complete days |
+| Availability rule | Require complete selected-account coverage; calculate per currency. |
+| Interpretation / exclusions | Includes loans and transfers; not revenue. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="total_outflows" id="total-outflows">
+
+Total posted account outflows.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A002 |
+| Required inputs | bank\_transaction.amount, direction, status |
+| Calculation | Sum amounts where direction=outflow and status=posted. |
+| Unit | currency |
+| Window / as-of | 30, 90 or 365 complete days |
+| Availability rule | Same account set and currency. |
+| Interpretation / exclusions | Exclude pending and removed versions. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="net_cash_flow" id="net-cash-flow">
+
+Difference between inflows and outflows.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A003 |
+| Required inputs | total\_inflows; total\_outflows |
+| Calculation | total\_inflows - total\_outflows |
+| Unit | currency |
+| Window / as-of | Same complete interval |
+| Availability rule | Both inputs available for identical scope. |
+| Interpretation / exclusions | Internal transfers cancel only when both legs are covered. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="operating_inflows" id="operating-inflows">
+
+Classified operating cash receipts.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A004 |
+| Required inputs | bank\_transaction.category, amount, direction |
+| Calculation | Sum posted inflows classified sales\_receipt; exclude debt, capital and internal transfers. |
+| Unit | currency |
+| Window / as-of | Monthly / trailing 90 days |
+| Availability rule | Classification method and unexplained fraction disclosed. |
+| Interpretation / exclusions | Cash receipts are not accrual revenue. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="operating_outflows" id="operating-outflows">
+
+Classified operating payments.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A005 |
+| Required inputs | bank\_transaction.category, amount, direction |
+| Calculation | Sum posted payroll, operating\_expense and operating tax outflows; exclude financing principal, distributions and internal transfers. |
+| Unit | currency |
+| Window / as-of | Monthly / trailing 90 days |
+| Availability rule | Versioned classification and tax policy required. |
+| Interpretation / exclusions | Keep interest and capital spending policy explicit. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="operating_cash_surplus" id="operating-cash-surplus">
+
+Operating receipts less operating payments.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A006 |
+| Required inputs | operating\_inflows; operating\_outflows |
+| Calculation | operating\_inflows - operating\_outflows |
+| Unit | currency |
+| Window / as-of | Same interval |
+| Availability rule | Both classifications and scope available. |
+| Interpretation / exclusions | Not EBITDA or full accounting cash-flow statement. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="average_daily_balance" id="average-daily-balance">
+
+Average observed end-of-day asset balance.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A007 |
+| Required inputs | account\_balance.current, as\_of, balance\_basis |
+| Calculation | Sum complete daily closing depository balances / number of covered days. |
+| Unit | currency |
+| Window / as-of | 30 or 90 days |
+| Availability rule | Full daily observations or explicitly validated reconstruction. |
+| Interpretation / exclusions | Do not treat one current balance as historical daily balances. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="minimum_daily_balance" id="minimum-daily-balance">
+
+Lowest daily closing balance.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A008 |
+| Required inputs | Daily account\_balance.current |
+| Calculation | Minimum over covered daily balances. |
+| Unit | currency |
+| Window / as-of | 30 or 90 days |
+| Availability rule | Same requirements as average\_daily\_balance. |
+| Interpretation / exclusions | Keep account set and trust exclusions fixed. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="negative_balance_days" id="negative-balance-days">
+
+Count of days with negative operating cash balance.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A009 |
+| Required inputs | Daily depository balance |
+| Calculation | Count complete days with selected operating-account balance below zero. |
+| Unit | days |
+| Window / as-of | 30 or 90 days |
+| Availability rule | Daily balances required. |
+| Interpretation / exclusions | Credit balances owed are not overdrafts. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="nsf_event_count" id="nsf-event-count">
+
+Explicit insufficient-funds events.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A010 |
+| Required inputs | bank\_transaction source return/fee labels |
+| Calculation | Count deduplicated, explicitly identified NSF return events; count fee-only evidence separately. |
+| Unit | count |
+| Window / as-of | 90 days |
+| Availability rule | Provider-coded return or reviewed fee mapping. |
+| Interpretation / exclusions | Do not infer NSF from any low balance or any generic fee. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="cashflow_volatility" id="cashflow-volatility">
+
+Variation in comparable monthly operating receipts.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A011 |
+| Required inputs | Monthly operating\_inflows |
+| Calculation | Population standard deviation of monthly operating inflows / positive monthly mean. |
+| Unit | ratio |
+| Window / as-of | 6 complete months |
+| Availability rule | At least 6 comparable complete months; mean must be positive. |
+| Interpretation / exclusions | Seasonality and short history affect interpretation. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="operating_inflow_change" id="operating-inflow-change">
+
+Change in operating receipts against prior comparable interval.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A012 |
+| Required inputs | Two comparable operating\_inflows |
+| Calculation | (current - previous) / previous where previous &gt; 0. |
+| Unit | fraction |
+| Window / as-of | Current 30 days vs previous 30 days |
+| Availability rule | Equal coverage, account set and classification version. |
+| Interpretation / exclusions | Return unavailable for zero denominator; do not silently label growth zero. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="cash_runway_days" id="cash-runway-days">
+
+Days of cash at recent net operating burn.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A013 |
+| Required inputs | Unrestricted cash; operating cash surplus |
+| Calculation | Unrestricted cash / positive daily operating burn; null if business is not burning cash. |
+| Unit | days |
+| Window / as-of | 90-day burn; current cash |
+| Availability rule | Fresh cash plus complete 90-day classified flows. |
+| Interpretation / exclusions | Not applicable for nonnegative surplus; no infinite numeric output. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="debt_service_cash_paid" id="debt-service-cash-paid">
+
+Cash payments classified as debt service.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A014 |
+| Required inputs | bank\_transaction.category; repayment allocations |
+| Calculation | Sum matched principal + interest payments, deduplicating ledger and bank evidence. |
+| Unit | currency |
+| Window / as-of | Trailing 90 days |
+| Availability rule | Debt payment classification or servicing allocations. |
+| Interpretation / exclusions | Do not count bank record and loan repayment twice. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="unclassified_flow_ratio" id="unclassified-flow-ratio">
+
+Share of cash movements without a usable category.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A015 |
+| Required inputs | Bank amounts and classifications |
+| Calculation | Absolute unclassified posted flow / all absolute posted flow. |
+| Unit | fraction |
+| Window / as-of | Same measurement interval |
+| Availability rule | Positive total flow; return null on no activity. |
+| Interpretation / exclusions | A high value limits cash-flow metric reliability. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Payments
+
+<AccordionGroup>
+
+<Accordion title="processed_payment_volume" id="processed-payment-volume">
+
+Gross successful captured payment volume.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A016 |
+| Required inputs | payment.captured\_amount, captured\_at, status |
+| Calculation | Sum captured amounts once per payment, excluding test and failed events. |
+| Unit | currency |
+| Window / as-of | Calendar month |
+| Availability rule | Complete payment feed and test flags where supported. |
+| Interpretation / exclusions | Keep refunds separate; do not sum processor ledger duplicates. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="net_payout_volume" id="net-payout-volume">
+
+Cash settled by processors or marketplaces.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A017 |
+| Required inputs | payout.net, status, paid\_at |
+| Calculation | Sum net paid payouts. |
+| Unit | currency |
+| Window / as-of | Calendar month |
+| Availability rule | Paid settlement records with consistent timing. |
+| Interpretation / exclusions | Payout volume can lag order and payment activity. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="refund_rate" id="refund-rate">
+
+Refunded value relative to captured value in a specified event window.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A018 |
+| Required inputs | Refund amounts; captured payment amounts |
+| Calculation | Completed refund amount in interval / captured amount in same interval. |
+| Unit | fraction |
+| Window / as-of | Calendar month |
+| Availability rule | Positive denominator; same currency and merchant scope. |
+| Interpretation / exclusions | Event-window ratio is not a cohort refund probability. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="chargeback_rate" id="chargeback-rate">
+
+Disputed value relative to captured value.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A019 |
+| Required inputs | dispute.amount, opened\_at; payment captured amounts |
+| Calculation | New dispute amount in interval / captured payment amount in interval. |
+| Unit | fraction |
+| Window / as-of | Calendar month |
+| Availability rule | Positive denominator and full dispute entitlement. |
+| Interpretation / exclusions | Disputes can refer to older sales; distinguish event vs cohort measures. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="processor_fee_ratio" id="processor-fee-ratio">
+
+Reported processor fees per captured payment volume.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A020 |
+| Required inputs | processor\_transaction.fee; processed\_payment\_volume |
+| Calculation | Fee amounts for the interval / captured volume for same interval. |
+| Unit | fraction |
+| Window / as-of | Calendar month |
+| Availability rule | Exclude reserves and financing charges unless policy includes them. |
+| Interpretation / exclusions | Source fee timing may differ from capture timing. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="payout_reconciliation_ratio" id="payout-reconciliation-ratio">
+
+Share of payout amount matched to bank evidence.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A021 |
+| Required inputs | payout.net; reconciliation\_status |
+| Calculation | Absolute paid payout amount matched / absolute paid payout amount in eligible scope. |
+| Unit | fraction |
+| Window / as-of | Calendar month |
+| Availability rule | Bank and payout currencies and dates aligned. |
+| Interpretation / exclusions | Unmatched may reflect timing, not missing funds. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Commerce
+
+<AccordionGroup>
+
+<Accordion title="order_sales_total" id="order-sales-total">
+
+Value of accepted non-test, non-cancelled orders.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A022 |
+| Required inputs | order.total, placed\_at, status, is\_test |
+| Calculation | Sum original order totals for the defined accepted-order population. |
+| Unit | currency |
+| Window / as-of | Calendar month |
+| Availability rule | Complete order feed; tax/shipping convention stated. |
+| Interpretation / exclusions | Not accounting revenue and not received cash. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="order_count" id="order-count">
+
+Count of accepted non-test orders.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A023 |
+| Required inputs | order.id, status, placed\_at, is\_test |
+| Calculation | Count distinct accepted order IDs. |
+| Unit | count |
+| Window / as-of | Calendar month |
+| Availability rule | Deduplicate overlapping POS and online feeds. |
+| Interpretation / exclusions | Cancellations and edits need explicit inclusion policy. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="average_order_value" id="average-order-value">
+
+Mean accepted order amount.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A024 |
+| Required inputs | order\_sales\_total; order\_count |
+| Calculation | order\_sales\_total / order\_count. |
+| Unit | currency per order |
+| Window / as-of | Calendar month |
+| Availability rule | Order count &gt; 0. |
+| Interpretation / exclusions | Do not mix shop and presentment currency. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="customer_concentration" id="customer-concentration">
+
+Largest customer share of invoiced sales.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A025 |
+| Required inputs | invoice.total, counterparty\_id, issued\_on |
+| Calculation | Largest customer invoiced net-of-credit sales / total invoiced net-of-credit sales. |
+| Unit | fraction |
+| Window / as-of | 12 complete months |
+| Availability rule | Resolved customer IDs and positive net sales. |
+| Interpretation / exclusions | Use consistent tax exclusion and credit-note allocation. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Accounting
+
+<AccordionGroup>
+
+<Accordion title="revenue" id="revenue">
+
+Reported accounting revenue for the stated basis.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A026 |
+| Required inputs | statement\_line amounts mapped to revenue |
+| Calculation | Sum leaf revenue accounts under reviewed mapping; exclude duplicated subtotals. |
+| Unit | currency |
+| Window / as-of | Reporting period |
+| Availability rule | Complete report, reporting currency and basis. |
+| Interpretation / exclusions | Never substitute gross bank deposits. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="gross_profit" id="gross-profit">
+
+Revenue less cost of goods sold.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A027 |
+| Required inputs | revenue; mapped cost\_of\_goods\_sold |
+| Calculation | Revenue - positive cost of goods sold. |
+| Unit | currency |
+| Window / as-of | Reporting period |
+| Availability rule | Reviewed source chart mapping. |
+| Interpretation / exclusions | Do not add subtotal and component accounts together. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="gross_margin" id="gross-margin">
+
+Gross profit as a share of revenue.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A028 |
+| Required inputs | gross\_profit; revenue |
+| Calculation | gross\_profit / revenue where revenue &gt; 0. |
+| Unit | fraction |
+| Window / as-of | Reporting period |
+| Availability rule | Same period and basis. |
+| Interpretation / exclusions | Unavailable for nonpositive revenue. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="ebitda" id="ebitda">
+
+Earnings before interest, tax, depreciation and amortization under stated method.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A029 |
+| Required inputs | Net income; interest expense; income tax; depreciation; amortization |
+| Calculation | Net income + interest expense + income tax expense + depreciation + amortization, without duplicated add-backs. |
+| Unit | currency |
+| Window / as-of | 12 months or supplied period |
+| Availability rule | All components must be separately available. |
+| Interpretation / exclusions | Label adjustments separately; do not infer unsupported add-backs. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="net_margin" id="net-margin">
+
+Net accounting income as a share of revenue.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A030 |
+| Required inputs | Net income; revenue |
+| Calculation | Net income / revenue where revenue &gt; 0. |
+| Unit | fraction |
+| Window / as-of | Reporting period |
+| Availability rule | Comparable statement and positive revenue. |
+| Interpretation / exclusions | Do not mix consolidated income and single-entity revenue. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="current_ratio" id="current-ratio">
+
+Current assets relative to current liabilities.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A031 |
+| Required inputs | Mapped balance-sheet current assets/liabilities |
+| Calculation | Current assets / current liabilities where liabilities &gt; 0. |
+| Unit | ratio |
+| Window / as-of | Balance-sheet as-of date |
+| Availability rule | Complete classified balance sheet. |
+| Interpretation / exclusions | Zero liability denominator is not numeric infinity. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="quick_ratio" id="quick-ratio">
+
+Liquid current assets relative to current liabilities.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A032 |
+| Required inputs | Cash; short-term liquid investments; net trade receivables; current liabilities |
+| Calculation | (Cash + liquid short-term investments + net trade receivables) / current liabilities. |
+| Unit | ratio |
+| Window / as-of | Balance-sheet as-of date |
+| Availability rule | Reviewed account mapping and positive denominator. |
+| Interpretation / exclusions | Exclude inventory and prepaid expenses. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="working_capital" id="working-capital">
+
+Current assets less current liabilities.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A033 |
+| Required inputs | Current assets; current liabilities |
+| Calculation | Current assets - current liabilities. |
+| Unit | currency |
+| Window / as-of | Balance-sheet as-of date |
+| Availability rule | Same entity and date. |
+| Interpretation / exclusions | Restricted or trust assets must remain separately identifiable. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="debt_to_equity" id="debt-to-equity">
+
+Interest-bearing debt relative to book equity.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A034 |
+| Required inputs | Mapped interest-bearing debt; total equity |
+| Calculation | Interest-bearing debt / total equity where equity &gt; 0. |
+| Unit | ratio |
+| Window / as-of | Balance-sheet as-of date |
+| Availability rule | Reviewed debt definition and positive equity. |
+| Interpretation / exclusions | Negative equity is separately flagged, not converted to a normal ratio. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="receivables_overdue" id="receivables-overdue">
+
+Open receivables past contractual due dates.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A035 |
+| Required inputs | invoice.amount\_due, due\_on, status |
+| Calculation | Sum positive outstanding invoices with due\_on before as\_of date. |
+| Unit | currency |
+| Window / as-of | As-of date |
+| Availability rule | Complete open-invoice population and due dates. |
+| Interpretation / exclusions | Source balance must be contemporaneous; missing due dates are separate. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="receivables_overdue_ratio" id="receivables-overdue-ratio">
+
+Overdue balance as a share of open receivables.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A036 |
+| Required inputs | receivables\_overdue; all open receivables |
+| Calculation | Overdue open balance / total positive open receivables. |
+| Unit | fraction |
+| Window / as-of | As-of date |
+| Availability rule | Positive denominator and complete open ledger. |
+| Interpretation / exclusions | Do not include void or fully credited invoices. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="receivables_aging" id="receivables-aging">
+
+Receivable balances in defined overdue buckets.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A037 |
+| Required inputs | invoice.amount\_due, due\_on |
+| Calculation | Sum by not\_due, 1\_30, 31\_60, 61\_90, 91\_plus days overdue; produce separate keyed attributes. |
+| Unit | currency |
+| Window / as-of | As-of date |
+| Availability rule | Complete dates and outstanding balances. |
+| Interpretation / exclusions | Buckets use due date, not issue date. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="payables_overdue" id="payables-overdue">
+
+Unpaid supplier bills beyond due date.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A038 |
+| Required inputs | bill.amount\_due, due\_on, status |
+| Calculation | Sum positive outstanding bills with due\_on before as\_of. |
+| Unit | currency |
+| Window / as-of | As-of date |
+| Availability rule | Complete open-bill population. |
+| Interpretation / exclusions | Do not infer unpaid tax from all supplier arrears. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="days_sales_outstanding" id="days-sales-outstanding">
+
+Receivables collection estimate.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A039 |
+| Required inputs | Average net trade receivables; credit sales |
+| Calculation | Average opening/closing net trade receivables / period credit sales × period days. |
+| Unit | days |
+| Window / as-of | Quarter or year |
+| Availability rule | Both balance observations and credit-sales denominator. |
+| Interpretation / exclusions | Total revenue is not an interchangeable substitute for credit sales. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="days_payable_outstanding" id="days-payable-outstanding">
+
+Supplier payment estimate.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A040 |
+| Required inputs | Average trade payables; credit purchases |
+| Calculation | Average opening/closing trade payables / credit purchases × period days. |
+| Unit | days |
+| Window / as-of | Quarter or year |
+| Availability rule | Both balance observations and purchase denominator. |
+| Interpretation / exclusions | Do not silently replace purchases with COGS. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Inventory
+
+<AccordionGroup>
+
+<Accordion title="owned_inventory_value" id="owned-inventory-value">
+
+Book value of borrower-owned stock.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A041 |
+| Required inputs | inventory\_balance.carrying\_value, ownership\_type |
+| Calculation | Sum owned stock value once by item, location, owner and observation. |
+| Unit | currency |
+| Window / as-of | As-of timestamp |
+| Availability rule | Known ownership and costing basis. |
+| Interpretation / exclusions | Exclude client stock in a third-party warehouse. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="inventory_turnover" id="inventory-turnover">
+
+Cost-based turnover for a reporting period.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A042 |
+| Required inputs | COGS; average owned inventory value |
+| Calculation | Period COGS / mean opening and closing owned inventory value. |
+| Unit | times per period |
+| Window / as-of | Quarter or year |
+| Availability rule | Positive inventory denominator and aligned cost basis. |
+| Interpretation / exclusions | Not sales divided by stock units. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="days_inventory_outstanding" id="days-inventory-outstanding">
+
+Days of inventory at the cost rate.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A043 |
+| Required inputs | Average inventory; COGS |
+| Calculation | Average inventory / positive period COGS × period days. |
+| Unit | days |
+| Window / as-of | Quarter or year |
+| Availability rule | Aligned owned inventory values and COGS. |
+| Interpretation / exclusions | Unavailable when cost values or history are missing. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="inventory_aging_90_plus" id="inventory-aging-90-plus">
+
+Owned stock remaining more than 90 days after receipt.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A044 |
+| Required inputs | Lot-level remaining quantity; receipt dates; unit costs |
+| Calculation | Value remaining from lots whose evidenced receipt date is more than 90 days before as\_of. |
+| Unit | currency |
+| Window / as-of | As-of date |
+| Availability rule | Lot/cost-flow tracking and receipt history. |
+| Interpretation / exclusions | Current snapshot alone cannot establish age. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="cash_conversion_cycle" id="cash-conversion-cycle">
+
+Inventory days plus collection days less payment days.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A045 |
+| Required inputs | DSO; DIO; DPO |
+| Calculation | days\_sales\_outstanding + days\_inventory\_outstanding - days\_payable\_outstanding. |
+| Unit | days |
+| Window / as-of | Same reporting period |
+| Availability rule | All three metrics defined on compatible period and population. |
+| Interpretation / exclusions | Unavailable if any input is missing. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Lending
+
+<AccordionGroup>
+
+<Accordion title="dscr" id="dscr">
+
+Cash available for debt service relative to scheduled service.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A046 |
+| Required inputs | Policy-defined cash available; scheduled principal and interest |
+| Calculation | Cash available for debt service / scheduled principal plus interest due for identical period. |
+| Unit | ratio |
+| Window / as-of | Trailing or forecast 12 months |
+| Availability rule | Institution definition and full debt schedule required. |
+| Interpretation / exclusions | If EBITDA is a proxy, label EBITDA DSCR explicitly; not actual cash DSCR. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="loan_to_value" id="loan-to-value">
+
+Secured debt relative to supported collateral value.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A047 |
+| Required inputs | Relevant secured debt; collateral valuation |
+| Calculation | Debt included under lender policy / eligible collateral valuation. |
+| Unit | fraction |
+| Window / as-of | Valuation as-of date |
+| Availability rule | Current appraisal, liens and debt scope; positive value. |
+| Interpretation / exclusions | Book inventory value is not an independent appraisal. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="facility_utilization" id="facility-utilization">
+
+Drawn exposure as a share of the approved limit.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A048 |
+| Required inputs | credit\_facility.drawn\_amount, approved\_limit |
+| Calculation | Drawn amount / approved limit where limit &gt; 0. |
+| Unit | fraction |
+| Window / as-of | As-of date |
+| Availability rule | Same currency and facility. |
+| Interpretation / exclusions | Can exceed 1; do not clamp away over-limit exposure. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="debt_to_income" id="debt-to-income">
+
+Monthly contractual debt obligation relative to verified monthly gross income.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A049 |
+| Required inputs | Verified gross income; complete monthly debt schedule |
+| Calculation | Monthly scheduled debt service / monthly gross income. |
+| Unit | fraction |
+| Window / as-of | Same monthly basis |
+| Availability rule | Permitted consumer use, gross income and full debt scope. |
+| Interpretation / exclusions | Net bank deposits are not verified gross income. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="portfolio_delinquency_ratio" id="portfolio-delinquency-ratio">
+
+Outstanding principal in loans above a chosen delinquency threshold.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A050 |
+| Required inputs | loan.outstanding\_principal, days\_past\_due, as\_of |
+| Calculation | Principal of eligible loans with DPD &gt;= specified threshold / total eligible outstanding principal. |
+| Unit | fraction |
+| Window / as-of | Single as-of date |
+| Availability rule | Consistent DPD policy, currency and complete portfolio. |
+| Interpretation / exclusions | Declare threshold such as 30; distinguish from borrower count ratio. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="borrowing_base" id="borrowing-base">
+
+Eligible assets after contractual advance rates and reserves.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A051 |
+| Required inputs | Eligible receivables/inventory; contractual advance rates; reserves |
+| Calculation | Sum eligible asset values × applicable rates - contractual reserves. |
+| Unit | currency |
+| Window / as-of | As-of date |
+| Availability rule | Documented eligibility, ownership, concentration limits and covenants. |
+| Interpretation / exclusions | No automatic credit-limit change; requires institutional decision. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Liens
+
+<AccordionGroup>
+
+<Accordion title="active_lien_count" id="active-lien-count">
+
+Active filings within completed, reviewed search scope.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A052 |
+| Required inputs | lien.status, filing\_number, jurisdiction, match\_disposition |
+| Calculation | Count unique active registry+filing records with accepted debtor matches. |
+| Unit | count |
+| Window / as-of | Search effective scope |
+| Availability rule | Completed jurisdiction scope and match review. |
+| Interpretation / exclusions | Zero results is not proof of no liens elsewhere. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="lien_expiry_days" id="lien-expiry-days">
+
+Days to an explicitly reported lapse date.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A053 |
+| Required inputs | lien.lapse\_on |
+| Calculation | lapse\_on - as\_of\_date in calendar days. |
+| Unit | days |
+| Window / as-of | Search as-of date |
+| Availability rule | Known lapse date and current amendment chain. |
+| Interpretation / exclusions | Do not mechanically add five years to all filings. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Identity
+
+<AccordionGroup>
+
+<Accordion title="business_age_months" id="business-age-months">
+
+Elapsed completed months since formation.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A054 |
+| Required inputs | business.incorporation\_date |
+| Calculation | Completed calendar months between formation and as\_of date. |
+| Unit | months |
+| Window / as-of | As-of date |
+| Availability rule | Verified formation date. |
+| Interpretation / exclusions | Not the same as operating history or bank-account age. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+
+## Risk
+
+<AccordionGroup>
+
+<Accordion title="evidence_freshness_days" id="evidence-freshness-days">
+
+Age of the oldest required observation in an assessment.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A055 |
+| Required inputs | Required source observation timestamps |
+| Calculation | Maximum(as\_of\_time - required observed\_at) expressed in days. |
+| Unit | days |
+| Window / as-of | Assessment cutoff |
+| Availability rule | Defined required-source manifest. |
+| Interpretation / exclusions | Use source effective time separately when retrieval can return stale records. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+<Accordion title="material_risk_change" id="material-risk-change">
+
+Policy-defined change against the original assessment.
+
+| Property | Definition |
+| --- | --- |
+| Attribute ID | A056 |
+| Required inputs | Comparable risk snapshots and versioned monitor rules |
+| Calculation | Evaluate each configured threshold on aligned attributes; return boolean with reasons. |
+| Unit | boolean |
+| Window / as-of | Baseline vs current |
+| Availability rule | Comparable policy/model version or explicit migration. |
+| Interpretation / exclusions | Do not treat missing refreshed evidence as improved risk. |
+| Origin | AMLOK derived |
+| Contract status | Proposed |
+| Definition version | 0.1.0-draft |
+
+
+</Accordion>
+
+</AccordionGroup>
+

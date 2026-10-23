@@ -1,0 +1,80 @@
+---
+title: "Stripe"
+description: "Processor — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | PAY-02 |
+| Category | Payments and POS |
+| Product type | Processor |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+Balance Transactions, Payments, Payouts, and dispute APIs; determine approved account-linking and read permissions.
+
+## Access and approval
+
+Confirm Connect/platform or Stripe Apps route; public app review ETA ND. Review source.
+
+**Documentation availability:** Public API/docs.
+
+*ND means the source catalog does not disclose an approval estimate.*
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [merchant\_account](/data-model/field-dictionary#merchant-account) | Candidate | Mapping pending |
+| [payment](/data-model/field-dictionary#payment) | Candidate | Mapping pending |
+| [processor\_transaction](/data-model/field-dictionary#processor-transaction) | Candidate | Selected fields documented |
+| [payout](/data-model/field-dictionary#payout) | Candidate | Mapping pending |
+| [refund](/data-model/field-dictionary#refund) | Candidate | Mapping pending |
+| [dispute](/data-model/field-dictionary#dispute) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
+| History | Not established; validate per endpoint and account. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Selected documented mappings; remainder pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Documented field mappings
+
+These source fields are documented; the proposed adapter transformations are not production-tested.
+
+| Mapping | Source field | AMLOK target |
+| --- | --- | --- |
+| [M027](/data-model/field-mappings#m027) | `id` | `processor_transaction.source_transaction_id` |
+| [M028](/data-model/field-mappings#m028) | `amount` | `processor_transaction.gross.amount` |
+| [M029](/data-model/field-mappings#m029) | `fee` | `processor_transaction.fee.amount` |
+| [M030](/data-model/field-mappings#m030) | `net` | `processor_transaction.net.amount` |
+| [M031](/data-model/field-mappings#m031) | `currency` | `processor_transaction.net.currency` |
+| [M032](/data-model/field-mappings#m032) | `type` | `processor_transaction.event_type` |
+| [M033](/data-model/field-mappings#m033) | `reporting_category` | `processor_transaction.reporting_category` |
+| [M034](/data-model/field-mappings#m034) | `status` | `processor_transaction.availability_status` |
+| [M035](/data-model/field-mappings#m035) | `available_on` | `processor_transaction.available_on` |
+| [M036](/data-model/field-mappings#m036) | `created` | `processor_transaction.occurred_at` |
+| [M037](/data-model/field-mappings#m037) | `source` | `processor_transaction.source_object_id` |
+
+## Provider documentation
+
+- [docs.stripe.com/api/balance\_transactions](https://docs.stripe.com/api/balance_transactions)
+- [support.stripe.com/questions/how-do-i-submit-an-app-for-review-and-what-does-the-review-entail](https://support.stripe.com/questions/how-do-i-submit-an-app-for-review-and-what-does-the-review-entail)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#pay-02)
+- [Resource coverage](/data-model/resource-coverage#pay-02)
+- [Field dictionary](/data-model/field-dictionary)

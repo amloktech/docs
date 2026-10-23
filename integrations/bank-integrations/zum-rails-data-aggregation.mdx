@@ -1,0 +1,59 @@
+---
+title: "Zūm Rails Data Aggregation"
+description: "Aggregation and bank verification — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | BANK-12 |
+| Category | Bank Integrations |
+| Product type | Aggregation and bank verification |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+Zūm Connect plus Aggregation API returns linked bank accounts, balances and transaction history when aggregation is enabled. Public docs show Canadian and US response variants. Confirm underlying provider, account coverage and recurring refresh rights.
+
+## Access and approval
+
+Sandbox/production accounts are separate and aggregation must be enabled for the customer account. Coordinate production and data-product activation with Zūm Rails; numeric approval ETA not disclosed in reviewed sources.
+
+**Documentation availability:** Public Aggregation API, supported-institution and authentication documentation.
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [bank\_account](/data-model/field-dictionary#bank-account) | Candidate | Mapping pending |
+| [account\_balance](/data-model/field-dictionary#account-balance) | Candidate | Mapping pending |
+| [bank\_transaction](/data-model/field-dictionary#bank-transaction) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Canadian and US response variants; validate actual institutions. |
+| History | Not established; validate per endpoint and account. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Field-level mapping pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Provider documentation
+
+- [docs.zumrails.com](https://docs.zumrails.com/)
+- [docs.zumrails.com/api-reference/aggregation](https://docs.zumrails.com/api-reference/aggregation)
+- [docs.zumrails.com/api-reference/overview](https://docs.zumrails.com/api-reference/overview)
+- [docs.zumrails.com/data-aggregation/supported-institutions](https://docs.zumrails.com/data-aggregation/supported-institutions)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#bank-12)
+- [Resource coverage](/data-model/resource-coverage#bank-12)
+- [Field dictionary](/data-model/field-dictionary)

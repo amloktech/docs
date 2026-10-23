@@ -1,0 +1,263 @@
+---
+title: "Release Gaps"
+description: "Open implementation, evidence, coverage, and release requirements."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+These open items explain what remains unresolved in the draft contract and coverage review.
+
+<Accordion title="G01 · All providers" id="g01">
+
+| Property | Definition |
+| --- | --- |
+| Scope | All providers |
+| Category | Implementation |
+| Unresolved fact | No production connectivity, credentials or contract tests were provided. |
+| Required action | Do not mark any integration live based on this workbook. |
+| Suggested owner function | Engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G02 · Field-level coverage" id="g02">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Field-level coverage |
+| Category | Schema |
+| Unresolved fact | Most inventory rows describe an access route rather than exact payload fields. |
+| Required action | Resolve exact source paths and sample records for every proposed resource before release. |
+| Suggested owner function | Data engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G03 · Commercial rights" id="g03">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Commercial rights |
+| Category | Licensing |
+| Unresolved fact | Technical API access is not blanket onward-distribution permission. |
+| Required action | Record resale, processing, retention and derivative-data rights per provider/client use. |
+| Suggested owner function | Commercial / legal |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G04 · Consumer credit" id="g04">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Consumer credit |
+| Category | Purpose |
+| Unresolved fact | Business-risk data and ordinary bank-data APIs do not automatically authorize regulated consumer-report use. |
+| Required action | Validate product-specific permitted purposes and contracted reporting workflow. |
+| Suggested owner function | Product / compliance |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G05 · Credit bureaus" id="g05">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Credit bureaus |
+| Category | Missing source |
+| Unresolved fact | No general Equifax/TransUnion credit-bureau feed is established in the catalog. |
+| Required action | Add separately contracted bureau products before exposing tradelines, inquiries or bureau scores. |
+| Suggested owner function | Product |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G06 · Payroll" id="g06">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Payroll |
+| Category | Missing source |
+| Unresolved fact | No dedicated payroll integrations are listed. |
+| Required action | Keep gross income and employment verification conditional; bank deposits alone are insufficient. |
+| Suggested owner function | Product |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G07 · Tax authority" id="g07">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Tax authority |
+| Category | Missing source |
+| Unresolved fact | Accounting tax balances do not establish direct CRA/IRS account access. |
+| Required action | Use supplied evidence or add an authorized tax-source integration. |
+| Suggested owner function | Product |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G08 · Property titles" id="g08">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Property titles |
+| Category | Missing source |
+| Unresolved fact | A UCC/PPSA search is not a complete real-property title search or valuation. |
+| Required action | Add jurisdiction-specific title/appraisal sources for mortgage workflows. |
+| Suggested owner function | Product |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G09 · PPSA Canada" id="g09">
+
+| Property | Definition |
+| --- | --- |
+| Scope | PPSA Canada |
+| Category | Mapping |
+| Unresolved fact | Public API capability exists but field schema and commercial entitlement are unverified. |
+| Required action | Obtain Natomi schema and provincial sample reports; no guessed XML paths. |
+| Suggested owner function | Data engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G10 · Baselayer" id="g10">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Baselayer |
+| Category | Licensing |
+| Unresolved fact | Standard terms limit data to internal use. |
+| Required action | Obtain explicit redistribution rights before client-facing delivery. |
+| Suggested owner function | Commercial / legal |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G11 · Trust accounts and 3PL" id="g11">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Trust accounts and 3PL |
+| Category | Ownership |
+| Unresolved fact | Held assets may belong to clients or consignors. |
+| Required action | Separate beneficial ownership before liquidity or collateral calculations. |
+| Suggested owner function | Data engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G12 · Accounting completeness" id="g12">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Accounting completeness |
+| Category | Module coverage |
+| Unresolved fact | Invoice access does not establish full journals or financial-report access. |
+| Required action | Verify ledger, basis, tax and reporting modules separately. |
+| Suggested owner function | Data engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G13 · Historical balances" id="g13">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Historical balances |
+| Category | History |
+| Unresolved fact | Current balances are not a complete daily balance history. |
+| Required action | Validate observations or reconstruction before balance/runway metrics. |
+| Suggested owner function | Data science |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G14 · Credit risk models" id="g14">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Credit risk models |
+| Category | Model |
+| Unresolved fact | No approved proprietary scoring model, PD, LGD or EAD method was supplied. |
+| Required action | Keep scores unavailable until trained/validated model and governance are approved. |
+| Suggested owner function | Risk / data science |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G15 · API service levels" id="g15">
+
+| Property | Definition |
+| --- | --- |
+| Scope | API service levels |
+| Category | Operations |
+| Unresolved fact | No production base URL, quotas or SLA supplied. |
+| Required action | Publish environment, rate limits, support and uptime only after deployment. |
+| Suggested owner function | Engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G16 · External financial actions" id="g16">
+
+| Property | Definition |
+| --- | --- |
+| Scope | External financial actions |
+| Category | Product scope |
+| Unresolved fact | Read and assessment access does not grant execution permissions. |
+| Required action | Specify separate approved commands for money movement, filings and credit-line changes. |
+| Suggested owner function | Product / engineering |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G17 · Digital assets" id="g17">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Digital assets |
+| Category | Additional scope |
+| Unresolved fact | Didit has additional wallet/KYT products outside the integration inventory modeled here. |
+| Required action | Scope blockchain-specific entities, chains and licensed analytics before adding that product. |
+| Suggested owner function | Product |
+| Status | Open |
+
+
+</Accordion>
+
+<Accordion title="G18 · Jurisdictional data handling" id="g18">
+
+| Property | Definition |
+| --- | --- |
+| Scope | Jurisdictional data handling |
+| Category | Security |
+| Unresolved fact | Retention, residency and client-specific access policies were not supplied. |
+| Required action | Configure and test these controls for each tenant before release. |
+| Suggested owner function | Security / compliance |
+| Status | Open |
+
+
+</Accordion>
+

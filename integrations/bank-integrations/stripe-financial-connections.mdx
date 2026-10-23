@@ -1,0 +1,57 @@
+---
+title: "Stripe Financial Connections"
+description: "Bank-data product — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | BANK-10 |
+| Category | Bank Integrations |
+| Product type | Bank-data product |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+Financial Connections sessions plus APIs for balances, ownership and transactions. Published availability is for US bank accounts and eligible business countries; Canada is absent from the reviewed business-country list. Confirm eligibility before committing to this route.
+
+## Access and approval
+
+Requires an eligible Stripe business and enabled Financial Connections data permissions. Dedicated integration approval ETA not disclosed in reviewed docs; sandbox/testing does not establish Canadian eligibility or commercial access.
+
+**Documentation availability:** Public API reference and Financial Connections guides.
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [bank\_account](/data-model/field-dictionary#bank-account) | Candidate | Mapping pending |
+| [account\_balance](/data-model/field-dictionary#account-balance) | Candidate | Mapping pending |
+| [bank\_transaction](/data-model/field-dictionary#bank-transaction) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | US bank accounts; business-country eligibility requires verification. |
+| History | Not established; validate per endpoint and account. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Field-level mapping pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Provider documentation
+
+- [docs.stripe.com/financial-connections](https://docs.stripe.com/financial-connections)
+- [docs.stripe.com/api/financial\_connections/sessions/create](https://docs.stripe.com/api/financial_connections/sessions/create)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#bank-10)
+- [Resource coverage](/data-model/resource-coverage#bank-10)
+- [Field dictionary](/data-model/field-dictionary)

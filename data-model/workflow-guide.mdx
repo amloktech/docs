@@ -1,0 +1,79 @@
+---
+title: "Workflow Guide"
+description: "How data supports Verify, Underwrite, Fund, Monitor, Service, Investigate, and Re-underwrite."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+## Verify
+
+| Property | Definition |
+| --- | --- |
+| Trigger | Application or applicant onboarding |
+| Inputs | business; person; consent; document |
+| Work performed | Registry, ownership, identity, screening and evidence checks. |
+| Outputs | verification; verification\_check; screening\_match; requirement |
+| Decision boundary | Unresolved checks and missing documents remain explicit. |
+
+## Underwrite
+
+| Property | Definition |
+| --- | --- |
+| Trigger | New request or material borrower change |
+| Inputs | application; bank records; financial statements; liabilities; collateral |
+| Work performed | Compute supported attributes and apply the institution policy. |
+| Outputs | attribute; risk\_snapshot; decision |
+| Decision boundary | Separate recommendation from the institution decision; preserve evidence snapshot. |
+
+## Fund
+
+| Property | Definition |
+| --- | --- |
+| Trigger | Institution approves and executes funding |
+| Inputs | Approved application, conditions and executed documents |
+| Work performed | Record resulting contract, facility, collateral and repayment schedule from lender system. |
+| Outputs | loan; credit\_facility; installment; guarantee |
+| Decision boundary | Funding execution is outside the read/assessment contract in this draft. |
+
+## Monitor
+
+| Property | Definition |
+| --- | --- |
+| Trigger | Funded borrower or active exposure |
+| Inputs | Baseline snapshot; active connections; consent; monitor rules |
+| Work performed | Refresh permitted evidence and compare comparable windows. |
+| Outputs | attribute; risk\_snapshot; alert |
+| Decision boundary | Data outages generate coverage/freshness issues, not an assumed improvement. |
+
+## Service
+
+| Property | Definition |
+| --- | --- |
+| Trigger | Borrower inquiry, missing evidence or arrears |
+| Inputs | loan; installment; repayment; case |
+| Work performed | Prepare information requests, reminders and repayment-promise follow-up. |
+| Outputs | task; communication; payment\_promise |
+| Decision boundary | Communication sends require specific approval and scope. |
+
+## Investigate
+
+| Property | Definition |
+| --- | --- |
+| Trigger | Suspicious evidence, screening match or related-party signal |
+| Inputs | screening\_match; relationship; document; transactions; alerts |
+| Work performed | Collect evidence, review candidate matches and record a disposition. |
+| Outputs | case; task; reviewed relationship or screening disposition |
+| Decision boundary | A possible match is not a confirmed match; preserve reviewer attribution. |
+
+## Re-underwrite
+
+| Property | Definition |
+| --- | --- |
+| Trigger | Monitor identifies a policy-defined material change |
+| Inputs | Current and baseline snapshots plus updated borrower evidence |
+| Work performed | Create a new underwriting run linked to its triggering monitoring run. |
+| Outputs | workflow\_run; decision; new risk\_snapshot |
+| Decision boundary | Never overwrite the original assessment; credit-limit action remains institution controlled. |
+

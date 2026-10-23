@@ -1,0 +1,85 @@
+---
+title: "QuickBooks Online"
+description: "SMB accounting — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | ACC-01 |
+| Category | Accounting |
+| Product type | SMB accounting |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+OAuth 2.0 Accounting API and Reports; validate Canadian company/tax fields and production access.
+
+## Access and approval
+
+Production app assessment required; Marketplace listing is separate; dependable approval ETA ND. Review source.
+
+**Documentation availability:** Public Accounting API/docs.
+
+*ND means the source catalog does not disclose an approval estimate.*
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [business](/data-model/field-dictionary#business) | Candidate | Mapping pending |
+| [ledger\_account](/data-model/field-dictionary#ledger-account) | Candidate | Mapping pending |
+| [journal](/data-model/field-dictionary#journal) | Candidate | Mapping pending |
+| [journal\_line](/data-model/field-dictionary#journal-line) | Candidate | Mapping pending |
+| [counterparty](/data-model/field-dictionary#counterparty) | Candidate | Mapping pending |
+| [invoice](/data-model/field-dictionary#invoice) | Candidate | Selected fields documented |
+| [bill](/data-model/field-dictionary#bill) | Candidate | Mapping pending |
+| [credit\_note](/data-model/field-dictionary#credit-note) | Candidate | Mapping pending |
+| [accounting\_payment](/data-model/field-dictionary#accounting-payment) | Candidate | Mapping pending |
+| [financial\_statement](/data-model/field-dictionary#financial-statement) | Candidate | Mapping pending |
+| [statement\_line](/data-model/field-dictionary#statement-line) | Candidate | Mapping pending |
+| [tax\_obligation](/data-model/field-dictionary#tax-obligation) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
+| History | Not established; validate per endpoint and account. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Selected documented mappings; remainder pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Documented field mappings
+
+These source fields are documented; the proposed adapter transformations are not production-tested.
+
+| Mapping | Source field | AMLOK target |
+| --- | --- | --- |
+| [M062](/data-model/field-mappings#m062) | `Id` | `common.source_refs[].source_record_id` |
+| [M063](/data-model/field-mappings#m063) | `DocNumber` | `invoice.number` |
+| [M064](/data-model/field-mappings#m064) | `CustomerRef.value` | `invoice.counterparty_id` |
+| [M065](/data-model/field-mappings#m065) | `TxnDate` | `invoice.issued_on` |
+| [M066](/data-model/field-mappings#m066) | `DueDate` | `invoice.due_on` |
+| [M067](/data-model/field-mappings#m067) | `TotalAmt` | `invoice.total.amount` |
+| [M068](/data-model/field-mappings#m068) | `Balance` | `invoice.amount_due.amount` |
+| [M069](/data-model/field-mappings#m069) | `CurrencyRef.value` | `invoice.total.currency` |
+| [M070](/data-model/field-mappings#m070) | `HomeTotalAmt` | `invoice.home_total.amount` |
+| [M071](/data-model/field-mappings#m071) | `ExchangeRate` | `invoice.exchange_rate` |
+
+## Provider documentation
+
+- [developer.intuit.com/app/developer/qbo/docs/get-started](https://developer.intuit.com/app/developer/qbo/docs/get-started)
+- [help.developer.intuit.com/s/article/New-app-assessment-process-FAQ](https://help.developer.intuit.com/s/article/New-app-assessment-process-FAQ)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#acc-01)
+- [Resource coverage](/data-model/resource-coverage#acc-01)
+- [Field dictionary](/data-model/field-dictionary)

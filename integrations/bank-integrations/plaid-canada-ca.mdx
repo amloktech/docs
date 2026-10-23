@@ -1,0 +1,93 @@
+---
+title: "Plaid — Canada (CA)"
+description: "Bank-data aggregator — Canada — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | BANK-02 |
+| Category | Bank Integrations |
+| Product type | Bank-data aggregator — Canada |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+Plaid Link plus server APIs for Canadian institutions. Country matrix lists Transactions, Balance, Auth, Identity, Assets and Income; Liabilities has limited coverage. Plaid Check / Partner Insights is not listed for Canada. Validate institution, product and business-account coverage.
+
+## Access and approval
+
+Full Production: a few business days after company and use-case review, per Plaid; not a guaranteed SLA. Eligible US/CA Trial applications are usually auto-approved; manual-review follow-up is 2–3 business days. Trial is limited; paid products and institution permissions require the relevant access.
+
+**Documentation availability:** Public API reference, SDKs, Link guides and Sandbox. Canadian coverage can be checked through the Institutions API.
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [bank\_account](/data-model/field-dictionary#bank-account) | Candidate | Selected fields documented |
+| [account\_balance](/data-model/field-dictionary#account-balance) | Candidate | Selected fields documented |
+| [bank\_transaction](/data-model/field-dictionary#bank-transaction) | Candidate | Selected fields documented |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Canada; do not infer US-only Plaid Check availability. |
+| History | Not established; validate per endpoint and account. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Selected documented mappings; remainder pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Documented field mappings
+
+These source fields are documented; the proposed adapter transformations are not production-tested.
+
+| Mapping | Source field | AMLOK target |
+| --- | --- | --- |
+| [M001](/data-model/field-mappings#m001) | `accounts[].account_id` | `bank_account.source_account_id` |
+| [M002](/data-model/field-mappings#m002) | `accounts[].name` | `bank_account.name` |
+| [M003](/data-model/field-mappings#m003) | `accounts[].official_name` | `bank_account.official_name` |
+| [M004](/data-model/field-mappings#m004) | `accounts[].mask` | `bank_account.mask` |
+| [M005](/data-model/field-mappings#m005) | `accounts[].type` | `bank_account.account_type` |
+| [M006](/data-model/field-mappings#m006) | `accounts[].subtype` | `bank_account.account_subtype` |
+| [M007](/data-model/field-mappings#m007) | `accounts[].balances.current` | `account_balance.current.amount` |
+| [M008](/data-model/field-mappings#m008) | `accounts[].balances.available` | `account_balance.available.amount` |
+| [M009](/data-model/field-mappings#m009) | `accounts[].balances.limit` | `account_balance.credit_limit.amount` |
+| [M010](/data-model/field-mappings#m010) | `accounts[].balances.iso_currency_code` | `account_balance.current.currency` |
+| [M011](/data-model/field-mappings#m011) | `accounts[].balances.last_updated_datetime` | `account_balance.as_of` |
+| [M012](/data-model/field-mappings#m012) | `item.institution_id` | `connection.institution_id` |
+| [M013](/data-model/field-mappings#m013) | `added[].transaction_id` | `bank_transaction.source_transaction_id` |
+| [M014](/data-model/field-mappings#m014) | `added[].account_id` | `bank_transaction.account_id` |
+| [M015](/data-model/field-mappings#m015) | `added[].amount` | `bank_transaction.amount.amount` |
+| [M016](/data-model/field-mappings#m016) | `added[].amount` | `bank_transaction.direction` |
+| [M017](/data-model/field-mappings#m017) | `added[].iso_currency_code` | `bank_transaction.amount.currency` |
+| [M018](/data-model/field-mappings#m018) | `added[].date` | `bank_transaction.posted_on` |
+| [M019](/data-model/field-mappings#m019) | `added[].authorized_date` | `bank_transaction.authorized_on` |
+| [M020](/data-model/field-mappings#m020) | `added[].name` | `bank_transaction.description` |
+| [M021](/data-model/field-mappings#m021) | `added[].merchant_name` | `bank_transaction.merchant_name` |
+| [M022](/data-model/field-mappings#m022) | `added[].pending` | `bank_transaction.status` |
+| [M023](/data-model/field-mappings#m023) | `added[].pending_transaction_id` | `bank_transaction.pending_transaction_id` |
+| [M024](/data-model/field-mappings#m024) | `added[].payment_channel` | `bank_transaction.payment_channel` |
+| [M025](/data-model/field-mappings#m025) | `added[].personal_finance_category.detailed` | `bank_transaction.source_category` |
+| [M026](/data-model/field-mappings#m026) | `removed[].transaction_id` | `common.deleted_at` |
+
+## Provider documentation
+
+- [plaid.com/docs](https://plaid.com/docs/)
+- [plaid.com/docs/institutions](https://plaid.com/docs/institutions/)
+- [support.plaid.com/hc/en-us/articles/27895826947735-What-Plaid-products-are-supported-in-each-country-and-region](https://support.plaid.com/hc/en-us/articles/27895826947735-What-Plaid-products-are-supported-in-each-country-and-region)
+- [support.plaid.com/hc/en-us/articles/16110110883479-How-are-Sandbox-Production-Trial-plan-and-Limited-Production-different](https://support.plaid.com/hc/en-us/articles/16110110883479-How-are-Sandbox-Production-Trial-plan-and-Limited-Production-different)
+- [support.plaid.com/hc/en-us/articles/39994173227159-What-is-the-Plaid-Trial-plan](https://support.plaid.com/hc/en-us/articles/39994173227159-What-is-the-Plaid-Trial-plan)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#bank-02)
+- [Resource coverage](/data-model/resource-coverage#bank-02)
+- [Field dictionary](/data-model/field-dictionary)

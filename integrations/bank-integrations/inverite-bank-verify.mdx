@@ -1,0 +1,58 @@
+---
+title: "Inverite Bank Verify"
+description: "Bank verification and aggregation — access route, candidate data coverage, and integration requirements."
+---
+
+<Note>
+**Candidate integration · production status: Not verified.** Confirm product access and supported data before planning a production connection.
+</Note>
+
+| Property | Definition |
+| --- | --- |
+| Provider ID | BANK-06 |
+| Category | Bank Integrations |
+| Product type | Bank verification and aggregation |
+| Coverage status | Candidate |
+| Evidence reviewed | 2026-10-22 |
+
+## Integration approach
+
+Start an IBV session through the API, use Inverite's bank-selection flow, then receive account and transaction results through API/webhook. Canadian institutions are supported; history is up to 365 days depending on the bank.
+
+## Access and approval
+
+Merchant onboarding and API access must be arranged with Inverite. Numeric approval ETA not disclosed in reviewed sources; customer verification speed is not integration approval time.
+
+**Documentation availability:** API workflow is public; official API Docs entry point is linked. Confirm access to the complete endpoint reference and credentials with Inverite.
+
+## Candidate data
+
+These resource links open their proposed field definitions. Candidate coverage does not guarantee that every field is available.
+
+| Resource | Coverage | Field evidence |
+| --- | --- | --- |
+| [bank\_account](/data-model/field-dictionary#bank-account) | Candidate | Mapping pending |
+| [account\_balance](/data-model/field-dictionary#account-balance) | Candidate | Mapping pending |
+| [bank\_transaction](/data-model/field-dictionary#bank-transaction) | Candidate | Mapping pending |
+
+## Coverage conditions
+
+| Property | Definition |
+| --- | --- |
+| Country / deployment conditions | Canadian institutions per inventory; bank-dependent coverage. |
+| History | Inventory says up to 365 days; actual bank-dependent. |
+| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Mapping evidence | Field-level mapping pending |
+| Commercial / use rights | Not assessed; client permission and commercial use rights required. |
+
+## Provider documentation
+
+- [inveriteinsights.com](https://inveriteinsights.com/)
+- [www.inverite.com/documentation](https://www.inverite.com/documentation/)
+- [intercom.help/inverite-insights/en/articles/14172928-how-instant-bank-verification-ibv-works](https://intercom.help/inverite-insights/en/articles/14172928-how-instant-bank-verification-ibv-works)
+
+## Related model reference
+
+- [Provider coverage](/data-model/provider-coverage#bank-06)
+- [Resource coverage](/data-model/resource-coverage#bank-06)
+- [Field dictionary](/data-model/field-dictionary)

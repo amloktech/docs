@@ -1,0 +1,143 @@
+---
+title: "Normalization rules"
+description: "Rules for evidence, missing values, money, identity, and normalized data."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+The normalization rules below are drawn from the workbook’s **Normalization & API Rules** tab. HTTP and webhook specifications are deferred with the API reference.
+
+## Status
+
+All resources, fields, endpoints, metrics and events in this workbook form proposed AMLOK v0.1.0. They are not a statement that integrations are deployed.
+
+Schema approval and contract tests are release gates.
+
+## Scope
+
+Normalized union of credit-relevant fields across 238 inventory entries, plus Didit, Baselayer and PPSA Canada. Provider-specific extras use documented namespaced extensions.
+
+This is not an exhaustive dump of every vendor API field.
+
+## Field evidence
+
+Documented means an upstream field was visible in reviewed public documentation. Candidate means it needs provider/schema validation. Neither means production-tested or licensed.
+
+See Field Mappings and Provider Coverage.
+
+## Required vs available
+
+Required describes a valid AMLOK resource when that resource exists. It does not guarantee a source supplies every optional field or that every resource exists.
+
+Required source IDs must be resolved or the record is quarantined.
+
+## Shared metadata
+
+Every top-level resource inherits common fields. Resource-name prefixes in Field Dictionary are documentation context; response data contains the relative field names.
+
+Shared Types expands every reusable nested object.
+
+## Null semantics
+
+Use null for known missing/unavailable optional values and include missing\_fields reasons. Zero and false require evidence. An empty array means the requested collection was queried and is known empty.
+
+Denied sensitive fields are omitted; missing\_fields may explain redaction without exposing values.
+
+## Time
+
+Dates preserve their source calendar date. Timestamps use RFC 3339 UTC with original timezone in provenance where needed. Date-only evidence is never padded into an invented timestamp.
+
+posted\_on, observed\_at, effective\_at and retrieved\_at remain distinct.
+
+## Money
+
+Money uses exact decimal strings in major currency units and a currency code. Convert minor-unit sources using currency-specific exponent tables. Preserve higher precision when source requires it.
+
+No binary floating-point financial calculations; do not assume all currencies have two decimals.
+
+## Signs
+
+Bank transaction amount is an absolute magnitude with separate direction. Processor ledger net and gross can be signed. Loan principal is an obligation magnitude.
+
+Convert per provider and product; do not use one global sign rule.
+
+## Ratios
+
+Rates and proportions are decimal fractions: 9.5% is 0.095. DSCR and current ratio are multiples, not percentages.
+
+Units and denominator policies are required.
+
+## Currency conversion
+
+Keep original money. Cross-currency aggregates require an explicit FX source, effective time, rate convention and rounding method.
+
+Never sum CAD and USD without stated conversion.
+
+## Identifiers
+
+AMLOK IDs are opaque and tenant-scoped. Provider identifiers remain case-sensitive strings qualified by provider, connection and resource type.
+
+Preserve leading zeroes; masks and names are not keys.
+
+## Name and address normalization
+
+Preserve original spelling, scripts and address text. Store matching normalization as a separate versioned transformation.
+
+No automatic merge on fuzzy name similarity alone.
+
+## Country and industry codes
+
+Normalize countries to alpha-2 where verified. Preserve jurisdiction, source code and taxonomy version for registry and industry fields.
+
+NAICS, SIC, MCC and NACE are not interchangeable.
+
+## Entity resolution
+
+Relationships require evidence. Keep unresolved counterparties and review state rather than forcing a legal-entity match.
+
+Canonical merging must be reversible and audited.
+
+## Deduplication
+
+Deduplicate within a source using stable keys. Link cross-source order, invoice, payment, payout and bank records with reconciliation evidence.
+
+These records describe different economic stages and must not be summed as independent revenue.
+
+## Source precedence
+
+Use purpose-specific authoritative sources, observation dates and review state. Preserve conflicting values in provenance.
+
+A registry source may establish formation; a borrower assertion cannot silently overwrite it as verified.
+
+## Changes and history
+
+Use source cursors/webhooks where available. Store record versions, pending-to-posted linkage, removals and immutable assessment input manifests.
+
+AMLOK change cursors are separate from provider cursors.
+
+## Coverage
+
+Return actual time span, sources, account set and jurisdictions completed. Failed or unqueried sources remain explicit.
+
+Partial success never becomes a completed no-hit result.
+
+## Freshness
+
+Provider update frequency, AMLOK polling, ingestion time and source effective time are distinct.
+
+No universal real-time or historical-depth promise.
+
+## Sensitive data
+
+Restricted fields use explicit entitlements and purpose. Default identifiers are masked or tokenized. Raw biometric media, PAN, CVV and provider credentials are excluded from the normalized default response.
+
+Per-client retention, residency and access policies must be implemented.
+
+## Derived attributes
+
+Every computed value records inputs, window, unit, calculation/model version and evidence coverage. Missing prerequisites produce unavailable status.
+
+No invented credit score, PD, fraud probability or approved limit.
+

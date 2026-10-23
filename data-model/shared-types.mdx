@@ -1,0 +1,278 @@
+---
+title: "Shared Types"
+description: "134 reusable nested fields for addresses, money, provenance, and other shared structures."
+---
+
+<Note>
+**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
+</Note>
+
+## Address
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `line1` | `string`<br />Optional | Street or delivery address line one. | `123 Example Street` |
+| `line2` | `string`<br />Optional | Suite, unit or second address line. | `Suite 100` |
+| `city` | `string`<br />Optional | Locality. | `Toronto` |
+| `region` | `string`<br />Optional | Subdivision or province code/name; preserve raw when unmapped. | `ON` |
+| `postal_code` | `string`<br />Optional | Postal code as a string with leading zeroes preserved. | `M5V 0A1` |
+| `country` | `string`<br />Optional | ISO 3166-1 alpha-2 country when established. | `CA` |
+| `raw_address` | `string`<br />Optional | Unparsed source address if structured fields are unavailable. | `123 Example Street, Toronto` |
+
+## SourceRef
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `provider_id` | `string`<br />Required | Inventory or supplemental provider identifier; AMLOK or CLIENT for internal evidence. | `BANK-02` |
+| `connection_id` | `id`<br />Optional | Authorized provider connection. | `cnn_example` |
+| `source_record_id` | `string`<br />Optional | Upstream record identifier scoped by provider, connection and record type. | `upstream_123` |
+| `source_record_type` | `string`<br />Optional | Provider object or report type. | `transaction` |
+| `source_updated_at` | `datetime`<br />Optional | Source update time; do not replace with retrieval time. | Not specified |
+| `retrieved_at` | `datetime`<br />Required | Time AMLOK retrieved this evidence. | Not specified |
+| `document_id` | `id`<br />Optional | Evidence document when applicable. | `doc_example` |
+| `source_api_version` | `string`<br />Optional | Version of provider API/schema used. | `2026-10` |
+
+## FieldProvenance
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `field_path` | `string`<br />Required | Relative path in the normalized resource. | `amount.amount` |
+| `source_ref_index` | `integer`<br />Required | Zero-based index into source\_refs. | `0` |
+| `source_field_path` | `string`<br />Optional | Actual field path or document locator. | `added[].amount` |
+| `transformation_id` | `string`<br />Optional | Versioned conversion/mapping rule. | `plaid_amount_abs_v1` |
+| `evidence_level` | `enum:evidence_level`<br />Required | Provenance class for the resulting value. | `source_record` |
+| `confidence` | `decimal`<br />Optional | Calibrated extraction or matching confidence, if available. | `null` |
+| `source_timezone` | `string`<br />Optional | Original timezone where needed to interpret local time. | `America/Toronto` |
+
+## MissingField
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `field_path` | `string`<br />Required | Unavailable relative field path. | `available.amount` |
+| `reason` | `enum:null_reason`<br />Required | Specific reason the field has no value. | `not_provided` |
+| `detail` | `string`<br />Optional | Sanitized explanation useful to the caller. | `Institution did not return available balance.` |
+
+## Identifier
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `type` | `string`<br />Required | Identifier scheme such as CA\_BN or US\_EIN. | `CA_BN` |
+| `value_token` | `string`<br />Optional | Vault token for restricted identifiers. | `tok_example` |
+| `masked_value` | `string`<br />Optional | Masked identifier for an authorized caller. | `*****1234` |
+| `country` | `string`<br />Required | Issuing country code. | `CA` |
+| `jurisdiction` | `string`<br />Optional | Registry or subdivision when necessary. | `CA-ON` |
+
+## IndustryCode
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `taxonomy` | `string`<br />Required | Classification system; NAICS, SIC, MCC, NACE or named local scheme. | `NAICS` |
+| `version` | `string`<br />Optional | Edition of the classification system. | `2022` |
+| `code` | `string`<br />Required | Identifier preserved as a string. | `332710` |
+| `description` | `string`<br />Optional | Label supplied by source or a versioned dictionary. | `Machine shops` |
+| `is_primary` | `boolean`<br />Optional | Source-designated primary industry. | `true` |
+
+## Money
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `amount` | `decimal`<br />Required | Exact decimal string in major units; signed only where field definition specifies. | `1234.56` |
+| `currency` | `string|null`<br />Required | Uppercase ISO 4217 currency when known; null blocks monetary aggregation and requires missing\_fields reason. | `CAD` |
+
+## InvoiceLine
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `id` | `string`<br />Optional | Line identifier within parent document. | `line_1` |
+| `product_id` | `id`<br />Optional | Normalized item if resolved. | `prd_example` |
+| `description` | `string`<br />Optional | Original line description. | `Consulting services` |
+| `quantity` | `decimal`<br />Optional | Line quantity in the supplied unit. | `10` |
+| `unit_of_measure` | `string`<br />Optional | Quantity unit. | `hour` |
+| `unit_price` | `Money`<br />Optional | Unit charge under document tax convention. | `{"amount":"100.00","currency":"CAD"}` |
+| `tax_amount` | `Money`<br />Optional | Line tax amount. | `{"amount":"130.00","currency":"CAD"}` |
+| `line_total` | `Money`<br />Optional | Source extended amount; retain whether tax is included. | `{"amount":"1130.00","currency":"CAD"}` |
+| `ledger_account_id` | `id`<br />Optional | Source ledger classification if exposed. | `gla_sales` |
+| `tax_code` | `string`<br />Optional | Jurisdiction-specific source tax code. | `HST_ON` |
+
+## PurchaseLine
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `product_id` | `id`<br />Optional | Ordered item. | `prd_example` |
+| `description` | `string`<br />Optional | Purchase line description. | `Components` |
+| `quantity_ordered` | `decimal`<br />Optional | Ordered quantity. | `100` |
+| `quantity_received` | `decimal`<br />Optional | Recorded received quantity. | `50` |
+| `unit_of_measure` | `string`<br />Optional | Quantity unit. | `each` |
+| `unit_price` | `Money`<br />Optional | Price per ordered unit. | `{"amount":"10.00","currency":"CAD"}` |
+| `line_total` | `Money`<br />Optional | Total ordered line amount. | `{"amount":"1000.00","currency":"CAD"}` |
+
+## ShipmentLine
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `product_id` | `id`<br />Optional | Item shipped or received. | `prd_example` |
+| `quantity` | `decimal`<br />Required | Quantity in this shipment. | `50` |
+| `unit_of_measure` | `string`<br />Required | Unit for the quantity. | `each` |
+| `order_line_id` | `id`<br />Optional | Sales line being fulfilled. | `oli_example` |
+
+## Allocation
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `resource_type` | `enum:receivable_kind`<br />Required | Type of accounting document receiving allocation. | `invoice` |
+| `resource_id` | `id`<br />Required | Normalized accounting document. | `inv_example` |
+| `amount` | `Money`<br />Required | Amount applied in the target document currency. | `{"amount":"100.00","currency":"CAD"}` |
+
+## LienParty
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `role` | `string`<br />Required | Recorded debtor, secured party, assignee or other role. | `debtor` |
+| `name` | `string`<br />Required | Party name exactly as recorded. | `Example Manufacturing Inc.` |
+| `entity_id` | `id`<br />Optional | Resolved AMLOK party only when established. | `biz_example` |
+| `address` | `Address`<br />Optional | Address in registry evidence. | `null` |
+| `source_party_id` | `string`<br />Optional | Source identifier if provided. | `null` |
+
+## Error
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `code` | `string`<br />Required | Stable machine-readable error code. | `source_unavailable` |
+| `message` | `string`<br />Required | Safe caller-facing explanation. | `The upstream source is temporarily unavailable.` |
+| `field` | `string`<br />Optional | Invalid request field when relevant. | `jurisdictions` |
+| `retryable` | `boolean`<br />Required | Whether retry may succeed without changing the request. | `true` |
+| `request_id` | `string`<br />Required | Correlation identifier for support. | `req_example` |
+
+## Page
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `next_cursor` | `string`<br />Optional | Opaque cursor for subsequent page; null after final page. | `cur_example` |
+| `has_more` | `boolean`<br />Required | Whether more authorized records remain. | `true` |
+| `limit` | `integer`<br />Required | Applied result limit, from 1 to 200 in the proposed contract. | `100` |
+
+## ResponseMeta
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `request_id` | `string`<br />Required | AMLOK request correlation ID. | `req_example` |
+| `schema_version` | `string`<br />Required | Serialization contract version. | `0.1.0-draft` |
+| `generated_at` | `datetime`<br />Required | Response generation time, not source data freshness. | Not specified |
+| `data_status` | `enum:data_status`<br />Required | Completeness of this response within its declared scope. | `partial` |
+| `coverage` | `Coverage`<br />Optional | Requested and achieved source/time coverage. | `null` |
+
+## Coverage
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `requested_from` | `date`<br />Optional | Inclusive start requested. | `2026-09-01` |
+| `requested_to` | `date`<br />Optional | Exclusive end requested. | `2026-10-01` |
+| `available_from` | `date`<br />Optional | Earliest actual coverage. | `2026-09-05` |
+| `available_to` | `date`<br />Optional | Exclusive end of actual coverage. | `2026-10-01` |
+| `source_ids[]` | `array<string>`<br />Required | Sources actually contributing. | `["BANK-02"]` |
+| `missing_intervals[]` | `array<Interval>`<br />Required | Known gaps within requested scope. | `[]` |
+| `jurisdictions_completed[]` | `array<string>`<br />Optional | Completed geographic search scope when applicable. | `["US-DE"]` |
+
+## Interval
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `from` | `date`<br />Required | Inclusive interval start. | `2026-09-01` |
+| `to` | `date`<br />Required | Exclusive interval end. | `2026-09-05` |
+
+## WebhookEvent
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `id` | `id`<br />Required | Globally unique event ID within tenant for deduplication. | `evt_example` |
+| `type` | `string`<br />Required | Event key in the Events tab. | `verification.completed` |
+| `created_at` | `datetime`<br />Required | Event creation time. | Not specified |
+| `schema_version` | `string`<br />Required | Webhook contract version. | `0.1.0-draft` |
+| `resource_type` | `string`<br />Required | Type of changed object. | `verification` |
+| `resource_id` | `id`<br />Required | Object to retrieve for full authorized detail. | `ver_example` |
+| `resource_version` | `integer`<br />Required | Version that triggered the event. | `2` |
+| `data` | `JSON`<br />Required | Minimal event details; sensitive evidence retrieved separately. | `{"status":"approved"}` |
+
+## Action
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `type` | `string`<br />Required | Next applicant interaction such as authorize\_connection. | `authorize_connection` |
+| `url` | `string`<br />Required | Short-lived authorized HTTPS interaction URL. | `https://connect.example.com/session` |
+| `expires_at` | `datetime`<br />Required | Expiry of interaction URL. | Not specified |
+
+## DownloadLink
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `document_id` | `id`<br />Required | Evidence document requested. | `doc_example` |
+| `url` | `string`<br />Required | Short-lived signed download URL returned only to an authorized caller. | `https://evidence.example.com/temporary` |
+| `expires_at` | `datetime`<br />Required | Expiry of download capability. | Not specified |
+
+## CalculationJob
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `id` | `id`<br />Required | Calculation job identifier. | `calc_example` |
+| `status` | `enum:sync_status`<br />Required | Calculation execution state. | `queued` |
+| `subject_id` | `id`<br />Required | Subject assessed. | `biz_example` |
+| `attribute_ids[]` | `array<id>`<br />Required | Resulting values, including unavailable outputs. | `[]` |
+| `errors[]` | `array<Error>`<br />Required | Calculation failures. | `[]` |
+
+## WebhookEndpoint
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `id` | `id`<br />Required | Tenant event destination identifier. | `whk_example` |
+| `url` | `string`<br />Required | Validated HTTPS delivery destination. | `https://client.example.com/amlok-events` |
+| `event_types[]` | `array<string>`<br />Required | Subscribed event keys. | `["verification.completed"]` |
+| `status` | `string`<br />Required | active or disabled. | `active` |
+| `secret` | `string`<br />Conditional | Signing secret returned once at creation only; omitted thereafter. | `<generated-once>` |
+
+## WebhookReplay
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `event_id` | `id`<br />Required | Original event being redelivered. | `evt_example` |
+| `endpoint_id` | `id`<br />Required | Authorized destination. | `whk_example` |
+| `status` | `string`<br />Required | queued, delivered or failed. | `queued` |
+
+## DeletionJob
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `id` | `id`<br />Required | Deletion request identifier. | `del_example` |
+| `subject_id` | `id`<br />Required | Subject whose records are being processed. | `biz_example` |
+| `status` | `enum:sync_status`<br />Required | Processing state, with partial for retained/blocked scopes. | `queued` |
+| `held_scopes[]` | `array<string>`<br />Required | Scopes retained by legal hold or policy. | `[]` |
+| `provider_propagation_status` | `string`<br />Required | pending, completed, partial or not\_supported. | `pending` |
+| `errors[]` | `array<Error>`<br />Required | Failures requiring attention. | `[]` |
+
+## ProviderCapability
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `provider_id` | `string`<br />Required | Configured integration ID. | `BANK-02` |
+| `resources[]` | `array<string>`<br />Required | Resources actually enabled for this tenant. | `["bank_account","bank_transaction"]` |
+| `countries[]` | `array<string>`<br />Required | Validated country availability for this entitlement. | `["CA"]` |
+| `status` | `string`<br />Required | enabled, unavailable or pending\_setup. | `enabled` |
+| `limitations[]` | `array<string>`<br />Required | Account/product-specific constraints. | `[]` |
+
+## ChangePage
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `data[]` | `array<Change>`<br />Required | Ordered authorized normalized changes. | `[]` |
+| `page` | `Page`<br />Required | Tenant-scoped continuation information. | `{"next_cursor":null,"has_more":false,"limit":100}` |
+| `meta` | `ResponseMeta`<br />Required | Response context and completeness. | `null` |
+
+## Change
+
+| Field | Type / presence | Definition | Example |
+| --- | --- | --- | --- |
+| `resource_type` | `string`<br />Required | Changed resource type. | `bank_transaction` |
+| `resource_id` | `id`<br />Required | Changed resource ID. | `btx_example` |
+| `resource_version` | `integer`<br />Required | Version changed. | `2` |
+| `action` | `enum:event_action`<br />Required | created, updated or deleted. | `updated` |
+| `changed_at` | `datetime`<br />Required | AMLOK change timestamp. | Not specified |
+
