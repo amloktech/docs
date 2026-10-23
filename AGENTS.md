@@ -32,7 +32,7 @@
 
 - Maintain availability, beta labels, and documented markets in `data/integration-status.json`.
 - After updating the catalog data or table template, run `node scripts/sync-integration-status.mjs` to synchronize the table, provider pages, and provider coverage.
-- Leave unconfirmed markets empty. Integration availability does not verify the draft field and resource mappings.
+- Use US and CA as the default markets, as confirmed by the AMLOK team. Keep country-specific providers and catalog editions scoped to their applicable country. Integration availability does not verify the draft field and resource mappings.
 
 ## Content boundaries
 

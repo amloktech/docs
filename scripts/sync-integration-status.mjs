@@ -9,7 +9,7 @@ const { integrations } = JSON.parse(await read("data/integration-status.json"));
 const states = ["In Review", "On Roadmap", "In Progress", "Active"];
 const ids = new Set();
 for (const integration of integrations) {
-  if (ids.has(integration.id) || !states.includes(integration.status) || integration.markets.some((market) => !["US", "CA"].includes(market)) || (integration.beta && integration.status !== "Active")) throw new Error(`Invalid integration: ${integration.id}`);
+  if (ids.has(integration.id) || !states.includes(integration.status) || !integration.markets.length || integration.markets.some((market) => !["US", "CA"].includes(market)) || (integration.beta && integration.status !== "Active")) throw new Error(`Invalid integration: ${integration.id}`);
   ids.add(integration.id);
 }
 const component = (await read("scripts/integration-status-table.template.jsx")).replace("/* INTEGRATION_DATA */ []", JSON.stringify(integrations));

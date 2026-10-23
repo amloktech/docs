@@ -11,7 +11,7 @@ export const IntegrationStatusTable = () => {
   const search = normalize(query);
   const filtered = integrations.filter((integration) => {
     const matchesSearch = !search || normalize([integration.name, integration.id, ...integration.aliases].join(" ")).includes(search);
-    const matchesMarket = market === "all" || (market === "unconfirmed" ? integration.markets.length === 0 : integration.markets.includes(market));
+    const matchesMarket = market === "all" || integration.markets.includes(market);
     return matchesSearch && matchesMarket && (status === "all" || integration.status === status);
   });
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
@@ -50,7 +50,7 @@ export const IntegrationStatusTable = () => {
         <div className="amlok-status-select">
           <label htmlFor="integration-market">Market</label>
           <select id="integration-market" value={market} onChange={(event) => { setMarket(event.target.value); setPage(1); }} aria-controls="integration-status-table">
-            <option value="all">All markets</option><option value="US">US</option><option value="CA">CA</option><option value="unconfirmed">To be confirmed</option>
+            <option value="all">All markets</option><option value="US">US</option><option value="CA">CA</option>
           </select>
         </div>
         <div className="amlok-status-select">
@@ -74,7 +74,7 @@ export const IntegrationStatusTable = () => {
             {visible.map((integration) => (
               <tr key={integration.id}>
                 <th scope="row"><a href={integration.href}>{integration.name}<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10" /></svg></a><span className="amlok-status-category">{integration.category}</span></th>
-                <td>{integration.markets.length ? <span className="amlok-status-markets">{integration.markets.map((value) => <span key={value} className="amlok-status-market">{value}</span>)}</span> : <span className="amlok-status-unconfirmed">To be confirmed</span>}</td>
+                <td><span className="amlok-status-markets">{integration.markets.map((value) => <span key={value} className="amlok-status-market">{value}</span>)}</span></td>
                 <td><span className="amlok-status-badges"><span className={`amlok-status-badge amlok-status-${statusClasses[integration.status]}`}><span aria-hidden="true" className="amlok-status-dot" />{integration.status}</span>{integration.beta && <span className="amlok-status-beta">Beta</span>}</span></td>
               </tr>
             ))}
