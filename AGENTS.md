@@ -28,6 +28,12 @@
 - Bold for UI elements: Click **Settings**
 - Code formatting for file names, commands, paths, and code references
 
+## Integration status
+
+- Maintain availability, beta labels, and documented markets in `data/integration-status.json`.
+- After updating the catalog data or table template, run `node scripts/sync-integration-status.mjs` to synchronize the table, provider pages, and provider coverage.
+- Leave unconfirmed markets empty. Integration availability does not verify the draft field and resource mappings.
+
 ## Content boundaries
 
 {/* Define what should and shouldn't be documented */}

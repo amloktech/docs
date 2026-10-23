@@ -121,3 +121,96 @@
 @media (prefers-reduced-motion: reduce) {
   .amlok-entry-card { transition: none; }
 }
+
+/* Searchable integration availability. */
+.amlok-status {
+  --status-ink: #172238;
+  --status-muted: #56647a;
+  --status-blue: #052698;
+  --status-border: #dce4f1;
+  --status-surface: #ffffff;
+  --status-soft: #f5f8fe;
+  --status-active: #146345;
+  --status-active-bg: #eaf7ef;
+  margin: 28px 0 36px;
+  color: var(--status-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.dark .amlok-status {
+  --status-ink: #edf3ff;
+  --status-muted: #afbdd2;
+  --status-blue: #a8c2ff;
+  --status-border: #2a3c59;
+  --status-surface: #101b2c;
+  --status-soft: #15243c;
+  --status-active: #8ee2b5;
+  --status-active-bg: #16352c;
+}
+.amlok-status button, .amlok-status input, .amlok-status select { font: inherit; }
+.amlok-status button { cursor: pointer; }
+.amlok-status button:focus-visible, .amlok-status input:focus-visible, .amlok-status select:focus-visible, .amlok-status a:focus-visible { outline: 2px solid var(--status-blue); outline-offset: 3px; }
+.amlok-status-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 28px; }
+.amlok-status .amlok-status-metric { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; padding: 18px 20px; text-align: left; color: var(--status-muted); background: var(--status-surface); border: 1px solid var(--status-border); border-radius: 10px; }
+.amlok-status .amlok-status-metric > span { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; font-size: 12px; font-weight: 500; }
+.amlok-status .amlok-status-metric strong { color: var(--status-ink); font-size: 28px; line-height: 1; font-weight: 600; letter-spacing: -.035em; }
+.amlok-status .amlok-status-metric:hover, .amlok-status .amlok-status-metric[aria-pressed="true"] { border-color: var(--status-blue); background: var(--status-soft); }
+.amlok-status-filters { display: grid; grid-template-columns: minmax(0, 2fr) minmax(140px, 1fr) minmax(140px, 1fr); gap: 12px; }
+.amlok-status label { display: block; margin-bottom: 7px; color: var(--status-ink); font-size: 12px; font-weight: 500; }
+.amlok-status-search-input { position: relative; }
+.amlok-status-search-input > svg { position: absolute; left: 12px; top: 13px; color: var(--status-muted); pointer-events: none; }
+.amlok-status input, .amlok-status select { display: block; width: 100%; min-width: 0; height: 44px; color: var(--status-ink); background: var(--status-surface); border: 1px solid var(--status-border); border-radius: 7px; }
+.amlok-status input { padding: 9px 12px 9px 38px; }
+.amlok-status input::placeholder { color: var(--status-muted); opacity: 1; }
+.amlok-status select { padding: 9px 28px 9px 12px; }
+.amlok-status-results { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 53px; color: var(--status-muted); font-size: 12px; }
+.amlok-status-results p { margin: 0; }
+.amlok-status .amlok-status-reset { padding: 8px 0; color: var(--status-blue); font-size: 12px; font-weight: 500; background: transparent; border: 0; text-decoration: underline; text-underline-offset: 3px; }
+.amlok-status-table-wrap { overflow: hidden; border: 1px solid var(--status-border); border-radius: 10px; background: var(--status-surface); }
+.amlok-status table { display: table; width: 100%; margin: 0; table-layout: fixed; border-collapse: collapse; font-size: 13px; line-height: 1.5; }
+.amlok-status th, .amlok-status td { padding: 17px 18px; text-align: left; vertical-align: middle; border-bottom: 1px solid var(--status-border); }
+.amlok-status thead th { color: var(--status-muted); background: var(--status-soft); font-size: 11px; font-weight: 600; letter-spacing: .025em; }
+.amlok-status thead th:first-child { width: 49%; }
+.amlok-status thead th:nth-child(2) { width: 23%; }
+.amlok-status thead th:nth-child(3) { width: 28%; }
+.amlok-status tbody th { font-weight: 500; }
+.amlok-status tbody tr:last-child > * { border-bottom: 0; }
+.amlok-status tbody tr:hover { background: var(--status-soft); }
+.amlok-status tbody a { display: inline; color: var(--status-ink); text-decoration: none; overflow-wrap: anywhere; }
+.amlok-status tbody a:hover { color: var(--status-blue); text-decoration: underline; text-underline-offset: 3px; }
+.amlok-status tbody a svg { display: inline-block; margin-left: 6px; vertical-align: -2px; color: var(--status-muted); }
+.amlok-status-category { display: block; margin-top: 3px; color: var(--status-muted); font-size: 11px; font-weight: 400; }
+.amlok-status-markets, .amlok-status-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.amlok-status-market { color: var(--status-muted); font-size: 11px; padding: 2px 6px; border: 1px solid var(--status-border); border-radius: 4px; }
+.amlok-status-unconfirmed { color: var(--status-muted); font-size: 11px; }
+.amlok-status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+.amlok-status-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.amlok-status-active { color: var(--status-active); background: var(--status-active-bg); }
+.amlok-status-review { color: var(--status-muted); background: var(--status-soft); border: 1px solid var(--status-border); }
+.amlok-status-roadmap { color: var(--status-blue); background: var(--status-soft); }
+.amlok-status-progress { color: #805b00; background: #fff5d4; }
+.dark .amlok-status-progress { color: #f4cf7d; background: #3a3018; }
+.amlok-status-beta { display: inline-block; color: var(--status-blue); padding: 1px 5px; border: 1px solid var(--status-border); border-radius: 4px; font-size: 10px; line-height: 1.5; font-weight: 500; }
+.amlok-status .amlok-status-empty { padding: 48px 20px; text-align: center; }
+.amlok-status-empty strong, .amlok-status-empty > span { display: block; }
+.amlok-status-empty > span { margin: 8px 0; color: var(--status-muted); }
+.amlok-status-pagination { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; color: var(--status-muted); font-size: 12px; }
+.amlok-status-pagination > div { display: flex; gap: 8px; }
+.amlok-status-pagination button { min-height: 36px; padding: 7px 13px; color: var(--status-ink); background: var(--status-surface); border: 1px solid var(--status-border); border-radius: 6px; }
+.amlok-status-pagination button:hover:not(:disabled) { border-color: var(--status-blue); }
+.amlok-status-pagination button:disabled { opacity: .45; cursor: default; }
+.amlok-status-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 640px) {
+  .amlok-status-summary { gap: 8px; margin-bottom: 22px; }
+  .amlok-status .amlok-status-metric { gap: 10px; padding: 13px 10px; }
+  .amlok-status .amlok-status-metric > span { min-height: 36px; align-content: center; font-size: 11px; }
+  .amlok-status .amlok-status-metric strong { font-size: 25px; }
+  .amlok-status-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .amlok-status-search { grid-column: 1 / -1; }
+  .amlok-status th, .amlok-status td { padding: 13px 9px; }
+  .amlok-status thead th:first-child { width: 43%; }
+  .amlok-status thead th:nth-child(2) { width: 25%; }
+  .amlok-status thead th:nth-child(3) { width: 32%; }
+  .amlok-status table { font-size: 12px; }
+  .amlok-status-badge { padding: 3px 6px; gap: 4px; font-size: 10px; }
+}
