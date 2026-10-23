@@ -87,9 +87,6 @@ for (const c of cases) {
         for language,code in re.findall(r'```(\w+)\n(.*?)\n```',text,re.S):
             check_sample(language,code);counts['guideCodeBlocks']+=1
 
-for filename in ['verify-webhook.mjs','verify_webhook.py']:
-    assert (ROOT/'downloads'/filename).read_bytes() == (ROOT/'downloads'/(filename+'.txt')).read_bytes()
-
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
 assert sum(len(group['item']) for group in collection['item'])==164
 variables={item['key']:item['value'] for item in collection['variable']}

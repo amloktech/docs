@@ -519,8 +519,6 @@ Retrieve the authoritative resource after an event. Use `resource_version` to av
 
 node_verifier=(ROOT/'downloads/verify-webhook.mjs').read_text()
 python_verifier=(ROOT/'downloads/verify_webhook.py').read_text()
-(ROOT/'downloads/verify-webhook.mjs.txt').write_text(node_verifier)
-(ROOT/'downloads/verify_webhook.py.txt').write_text(python_verifier)
 write('webhooks','Webhooks and signatures','Verify raw-body signatures and consume events with durable deduplication.', '''
 ## Register an event destination
 
@@ -780,11 +778,11 @@ write('downloads','Downloads and developer tools','Use the machine-readable cont
 <CardGroup cols={2}>
   <Card title="OpenAPI 3.1 contract" icon="file-json" href="/openapi/amlok-v1.json">164 operations, resource schemas, authentication, examples, and the webhook envelope.</Card>
   <Card title="Postman collection" icon="send" href="/downloads/amlok-api.postman_collection.json">Requests grouped by domain with synthetic saved responses.</Card>
-  <Card title="Node.js webhook verifier" icon="file-code" href="/downloads/verify-webhook.mjs.txt">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
-  <Card title="Python webhook verifier" icon="file-code" href="/downloads/verify_webhook.py.txt">Verify the same signature format using the Python standard library.</Card>
+  <Card title="Node.js webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/8dafc008f856e0ade39292d6f2df974f5f9b4ccb/downloads/verify-webhook.mjs">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
+  <Card title="Python webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/8dafc008f856e0ade39292d6f2df974f5f9b4ccb/downloads/verify_webhook.py">Verify the same signature format using the Python standard library.</Card>
 </CardGroup>
 
-The webhook source files are served as plain text. Save them as `verify-webhook.mjs` or `verify_webhook.py`, removing the final `.txt` extension before importing them.
+The webhook helpers link to versioned source files. Save the Node.js helper as `verify-webhook.mjs` and the Python helper as `verify_webhook.py`.
 
 ## Import the Postman collection
 
