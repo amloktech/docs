@@ -1,0 +1,302 @@
+{
+  "reviewedAt": "2026-10-23",
+  "scope": "Provider capabilities for Active integrations. AMLOK schedules are deployment-specific.",
+  "integrations": [
+    {
+      "id": "PAY-02",
+      "cadence": "On supported events; API reads for reconciliation.",
+      "method": "Stripe emits webhooks when supported payment, refund, dispute, and payout events occur. API reads retrieve the corresponding resources; there is no single recurring refresh interval for all payment data.",
+      "conditions": "Event delivery can be delayed, duplicated, or out of order. Settlement and funds availability follow the payment lifecycle, so an event does not imply funds have settled.",
+      "sources": [
+        {
+          "title": "Stripe webhooks",
+          "url": "https://docs.stripe.com/webhooks"
+        },
+        {
+          "title": "Stripe event types",
+          "url": "https://docs.stripe.com/api/events/types"
+        }
+      ]
+    },
+    {
+      "id": "PAY-03",
+      "cadence": "Event notifications typically within 60 seconds.",
+      "method": "Square typically sends webhook notifications within 60 seconds of a supported event. Authorized API reads can retrieve the associated payment, order, inventory, or other supported resource.",
+      "conditions": "This is Square's typical notification timing, not an AMLOK end-to-end delivery guarantee. Failed deliveries may be retried for up to 24 hours; event subscriptions require the relevant permissions.",
+      "sources": [
+        {
+          "title": "Square webhook troubleshooting",
+          "url": "https://developer.squareup.com/docs/webhooks/troubleshooting"
+        },
+        {
+          "title": "Square webhook events",
+          "url": "https://developer.squareup.com/reference/square/webhooks"
+        }
+      ]
+    },
+    {
+      "id": "PAY-17",
+      "cadence": "After supported card-transaction events.",
+      "method": "Helcim sends a webhook after a supported card transaction is processed. The notification identifies the transaction; the Card Transaction API supplies its full details.",
+      "conditions": "Webhooks must be enabled for the required events. Delivery retries can delay updates. The card-transaction event does not establish a recurring refresh interval for every Helcim resource.",
+      "sources": [
+        {
+          "title": "Helcim webhooks",
+          "url": "https://devdocs.helcim.com/docs/webhooks"
+        }
+      ]
+    },
+    {
+      "id": "ECOM-01",
+      "cadence": "Near-real-time notifications for subscribed topics.",
+      "method": "Shopify provides near-real-time webhooks for subscribed topics such as orders, refunds, and inventory changes. Its APIs support follow-up retrieval and periodic reconciliation.",
+      "conditions": "Shopify does not guarantee webhook delivery or ordering. Reconciliation is needed for missed events; available topics, protected data access, and API throttling depend on the app and shop.",
+      "sources": [
+        {
+          "title": "Shopify webhooks and reconciliation",
+          "url": "https://shopify.dev/docs/apps/build/webhooks"
+        }
+      ]
+    },
+    {
+      "id": "ECOM-02",
+      "cadence": "On supported changes; delivery depends on the store.",
+      "method": "WooCommerce supports webhooks for changes to orders, products, customers, and coupons. Notifications are delivered through the store's background processing; API reads can reconcile supported resources.",
+      "conditions": "Store hosting, background jobs, plugins, and webhook health affect delivery time. Webhooks can be disabled after repeated failures. There is no universal minute-based refresh promise across WooCommerce stores.",
+      "sources": [
+        {
+          "title": "WooCommerce webhooks",
+          "url": "https://developer.woocommerce.com/docs/best-practices/urls-and-routing/webhooks"
+        },
+        {
+          "title": "WooCommerce webhook delivery",
+          "url": "https://developer.woocommerce.com/docs/apis/rest-api/v2/webhooks"
+        }
+      ]
+    },
+    {
+      "id": "ECOM-48",
+      "cadence": "On supported order, listing, and inventory events.",
+      "method": "Etsy provides webhooks for supported order, listing, and inventory events. Subscribed events can prompt retrieval of the relevant authorized API resources.",
+      "conditions": "Event coverage is specific: an inventory event is not a notification for every possible stock change. App authorization, scopes, and the supported event list determine coverage. Other data requires scheduled API reads within the app's limits.",
+      "sources": [
+        {
+          "title": "Etsy webhook events",
+          "url": "https://developer.etsy.com/documentation/essentials/webhooks/"
+        }
+      ]
+    },
+    {
+      "id": "ACC-01",
+      "cadence": "On supported entity changes; CDC for reconciliation.",
+      "method": "QuickBooks Online supports entity-change webhooks and Change Data Capture (CDC). Intuit recommends CDC reconciliation after missed events and suggests a daily CDC call for required entities.",
+      "conditions": "The daily CDC check is an Intuit integration recommendation, not a statement that all data updates only daily. Notifications can be delayed or out of sequence; coverage depends on the entities and permissions enabled.",
+      "sources": [
+        {
+          "title": "Intuit webhook best practices",
+          "url": "https://static.developer.intuit.com/output_html/qbo/docs/develop/webhooks/best-practices.html"
+        }
+      ]
+    },
+    {
+      "id": "ACC-02",
+      "cadence": "At the configured Web Connector interval or manual run.",
+      "method": "QuickBooks Desktop Web Connector initiates scheduled or manual exchanges with the authorized company file. Its normal user interface supports update intervals of one minute or longer; the service can enforce a higher minimum.",
+      "conditions": "The connector must be running and able to access the company file. A configured interval is the minimum time between connections, not a completion guarantee. Confirm compatibility with the installed Canadian edition.",
+      "sources": [
+        {
+          "title": "Intuit Web Connector programmer guide",
+          "url": "https://static.developer.intuit.com/resources/QBWC_proguide.pdf"
+        },
+        {
+          "title": "Intuit Web Connector overview",
+          "url": "https://static.developer.intuit.com/output_html/qbdesktop/docs/get-started/get-started-with-quickbooks-web-connector.html"
+        }
+      ]
+    },
+    {
+      "id": "ACC-03",
+      "cadence": "On supported webhook events; API reads for other data.",
+      "method": "Xero supports app-level webhook subscriptions for supported event categories across connected organizations. The applicable API supplies the resources needed after a notification or during a scheduled read.",
+      "conditions": "Webhook coverage does not include every accounting resource. Retry or disabled subscriptions can delay delivery, and API access and limits govern reconciliation. Confirm the categories used by your connected organization.",
+      "sources": [
+        {
+          "title": "Xero webhook overview",
+          "url": "https://developer.xero.com/documentation/guides/webhooks/overview"
+        }
+      ]
+    },
+    {
+      "id": "ACC-07",
+      "cadence": "On supported accounting events.",
+      "method": "FreshBooks sends callbacks for subscribed events, including supported invoice, payment, expense, and client changes made through its application or API. These events can prompt an authorized resource read.",
+      "conditions": "The webhook must be verified and have the required scopes. Supported events do not define a fixed refresh interval for every report or accounting resource; remaining reads follow the configured schedule.",
+      "sources": [
+        {
+          "title": "FreshBooks webhook callbacks",
+          "url": "https://www.freshbooks.com/api/webhooks"
+        }
+      ]
+    },
+    {
+      "id": "ACC-08",
+      "cadence": "On supported invoice, estimate, and checkout events.",
+      "method": "Wave supports webhooks for selected invoice, estimate, and checkout events. Receiving webhooks requires an authorized Pro account and the appropriate OAuth scopes.",
+      "conditions": "These notifications do not represent every ledger or bank-feed change. Other accessible resources require API retrieval on the configured schedule. Missing scopes prevent delivery for the affected business.",
+      "sources": [
+        {
+          "title": "Wave webhook setup and event coverage",
+          "url": "https://developer.waveapps.com/hc/en-us/articles/51070420388628-Webhooks-Setup-Guide"
+        }
+      ]
+    },
+    {
+      "id": "ACC-09",
+      "cadence": "When configured workflow rules trigger.",
+      "method": "Zoho Books supports outgoing webhooks associated with workflow rules. Matching events can notify the integration; authorized API reads retrieve supported records and reconcile changes.",
+      "conditions": "The organization's enabled modules, workflow criteria, permissions, and API limits determine coverage and timing. Workflow notifications are not a universal change feed for every accounting record.",
+      "sources": [
+        {
+          "title": "Zoho Books webhooks API",
+          "url": "https://www.zoho.com/books/api/v3/webhooks/"
+        },
+        {
+          "title": "Zoho Books workflow automation",
+          "url": "https://www.zoho.com/in/books/accounting-software/accounting-automation/"
+        }
+      ]
+    },
+    {
+      "id": "INV-32",
+      "cadence": "When event-based or scheduled workflow rules trigger.",
+      "method": "Zoho Inventory supports workflow webhooks with immediate or time-based actions. Delivery is triggered when the configured rule criteria are met; API reads provide supported resource data.",
+      "conditions": "The workflow configuration determines which modules and changes produce notifications. Scheduled actions follow the chosen execution time. Reconciliation and other reads must respect the organization's API permissions and limits.",
+      "sources": [
+        {
+          "title": "Zoho Inventory workflow automation",
+          "url": "https://www.zoho.com/us/inventory/help/settings/automation.html"
+        }
+      ]
+    },
+    {
+      "id": "INV-06",
+      "cadence": "On configured automation events or scheduled API reads.",
+      "method": "Odoo automation rules can send webhook notifications to external services. Its external API supports authorized record reads; synchronization timing depends on the installed version and deployment configuration.",
+      "conditions": "Odoo Online external API access requires an eligible Custom plan. The enabled modules, automation triggers, hosting, and scheduled jobs determine timing. A self-hosted or customized deployment can have different capabilities.",
+      "sources": [
+        {
+          "title": "Odoo 19 automation rules",
+          "url": "https://www.odoo.com/documentation/19.0/applications/studio/automated_actions.html"
+        },
+        {
+          "title": "Odoo 19 external API access",
+          "url": "https://www.odoo.com/documentation/19.0/developer/reference/external_rpc_api.html"
+        }
+      ]
+    },
+    {
+      "id": "BANK-01",
+      "cadence": "Nightly for eligible connections; manual refresh when supported.",
+      "method": "Flinks supports a daily scheduled refresh for eligible saved connections when scheduled refresh is enabled. Its published nightly job window is 04:00-08:00 UTC. An uncached authorization flow can request a manual refresh.",
+      "conditions": "Eligibility depends on institution coverage, connection health, and applicable activity requirements. Some institutions do not support nightly refresh. MFA or credential changes can require the customer to reconnect; the nightly window is not a completion guarantee.",
+      "sources": [
+        {
+          "title": "Flinks nightly refresh requirements and routine",
+          "url": "https://help.flinks.com/support/solutions/articles/43000637682-nightly-refreshes"
+        }
+      ]
+    },
+    {
+      "id": "BANK-02",
+      "cadence": "Typically 1-4 transaction updates per day.",
+      "method": "Plaid typically checks transactions 1-4 times daily, depending on the institution. The `SYNC_UPDATES_AVAILABLE` webhook signals changes that can be retrieved with `/transactions/sync`.",
+      "conditions": "On-demand `/transactions/refresh` requires the separately enabled add-on and supported accounts. Reading cached data does not refresh the bank connection. Timing varies by institution and connection health.",
+      "sources": [
+        {
+          "title": "Plaid Transactions API",
+          "url": "https://plaid.com/docs/api/products/transactions/"
+        }
+      ]
+    },
+    {
+      "id": "BANK-13",
+      "cadence": "Typically 1-4 transaction updates per day.",
+      "method": "Plaid typically checks transactions 1-4 times daily, depending on the institution. The `SYNC_UPDATES_AVAILABLE` webhook signals changes that can be retrieved with `/transactions/sync`.",
+      "conditions": "On-demand `/transactions/refresh` requires the separately enabled add-on and supported accounts. Reading cached data does not refresh the bank connection. Timing varies by institution and connection health.",
+      "sources": [
+        {
+          "title": "Plaid Transactions API",
+          "url": "https://plaid.com/docs/api/products/transactions/"
+        }
+      ]
+    },
+    {
+      "id": "BANK-10",
+      "cadence": "Daily subscribed transaction refresh; eligible on-demand requests.",
+      "method": "Stripe Financial Connections refreshes transactions daily while an eligible active account is subscribed. A completion event reports the refresh result, after which transactions can be retrieved.",
+      "conditions": "On-demand transaction refreshes must respect `transaction_refresh.next_refresh_available_at`. Inactive accounts cannot refresh. This daily cadence applies to subscribed transactions; balance and ownership are separate refresh features.",
+      "sources": [
+        {
+          "title": "Stripe transaction refreshes",
+          "url": "https://docs.stripe.com/financial-connections/transactions"
+        },
+        {
+          "title": "Stripe account refresh features",
+          "url": "https://docs.stripe.com/api/financial_connections/accounts/refresh"
+        }
+      ]
+    },
+    {
+      "id": "BANK-04",
+      "cadence": "Approximately every 24 hours when background aggregation is enabled.",
+      "method": "MX normally performs background aggregation about every 24 hours for eligible members. The source must allow it, and connection state and recent aggregation history affect eligibility.",
+      "conditions": "Foreground aggregation requires the end user to be present. MX does not permit a new aggregation within three hours of a successful one. Disabled users, suspended connections, MFA, and institution restrictions can prevent refreshes.",
+      "sources": [
+        {
+          "title": "MX account aggregation",
+          "url": "https://docs.mx.com/products/connectivity/account-aggregation/index"
+        }
+      ]
+    },
+    {
+      "id": "BANK-03",
+      "cadence": "Once daily for active accounts; restricted on-demand refresh.",
+      "method": "Finicity automatically refreshes active accounts once per day. Its Refresh Customer Accounts endpoint allows a customer-specific refresh for a concrete business need, subject to product access.",
+      "conditions": "The documented service prohibits automating calls to its Refresh endpoints. Additional refresh use must be agreed with the provider; repeated API reads do not force a new institution refresh. Availability also depends on the billing tier.",
+      "sources": [
+        {
+          "title": "Mastercard official Refresh Customer Accounts reference",
+          "url": "https://www.postman.com/mastercard/mastercard-open-finance/request/zy0586e/refresh-customer-accounts"
+        }
+      ]
+    },
+    {
+      "id": "LEND-01",
+      "cadence": "Deployment-specific; agreed with the institution.",
+      "method": "nCino exposes product-specific APIs across its platform. The lender's installed product, permitted objects, and integration configuration determine whether the connection uses supported notifications, scheduled reads, or an initiated workflow.",
+      "conditions": "The public developer portal does not establish one refresh interval across all nCino products. Confirm the applicable API, event support, and approved schedule during onboarding; a mortgage-product capability must not be assumed for a business-banking deployment.",
+      "sources": [
+        {
+          "title": "nCino developer platform",
+          "url": "https://developer.ncino.com/"
+        }
+      ]
+    },
+    {
+      "id": "LEND-23",
+      "cadence": "Workflow-specific; agreed for the connected decision flow.",
+      "method": "The refresh arrangement follows the institution's Taktile decision-flow integration and the freshness of its inputs. Confirm the supported invocation, result-delivery method, and repeat-execution schedule for the connected flow.",
+      "conditions": "Detailed API documentation requires customer access. The public reference does not establish a universal polling or refresh interval. A new decision execution does not by itself guarantee that an upstream financial-data source has refreshed.",
+      "sources": [
+        {
+          "title": "Taktile documentation access",
+          "url": "https://taktile.com/docs-help-center"
+        },
+        {
+          "title": "Taktile customer documentation",
+          "url": "https://docs.taktile.com/"
+        }
+      ]
+    }
+  ]
+}

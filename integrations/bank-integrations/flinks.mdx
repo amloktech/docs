@@ -25,6 +25,20 @@ Customer onboarding and production-instance credentials are required. Open-banki
 
 **Documentation availability:** Public API documentation and Connect guides.
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** Nightly for eligible connections; manual refresh when supported.
+
+Flinks supports a daily scheduled refresh for eligible saved connections when scheduled refresh is enabled. Its published nightly job window is 04:00-08:00 UTC. An uncached authorization flow can request a manual refresh.
+
+Eligibility depends on institution coverage, connection health, and applicable activity requirements. Some institutions do not support nightly refresh. MFA or credential changes can require the customer to reconnect; the nightly window is not a completion guarantee.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Flinks nightly refresh requirements and routine](https://help.flinks.com/support/solutions/articles/43000637682-nightly-refreshes).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -41,7 +55,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Canada use case in inventory; institution/account validation required. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | Nightly for eligible connections; manual refresh when supported. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

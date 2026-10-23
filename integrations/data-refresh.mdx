@@ -1,0 +1,90 @@
+---
+title: "Data refresh"
+description: "Provider update capabilities and data freshness for Active AMLOK integrations."
+---
+
+Data freshness depends on when a source publishes a change, how its API exposes it, and when the configured AMLOK synchronization retrieves and processes it. This guide covers **Active integrations**, including those marked **Beta** in the [integration status catalog](/integrations/status).
+
+<Note>
+The timings below describe **provider capabilities**. Your AMLOK refresh mode and schedule are agreed for the connection, product, and workflow. A provider's typical interval or webhook timing is not an AMLOK delivery SLA.
+</Note>
+
+## How updates reach AMLOK
+
+| Update method | What it means |
+| --- | --- |
+| Event notifications | A supported source change triggers a webhook. The event may prompt a resource read; delivery and processing can take time. |
+| Scheduled source refresh | The provider refreshes its own copy of institution data on a schedule. AMLOK can retrieve the latest successful result. |
+| Scheduled API reads | A configured synchronization checks the API periodically. Reading an API more often does not necessarily refresh its upstream data. |
+| On-demand or workflow-based | An authorized request, desktop connector, or decision workflow initiates an exchange. Permissions, user interaction, and provider restrictions still apply. |
+
+## Provider refresh capabilities
+
+Open an integration for its scope, requirements, and detailed refresh notes. Official provider references are linked in each row.
+
+### Payments and POS
+
+| Integration | Provider update cadence | Official reference |
+| --- | --- | --- |
+| [Helcim](/integrations/payments-and-pos/helcim#data-refresh) | After supported card-transaction events. | [Provider documentation](https://devdocs.helcim.com/docs/webhooks) |
+| [Square](/integrations/payments-and-pos/square#data-refresh) | Event notifications typically within 60 seconds. | [Provider documentation](https://developer.squareup.com/docs/webhooks/troubleshooting) |
+| [Stripe](/integrations/payments-and-pos/stripe#data-refresh) | On supported events; API reads for reconciliation. | [Provider documentation](https://docs.stripe.com/webhooks) |
+
+### Ecommerce
+
+| Integration | Provider update cadence | Official reference |
+| --- | --- | --- |
+| [Etsy](/integrations/ecommerce/etsy#data-refresh) | On supported order, listing, and inventory events. | [Provider documentation](https://developer.etsy.com/documentation/essentials/webhooks/) |
+| [Shopify](/integrations/ecommerce/shopify#data-refresh) | Near-real-time notifications for subscribed topics. | [Provider documentation](https://shopify.dev/docs/apps/build/webhooks) |
+| [WooCommerce](/integrations/ecommerce/woocommerce#data-refresh) | On supported changes; delivery depends on the store. | [Provider documentation](https://developer.woocommerce.com/docs/best-practices/urls-and-routing/webhooks) |
+
+### Accounting
+
+| Integration | Provider update cadence | Official reference |
+| --- | --- | --- |
+| [FreshBooks](/integrations/accounting/freshbooks#data-refresh) | On supported accounting events. | [Provider documentation](https://www.freshbooks.com/api/webhooks) |
+| [QuickBooks Desktop, Canadian edition](/integrations/accounting/quickbooks-desktop-canadian-edition#data-refresh) | At the configured Web Connector interval or manual run. | [Provider documentation](https://static.developer.intuit.com/resources/QBWC_proguide.pdf) |
+| [QuickBooks Online](/integrations/accounting/quickbooks-online#data-refresh) | On supported entity changes; CDC for reconciliation. | [Provider documentation](https://static.developer.intuit.com/output_html/qbo/docs/develop/webhooks/best-practices.html) |
+| [Wave](/integrations/accounting/wave#data-refresh) | On supported invoice, estimate, and checkout events. | [Provider documentation](https://developer.waveapps.com/hc/en-us/articles/51070420388628-Webhooks-Setup-Guide) |
+| [Xero](/integrations/accounting/xero#data-refresh) | On supported webhook events; API reads for other data. | [Provider documentation](https://developer.xero.com/documentation/guides/webhooks/overview) |
+| [Zoho Books](/integrations/accounting/zoho-books#data-refresh) | When configured workflow rules trigger. | [Provider documentation](https://www.zoho.com/books/api/v3/webhooks/) |
+
+### Inventory and ERP
+
+| Integration | Provider update cadence | Official reference |
+| --- | --- | --- |
+| [Odoo](/integrations/inventory-and-erp/odoo#data-refresh) | On configured automation events or scheduled API reads. | [Provider documentation](https://www.odoo.com/documentation/19.0/applications/studio/automated_actions.html) |
+| [Zoho Inventory](/integrations/inventory-and-erp/zoho-inventory#data-refresh) | When event-based or scheduled workflow rules trigger. | [Provider documentation](https://www.zoho.com/us/inventory/help/settings/automation.html) |
+
+### Bank Integrations
+
+| Integration | Provider update cadence | Official reference |
+| --- | --- | --- |
+| [Flinks](/integrations/bank-integrations/flinks#data-refresh) | Nightly for eligible connections; manual refresh when supported. | [Provider documentation](https://help.flinks.com/support/solutions/articles/43000637682-nightly-refreshes) |
+| [Mastercard Open Finance US (Finicity)](/integrations/bank-integrations/mastercard-open-finance-us-finicity#data-refresh) | Once daily for active accounts; restricted on-demand refresh. | [Provider documentation](https://www.postman.com/mastercard/mastercard-open-finance/request/zy0586e/refresh-customer-accounts) |
+| [MX](/integrations/bank-integrations/mx#data-refresh) | Approximately every 24 hours when background aggregation is enabled. | [Provider documentation](https://docs.mx.com/products/connectivity/account-aggregation/index) |
+| [Plaid - Canada (CA)](/integrations/bank-integrations/plaid-canada-ca#data-refresh) | Typically 1-4 transaction updates per day. | [Provider documentation](https://plaid.com/docs/api/products/transactions/) |
+| [Plaid - United States (US)](/integrations/bank-integrations/plaid-united-states-us#data-refresh) | Typically 1-4 transaction updates per day. | [Provider documentation](https://plaid.com/docs/api/products/transactions/) |
+| [Stripe Financial Connections](/integrations/bank-integrations/stripe-financial-connections#data-refresh) | Daily subscribed transaction refresh; eligible on-demand requests. | [Provider documentation](https://docs.stripe.com/financial-connections/transactions) |
+
+### Lender Systems
+
+| Integration | Provider update cadence | Official reference |
+| --- | --- | --- |
+| [nCino](/integrations/lender-systems/ncino#data-refresh) | Deployment-specific; agreed with the institution. | [Provider documentation](https://developer.ncino.com/) |
+| [Taktile](/integrations/lender-systems/taktile#data-refresh) | Workflow-specific; agreed for the connected decision flow. | [Provider documentation](https://taktile.com/docs-help-center) |
+
+## Agree the synchronization schedule
+
+During onboarding, identify the resources needed for Insights and Signal, the available source update method, the synchronization schedule, and any allowed on-demand refreshes. Include provider entitlements, API quotas, customer consent, and any desktop or institution configuration.
+
+For event-based connections, include periodic reconciliation where the provider supports it. For scheduled bank connections, align retrieval with completed source refreshes. Additional upstream refreshes may require a provider entitlement or fee and may be restricted to specific business cases.
+
+## Interpret freshness correctly
+
+- Check the last **successful** source refresh and synchronization, rather than the time a request was submitted.
+- Treat pending transactions, later postings, reversals, refunds, and corrections as changes that can arrive after the original record.
+- Reconnection, expired consent, MFA, outages, and throttling can delay updates. A successful read of cached data does not prove that the source refreshed.
+- Different resources from the same provider can have different update paths. An invoice webhook does not establish the freshness of a bank balance or financial report.
+
+Use the provider-specific notes when choosing a freshness requirement for an underwriting or monitoring workflow.

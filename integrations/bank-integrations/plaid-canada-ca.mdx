@@ -25,6 +25,20 @@ Full Production: a few business days after company and use-case review, per Plai
 
 **Documentation availability:** Public API reference, SDKs, Link guides and Sandbox. Canadian coverage can be checked through the Institutions API.
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** Typically 1-4 transaction updates per day.
+
+Plaid typically checks transactions 1-4 times daily, depending on the institution. The `SYNC_UPDATES_AVAILABLE` webhook signals changes that can be retrieved with `/transactions/sync`.
+
+On-demand `/transactions/refresh` requires the separately enabled add-on and supported accounts. Reading cached data does not refresh the bank connection. Timing varies by institution and connection health.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Plaid Transactions API](https://plaid.com/docs/api/products/transactions/).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -41,7 +55,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Canada; do not infer US-only Plaid Check availability. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | Typically 1-4 transaction updates per day. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Documented field mappings

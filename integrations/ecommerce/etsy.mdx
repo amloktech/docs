@@ -27,6 +27,20 @@ AMLOK needs approved third-party/commercial access; ETA ND. Own-shop seller apps
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** On supported order, listing, and inventory events.
+
+Etsy provides webhooks for supported order, listing, and inventory events. Subscribed events can prompt retrieval of the relevant authorized API resources.
+
+Event coverage is specific: an inventory event is not a notification for every possible stock change. App authorization, scopes, and the supported event list determine coverage. Other data requires scheduled API reads within the app's limits.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Etsy webhook events](https://developer.etsy.com/documentation/essentials/webhooks/).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -46,7 +60,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | On supported order, listing, and inventory events. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

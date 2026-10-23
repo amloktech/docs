@@ -27,6 +27,20 @@ Organization OAuth consent and app registration; Marketplace listing review sepa
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** When event-based or scheduled workflow rules trigger.
+
+Zoho Inventory supports workflow webhooks with immediate or time-based actions. Delivery is triggered when the configured rule criteria are met; API reads provide supported resource data.
+
+The workflow configuration determines which modules and changes produce notifications. Scheduled actions follow the chosen execution time. Reconciliation and other reads must respect the organization's API permissions and limits.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Zoho Inventory workflow automation](https://www.zoho.com/us/inventory/help/settings/automation.html).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -49,7 +63,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | When event-based or scheduled workflow rules trigger. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

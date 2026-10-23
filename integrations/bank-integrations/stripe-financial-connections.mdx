@@ -25,6 +25,20 @@ Requires an eligible Stripe business and enabled Financial Connections data perm
 
 **Documentation availability:** Public API reference and Financial Connections guides.
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** Daily subscribed transaction refresh; eligible on-demand requests.
+
+Stripe Financial Connections refreshes transactions daily while an eligible active account is subscribed. A completion event reports the refresh result, after which transactions can be retrieved.
+
+On-demand transaction refreshes must respect `transaction_refresh.next_refresh_available_at`. Inactive accounts cannot refresh. This daily cadence applies to subscribed transactions; balance and ownership are separate refresh features.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Stripe transaction refreshes](https://docs.stripe.com/financial-connections/transactions), [Stripe account refresh features](https://docs.stripe.com/api/financial_connections/accounts/refresh).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -41,7 +55,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | US bank accounts; business-country eligibility requires verification. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | Daily subscribed transaction refresh; eligible on-demand requests. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

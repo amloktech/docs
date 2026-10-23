@@ -27,6 +27,20 @@ Public app review required; numeric ETA ND; extra scopes can add review. Review 
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** Near-real-time notifications for subscribed topics.
+
+Shopify provides near-real-time webhooks for subscribed topics such as orders, refunds, and inventory changes. Its APIs support follow-up retrieval and periodic reconciliation.
+
+Shopify does not guarantee webhook delivery or ordering. Reconciliation is needed for missed events; available topics, protected data access, and API throttling depend on the app and shop.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Shopify webhooks and reconciliation](https://shopify.dev/docs/apps/build/webhooks).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -46,7 +60,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | 60-day default orders; older-history permission required. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | Near-real-time notifications for subscribed topics. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Documented field mappings

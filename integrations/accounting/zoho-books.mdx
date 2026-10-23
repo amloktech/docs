@@ -27,6 +27,20 @@ OAuth registration/organization consent; Marketplace listing review is separate;
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** When configured workflow rules trigger.
+
+Zoho Books supports outgoing webhooks associated with workflow rules. Matching events can notify the integration; authorized API reads retrieve supported records and reconcile changes.
+
+The organization's enabled modules, workflow criteria, permissions, and API limits determine coverage and timing. Workflow notifications are not a universal change feed for every accounting record.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Zoho Books webhooks API](https://www.zoho.com/books/api/v3/webhooks/), [Zoho Books workflow automation](https://www.zoho.com/in/books/accounting-software/accounting-automation/).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -52,7 +66,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | When configured workflow rules trigger. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

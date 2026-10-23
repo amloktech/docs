@@ -27,6 +27,20 @@ Production app assessment required; Marketplace listing is separate; dependable 
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** On supported entity changes; CDC for reconciliation.
+
+QuickBooks Online supports entity-change webhooks and Change Data Capture (CDC). Intuit recommends CDC reconciliation after missed events and suggests a daily CDC call for required entities.
+
+The daily CDC check is an Intuit integration recommendation, not a statement that all data updates only daily. Notifications can be delayed or out of sequence; coverage depends on the entities and permissions enabled.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Intuit webhook best practices](https://static.developer.intuit.com/output_html/qbo/docs/develop/webhooks/best-practices.html).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -52,7 +66,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | On supported entity changes; CDC for reconciliation. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Documented field mappings

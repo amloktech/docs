@@ -25,6 +25,20 @@ Executed Mastercard contract plus Production access review required. Approval ET
 
 **Documentation availability:** Public REST API reference, quickstart and test profiles.
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** Once daily for active accounts; restricted on-demand refresh.
+
+Finicity automatically refreshes active accounts once per day. Its Refresh Customer Accounts endpoint allows a customer-specific refresh for a concrete business need, subject to product access.
+
+The documented service prohibits automating calls to its Refresh endpoints. Additional refresh use must be agreed with the provider; repeated API reads do not force a new institution refresh. Availability also depends on the billing tier.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Mastercard official Refresh Customer Accounts reference](https://www.postman.com/mastercard/mastercard-open-finance/request/zy0586e/refresh-customer-accounts).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -41,7 +55,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | US-focused offering; Canadian support unestablished. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | Once daily for active accounts; restricted on-demand refresh. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

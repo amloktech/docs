@@ -27,6 +27,20 @@ Wave approval and OAuth required for integrations beyond your own account; ETA N
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** On supported invoice, estimate, and checkout events.
+
+Wave supports webhooks for selected invoice, estimate, and checkout events. Receiving webhooks requires an authorized Pro account and the appropriate OAuth scopes.
+
+These notifications do not represent every ledger or bank-feed change. Other accessible resources require API retrieval on the configured schedule. Missing scopes prevent delivery for the affected business.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Wave webhook setup and event coverage](https://developer.waveapps.com/hc/en-us/articles/51070420388628-Webhooks-Setup-Guide).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -52,7 +66,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | On supported invoice, estimate, and checkout events. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

@@ -25,6 +25,20 @@ Public AppStore apps undergo review; published approval duration not identified.
 
 **Documentation availability:** Public API/docs.
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** On supported accounting events.
+
+FreshBooks sends callbacks for subscribed events, including supported invoice, payment, expense, and client changes made through its application or API. These events can prompt an authorized resource read.
+
+The webhook must be verified and have the required scopes. Supported events do not define a fixed refresh interval for every report or accounting resource; remaining reads follow the configured schedule.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [FreshBooks webhook callbacks](https://www.freshbooks.com/api/webhooks).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -50,7 +64,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | On supported accounting events. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

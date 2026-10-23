@@ -27,6 +27,20 @@ Self-serve API can launch with seller consent without formal partnership; Market
 
 *ND means the source catalog does not disclose an approval estimate.*
 
+{/* BEGIN PROVIDER REFRESH */}
+## Data refresh
+
+**Provider update cadence:** Event notifications typically within 60 seconds.
+
+Square typically sends webhook notifications within 60 seconds of a supported event. Authorized API reads can retrieve the associated payment, order, inventory, or other supported resource.
+
+This is Square's typical notification timing, not an AMLOK end-to-end delivery guarantee. Failed deliveries may be retried for up to 24 hours; event subscriptions require the relevant permissions.
+
+**AMLOK synchronization:** The enabled refresh mode and schedule are agreed for your connection. Provider timing describes upstream capability; allow for retrieval and processing before changes appear in AMLOK. See [data refresh and freshness](/integrations/data-refresh).
+
+Provider references: [Square webhook troubleshooting](https://developer.squareup.com/docs/webhooks/troubleshooting), [Square webhook events](https://developer.squareup.com/reference/square/webhooks).
+{/* END PROVIDER REFRESH */}
+
 ## Data reference
 
 Open a resource to review its field definitions. Available fields depend on the connected product, account permissions, and source data.
@@ -48,7 +62,7 @@ Open a resource to review its field definitions. Available fields depend on the 
 | --- | --- |
 | Country / deployment conditions | Verify target country, product edition, tenant and deployment. |
 | History | Varies by endpoint, account, and available source history. |
-| Refresh | Provider-dependent; no guaranteed real-time cadence. |
+| Refresh | Event notifications typically within 60 seconds. [Details](#data-refresh). |
 | Commercial / use rights | Client permission and applicable commercial use rights required. |
 
 ## Provider documentation

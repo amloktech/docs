@@ -458,7 +458,12 @@ write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
 GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
-api_tab['groups']=[{'group':'Get started','pages':['api-reference/'+p for p in GUIDES[:4]]},{'group':'API essentials','pages':['api-reference/'+p for p in GUIDES[4:10]]},{'group':'Build your integration','pages':['api-reference/'+p for p in GUIDES[10:]]},{'group':'Endpoints','pages':[{'group':g,'expanded':False,'pages':pages} for g,pages in NAV_GROUPS.items()]}]
+ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-right-arrow-left', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+api_tab['groups'] = [
+    {'group': 'Get started', 'pages': ['api-reference/' + p for p in GUIDES[:4]]},
+    {'group': 'Endpoints', 'pages': [{'group': g, 'expanded': False, 'pages': pages} for g, pages in NAV_GROUPS.items()]},
+    {'group': 'Essentials', 'pages': [{'group': name, 'icon': icon, 'expanded': False, 'pages': ['api-reference/' + p for p in pages]} for name, icon, pages in ESSENTIAL_GROUPS]},
+]
 config['api']={'playground':{'display':'simple'},'examples':{'languages':['curl','python','javascript']}}
 write('docs.json',dump(config))
 print(dump({'operations':len(OPS),'resources':len(ENTITIES),'schemas':len(SCHEMAS),'events':len(EVENTS),'guides':len(GUIDES),'sourceFields':sum(map(len,FIELDS.values()))}))

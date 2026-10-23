@@ -34,6 +34,12 @@
 - After updating the catalog data or table template, run `node scripts/sync-integration-status.mjs` to synchronize the table, provider pages, and provider coverage.
 - Use US and CA as the default markets, as confirmed by the AMLOK team. Keep country-specific providers and catalog editions scoped to their applicable country. Preserve provider-specific availability and entitlement limitations when editing field and resource mappings.
 
+## Integration refresh guidance
+
+- Maintain verified provider update capabilities and primary-source links in `data/integration-refresh.json`. Profiles must match the Active catalog entries exactly.
+- Run `python scripts/sync-integration-refresh.py` after changing refresh profiles or Active membership. It updates provider sections and the shared guide.
+- Distinguish upstream provider timing from the agreed AMLOK synchronization schedule. Do not infer an AMLOK SLA or universal interval from webhook support or API rate limits.
+
 ## Content boundaries
 
 {/* Define what should and shouldn't be documented */}
