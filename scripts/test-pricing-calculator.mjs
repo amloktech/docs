@@ -6,6 +6,8 @@ import vm from "node:vm";
 const source = readFileSync(new URL("../snippets/pricing-calculator.jsx", import.meta.url), "utf8");
 const math = source.split("// PRICING_MATH_START:")[1].split("\n").slice(1).join("\n").split("// PRICING_MATH_END")[0];
 const calculate = vm.runInNewContext(`(() => { ${math}; return calculatePricing; })()`);
+const presetCode = source.split("// VOLUME_PRESETS_START:")[1].split("\n").slice(1).join("\n").split("// VOLUME_PRESETS_END")[0];
+const presetPosition = vm.runInNewContext(`(() => { ${presetCode}; return nearestVolumePreset; })()`);
 const baseline = () => ({ enabled: { insights: true, signal: true }, volumes: { insights: ["100", "0", "0"], signal: ["200", "0", "0"] }, commitment: "1000", discount: "0" });
 let tests = 0;
 const test = (name, run) => { run(); tests++; console.log(`PASS ${name}`); };
@@ -73,5 +75,16 @@ test("Maximum inputs remain safe integer cents, with balanced funding", () => {
   const r = calculate(input); assert.equal(r.valid, true);
   for (const key of ["monthlyCents", "usageCents", "paymentCents", "topUpCents", "unusedCents", "fundingCents"]) assert.ok(Number.isSafeInteger(r[key]), key);
   assert.equal(r.fundingCents - r.usageCents, r.unusedCents);
+});
+test("Slider presets include every requested volume and a separate 10,000+ position", () => {
+  [0, 50, 100, 200, 500, 1000, 5000, 10000].forEach((volume, position) => assert.equal(presetPosition(String(volume)), position));
+  assert.equal(presetPosition("10001"), 8);
+  assert.equal(presetPosition("1000000"), 8);
+});
+test("Exact typed volumes are priced without snapping or capping to slider presets", () => {
+  for (const quantity of [175, 12500]) {
+    const input = baseline(); input.enabled.signal = false; input.volumes.insights = [String(quantity), "0", "0"];
+    const r = calculate(input); assert.equal(r.monthlyCents, quantity * 500); assert.equal(r.usageCents, quantity * 500 * 12);
+  }
 });
 console.log(`${tests} pricing calculator checks passed.`);
