@@ -1,0 +1,41 @@
+---
+title: "AI and model governance"
+description: "Intended use, evidence, human review, validation, and change controls for underwriting and monitoring."
+---
+
+Use this guide to establish how your institution will validate, approve, and oversee AMLOK workflows. Agree the required explanations, records, and review controls for your deployment.
+
+## Define intended use
+
+Document the lending product, population, sources, outputs, and permitted actions. Distinguish extraction and analysis from recommendations, policy evaluation, and decisions affecting an applicant or account.
+
+For Insights, identify steps requiring institutional approval. For Signal, define which changes produce an observation, alert, review case, or proposed action. A monitoring signal alone should not be treated as a verified adverse finding.
+
+## Evidence and limitations
+
+Establish the traceability required for your workflow, including source references, timestamps, transformations, policy and model versions, and the basis for material outputs. Identify missing or stale information, uncertain matches, and conflicting evidence.
+
+Explanations must reflect the actual analysis. Generated prose does not substitute for evidence or a reliable record of decision factors. Customers must approve the meaning and use of outputs before relying on them.
+
+## Validation and monitoring
+
+| Review area | Questions to resolve |
+| --- | --- |
+| Fitness for purpose | Does testing represent the lending product and population? |
+| Data quality | Are coverage, freshness, missingness, linkage errors, and transformations understood? |
+| Performance | What errors occur, how material are they, and when must the system abstain or escalate? |
+| Fairness | Have discrimination risks, proxy variables, and differing outcomes been assessed? |
+| Robustness | How are misleading documents, adversarial inputs, outages, and instruction injection handled? |
+| Change management | Which changes require notice, revalidation, approval, or rollback? |
+
+OSFI's revised E-23 addresses institutional model governance, including externally developed models, and takes effect on **May 1, 2027**. The institution remains accountable for model use. See [E-23](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/guideline-e-23-model-risk-management-2027) for scope and transition planning.
+
+## Human review and consequential actions
+
+Define who can review, challenge, correct, approve, or override outputs and what evidence is retained. Changing a limit, sending a borrower notice, or changing account state requires an expressly authorized workflow and appropriate controls.
+
+Review [Quebec automated-decision requirements](/security/quebec) and [US credit-decision requirements](/security/united-states). Human involvement does not eliminate privacy, fairness, or recordkeeping responsibilities.
+
+## Training and provider terms
+
+Document whether each system uses customer information for inference, training, evaluation, or another purpose. Establish restrictions for AMLOK and external providers covering logs, retention, location, and secondary use. See [privacy and data handling](/security/privacy).
