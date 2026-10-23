@@ -1,0 +1,97 @@
+---
+title: "Quickstart"
+description: "Create a subject, capture authorization, connect a provider, and read normalized transactions."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+This walkthrough uses synthetic identifiers. Replace every returned ID with the value from your environment. Run requests from your server after receiving an AMLOK environment URL and scoped key.
+
+## 1. Configure your environment
+
+```bash
+# Set these from your approved environment configuration and secret manager.
+export AMLOK_API_BASE_URL="https://api.example.com" # Placeholder, not a live AMLOK host.
+export AMLOK_API_KEY="<institution-issued-key>"
+```
+
+The base URL excludes `/v1`. Do not store the key in source control, browser storage, or a mobile application. This flow needs `identity:write`, `documents:write`, `consent:write`, `connections:write`, `connections:read`, and `banking:read` as appropriate.
+
+## 2. Create the business
+
+```bash
+curl --request POST --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/businesses" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
+  --header "Content-Type: application/json" \
+  --header "Idempotency-Key: onboarding-business-1001" \
+  --data '{"legal_name":"Example Manufacturing Inc.","client_reference":"app-1029","incorporation_country":"CA"}'
+```
+
+Save `data.id`, illustrated below as `biz_example`. A created profile is client-asserted; it does not establish registry verification. [Request and response schema](/api-reference/endpoints/identity/create-business).
+
+## 3. Capture real authorization
+
+Obtain the subject's authorization through your institution's approved process. Upload the supporting evidence using [document upload](/api-reference/endpoints/identity/upload-document), then record consent:
+
+```json
+{
+  "subject_id": "biz_example",
+  "subject_type": "business",
+  "purposes": ["credit_assessment"],
+  "scopes": ["banking:read"],
+  "policy_version": "consent-v1",
+  "evidence_document_id": "doc_consent"
+}
+```
+
+Send this body to `POST /v1/consents` with a new idempotency key for this action. Save `data.id` as `con_example`. Recording consent is not a substitute for obtaining it. [Consent endpoint](/api-reference/endpoints/platform/create-consent).
+
+## 4. Connect an enabled provider
+
+Use [provider capability discovery](/api-reference/endpoints/platform/list-providers) to select a provider enabled for your institution, country, and resource needs. Then send this body to `POST /v1/connections`:
+
+```json
+{
+  "subject_id": "biz_example",
+  "provider_id": "BANK-02",
+  "products": ["transactions"],
+  "consent_id": "con_example",
+  "redirect_uri": "https://client.example.com/connected"
+}
+```
+
+Save `data.id` as `cnn_example`. Direct the authorized user through the short-lived `action.url`. The registered `redirect_uri` is a browser return location, not a webhook destination. Retrieve the connection or consume `connection.updated` before attempting a sync. [Connection endpoint](/api-reference/endpoints/platform/create-connection).
+
+## 5. Synchronize and wait for completion
+
+Send this body to `POST /v1/connections/cnn_example/sync`:
+
+```json
+{
+  "resources": ["bank_account", "bank_transaction"],
+  "from": "2026-09-01",
+  "to": "2026-10-01"
+}
+```
+
+The proposed response is `202 Accepted` with a sync-job ID. Poll `GET /v1/sync-jobs/{id}` with bounded backoff, or process `sync.completed` / `sync.failed`. Treat `partial` as incomplete coverage and inspect errors and actual date coverage. [Sync endpoint](/api-reference/endpoints/platform/start-connection-sync).
+
+## 6. Read the transactions
+
+```bash
+curl --get --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/bank-transactions" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
+  --data-urlencode "subject_id=biz_example" \
+  --data-urlencode "connection_id=cnn_example" \
+  --data-urlencode "posted_from=2026-09-01" \
+  --data-urlencode "posted_to=2026-10-01" \
+  --data-urlencode "limit=100"
+```
+
+Follow `page.next_cursor` until `page.has_more` is false. Keep the same filters for subsequent pages. Amounts are exact decimal strings; for bank transactions, `direction` carries the movement direction.
+
+Next, implement [pagination](/api-reference/pagination), [safe retries](/api-reference/idempotency), and [webhook verification](/api-reference/webhooks).

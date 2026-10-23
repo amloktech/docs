@@ -1,0 +1,551 @@
+---
+title: "Worked payloads"
+description: "Inspect synthetic successful, partial, unavailable, and failed API outcomes."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+These scenarios expand the source workbook into readable JSON examples. Values and URLs are synthetic. Use the endpoint page for the authoritative proposed request schema and HTTP status.
+
+The invalid-search example is intentionally invalid input. The account-balance example includes the required `date_basis: unknown` because no source observation timestamp is available.
+
+## Create KYC session
+
+`POST /v1/verifications`
+
+Synthetic request/response; hosted URL is illustrative. Omitted optional fields are not guaranteed.
+
+### Request body
+
+```json
+{
+  "subject_id": "per_example",
+  "verification_type": "kyc",
+  "workflow_version": "kyc-ca-v1",
+  "return_url": "https://client.example.com/verified"
+}
+```
+
+### Response or event payload
+
+```json
+{
+  "data": {
+    "id": "ver_example",
+    "object": "verification",
+    "subject_id": "per_example",
+    "created_at": "2026-10-22T13:00:00Z",
+    "updated_at": "2026-10-22T14:00:00Z",
+    "record_version": 1,
+    "source_refs": [],
+    "data_status": "partial",
+    "missing_fields": [],
+    "schema_version": "0.1.0-draft",
+    "verification_type": "kyc",
+    "status": "not_started",
+    "hosted_url": "https://verify.example.com/session"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+## Read partial balance
+
+`GET /v1/account-balances/bal_example`
+
+Unavailable available balance is null, not zero; retrieval time does not fabricate source timing.
+
+### Response or event payload
+
+```json
+{
+  "data": {
+    "id": "bal_example",
+    "object": "account_balance",
+    "subject_id": "biz_example",
+    "created_at": "2026-10-22T13:00:00Z",
+    "updated_at": "2026-10-22T14:00:00Z",
+    "record_version": 1,
+    "source_refs": [],
+    "data_status": "partial",
+    "missing_fields": [
+      {
+        "field_path": "available.amount",
+        "reason": "not_provided"
+      },
+      {
+        "field_path": "as_of",
+        "reason": "not_provided"
+      }
+    ],
+    "schema_version": "0.1.0-draft",
+    "account_id": "bka_example",
+    "balance_basis": "asset",
+    "current": {
+      "amount": "12500.25",
+      "currency": "CAD"
+    },
+    "available": {
+      "amount": null,
+      "currency": "CAD"
+    },
+    "as_of": null,
+    "retrieved_at": "2026-10-22T14:00:00Z",
+    "is_realtime": false,
+    "date_basis": "unknown"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "partial"
+  }
+}
+```
+
+## Posted account inflow
+
+`GET /v1/bank-transactions?account_id=bka_example`
+
+AMLOK absolute amount plus direction; provider signed value remains in authorized evidence.
+
+### Response or event payload
+
+```json
+{
+  "data": [
+    {
+      "id": "btx_example",
+      "object": "bank_transaction",
+      "subject_id": "biz_example",
+      "created_at": "2026-10-22T13:00:00Z",
+      "updated_at": "2026-10-22T14:00:00Z",
+      "record_version": 1,
+      "source_refs": [
+        {
+          "provider_id": "BANK-02",
+          "connection_id": "cnn_example",
+          "source_record_id": "source_txn",
+          "source_record_type": "transaction",
+          "retrieved_at": "2026-10-22T14:00:00Z"
+        }
+      ],
+      "data_status": "partial",
+      "missing_fields": [],
+      "schema_version": "0.1.0-draft",
+      "account_id": "bka_example",
+      "amount": {
+        "amount": "1250.00",
+        "currency": "CAD"
+      },
+      "direction": "inflow",
+      "status": "posted",
+      "posted_on": "2026-10-21",
+      "field_provenance": [
+        {
+          "field_path": "direction",
+          "source_ref_index": 0,
+          "source_field_path": "added[].amount",
+          "transformation_id": "plaid_transactions_direction_v1",
+          "evidence_level": "source_record"
+        }
+      ]
+    }
+  ],
+  "page": {
+    "next_cursor": null,
+    "has_more": false,
+    "limit": 100
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "partial"
+  }
+}
+```
+
+## Start lien search
+
+`POST /v1/lien-searches`
+
+202 Accepted is not a no-lien result. Canadian jurisdiction codes require the separate PPSA/RDPRM adapter.
+
+### Request body
+
+```json
+{
+  "subject_id": "biz_example",
+  "debtor_name": "Example Manufacturing Inc.",
+  "debtor_type": "business",
+  "search_type": "name",
+  "jurisdictions": [
+    "US-DE"
+  ]
+}
+```
+
+### Response or event payload
+
+```json
+{
+  "data": {
+    "id": "lis_example",
+    "object": "lien_search",
+    "subject_id": "biz_example",
+    "created_at": "2026-10-22T13:00:00Z",
+    "updated_at": "2026-10-22T14:00:00Z",
+    "record_version": 1,
+    "source_refs": [],
+    "data_status": "pending",
+    "missing_fields": [],
+    "schema_version": "0.1.0-draft",
+    "debtor_name": "Example Manufacturing Inc.",
+    "debtor_type": "business",
+    "search_type": "name",
+    "jurisdictions_requested": [
+      "US-DE"
+    ],
+    "jurisdictions_completed": [],
+    "status": "queued"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "pending"
+  }
+}
+```
+
+## Partial lien coverage
+
+`GET /v1/lien-searches/lis_example`
+
+Zero returned filings applies only to completed Delaware scope; New York is unresolved.
+
+### Response or event payload
+
+```json
+{
+  "data": {
+    "id": "lis_example",
+    "object": "lien_search",
+    "subject_id": "biz_example",
+    "created_at": "2026-10-22T13:00:00Z",
+    "updated_at": "2026-10-22T14:00:00Z",
+    "record_version": 1,
+    "source_refs": [],
+    "data_status": "partial",
+    "missing_fields": [
+      {
+        "field_path": "jurisdictions_completed",
+        "reason": "source_error",
+        "detail": "US-NY search failed."
+      }
+    ],
+    "schema_version": "0.1.0-draft",
+    "debtor_name": "Example Manufacturing Inc.",
+    "debtor_type": "business",
+    "search_type": "name",
+    "jurisdictions_requested": [
+      "US-DE",
+      "US-NY"
+    ],
+    "jurisdictions_completed": [
+      "US-DE"
+    ],
+    "status": "partial",
+    "result_count": 0,
+    "lien_ids": []
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "partial"
+  }
+}
+```
+
+## Invoice money
+
+`GET /v1/invoices/inv_example`
+
+Synthetic amounts; due balance is distinct from original invoice amount and bank cash.
+
+### Response or event payload
+
+```json
+{
+  "data": {
+    "id": "inv_example",
+    "object": "invoice",
+    "subject_id": "biz_example",
+    "created_at": "2026-10-22T13:00:00Z",
+    "updated_at": "2026-10-22T14:00:00Z",
+    "record_version": 1,
+    "source_refs": [],
+    "data_status": "partial",
+    "missing_fields": [],
+    "schema_version": "0.1.0-draft",
+    "counterparty_id": "pty_example",
+    "number": "INV-1001",
+    "status": "partially_paid",
+    "issued_on": "2026-09-01",
+    "due_on": "2026-10-01",
+    "total": {
+      "amount": "1130.00",
+      "currency": "CAD"
+    },
+    "amount_paid": {
+      "amount": "500.00",
+      "currency": "CAD"
+    },
+    "amount_due": {
+      "amount": "630.00",
+      "currency": "CAD"
+    }
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "partial"
+  }
+}
+```
+
+## Unavailable DSCR
+
+`GET /v1/attributes?key=dscr`
+
+Missing denominator never becomes a zero score or default approval.
+
+### Response or event payload
+
+```json
+{
+  "data": [
+    {
+      "id": "atr_example",
+      "object": "attribute",
+      "subject_id": "biz_example",
+      "created_at": "2026-10-22T13:00:00Z",
+      "updated_at": "2026-10-22T14:00:00Z",
+      "record_version": 1,
+      "source_refs": [],
+      "data_status": "partial",
+      "missing_fields": [
+        {
+          "field_path": "value",
+          "reason": "not_provided",
+          "detail": "Complete debt service schedule is unavailable."
+        }
+      ],
+      "schema_version": "0.1.0-draft",
+      "key": "dscr",
+      "value_type": "decimal",
+      "value": null,
+      "unit": "ratio",
+      "status": "unavailable",
+      "window_start": "2025-10-01",
+      "window_end": "2026-10-01",
+      "as_of": "2026-10-22T14:00:00Z",
+      "calculation_version": "dscr-v1",
+      "input_resource_ids": [],
+      "missing_reason": "not_provided"
+    }
+  ],
+  "page": {
+    "next_cursor": null,
+    "has_more": false,
+    "limit": 100
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "partial"
+  }
+}
+```
+
+## Run underwriting
+
+`POST /v1/workflow-runs`
+
+202 job initiation; result is retrieved later. It does not automatically fund the application.
+
+### Request body
+
+```json
+{
+  "subject_id": "biz_example",
+  "workflow_type": "underwrite",
+  "workflow_version": "underwrite-v1",
+  "input_resource_ids": [
+    "app_example",
+    "doc_example"
+  ]
+}
+```
+
+### Response or event payload
+
+```json
+{
+  "data": {
+    "id": "wfr_example",
+    "object": "workflow_run",
+    "subject_id": "biz_example",
+    "created_at": "2026-10-22T13:00:00Z",
+    "updated_at": "2026-10-22T14:00:00Z",
+    "record_version": 1,
+    "source_refs": [],
+    "data_status": "pending",
+    "missing_fields": [],
+    "schema_version": "0.1.0-draft",
+    "workflow_type": "underwrite",
+    "workflow_version": "underwrite-v1",
+    "status": "queued",
+    "input_resource_ids": [
+      "app_example",
+      "doc_example"
+    ],
+    "output_resource_ids": [],
+    "task_ids": [],
+    "approval_required": false
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "pending"
+  }
+}
+```
+
+## Verification event
+
+`POST Client HTTPS webhook`
+
+Completion means a result is available; it can require review. Verify signature against raw body before parsing.
+
+### Response or event payload
+
+```json
+{
+  "id": "evt_example",
+  "type": "verification.completed",
+  "created_at": "2026-10-22T14:06:00Z",
+  "schema_version": "0.1.0-draft",
+  "resource_type": "verification",
+  "resource_id": "ver_example",
+  "resource_version": 2,
+  "data": {
+    "status": "in_review"
+  }
+}
+```
+
+## Validation error
+
+`POST /v1/lien-searches`
+
+422; changing the invalid request is required.
+
+### Request body
+
+```json
+{
+  "debtor_name": "Example Manufacturing Inc.",
+  "jurisdictions": []
+}
+```
+
+### Response or event payload
+
+```json
+{
+  "error": {
+    "code": "invalid_search_scope",
+    "message": "At least one supported jurisdiction is required.",
+    "field": "jurisdictions",
+    "retryable": false,
+    "request_id": "req_example"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+## Rate limit
+
+`GET /v1/bank-transactions`
+
+429 with Retry-After response header; numeric quotas require deployment agreement.
+
+### Response or event payload
+
+```json
+{
+  "error": {
+    "code": "rate_limited",
+    "message": "Tenant request limit exceeded.",
+    "retryable": true,
+    "request_id": "req_example"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+## Stale update
+
+`PATCH /v1/monitors/mon_example`
+
+412; re-read, reconcile and submit a new intended update.
+
+### Request body
+
+```json
+{
+  "status": "paused"
+}
+```
+
+### Response or event payload
+
+```json
+{
+  "error": {
+    "code": "version_conflict",
+    "message": "The resource changed since the supplied If-Match version.",
+    "retryable": false,
+    "request_id": "req_example"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-22T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```

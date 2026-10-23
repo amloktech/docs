@@ -1,0 +1,62 @@
+---
+title: "Event catalog"
+description: "Subscribe to the 28 proposed lifecycle events."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
+
+```json
+{
+  "id": "evt_example",
+  "type": "verification.completed",
+  "created_at": "2026-10-23T14:06:00Z",
+  "schema_version": "0.1.0-draft",
+  "resource_type": "verification",
+  "resource_id": "ver_example",
+  "resource_version": 2,
+  "data": {"status": "in_review"}
+}
+```
+
+The example indicates that a verification result is ready for review. It is not an approval. The `data` object is deliberately limited; retrieve the referenced resource for authorized details.
+
+| Event | Resource | Trigger | Minimal details |
+| --- | --- | --- | --- |
+| `business.created` | `business` | Client or provider business record created. | id; resource_version |
+| `person.created` | `person` | Authorized person record created. | id; resource_version |
+| `connection.updated` | `connection` | Connection becomes active, unavailable or revoked. | status |
+| `consent.updated` | `consent` | Authorization state changes. | status |
+| `sync.completed` | `sync_job` | Run completes fully or partially. | status; counts; data_status |
+| `sync.failed` | `sync_job` | Run fails before usable completion. | status; safe error code |
+| `verification.updated` | `verification` | Session progress or review state changes. | status; raw_status |
+| `verification.completed` | `verification` | Provider decision is available, including review or decline. | status; check_ids |
+| `document.processed` | `document` | Evidence parsing completes or fails. | extraction_status; review_status |
+| `lien_search.completed` | `lien_search` | Search completes in declared scope, possibly partial. | status; result_count; completed jurisdictions |
+| `lien_search.failed` | `lien_search` | Search fails; no-hit conclusion unavailable. | status; safe error code |
+| `lien.updated` | `lien` | Observed filing or amendment changes normalized record. | status; version |
+| `application.updated` | `application` | Application state or approved data changes. | status |
+| `decision.created` | `decision` | A decision or advisory recommendation is recorded. | outcome; is_recommendation |
+| `loan.updated` | `loan` | Loan balance, servicing state or terms change. | status; as_of |
+| `repayment.updated` | `repayment` | Repayment succeeds, fails or reverses. | status |
+| `attributes.calculated` | `attribute` | Calculation job produces values or explicit unavailability. | job_id; attribute_ids |
+| `risk_snapshot.created` | `risk_snapshot` | Immutable assessment stored. | as_of; previous_snapshot_id |
+| `monitor.updated` | `monitor` | Monitoring configuration or state changes. | status; ruleset_version |
+| `alert.created` | `alert` | Versioned rule detects a signal. | alert_type; severity; evidence references |
+| `alert.updated` | `alert` | Review state changes. | status |
+| `case.updated` | `case` | Case assigned, progressed or resolved. | status |
+| `task.updated` | `task` | Task progress or approval state changes. | status; approval_status |
+| `communication.updated` | `communication` | Draft, dispatch or delivery state changes. | status |
+| `workflow.completed` | `workflow_run` | Run completes or returns a defined partial result. | status; output_resource_ids |
+| `workflow.failed` | `workflow_run` | Run stops with a recorded failure. | status; safe error code |
+| `resource.deleted` | `common` | A source deletion or approved redaction is recorded. | resource_id; deleted_at |
+| `deletion.completed` | `deletion_job` | Retention-aware deletion job reaches a terminal state. | status; held scopes; provider propagation status |
+
+The details column preserves the workbook's event intent. Exact per-event `data` property schemas require release review; the OpenAPI file defines the shared envelope and known event keys without inventing a complete per-event payload contract.
+
+`resource.deleted` can refer to any resource type. Preserve the deletion version and avoid treating an older event as a later recreation. Follow your institution's retention rules when applying tombstones.
+
+See [webhook verification and delivery](/api-reference/webhooks) before subscribing or processing events.

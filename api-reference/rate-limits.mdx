@@ -1,0 +1,40 @@
+---
+title: "Rate limits and retries"
+description: "Handle throttling and transient failures without duplicating work."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+The proposed API applies institution and provider-aware limits. Numeric quotas, burst allowances, concurrent-job limits, and per-provider refresh budgets are deployment decisions. This draft does not promise a requests-per-second allowance.
+
+## Throttled responses
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+Content-Type: application/json
+```
+
+The value `30` illustrates a delay in seconds. Clients should also accept an HTTP-date form of `Retry-After`. The error body uses `rate_limited` and includes a request ID.
+
+## Bounded retry policy
+
+1. Retry only a transient condition and an operation you can safely repeat.
+2. Respect the server's `Retry-After`; do not retry earlier than that time.
+3. Otherwise use exponential backoff with jitter, a maximum attempt count, and an overall deadline.
+4. Keep the same idempotency key and payload for a retried POST action.
+5. Stop when the retry budget is exhausted and retain the request/job ID for reconciliation.
+
+For example, a client might use a 1-second base delay, a 30-second exponential-delay cap, and five attempts. These are illustrative client settings. If `Retry-After` exceeds the overall client deadline, schedule a later attempt instead of shortening the server's delay.
+
+## Manage load deliberately
+
+- Bound concurrent requests per tenant and provider.
+- Avoid starting overlapping syncs for the same connection and time window.
+- Use pagination and narrow documented filters.
+- Cache reference data according to your release agreement; no cache lifetime is asserted here.
+- Prefer lifecycle events to tight polling loops, with reconciliation for missed or delayed events.
+
+Do not retry `401`, `403`, `409`, `412`, or validation errors blindly. A network timeout leaves a command's outcome uncertain; [idempotency and reconciliation](/api-reference/idempotency) determine the next step.

@@ -1,0 +1,38 @@
+---
+title: "Security, privacy, and auditability"
+description: "Design your integration around tenant isolation, least privilege, and controlled evidence access."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+This page describes the intended integration controls and client responsibilities. It does not assert security certifications, a penetration-test result, a particular hosting region, or a contractual retention period.
+
+## Institution and subject boundaries
+
+Bind requests to the tenant represented by the API key. Check ownership of every referenced subject, document, connection, case, approval, and snapshot. A valid ID from another tenant must not become visible through a relationship, filter, download, or event.
+
+Grant the smallest useful scopes. Separate service accounts by environment and workload. A read-only analytical service should not hold communication-send or approval permissions.
+
+## Evidence and consent
+
+Record the authorized purpose, consent policy version, evidence, and relevant scope. Re-check these constraints when collecting, reading, exporting, or sending data. Revocation stops new collection but does not bypass an applicable retention or legal-hold policy.
+
+Mask or tokenize restricted identifiers by default. Avoid storing unnecessary identity data in your own system. Raw biometric media, PAN, CVV, and provider secrets are not part of the normalized default response.
+
+## Audit trails
+
+Capture institution, service identity, purpose, operation, resource version, correlation ID, and outcome in your restricted audit system. Record who approved a side effect and the exact version approved. Preserve evidence manifests and immutable decision snapshots.
+
+Redact keys, webhook secrets, signed URLs, raw documents, and sensitive payload fields. Do not rely on broad request/response logging as an audit strategy.
+
+## Webhook and outbound destination controls
+
+Register only institution-controlled HTTPS destinations. Deployment must validate destinations against SSRF, private-network targets, unsafe redirects, and tenant policy. Receivers verify signatures over raw bytes and durably deduplicate events.
+
+## Retention and incident handling
+
+Use the deletion workflow to track requested scope, legal holds, and upstream propagation. Do not interpret `202` as an immediate deletion guarantee.
+
+Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. These are explicit [release-readiness decisions](/api-reference/release-readiness).

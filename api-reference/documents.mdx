@@ -1,0 +1,46 @@
+---
+title: "Document uploads and downloads"
+description: "Upload permitted evidence and retrieve short-lived authorized download links."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+## Upload evidence
+
+[POST /v1/documents](/api-reference/endpoints/identity/upload-document) accepts multipart form data with `file`, `subject_id`, and `document_type`. The proposed response is `202` with a document resource.
+
+```bash
+curl --request POST --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/documents" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
+  --header "Idempotency-Key: statement-upload-1001" \
+  --form "file=@statement-2026-09.pdf;type=application/pdf" \
+  --form "subject_id=biz_example" \
+  --form "document_type=bank_statement" \
+  --form "period_start=2026-09-01" \
+  --form "period_end=2026-09-30"
+```
+
+Let the HTTP client construct the multipart `Content-Type` boundary. Do not set `Content-Type: application/json` for this route.
+
+The upload period records the document's stated evidence period. It is not the exclusive `to` filter used by transaction queries. Poll the document's `extraction_status` or consume `document.processed`; acceptance does not establish a completed or verified extraction.
+
+## File controls
+
+The proposed service validates actual file content, allowed types, malware status, tenant ownership, and permitted purpose. Maximum size, page limits, accepted MIME types, scan timeouts, and residency are release configuration items. The PDF above is illustrative and is not a universal file-acceptance promise.
+
+Use only authorized evidence. The normalized default response excludes raw biometric media, card PAN/CVV, and provider credentials. Do not place credentials inside uploaded filenames or metadata.
+
+## Authorized download
+
+Send `{"purpose":"credit_assessment"}` to [POST /v1/documents/{id}/download](/api-reference/endpoints/identity/create-document-download-link) with `documents:read` and an idempotency key. The response contains `data.document_id`, `data.url`, and `data.expires_at`.
+
+The URL is a temporary capability. Do not make it public, log it, put it in analytics, or persist it as a permanent asset address. Download it only within its authorized context and expiry. Do not attach an AMLOK API key to the signed storage URL.
+
+The exact expiry duration and storage domains must be supplied by the deployed environment. This draft does not define an unlisted pre-signed-upload route.
+
+## Retention and deletion
+
+Consent revocation and connection disconnection stop future collection. They are not equivalent to evidence deletion. Use [deletion requests](/api-reference/endpoints/privacy/create-deletion-request) and inspect legal holds and provider propagation. A successful request does not promise immediate removal from every upstream system.

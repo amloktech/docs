@@ -362,9 +362,284 @@
         "icon": "square-terminal",
         "groups": [
           {
-            "group": "API Reference",
+            "group": "Get started",
             "pages": [
-              "api-reference/overview"
+              "api-reference/overview",
+              "api-reference/quickstart",
+              "api-reference/authentication",
+              "api-reference/environments"
+            ]
+          },
+          {
+            "group": "API essentials",
+            "pages": [
+              "api-reference/response-format",
+              "api-reference/pagination",
+              "api-reference/idempotency",
+              "api-reference/errors",
+              "api-reference/rate-limits",
+              "api-reference/async-jobs"
+            ]
+          },
+          {
+            "group": "Build your integration",
+            "pages": [
+              "api-reference/webhooks",
+              "api-reference/event-catalog",
+              "api-reference/documents",
+              "api-reference/versioning",
+              "api-reference/security",
+              "api-reference/workflows",
+              "api-reference/examples",
+              "api-reference/downloads",
+              "api-reference/release-readiness"
+            ]
+          },
+          {
+            "group": "Endpoints",
+            "pages": [
+              {
+                "group": "Platform",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/platform/list-connections",
+                  "api-reference/endpoints/platform/retrieve-connection",
+                  "api-reference/endpoints/platform/list-consents",
+                  "api-reference/endpoints/platform/retrieve-consent",
+                  "api-reference/endpoints/platform/list-sync-jobs",
+                  "api-reference/endpoints/platform/retrieve-sync-job",
+                  "api-reference/endpoints/platform/list-reconciliation-links",
+                  "api-reference/endpoints/platform/retrieve-reconciliation-link",
+                  "api-reference/endpoints/platform/create-consent",
+                  "api-reference/endpoints/platform/revoke-consent",
+                  "api-reference/endpoints/platform/create-connection",
+                  "api-reference/endpoints/platform/start-connection-sync",
+                  "api-reference/endpoints/platform/disconnect-connection",
+                  "api-reference/endpoints/platform/list-providers",
+                  "api-reference/endpoints/platform/read-change-feed"
+                ]
+              },
+              {
+                "group": "Identity",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/identity/list-businesses",
+                  "api-reference/endpoints/identity/retrieve-business",
+                  "api-reference/endpoints/identity/list-people",
+                  "api-reference/endpoints/identity/retrieve-person",
+                  "api-reference/endpoints/identity/list-relationships",
+                  "api-reference/endpoints/identity/retrieve-relationship",
+                  "api-reference/endpoints/identity/list-verifications",
+                  "api-reference/endpoints/identity/retrieve-verification",
+                  "api-reference/endpoints/identity/list-verification-checks",
+                  "api-reference/endpoints/identity/retrieve-verification-check",
+                  "api-reference/endpoints/identity/list-screening-matches",
+                  "api-reference/endpoints/identity/retrieve-screening-match",
+                  "api-reference/endpoints/identity/list-documents",
+                  "api-reference/endpoints/identity/retrieve-document",
+                  "api-reference/endpoints/identity/create-business",
+                  "api-reference/endpoints/identity/create-person",
+                  "api-reference/endpoints/identity/start-verification",
+                  "api-reference/endpoints/identity/upload-document",
+                  "api-reference/endpoints/identity/create-document-download-link"
+                ]
+              },
+              {
+                "group": "Banking",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/banking/list-bank-accounts",
+                  "api-reference/endpoints/banking/retrieve-bank-account",
+                  "api-reference/endpoints/banking/list-account-balances",
+                  "api-reference/endpoints/banking/retrieve-account-balance",
+                  "api-reference/endpoints/banking/list-bank-transactions",
+                  "api-reference/endpoints/banking/retrieve-bank-transaction",
+                  "api-reference/endpoints/banking/list-recurring-streams",
+                  "api-reference/endpoints/banking/retrieve-recurring-stream",
+                  "api-reference/endpoints/banking/list-income-observations",
+                  "api-reference/endpoints/banking/retrieve-income-observation"
+                ]
+              },
+              {
+                "group": "Payments",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/payments/list-merchant-accounts",
+                  "api-reference/endpoints/payments/retrieve-merchant-account",
+                  "api-reference/endpoints/payments/list-payments",
+                  "api-reference/endpoints/payments/retrieve-payment",
+                  "api-reference/endpoints/payments/list-processor-transactions",
+                  "api-reference/endpoints/payments/retrieve-processor-transaction",
+                  "api-reference/endpoints/payments/list-payouts",
+                  "api-reference/endpoints/payments/retrieve-payout",
+                  "api-reference/endpoints/payments/list-refunds",
+                  "api-reference/endpoints/payments/retrieve-refund",
+                  "api-reference/endpoints/payments/list-disputes",
+                  "api-reference/endpoints/payments/retrieve-dispute"
+                ]
+              },
+              {
+                "group": "Commerce",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/commerce/list-counterparties",
+                  "api-reference/endpoints/commerce/retrieve-counterparty",
+                  "api-reference/endpoints/commerce/list-orders",
+                  "api-reference/endpoints/commerce/retrieve-order",
+                  "api-reference/endpoints/commerce/list-order-lines",
+                  "api-reference/endpoints/commerce/retrieve-order-line",
+                  "api-reference/endpoints/commerce/list-subscriptions",
+                  "api-reference/endpoints/commerce/retrieve-subscription"
+                ]
+              },
+              {
+                "group": "Accounting",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/accounting/list-ledger-accounts",
+                  "api-reference/endpoints/accounting/retrieve-ledger-account",
+                  "api-reference/endpoints/accounting/list-journals",
+                  "api-reference/endpoints/accounting/retrieve-journal",
+                  "api-reference/endpoints/accounting/list-journal-lines",
+                  "api-reference/endpoints/accounting/retrieve-journal-line",
+                  "api-reference/endpoints/accounting/list-invoices",
+                  "api-reference/endpoints/accounting/retrieve-invoice",
+                  "api-reference/endpoints/accounting/list-bills",
+                  "api-reference/endpoints/accounting/retrieve-bill",
+                  "api-reference/endpoints/accounting/list-credit-notes",
+                  "api-reference/endpoints/accounting/retrieve-credit-note",
+                  "api-reference/endpoints/accounting/list-accounting-payments",
+                  "api-reference/endpoints/accounting/retrieve-accounting-payment",
+                  "api-reference/endpoints/accounting/list-financial-statements",
+                  "api-reference/endpoints/accounting/retrieve-financial-statement",
+                  "api-reference/endpoints/accounting/list-statement-lines",
+                  "api-reference/endpoints/accounting/retrieve-statement-line",
+                  "api-reference/endpoints/accounting/list-tax-obligations",
+                  "api-reference/endpoints/accounting/retrieve-tax-obligation"
+                ]
+              },
+              {
+                "group": "Inventory",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/inventory/list-products",
+                  "api-reference/endpoints/inventory/retrieve-product",
+                  "api-reference/endpoints/inventory/list-locations",
+                  "api-reference/endpoints/inventory/retrieve-location",
+                  "api-reference/endpoints/inventory/list-inventory-balances",
+                  "api-reference/endpoints/inventory/retrieve-inventory-balance",
+                  "api-reference/endpoints/inventory/list-inventory-movements",
+                  "api-reference/endpoints/inventory/retrieve-inventory-movement",
+                  "api-reference/endpoints/inventory/list-purchase-orders",
+                  "api-reference/endpoints/inventory/retrieve-purchase-order",
+                  "api-reference/endpoints/inventory/list-shipments",
+                  "api-reference/endpoints/inventory/retrieve-shipment",
+                  "api-reference/endpoints/inventory/list-production-orders",
+                  "api-reference/endpoints/inventory/retrieve-production-order",
+                  "api-reference/endpoints/inventory/list-projects",
+                  "api-reference/endpoints/inventory/retrieve-project"
+                ]
+              },
+              {
+                "group": "Lending",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/lending/list-applications",
+                  "api-reference/endpoints/lending/retrieve-application",
+                  "api-reference/endpoints/lending/list-credit-facilities",
+                  "api-reference/endpoints/lending/retrieve-credit-facility",
+                  "api-reference/endpoints/lending/list-loans",
+                  "api-reference/endpoints/lending/retrieve-loan",
+                  "api-reference/endpoints/lending/list-installments",
+                  "api-reference/endpoints/lending/retrieve-installment",
+                  "api-reference/endpoints/lending/list-repayments",
+                  "api-reference/endpoints/lending/retrieve-repayment",
+                  "api-reference/endpoints/lending/list-collaterals",
+                  "api-reference/endpoints/lending/retrieve-collateral",
+                  "api-reference/endpoints/lending/list-guarantees",
+                  "api-reference/endpoints/lending/retrieve-guarantee",
+                  "api-reference/endpoints/lending/list-covenants",
+                  "api-reference/endpoints/lending/retrieve-covenant",
+                  "api-reference/endpoints/lending/list-decisions",
+                  "api-reference/endpoints/lending/retrieve-decision",
+                  "api-reference/endpoints/lending/create-application"
+                ]
+              },
+              {
+                "group": "Liens",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/liens/list-lien-searches",
+                  "api-reference/endpoints/liens/retrieve-lien-search",
+                  "api-reference/endpoints/liens/list-liens",
+                  "api-reference/endpoints/liens/retrieve-lien",
+                  "api-reference/endpoints/liens/list-filing-events",
+                  "api-reference/endpoints/liens/retrieve-filing-event",
+                  "api-reference/endpoints/liens/start-lien-search"
+                ]
+              },
+              {
+                "group": "Risk",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/risk/list-attributes",
+                  "api-reference/endpoints/risk/retrieve-attribute",
+                  "api-reference/endpoints/risk/list-risk-snapshots",
+                  "api-reference/endpoints/risk/retrieve-risk-snapshot",
+                  "api-reference/endpoints/risk/list-monitors",
+                  "api-reference/endpoints/risk/retrieve-monitor",
+                  "api-reference/endpoints/risk/list-alerts",
+                  "api-reference/endpoints/risk/retrieve-alert",
+                  "api-reference/endpoints/risk/calculate-attributes",
+                  "api-reference/endpoints/risk/retrieve-attribute-calculation",
+                  "api-reference/endpoints/risk/create-monitor",
+                  "api-reference/endpoints/risk/update-monitor"
+                ]
+              },
+              {
+                "group": "Operations",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/operations/list-cases",
+                  "api-reference/endpoints/operations/retrieve-case",
+                  "api-reference/endpoints/operations/list-tasks",
+                  "api-reference/endpoints/operations/retrieve-task",
+                  "api-reference/endpoints/operations/list-communications",
+                  "api-reference/endpoints/operations/retrieve-communication",
+                  "api-reference/endpoints/operations/list-payment-promises",
+                  "api-reference/endpoints/operations/retrieve-payment-promise",
+                  "api-reference/endpoints/operations/list-workflow-runs",
+                  "api-reference/endpoints/operations/retrieve-workflow-run",
+                  "api-reference/endpoints/operations/list-requirements",
+                  "api-reference/endpoints/operations/retrieve-requirement",
+                  "api-reference/endpoints/operations/list-audit-events",
+                  "api-reference/endpoints/operations/retrieve-audit-event",
+                  "api-reference/endpoints/operations/start-workflow-run",
+                  "api-reference/endpoints/operations/create-case",
+                  "api-reference/endpoints/operations/update-case",
+                  "api-reference/endpoints/operations/create-task",
+                  "api-reference/endpoints/operations/approve-task",
+                  "api-reference/endpoints/operations/create-communication-draft",
+                  "api-reference/endpoints/operations/send-approved-communication"
+                ]
+              },
+              {
+                "group": "Webhooks",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/webhooks/create-webhook-endpoint",
+                  "api-reference/endpoints/webhooks/list-webhook-endpoints",
+                  "api-reference/endpoints/webhooks/replay-webhook-event"
+                ]
+              },
+              {
+                "group": "Privacy",
+                "expanded": false,
+                "pages": [
+                  "api-reference/endpoints/privacy/create-deletion-request",
+                  "api-reference/endpoints/privacy/retrieve-deletion-request"
+                ]
+              }
             ]
           }
         ]
@@ -445,5 +720,17 @@
   "icons": {
     "library": "lucide"
   },
-  "description": "Documentation, API reference, release notes, and research for AMLOK."
+  "description": "Documentation, API reference, release notes, and research for AMLOK.",
+  "api": {
+    "playground": {
+      "display": "simple"
+    },
+    "examples": {
+      "languages": [
+        "curl",
+        "python",
+        "javascript"
+      ]
+    }
+  }
 }

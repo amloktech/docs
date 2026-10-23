@@ -1,0 +1,861 @@
+"""Author the narrative companion to the generated draft API reference."""
+from pathlib import Path
+import json
+
+ROOT=Path(__file__).resolve().parent.parent
+SOURCE=json.loads((ROOT/'data/api-contract-source.json').read_text())
+INDEX=json.loads((ROOT/'data/api-reference-index.json').read_text())
+OPS={r['id']:r for r in INDEX}
+NOTE='''<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>'''
+
+def write(name,title,description,body):
+    for oid,op in OPS.items():body=body.replace('@@'+oid+'@@','/'+op['page'])
+    text='---\ntitle: '+json.dumps(title)+'\ndescription: '+json.dumps(description)+'\n---\n\n'+NOTE+'\n\n'+body.strip()+'\n'
+    (ROOT/'api-reference'/f'{name}.mdx').write_text(text.replace('\u2014','-').replace('\u2013','-'))
+
+write('overview','API overview','Build institution-scoped integrations with the proposed AMLOK API.', '''
+The AMLOK API organizes authorized financial evidence into a common data model and coordinates verification, underwriting, monitoring, servicing, and investigation workflows.
+
+This reference contains **164 operations**, **67 resource types**, **28 event types**, and schema-checked synthetic payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
+
+<CardGroup cols={2}>
+  <Card title="Make your first request" icon="terminal" href="/api-reference/quickstart">Follow a complete connection and data-read flow.</Card>
+  <Card title="Authentication and scopes" icon="key-round" href="/api-reference/authentication">Understand API keys, institution boundaries, and permissions.</Card>
+  <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">Verify signatures, deduplicate deliveries, and process changes.</Card>
+  <Card title="OpenAPI and examples" icon="download" href="/api-reference/downloads">Download the specification, Postman collection, and verification code.</Card>
+</CardGroup>
+
+## How the API fits together
+
+1. Create or identify a business or person under your institution tenant.
+2. Record actual authorization and connect an enabled provider.
+3. Synchronize evidence and read normalized records with their coverage and provenance.
+4. Start approved workflows and retrieve asynchronous results.
+5. Process signed events and keep your local records in sync.
+
+The proposed authentication mechanism is a server-side bearer API key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+
+## Explore the API
+
+| Area | Start with |
+| --- | --- |
+| Connections and consent | [Create a connection](@@EP139@@), [record consent](@@EP137@@), [discover provider capabilities](@@EP163@@) |
+| Identity and evidence | [Start verification](@@EP142@@), [upload a document](@@EP144@@) |
+| Banking | [List accounts](@@EP021@@), [list transactions](@@EP025@@) |
+| Payments, commerce, accounting, inventory | Browse the endpoint groups in the sidebar and the [data dictionary](/data-model/field-dictionary). |
+| Lending and assessment | [Create an application](@@EP146@@), [run a workflow](@@EP147@@), [calculate attributes](@@EP148@@) |
+| Monitoring and operations | [Create a monitor](@@EP150@@), [open a case](@@EP152@@), [create a task](@@EP154@@) |
+| Delivery and privacy | [Register a webhook](@@EP158@@), [read changes](@@EP164@@), [request deletion](@@EP161@@) |
+
+## Contract status and integration status
+
+The [integration status catalog](/integrations/status) records the AMLOK team's integration availability. This API contract is a separate draft: an Active/Beta provider does not establish that every endpoint or optional field described here is deployed.
+
+All endpoint paths start with `/v1`. The serialization contract version is `0.1.0-draft`. The documentation uses `api.example.com` only as a placeholder and does not enable live requests from the playground.
+
+See [release readiness](/api-reference/release-readiness) for the remaining deployment decisions and [versioning](/api-reference/versioning) for compatibility rules.
+''')
+
+write('quickstart','Quickstart','Create a subject, capture authorization, connect a provider, and read normalized transactions.', '''
+This walkthrough uses synthetic identifiers. Replace every returned ID with the value from your environment. Run requests from your server after receiving an AMLOK environment URL and scoped key.
+
+## 1. Configure your environment
+
+```bash
+# Set these from your approved environment configuration and secret manager.
+export AMLOK_API_BASE_URL="https://api.example.com" # Placeholder, not a live AMLOK host.
+export AMLOK_API_KEY="<institution-issued-key>"
+```
+
+The base URL excludes `/v1`. Do not store the key in source control, browser storage, or a mobile application. This flow needs `identity:write`, `documents:write`, `consent:write`, `connections:write`, `connections:read`, and `banking:read` as appropriate.
+
+## 2. Create the business
+
+```bash
+curl --request POST --fail-with-body --max-time 30 \\
+  "${AMLOK_API_BASE_URL}/v1/businesses" \\
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \\
+  --header "Content-Type: application/json" \\
+  --header "Idempotency-Key: onboarding-business-1001" \\
+  --data '{"legal_name":"Example Manufacturing Inc.","client_reference":"app-1029","incorporation_country":"CA"}'
+```
+
+Save `data.id`, illustrated below as `biz_example`. A created profile is client-asserted; it does not establish registry verification. [Request and response schema](@@EP135@@).
+
+## 3. Capture real authorization
+
+Obtain the subject's authorization through your institution's approved process. Upload the supporting evidence using [document upload](@@EP144@@), then record consent:
+
+```json
+{
+  "subject_id": "biz_example",
+  "subject_type": "business",
+  "purposes": ["credit_assessment"],
+  "scopes": ["banking:read"],
+  "policy_version": "consent-v1",
+  "evidence_document_id": "doc_consent"
+}
+```
+
+Send this body to `POST /v1/consents` with a new idempotency key for this action. Save `data.id` as `con_example`. Recording consent is not a substitute for obtaining it. [Consent endpoint](@@EP137@@).
+
+## 4. Connect an enabled provider
+
+Use [provider capability discovery](@@EP163@@) to select a provider enabled for your institution, country, and resource needs. Then send this body to `POST /v1/connections`:
+
+```json
+{
+  "subject_id": "biz_example",
+  "provider_id": "BANK-02",
+  "products": ["transactions"],
+  "consent_id": "con_example",
+  "redirect_uri": "https://client.example.com/connected"
+}
+```
+
+Save `data.id` as `cnn_example`. Direct the authorized user through the short-lived `action.url`. The registered `redirect_uri` is a browser return location, not a webhook destination. Retrieve the connection or consume `connection.updated` before attempting a sync. [Connection endpoint](@@EP139@@).
+
+## 5. Synchronize and wait for completion
+
+Send this body to `POST /v1/connections/cnn_example/sync`:
+
+```json
+{
+  "resources": ["bank_account", "bank_transaction"],
+  "from": "2026-09-01",
+  "to": "2026-10-01"
+}
+```
+
+The proposed response is `202 Accepted` with a sync-job ID. Poll `GET /v1/sync-jobs/{id}` with bounded backoff, or process `sync.completed` / `sync.failed`. Treat `partial` as incomplete coverage and inspect errors and actual date coverage. [Sync endpoint](@@EP140@@).
+
+## 6. Read the transactions
+
+```bash
+curl --get --fail-with-body --max-time 30 \\
+  "${AMLOK_API_BASE_URL}/v1/bank-transactions" \\
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \\
+  --data-urlencode "subject_id=biz_example" \\
+  --data-urlencode "connection_id=cnn_example" \\
+  --data-urlencode "posted_from=2026-09-01" \\
+  --data-urlencode "posted_to=2026-10-01" \\
+  --data-urlencode "limit=100"
+```
+
+Follow `page.next_cursor` until `page.has_more` is false. Keep the same filters for subsequent pages. Amounts are exact decimal strings; for bank transactions, `direction` carries the movement direction.
+
+Next, implement [pagination](/api-reference/pagination), [safe retries](/api-reference/idempotency), and [webhook verification](/api-reference/webhooks).
+''')
+
+scope_rows=[]
+for scope in sorted({op['scope'] for op in INDEX}):
+    ops=[op for op in INDEX if op['scope']==scope]
+    scope_rows.append('| `'+scope+'` | '+str(len(ops))+' | ['+ops[0]['title']+'](/'+ops[0]['page']+') |')
+write('authentication','Authentication and authorization','Use institution-scoped bearer keys and explicit resource permissions.', '''
+## Bearer API keys
+
+The proposed contract uses server-to-server API keys bound to one institution tenant and one environment.
+
+```http
+Authorization: Bearer <AMLOK_API_KEY>
+Accept: application/json
+```
+
+Use HTTPS. Keep credentials in your secret manager and load them on the server. Never put keys in a query string, browser bundle, analytics event, error report, or shared Postman export.
+
+Key issuance, expiry, revocation, and rotation procedures must be agreed during onboarding. This draft does not define a key-management endpoint, token exchange, OAuth authorization server, or refresh token.
+
+## Authorization has several layers
+
+| Check | What it controls |
+| --- | --- |
+| Environment | A sandbox credential must not authorize production data. |
+| Institution tenant | Every resource and linked ID must belong to the authenticated tenant. |
+| Endpoint scope | The operation requires its documented scope. |
+| Product and provider entitlement | The institution must be entitled to the requested product and source. |
+| Subject consent and purpose | Data collection and use must remain within recorded authorization. |
+| Field entitlement | Sensitive fields can require additional permissions and purpose checks. |
+
+A caller-supplied `tenant_id` is not authentication. The proposed API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
+
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version.
+
+## Scope reference
+
+Scopes are API permissions. They are not OAuth claims or evidence that a provider grants all requested data.
+
+| Scope | Operations | Example |
+| --- | ---: | --- |
+'''+ '\n'.join(scope_rows)+'''
+
+## Authentication failures
+
+- **401 `unauthenticated`:** missing, invalid, expired, or incorrect-environment credential. Stop retrying until credentials are corrected.
+- **403 `forbidden`:** the key is authenticated but lacks the necessary scope or entitlement.
+- **404 `not_found`:** an ID is missing or not visible to this institution. Do not probe IDs from other tenants.
+
+## Credential rotation
+
+When the release supports overlapping keys, provision a replacement, update consumers, verify traffic uses it, and revoke the old key through the agreed administration process. If overlap is unavailable, coordinate a cutover. Never infer a rotation endpoint from this guide.
+
+Webhook signing secrets are separate from API keys. Store each secret with its destination and environment. The registration response returns a new signing secret only once; list responses omit it.
+''')
+
+write('environments','Environments and requests','Configure the correct API host, transport, and headers before making requests.', '''
+## Base URL
+
+No deployed AMLOK API hostname is declared in this draft. `https://api.example.com` is reserved for examples. Replace it with the URL issued for your institution and environment.
+
+| Setting | Meaning |
+| --- | --- |
+| `AMLOK_API_BASE_URL` | Approved HTTPS origin, without `/v1` or a trailing slash. |
+| `AMLOK_API_KEY` | Server-side key for that environment and institution. |
+| Webhook destination and secret | Separate endpoint configuration for the same environment. |
+
+Sandbox and production keys, subjects, provider connections, consent records, event destinations, and idempotency records must remain separate. Do not copy production evidence into a sandbox unless your approved data-handling process explicitly allows it.
+
+## Request format
+
+Paths begin `/v1`. JSON writes use `Content-Type: application/json`. JSON reads use `Accept: application/json`. Document uploads use multipart form data with a client-generated boundary.
+
+| Header | When to send it |
+| --- | --- |
+| `Authorization` | Every API request. |
+| `Content-Type` | JSON body or multipart upload. Let the HTTP client set the multipart boundary. |
+| `X-Request-ID` | Optional caller correlation ID. Record AMLOK's returned `request_id` separately. |
+| `Idempotency-Key` | Every POST command, including download-link issuance and event replay. |
+| `If-Match` | PATCH configuration with the current quoted ETag. |
+
+Treat IDs as opaque case-sensitive strings. Do not trim leading zeros, infer information from a prefix, or reuse an ID across environments.
+
+## Network behavior
+
+The examples use a 30-second client timeout as an illustration, not a server SLA. Set explicit timeouts suited to your application. A timeout does not prove a command was rejected; retain its idempotency key when retrying.
+
+Do not forward an API credential to a redirected host. Configure the correct origin and reject unexpected redirects. Long-running work returns a resource to poll instead of holding the HTTP connection open.
+
+## Items to confirm before production
+
+Onboarding must provide the production and sandbox origins, enabled scopes and providers, numeric quotas, network controls, support route, incident contacts, and any contractual service commitments. See [release readiness](/api-reference/release-readiness).
+''')
+
+write('response-format','Responses and data conventions','Interpret envelopes, exact amounts, missing values, coverage, and record versions.', '''
+## Envelopes
+
+The proposed API uses a consistent envelope. Single responses contain `data` and `meta`. Collection responses also contain `page`. Errors contain `error` and `meta`.
+
+```json
+{
+  "data": [],
+  "page": {"next_cursor": null, "has_more": false, "limit": 100},
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-23T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+This example is a completed, known-empty collection. An unqueried source or a failed connection must not be represented as an empty successful result.
+
+Resource records inherit `id`, `object`, `created_at`, `updated_at`, `record_version`, `source_refs`, `data_status`, `missing_fields`, and `schema_version`. Subject context, provenance, and other optional fields appear when relevant and authorized. Response-only helper objects such as calculation jobs and signed links use their documented helper schemas inside `data`.
+
+## Missing, empty, and redacted values
+
+| Value | Interpretation |
+| --- | --- |
+| `null` | A value is unavailable or unknown. Consult `missing_fields`. |
+| `0` or `"0.00"` | A known numeric zero with evidence. |
+| `false` | A known false condition. |
+| `[]` | A collection was queried and is known to be empty. |
+| Omitted field | Optional, not selected, or not authorized; inspect the contract and entitlements. |
+
+Denied sensitive values are omitted. Missing-field explanations must not leak the hidden value. `data_status: partial` means you must inspect the available coverage before using the result.
+
+## Money and time
+
+```json
+{"amount": {"amount": "1250.00", "currency": "CAD"}, "direction": "inflow"}
+```
+
+Monetary amounts and decimal ratios use strings. Preserve exact precision and currency. Bank-transaction amounts are absolute magnitudes with a separate direction; other resources can define signed values. Do not apply one sign rule to every domain or sum currencies without explicit FX inputs.
+
+Dates preserve source calendar dates. Timestamps use RFC 3339 UTC. `generated_at` is response generation time, `retrieved_at` is collection time, and `as_of` / `observed_at` describe evidence timing when known. A retrieval timestamp is not proof that a balance is real time.
+
+## Coverage and provenance
+
+`source_refs` identifies the evidence origin. Optional field provenance records the source path and transformation. Coverage records the actual sources, time interval, and completed jurisdictions.
+
+An observed zero lien count for one completed jurisdiction says nothing about an unqueried or failed jurisdiction. An unavailable DSCR is not zero and is not an approval. See [worked payloads](/api-reference/examples).
+
+## Versions and projections
+
+`record_version` tracks a particular resource. `schema_version` identifies the serialization contract. Use the quoted ETag with `If-Match` for supported mutable configuration.
+
+The `fields` parameter selects relative resource fields while preserving required identity and metadata. `include` permits `provenance` and `missing_fields`; it does not grant access or allow arbitrary relationship expansion. The [data dictionary](/data-model/field-dictionary) describes full objects, while projected responses can omit fields not selected.
+''')
+
+write('pagination','Pagination and filtering','Read stable cursor pages and apply only the filters an endpoint supports.', '''
+## Cursor pagination
+
+Collection endpoints use opaque AMLOK cursors. The proposed default page size is **100**, with a minimum of **1** and maximum of **200**. These are draft contract limits.
+
+```http
+GET /v1/bank-transactions?subject_id=biz_example&posted_from=2026-09-01&posted_to=2026-10-01&limit=100
+```
+
+Read `page.next_cursor` and send it with the same filters on the next request. Finish when `page.has_more` is false and `page.next_cursor` is null. Do not decode a cursor or substitute an upstream provider cursor.
+
+The proposed order is stable by `updated_at`, then `id`. Cursors bind the institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
+
+```javascript
+// Node.js, using your institution-issued environment and key.
+const baseUrl = process.env.AMLOK_API_BASE_URL;
+const apiKey = process.env.AMLOK_API_KEY;
+if (!baseUrl || !apiKey) throw new Error("Configure API environment and key");
+const seen = new Set();
+let cursor;
+let finished = false;
+for (let pageNumber = 0; pageNumber < 1000; pageNumber++) {
+  const url = new URL("/v1/bank-transactions", baseUrl);
+  url.search = new URLSearchParams({
+    subject_id: "biz_example", posted_from: "2026-09-01",
+    posted_to: "2026-10-01", limit: "100", ...(cursor ? { cursor } : {})
+  }).toString();
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${apiKey}`, Accept: "application/json" },
+    redirect: "error", signal: AbortSignal.timeout(30000)
+  });
+  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  const result = await response.json();
+  // Persist/process result.data; also inspect result.meta.data_status and coverage.
+  if (!result.page.has_more) { finished = true; break; }
+  cursor = result.page.next_cursor;
+  if (!cursor || seen.has(cursor)) throw new Error("Invalid or repeated cursor");
+  seen.add(cursor);
+}
+if (!finished) throw new Error("Client page budget reached; save progress for review");
+```
+
+The 1,000-page budget is an example client safeguard. It is not a server limit. Add your retry policy around each request and persist the continuation state if processing spans runs.
+
+## Filters are endpoint-specific
+
+Common resource filters include `subject_id`, `updated_from`, and `updated_to`. Source-backed collections can expose `connection_id`; resources with a status can expose a typed `status` filter. Each endpoint page lists the actual proposed parameters.
+
+Specialized filters include bank-account and posting-date filters, invoice due dates, loan days-past-due thresholds, lien jurisdiction, and attribute key. Unsupported or unknown parameters return `400` instead of silently broadening the result.
+
+Intervals are start-inclusive and end-exclusive unless the individual field explicitly says otherwise. Unknown source dates do not match a dated filter.
+
+## Historical reads and changes
+
+`as_of` is supported only for stored point-in-time attribute or risk-snapshot results. It is not a universal historical-read parameter.
+
+Use [the change feed](@@EP164@@) for normalized created, updated, and deleted actions. Keep its cursor separate from collection cursors and source-adapter cursors. Bootstrap by reading the required collections; the cursor bootstrap, expiry, and retention windows remain deployment decisions.
+''')
+
+write('idempotency','Idempotency and concurrency','Retry intended actions safely and protect mutable configuration from stale writes.', '''
+## Idempotency for POST commands
+
+Every proposed POST operation requires an `Idempotency-Key`. Generate it once for one intended action, store it with the payload, and reuse both for retries.
+
+```http
+Idempotency-Key: onboarding-connection-1001
+```
+
+The proposed deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. These are draft policies, not a current service commitment. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
+
+| Situation | Client behavior |
+| --- | --- |
+| Network timeout after POST | Keep the same key and identical payload; the command may already have been accepted. |
+| Transient 429/503 | Respect the retry delay and reuse the same key for that action. |
+| 409 conflicting payload | Reconcile the original action. Use a new key only for a genuinely new intended action. |
+| Retry beyond the retention window | Reconcile the existing resource/job before creating a new action. |
+| Multipart upload | Reuse the same file bytes and logical fields. Request fingerprinting rules require implementation approval. |
+
+Never generate a new idempotency key on every automatic retry. Do not assume a command is safe to replay indefinitely after deduplication retention expires.
+
+## Optimistic concurrency for PATCH
+
+Read the current [monitor](@@EP116@@) or case, retain the quoted `ETag`, and send it in `If-Match`. The PATCH body changes only explicitly supplied fields.
+
+```http
+PATCH /v1/monitors/mon_example
+Authorization: Bearer <AMLOK_API_KEY>
+Content-Type: application/json
+If-Match: "3"
+
+{"status":"paused"}
+```
+
+In the synthetic success example the new record version is `4` and the ETag is `"4"`. A stale precondition returns `412 version_conflict`. Re-read, compare, and decide whether the change is still intended; do not blindly overwrite the newer record.
+
+The draft PATCH schemas reject empty bodies, unknown properties, and null clearing. Null-clearing semantics can be added only through an explicit contract decision.
+
+## Approval-bound actions
+
+Task approval and communication dispatch additionally bind `expected_record_version` to the approved content. Changing the recipient, channel, or action payload requires a new approval. An approval must not become blanket permission for a future version.
+
+See [errors](/api-reference/errors) and [asynchronous jobs](/api-reference/async-jobs) for recovery behavior.
+''')
+
+error_table='\n'.join('| `'+r[0]+'` | '+r[1]+' | '+r[3]+' | '+r[4]+' |' for r in SOURCE['Error Codes']['values'][1:])
+write('errors','Errors','Handle stable error codes, correlation IDs, validation failures, and recoverable outages.', '''
+Errors use a stable code and a safe explanation. Do not branch on human-readable message text.
+
+```json
+{
+  "error": {
+    "code": "invalid_search_scope",
+    "message": "At least one supported jurisdiction is required.",
+    "field": "jurisdictions",
+    "retryable": false,
+    "request_id": "req_example"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-23T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+The example has HTTP `422`. `meta.data_status: complete` describes the error response, not successful completion of the requested workflow.
+
+## Error catalog
+
+| Code | HTTP | Retryable | Client action |
+| --- | ---: | --- | --- |
+'''+error_table+'''
+
+## Retry decisions
+
+Honor `error.retryable` and `Retry-After` when provided. A source error or internal error can require investigation; its HTTP class alone does not establish that repeating a command is safe. Preserve the idempotency key for the same POST action.
+
+Do not retry malformed input, invalid credentials, missing permissions, or stale approvals without resolving the cause. Do not broaden subject IDs or permissions in response to an authorization error.
+
+## Partial results versus request errors
+
+A valid request can return usable partial data with `meta.data_status: partial`. Job-level errors and resource `missing_fields` explain the missing scope. Do not treat a `200` as evidence that every provider succeeded, or an unavailable metric as zero.
+
+## Diagnostics
+
+Record the AMLOK `request_id`, operation, timestamp, environment, HTTP status, error code, and relevant resource/job IDs in your restricted operational logs. Redact keys, signing secrets, signed links, raw identity evidence, and full response bodies.
+
+Provide sanitized request IDs through your agreed support channel. The draft does not establish a support address or response-time SLA.
+''')
+
+write('rate-limits','Rate limits and retries','Handle throttling and transient failures without duplicating work.', '''
+The proposed API applies institution and provider-aware limits. Numeric quotas, burst allowances, concurrent-job limits, and per-provider refresh budgets are deployment decisions. This draft does not promise a requests-per-second allowance.
+
+## Throttled responses
+
+```http
+HTTP/1.1 429 Too Many Requests
+Retry-After: 30
+Content-Type: application/json
+```
+
+The value `30` illustrates a delay in seconds. Clients should also accept an HTTP-date form of `Retry-After`. The error body uses `rate_limited` and includes a request ID.
+
+## Bounded retry policy
+
+1. Retry only a transient condition and an operation you can safely repeat.
+2. Respect the server's `Retry-After`; do not retry earlier than that time.
+3. Otherwise use exponential backoff with jitter, a maximum attempt count, and an overall deadline.
+4. Keep the same idempotency key and payload for a retried POST action.
+5. Stop when the retry budget is exhausted and retain the request/job ID for reconciliation.
+
+For example, a client might use a 1-second base delay, a 30-second exponential-delay cap, and five attempts. These are illustrative client settings. If `Retry-After` exceeds the overall client deadline, schedule a later attempt instead of shortening the server's delay.
+
+## Manage load deliberately
+
+- Bound concurrent requests per tenant and provider.
+- Avoid starting overlapping syncs for the same connection and time window.
+- Use pagination and narrow documented filters.
+- Cache reference data according to your release agreement; no cache lifetime is asserted here.
+- Prefer lifecycle events to tight polling loops, with reconciliation for missed or delayed events.
+
+Do not retry `401`, `403`, `409`, `412`, or validation errors blindly. A network timeout leaves a command's outcome uncertain; [idempotency and reconciliation](/api-reference/idempotency) determine the next step.
+''')
+
+write('async-jobs','Asynchronous jobs','Distinguish acceptance, progress, partial results, and terminal outcomes.', '''
+A successful HTTP response can indicate acceptance rather than completed work. The source contract uses `202` for most long-running commands and `201` for creation of a verification session whose result arrives later.
+
+| Command | Acceptance | Observe the result |
+| --- | --- | --- |
+| [Start sync](@@EP140@@) | 202, sync job | `GET /v1/sync-jobs/{id}`; `sync.completed` or `sync.failed` |
+| [Start verification](@@EP142@@) | 201, verification | `GET /v1/verifications/{id}`; verification events |
+| [Search liens](@@EP143@@) | 202, search | `GET /v1/lien-searches/{id}`; lien-search events |
+| [Upload document](@@EP144@@) | 202, document | `GET /v1/documents/{id}`; `document.processed` |
+| [Run workflow](@@EP147@@) | 202, workflow run | `GET /v1/workflow-runs/{id}`; workflow events |
+| [Calculate attributes](@@EP148@@) | 202, calculation job | `GET /v1/attribute-calculations/{id}`; `attributes.calculated` |
+| [Send communication](@@EP157@@) | 202, communication | `GET /v1/communications/{id}`; delivery-state events |
+| [Request deletion](@@EP161@@) | 202, deletion job | `GET /v1/deletion-requests/{id}`; `deletion.completed` |
+
+The event replay command returns a queued replay receipt. This draft does not define a replay-status polling endpoint; confirm delivery observability during onboarding.
+
+## Poll safely
+
+Persist the returned resource or job ID. Poll the documented retrieval route with bounded backoff, respect throttling, and stop at the resource's terminal state or your application deadline. A client polling deadline does not cancel server work.
+
+Sync-style jobs use `queued`, `running`, `completed`, `partial`, `failed`, and `cancelled`. Other resources have their own typed states. Do not assume every job uses the same enum or that a generic cancellation command exists.
+
+## Interpret completion
+
+- `partial` means some requested scope remains unavailable. Inspect errors, missing intervals, completed jurisdictions, and missing-field reasons.
+- Verification completion means a result is available; it can be declined or require review.
+- A completed lien search with no results applies only to the declared completed scope.
+- Attribute calculation can complete with individual values marked `unavailable`.
+- A queued communication is not delivered, and a completed workflow is not permission to fund a loan.
+- Deletion can retain legally held data or report incomplete provider propagation.
+
+Retrieve the authoritative resource after an event. Use `resource_version` to avoid overwriting a newer record with an older delivery. See [webhooks](/api-reference/webhooks).
+''')
+
+node_verifier=(ROOT/'downloads/verify-webhook.mjs').read_text()
+python_verifier=(ROOT/'downloads/verify_webhook.py').read_text()
+write('webhooks','Webhooks and signatures','Verify raw-body signatures and consume events with durable deduplication.', '''
+## Register an event destination
+
+Use [webhook endpoint registration](@@EP158@@) with an institution-approved HTTPS URL and event keys from the [event catalog](/api-reference/event-catalog).
+
+```json
+{
+  "url": "https://client.example.com/amlok-events",
+  "event_types": ["sync.completed", "sync.failed", "verification.completed"],
+  "description": "Application evidence events"
+}
+```
+
+The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
+
+## Signature contract
+
+```text
+X-AMLOK-Signature: t=<unix_seconds>,v1=<hex_hmac>
+signed_bytes = UTF8(timestamp + ".") + exact_raw_request_body
+hex_hmac = HMAC-SHA256(webhook_secret, signed_bytes)
+```
+
+Verify the exact bytes before JSON parsing or reserialization. Compare the digest in constant time. The proposed timestamp tolerance is five minutes in either direction; keep the receiver's clock synchronized.
+
+The following helpers implement the proposed format. They validate the signature and basic envelope, but your application must still enforce destination/tenant association, durable deduplication, payload validation, and processing rules.
+
+<Tabs>
+<Tab title="Node.js">
+
+```javascript
+'''+node_verifier+'''
+```
+
+</Tab>
+<Tab title="Python">
+
+```python
+'''+python_verifier+'''
+```
+
+</Tab>
+</Tabs>
+
+## Receive, persist, acknowledge
+
+1. Apply a configured body-size limit and capture the raw bytes. The maximum payload size is a release configuration.
+2. Resolve the expected secret from the registered destination, not from an untrusted body field.
+3. Verify the signature and timestamp, then validate the event against the contract.
+4. Atomically insert the event into a durable inbox with a unique key of institution/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
+5. Return `2xx` after durable acceptance. A duplicate already accepted event can receive `2xx` without repeating its effects.
+6. Process asynchronously. Fetch the authorized resource and apply only a newer resource version.
+
+Do not mark an event complete before its effects are durably committed. A worker failure after acknowledgment must be recoverable from your inbox; the sender may not deliver again. An invalid signature should receive a non-2xx response and must not enter the business-processing queue.
+
+## Delivery, retries, and replay
+
+Delivery is proposed to be at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
+
+The draft retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. This is a proposed schedule, not a current reliability SLA. Terminal failures require delivery review and reconciliation.
+
+[Replay](@@EP160@@) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Secret rotation overlap, replay retention, delivery timeouts, and administrative controls require release confirmation.
+
+Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.
+''')
+
+event_table='\n'.join('| `'+r[0]+'` | `'+r[1]+'` | '+r[2]+' | '+r[3]+' |' for r in SOURCE['Events']['values'][1:])
+write('event-catalog','Event catalog','Subscribe to the 28 proposed lifecycle events.', '''
+Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
+
+```json
+{
+  "id": "evt_example",
+  "type": "verification.completed",
+  "created_at": "2026-10-23T14:06:00Z",
+  "schema_version": "0.1.0-draft",
+  "resource_type": "verification",
+  "resource_id": "ver_example",
+  "resource_version": 2,
+  "data": {"status": "in_review"}
+}
+```
+
+The example indicates that a verification result is ready for review. It is not an approval. The `data` object is deliberately limited; retrieve the referenced resource for authorized details.
+
+| Event | Resource | Trigger | Minimal details |
+| --- | --- | --- | --- |
+'''+event_table+'''
+
+The details column preserves the workbook's event intent. Exact per-event `data` property schemas require release review; the OpenAPI file defines the shared envelope and known event keys without inventing a complete per-event payload contract.
+
+`resource.deleted` can refer to any resource type. Preserve the deletion version and avoid treating an older event as a later recreation. Follow your institution's retention rules when applying tombstones.
+
+See [webhook verification and delivery](/api-reference/webhooks) before subscribing or processing events.
+''')
+
+write('documents','Document uploads and downloads','Upload permitted evidence and retrieve short-lived authorized download links.', '''
+## Upload evidence
+
+[POST /v1/documents](@@EP144@@) accepts multipart form data with `file`, `subject_id`, and `document_type`. The proposed response is `202` with a document resource.
+
+```bash
+curl --request POST --fail-with-body --max-time 30 \\
+  "${AMLOK_API_BASE_URL}/v1/documents" \\
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \\
+  --header "Idempotency-Key: statement-upload-1001" \\
+  --form "file=@statement-2026-09.pdf;type=application/pdf" \\
+  --form "subject_id=biz_example" \\
+  --form "document_type=bank_statement" \\
+  --form "period_start=2026-09-01" \\
+  --form "period_end=2026-09-30"
+```
+
+Let the HTTP client construct the multipart `Content-Type` boundary. Do not set `Content-Type: application/json` for this route.
+
+The upload period records the document's stated evidence period. It is not the exclusive `to` filter used by transaction queries. Poll the document's `extraction_status` or consume `document.processed`; acceptance does not establish a completed or verified extraction.
+
+## File controls
+
+The proposed service validates actual file content, allowed types, malware status, tenant ownership, and permitted purpose. Maximum size, page limits, accepted MIME types, scan timeouts, and residency are release configuration items. The PDF above is illustrative and is not a universal file-acceptance promise.
+
+Use only authorized evidence. The normalized default response excludes raw biometric media, card PAN/CVV, and provider credentials. Do not place credentials inside uploaded filenames or metadata.
+
+## Authorized download
+
+Send `{"purpose":"credit_assessment"}` to [POST /v1/documents/{id}/download](@@EP145@@) with `documents:read` and an idempotency key. The response contains `data.document_id`, `data.url`, and `data.expires_at`.
+
+The URL is a temporary capability. Do not make it public, log it, put it in analytics, or persist it as a permanent asset address. Download it only within its authorized context and expiry. Do not attach an AMLOK API key to the signed storage URL.
+
+The exact expiry duration and storage domains must be supplied by the deployed environment. This draft does not define an unlisted pre-signed-upload route.
+
+## Retention and deletion
+
+Consent revocation and connection disconnection stop future collection. They are not equivalent to evidence deletion. Use [deletion requests](@@EP161@@) and inspect legal holds and provider propagation. A successful request does not promise immediate removal from every upstream system.
+''')
+
+write('versioning','Versioning and compatibility','Track API paths, schema versions, record versions, and policy revisions separately.', '''
+## Version layers
+
+| Version | Purpose |
+| --- | --- |
+| `/v1` path | Major HTTP interface namespace. |
+| `schema_version` | Serialization contract, currently proposed `0.1.0-draft`. |
+| `record_version` / ETag | Concurrency and change order for one resource. |
+| `workflow_version` / `ruleset_version` | Approved orchestration or policy revision. |
+| `calculation_version` | Definition or model revision behind a derived value. |
+| Provider API version | Upstream evidence schema recorded in provenance where available. |
+
+Do not use one version as a substitute for another. A newer record can still follow the same schema; a recalculation under a new policy must retain its own provenance.
+
+## Breaking changes
+
+Changing a field's meaning, type, requiredness, units, sign convention, or calculation requires contract review and versioned client communication. Endpoint removal, changed authorization behavior, and changed idempotency or pagination semantics also require compatibility review.
+
+New optional fields can be additive when existing meanings remain intact. Enum additions must be announced. Retain raw provider statuses and handle normalized `unknown` values where the resource defines them.
+
+## Client guidance
+
+Tolerate new optional response properties. Validate the fields your application relies on and fail safely when a critical contract assumption no longer holds. Do not fabricate a default score, currency, or approval state for an unknown value.
+
+Reject invalid request properties according to the documented request schema. Store schema and calculation versions with evidence used for decisions. Preserve immutable risk snapshots instead of rewriting the original assessment.
+
+## Draft and release lifecycle
+
+The draft can change before a release contract is approved. Production API versions, support windows, deprecation notice periods, sunset dates, and migration procedures have not been set. The public [changelog](/changelog) can carry approved documentation updates; it is not a promise of a particular notice period.
+
+Download and pin the [OpenAPI contract](/openapi/amlok-v1.json) used by your integration. Review a schema diff and rerun contract tests before adopting a new version.
+''')
+
+write('security','Security, privacy, and auditability','Design your integration around tenant isolation, least privilege, and controlled evidence access.', '''
+This page describes the intended integration controls and client responsibilities. It does not assert security certifications, a penetration-test result, a particular hosting region, or a contractual retention period.
+
+## Institution and subject boundaries
+
+Bind requests to the tenant represented by the API key. Check ownership of every referenced subject, document, connection, case, approval, and snapshot. A valid ID from another tenant must not become visible through a relationship, filter, download, or event.
+
+Grant the smallest useful scopes. Separate service accounts by environment and workload. A read-only analytical service should not hold communication-send or approval permissions.
+
+## Evidence and consent
+
+Record the authorized purpose, consent policy version, evidence, and relevant scope. Re-check these constraints when collecting, reading, exporting, or sending data. Revocation stops new collection but does not bypass an applicable retention or legal-hold policy.
+
+Mask or tokenize restricted identifiers by default. Avoid storing unnecessary identity data in your own system. Raw biometric media, PAN, CVV, and provider secrets are not part of the normalized default response.
+
+## Audit trails
+
+Capture institution, service identity, purpose, operation, resource version, correlation ID, and outcome in your restricted audit system. Record who approved a side effect and the exact version approved. Preserve evidence manifests and immutable decision snapshots.
+
+Redact keys, webhook secrets, signed URLs, raw documents, and sensitive payload fields. Do not rely on broad request/response logging as an audit strategy.
+
+## Webhook and outbound destination controls
+
+Register only institution-controlled HTTPS destinations. Deployment must validate destinations against SSRF, private-network targets, unsafe redirects, and tenant policy. Receivers verify signatures over raw bytes and durably deduplicate events.
+
+## Retention and incident handling
+
+Use the deletion workflow to track requested scope, legal holds, and upstream propagation. Do not interpret `202` as an immediate deletion guarantee.
+
+Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. These are explicit [release-readiness decisions](/api-reference/release-readiness).
+''')
+
+write('workflows','Integration workflows','Connect the endpoint families into verification, underwriting, monitoring, and servicing journeys.', '''
+## Verify an applicant
+
+Create a business/person, obtain authorization, and upload permitted evidence. [Start verification](@@EP142@@) with an approved workflow version. If a hosted URL is returned, route the applicant through it and wait for the result.
+
+Retrieve checks and screening matches. `in_review`, unresolved identity, missing ownership evidence, and possible screening matches require explicit handling. Completion is not the same as a verified identity or institutional approval.
+
+## Underwrite from frozen evidence
+
+1. [Create the application](@@EP146@@) with exact amount and currency.
+2. Connect and synchronize authorized sources, then inspect coverage and freshness.
+3. Use an approved immutable input manifest for [attribute calculations](@@EP148@@). Manifest provisioning is an onboarding dependency; this draft does not invent a manifest-creation endpoint.
+4. [Start an underwriting run](@@EP147@@) with `workflow_type: underwrite`, an approved version, and input resource IDs.
+5. Retrieve the decision and immutable risk snapshot. Distinguish an advisory recommendation from the institution's decision.
+
+Missing inputs produce explicit unavailability. Do not replace an unavailable DSCR, credit score, PD, or income verification with an inferred value. Provider bank deposits alone do not establish gross income or employment.
+
+## Observe funding
+
+The draft exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. It does not include a money-transfer or lien-filing command. Funding execution and approval remain in the institution's authorized systems.
+
+## Monitor an existing exposure
+
+[Create a monitor](@@EP150@@) against an approved baseline snapshot, resource types, attribute keys, cadence, and ruleset version. Consume alerts and retrieve the supporting evidence.
+
+Compare comparable time windows and coverage. A data outage is not an improvement in borrower risk. Refresh cadence depends on source capability and consent; a daily requested cadence is not a source freshness guarantee.
+
+For a material change, create a new underwriting run and preserve the original snapshot. The workbook mentions parent-run context but does not define that request field; the published request schema therefore does not invent `parent_run_id` support.
+
+## Service and investigate
+
+Create a [case](@@EP152@@) and [task](@@EP154@@) to gather evidence or record a disposition. The task approval route records authorization against an exact version. Creation of a [communication draft](@@EP156@@) does not send it.
+
+The [send route](@@EP157@@) requires `communications:send`, a valid approval ID, and `expected_record_version`. Approval ID provisioning must be defined in the deployed workflow; a task ID must not be substituted for an approval ID without an explicit contract.
+
+Use `workflow_type: investigate` for an approved investigation run. Candidate matches remain candidate until reviewed. Record reviewer attribution and supporting evidence; do not use an automated signal as an unsupported accusation.
+
+## Five orchestrated workflow types
+
+`verify`, `underwrite`, `monitor`, `service`, and `investigate` are the proposed workflow enum. Funding and re-underwriting are lifecycle journeys, not additional enum values.
+''')
+
+worked_parts=[]
+for r in SOURCE['Examples']['values'][1:]:
+    request=json.loads(r[3]);response=json.loads(r[4])
+    if r[0]=='Read partial balance':response['data']['date_basis']='unknown'
+    worked_parts.append('## '+r[0]+'\n\n`'+r[1]+' '+r[2]+'`\n\n'+r[5]+'\n\n'+('### Request body\n\n```json\n'+json.dumps(request,indent=2)+'\n```\n\n' if request else '')+'### Response or event payload\n\n```json\n'+json.dumps(response,indent=2)+'\n```')
+write('examples','Worked payloads','Inspect synthetic successful, partial, unavailable, and failed API outcomes.', '''
+These scenarios expand the source workbook into readable JSON examples. Values and URLs are synthetic. Use the endpoint page for the authoritative proposed request schema and HTTP status.
+
+The invalid-search example is intentionally invalid input. The account-balance example includes the required `date_basis: unknown` because no source observation timestamp is available.
+
+'''+ '\n\n'.join(worked_parts))
+
+write('downloads','Downloads and developer tools','Use the machine-readable contract and runnable verification examples.', '''
+<CardGroup cols={2}>
+  <Card title="OpenAPI 3.1 contract" icon="file-json" href="/openapi/amlok-v1.json">164 operations, resource schemas, authentication, examples, and the webhook envelope.</Card>
+  <Card title="Postman collection" icon="send" href="/downloads/amlok-api.postman_collection.json">Requests grouped by domain with synthetic saved responses.</Card>
+  <Card title="Node.js webhook verifier" icon="file-code" href="/downloads/verify-webhook.mjs">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
+  <Card title="Python webhook verifier" icon="file-code" href="/downloads/verify_webhook.py">Verify the same signature format using the Python standard library.</Card>
+</CardGroup>
+
+## Import the Postman collection
+
+1. Import the downloaded JSON file.
+2. Set `base_url` to your institution-issued environment URL. The supplied `api.example.com` value is a placeholder.
+3. Store `api_key` locally in a protected environment or vault. The exported collection contains no credential.
+4. Set `idempotency_key` once for one intended POST action. Use a new value for a new action and preserve it for retries of the same action.
+5. Replace synthetic resource IDs and configure the current `record_etag` before a PATCH.
+6. Select a local file before trying the multipart upload request.
+
+Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes represent approved communication dispatch or deletion requests.
+
+## Language examples
+
+Endpoint pages provide cURL, Python with `requests`, and Node.js using `fetch`. The examples use a 30-second client timeout and reject unexpected redirects. They are integration examples, not official AMLOK SDK packages.
+
+The webhook helpers have no third-party runtime dependency. They verify signatures and envelope basics only; add durable inbox processing, tenant association, replay handling, and operational monitoring as described in the [webhook guide](/api-reference/webhooks).
+
+## Contract validation
+
+The reference has been checked for OpenAPI structure and generated request/response example validity against JSON Schema. Language samples have been syntax-checked, and both signature helpers have been tested using synthetic signed events, altered bodies, expired/future timestamps, and malformed headers.
+
+This verifies documentation consistency. Backend behavior, real provider payloads, authorization enforcement, and production performance still require implementation and integration testing.
+''')
+
+write('release-readiness','Release readiness','Resolve deployment and contract decisions before treating the draft as a production API.', '''
+The workbook supplies a proposed interface and data model. It does not supply a verified backend, live API origin, numeric quotas, or service agreement.
+
+## Contract decisions still required
+
+| Area | Release decision |
+| --- | --- |
+| Environments | Production/sandbox URLs, tenant provisioning, test-data policy, network controls. |
+| API keys | Issuance, expiry, rotation, revocation, scopes, and administration path. |
+| Provider capabilities | Per-tenant products, resources, countries, field coverage, and permission tests. |
+| Limits | Request quotas, burst/concurrency budgets, job limits, and upload limits. |
+| Reliability | Service objectives, support route, incident handling, and agreed timeouts. |
+| Idempotency | Approve 24-hour retention, scope, canonical request fingerprinting, and replay semantics. |
+| Pagination and changes | Snapshot behavior, bootstrap, cursor expiry, and change-feed retention. |
+| Webhooks | Approve signature format, clock tolerance, delivery retry offsets, replay retention, secret rotation, and per-event detail schemas. |
+| Documents | Allowed MIME types, size/page limits, scan behavior, storage location, and signed-link expiry. |
+| Evidence manifests | Provisioning of immutable input manifests and linking calculation inputs. |
+| Approvals | How exact action versions produce approval IDs, authorized approver roles, and expiry. |
+| Data handling | Tenant-specific retention, residency, legal holds, deletion propagation, and permitted purposes. |
+| Compatibility | Stable schema release, deprecation windows, notices, and migration policy. |
+
+## Proposed defaults in this reference
+
+- List pages default to 100 records and allow up to 200.
+- POST idempotency retention is 24 hours, scoped by institution and operation.
+- Webhook timestamp tolerance is five minutes.
+- Webhook retry offsets are 1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours.
+
+These values come from the source draft and remain subject to release approval. They are not service commitments.
+
+## Design clarifications added for a usable contract
+
+The machine-readable reference makes a few source ambiguities explicit:
+
+- Helper responses use `data`/`meta`; the change feed already has a complete envelope.
+- A connection's one-time authorization `action` is beside `data` and `meta`.
+- Requests reject unknown properties. PATCH changes at least one supplied field and does not clear values with null in this draft.
+- Request fields listed only in endpoint prose have explicit types and requiredness. Lien search modes are represented as `name`, `identifier`, `vin`, and `serial`; non-name modes require an identifier.
+- Webhook creation returns a one-time secret; list responses structurally exclude it.
+- Source-backed and resource-specific filters are exposed only where applicable. Capability discovery and change-feed filters are distinct from generic resource filters.
+- Account-balance examples include required `date_basis`; unavailable source observation timing remains `unknown`.
+
+These clarifications are documented in the OpenAPI `x-design-refinements` metadata and require implementation review.
+
+## What must be tested
+
+Contract tests must verify actual request/response shapes, tenant isolation, linked-object ownership, field redaction, consent revocation, safe retry behavior, stale-write rejection, asynchronous partial failure, webhook verification/replay, file validation, and retention-aware deletion.
+
+Use real provider sandbox payloads to validate mappings and required fields. A schema-valid synthetic example does not establish source completeness or commercial use rights.
+
+The source model does not establish general credit-bureau, payroll, tax-authority, or property-title feeds, nor an approved proprietary credit-risk model. Keep those capabilities conditional until separately sourced and approved.
+''')
+print('Wrote 19 API guides')

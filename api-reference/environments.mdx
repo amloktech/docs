@@ -1,0 +1,44 @@
+---
+title: "Environments and requests"
+description: "Configure the correct API host, transport, and headers before making requests."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+## Base URL
+
+No deployed AMLOK API hostname is declared in this draft. `https://api.example.com` is reserved for examples. Replace it with the URL issued for your institution and environment.
+
+| Setting | Meaning |
+| --- | --- |
+| `AMLOK_API_BASE_URL` | Approved HTTPS origin, without `/v1` or a trailing slash. |
+| `AMLOK_API_KEY` | Server-side key for that environment and institution. |
+| Webhook destination and secret | Separate endpoint configuration for the same environment. |
+
+Sandbox and production keys, subjects, provider connections, consent records, event destinations, and idempotency records must remain separate. Do not copy production evidence into a sandbox unless your approved data-handling process explicitly allows it.
+
+## Request format
+
+Paths begin `/v1`. JSON writes use `Content-Type: application/json`. JSON reads use `Accept: application/json`. Document uploads use multipart form data with a client-generated boundary.
+
+| Header | When to send it |
+| --- | --- |
+| `Authorization` | Every API request. |
+| `Content-Type` | JSON body or multipart upload. Let the HTTP client set the multipart boundary. |
+| `X-Request-ID` | Optional caller correlation ID. Record AMLOK's returned `request_id` separately. |
+| `Idempotency-Key` | Every POST command, including download-link issuance and event replay. |
+| `If-Match` | PATCH configuration with the current quoted ETag. |
+
+Treat IDs as opaque case-sensitive strings. Do not trim leading zeros, infer information from a prefix, or reuse an ID across environments.
+
+## Network behavior
+
+The examples use a 30-second client timeout as an illustration, not a server SLA. Set explicit timeouts suited to your application. A timeout does not prove a command was rejected; retain its idempotency key when retrying.
+
+Do not forward an API credential to a redirected host. Configure the correct origin and reject unexpected redirects. Long-running work returns a resource to poll instead of holding the HTTP connection open.
+
+## Items to confirm before production
+
+Onboarding must provide the production and sandbox origins, enabled scopes and providers, numeric quotas, network controls, support route, incident contacts, and any contractual service commitments. See [release readiness](/api-reference/release-readiness).

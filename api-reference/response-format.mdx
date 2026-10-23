@@ -1,0 +1,63 @@
+---
+title: "Responses and data conventions"
+description: "Interpret envelopes, exact amounts, missing values, coverage, and record versions."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+## Envelopes
+
+The proposed API uses a consistent envelope. Single responses contain `data` and `meta`. Collection responses also contain `page`. Errors contain `error` and `meta`.
+
+```json
+{
+  "data": [],
+  "page": {"next_cursor": null, "has_more": false, "limit": 100},
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-23T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+This example is a completed, known-empty collection. An unqueried source or a failed connection must not be represented as an empty successful result.
+
+Resource records inherit `id`, `object`, `created_at`, `updated_at`, `record_version`, `source_refs`, `data_status`, `missing_fields`, and `schema_version`. Subject context, provenance, and other optional fields appear when relevant and authorized. Response-only helper objects such as calculation jobs and signed links use their documented helper schemas inside `data`.
+
+## Missing, empty, and redacted values
+
+| Value | Interpretation |
+| --- | --- |
+| `null` | A value is unavailable or unknown. Consult `missing_fields`. |
+| `0` or `"0.00"` | A known numeric zero with evidence. |
+| `false` | A known false condition. |
+| `[]` | A collection was queried and is known to be empty. |
+| Omitted field | Optional, not selected, or not authorized; inspect the contract and entitlements. |
+
+Denied sensitive values are omitted. Missing-field explanations must not leak the hidden value. `data_status: partial` means you must inspect the available coverage before using the result.
+
+## Money and time
+
+```json
+{"amount": {"amount": "1250.00", "currency": "CAD"}, "direction": "inflow"}
+```
+
+Monetary amounts and decimal ratios use strings. Preserve exact precision and currency. Bank-transaction amounts are absolute magnitudes with a separate direction; other resources can define signed values. Do not apply one sign rule to every domain or sum currencies without explicit FX inputs.
+
+Dates preserve source calendar dates. Timestamps use RFC 3339 UTC. `generated_at` is response generation time, `retrieved_at` is collection time, and `as_of` / `observed_at` describe evidence timing when known. A retrieval timestamp is not proof that a balance is real time.
+
+## Coverage and provenance
+
+`source_refs` identifies the evidence origin. Optional field provenance records the source path and transformation. Coverage records the actual sources, time interval, and completed jurisdictions.
+
+An observed zero lien count for one completed jurisdiction says nothing about an unqueried or failed jurisdiction. An unavailable DSCR is not zero and is not an approval. See [worked payloads](/api-reference/examples).
+
+## Versions and projections
+
+`record_version` tracks a particular resource. `schema_version` identifies the serialization contract. Use the quoted ETag with `If-Match` for supported mutable configuration.
+
+The `fields` parameter selects relative resource fields while preserving required identity and metadata. `include` permits `provenance` and `missing_fields`; it does not grant access or allow arbitrary relationship expansion. The [data dictionary](/data-model/field-dictionary) describes full objects, while projected responses can omit fields not selected.

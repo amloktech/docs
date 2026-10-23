@@ -1,0 +1,65 @@
+---
+title: "Errors"
+description: "Handle stable error codes, correlation IDs, validation failures, and recoverable outages."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+Errors use a stable code and a safe explanation. Do not branch on human-readable message text.
+
+```json
+{
+  "error": {
+    "code": "invalid_search_scope",
+    "message": "At least one supported jurisdiction is required.",
+    "field": "jurisdictions",
+    "retryable": false,
+    "request_id": "req_example"
+  },
+  "meta": {
+    "request_id": "req_example",
+    "schema_version": "0.1.0-draft",
+    "generated_at": "2026-10-23T14:00:00Z",
+    "data_status": "complete"
+  }
+}
+```
+
+The example has HTTP `422`. `meta.data_status: complete` describes the error response, not successful completion of the requested workflow.
+
+## Error catalog
+
+| Code | HTTP | Retryable | Client action |
+| --- | ---: | --- | --- |
+| `invalid_request` | 400 | No | Correct request structure. |
+| `unauthenticated` | 401 | No | Use a valid credential for the intended environment. |
+| `forbidden` | 403 | No | Resolve authorization; do not retry with broader subject IDs. |
+| `not_found` | 404 | No | Check resource ID and environment. |
+| `idempotency_conflict` | 409 | No | Use original input or a new key for a genuinely new action. |
+| `version_conflict` | 412 | No | Re-read and reconcile the change before submitting. |
+| `invalid_search_scope` | 422 | No | Select supported explicit jurisdictions and identifiers. |
+| `invalid_money` | 422 | No | Send exact decimal and valid currency context. |
+| `insufficient_evidence` | 422 | No | Supply evidence; individual metric outputs may instead return unavailable. |
+| `unsupported_parameter` | 400 | No | Use a supported query; do not substitute current data as historical. |
+| `rate_limited` | 429 | Yes | Respect Retry-After and bounded backoff. |
+| `source_error` | 502 | Conditional | Inspect job-level details; retry only if the failure is transient. |
+| `source_unavailable` | 503 | Yes | Retry with backoff or retrieve explicit partial results. |
+| `internal_error` | 500 | Conditional | Use request_id for support; keep idempotency key for safe retry. |
+
+## Retry decisions
+
+Honor `error.retryable` and `Retry-After` when provided. A source error or internal error can require investigation; its HTTP class alone does not establish that repeating a command is safe. Preserve the idempotency key for the same POST action.
+
+Do not retry malformed input, invalid credentials, missing permissions, or stale approvals without resolving the cause. Do not broaden subject IDs or permissions in response to an authorization error.
+
+## Partial results versus request errors
+
+A valid request can return usable partial data with `meta.data_status: partial`. Job-level errors and resource `missing_fields` explain the missing scope. Do not treat a `200` as evidence that every provider succeeded, or an unavailable metric as zero.
+
+## Diagnostics
+
+Record the AMLOK `request_id`, operation, timestamp, environment, HTTP status, error code, and relevant resource/job IDs in your restricted operational logs. Redact keys, signing secrets, signed links, raw identity evidence, and full response bodies.
+
+Provide sanitized request IDs through your agreed support channel. The draft does not establish a support address or response-time SLA.

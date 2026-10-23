@@ -1,0 +1,38 @@
+---
+title: "Downloads and developer tools"
+description: "Use the machine-readable contract and runnable verification examples."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="OpenAPI 3.1 contract" icon="file-json" href="/openapi/amlok-v1.json">164 operations, resource schemas, authentication, examples, and the webhook envelope.</Card>
+  <Card title="Postman collection" icon="send" href="/downloads/amlok-api.postman_collection.json">Requests grouped by domain with synthetic saved responses.</Card>
+  <Card title="Node.js webhook verifier" icon="file-code" href="/downloads/verify-webhook.mjs">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
+  <Card title="Python webhook verifier" icon="file-code" href="/downloads/verify_webhook.py">Verify the same signature format using the Python standard library.</Card>
+</CardGroup>
+
+## Import the Postman collection
+
+1. Import the downloaded JSON file.
+2. Set `base_url` to your institution-issued environment URL. The supplied `api.example.com` value is a placeholder.
+3. Store `api_key` locally in a protected environment or vault. The exported collection contains no credential.
+4. Set `idempotency_key` once for one intended POST action. Use a new value for a new action and preserve it for retries of the same action.
+5. Replace synthetic resource IDs and configure the current `record_etag` before a PATCH.
+6. Select a local file before trying the multipart upload request.
+
+Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes represent approved communication dispatch or deletion requests.
+
+## Language examples
+
+Endpoint pages provide cURL, Python with `requests`, and Node.js using `fetch`. The examples use a 30-second client timeout and reject unexpected redirects. They are integration examples, not official AMLOK SDK packages.
+
+The webhook helpers have no third-party runtime dependency. They verify signatures and envelope basics only; add durable inbox processing, tenant association, replay handling, and operational monitoring as described in the [webhook guide](/api-reference/webhooks).
+
+## Contract validation
+
+The reference has been checked for OpenAPI structure and generated request/response example validity against JSON Schema. Language samples have been syntax-checked, and both signature helpers have been tested using synthetic signed events, altered bodies, expired/future timestamps, and malformed headers.
+
+This verifies documentation consistency. Backend behavior, real provider payloads, authorization enforcement, and production performance still require implementation and integration testing.

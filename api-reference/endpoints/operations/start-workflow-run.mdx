@@ -1,0 +1,19 @@
+---
+title: "Start workflow run"
+openapi: "/openapi/amlok-v1.json POST /v1/workflow-runs"
+playground: simple
+---
+
+<Note>
+**Draft contract.** The endpoint, scopes, and payloads below describe proposed AMLOK 0.1.0-draft. Examples are synthetic. Use your institution-issued environment URL after release validation.
+</Note>
+
+**Required scope:** `workflows:execute` · **Execution:** asynchronous.
+
+No external action without scoped institutional authorization.
+
+[Data dictionary](/data-model/field-dictionary#workflow-run) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+
+Poll `GET /v1/workflow-runs/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
+
+**Lifecycle event:** `workflow.completed`. See [webhook delivery and verification](/api-reference/webhooks).

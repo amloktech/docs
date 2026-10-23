@@ -1,0 +1,19 @@
+---
+title: "Upload document"
+openapi: "/openapi/amlok-v1.json POST /v1/documents"
+playground: simple
+---
+
+<Note>
+**Draft contract.** The endpoint, scopes, and payloads below describe proposed AMLOK 0.1.0-draft. Examples are synthetic. Use your institution-issued environment URL after release validation.
+</Note>
+
+**Required scope:** `documents:write` · **Execution:** asynchronous.
+
+Validate file content; poll document extraction state.
+
+[Data dictionary](/data-model/field-dictionary#document) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+
+Poll `GET /v1/documents/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
+
+**Lifecycle event:** `document.processed`. See [webhook delivery and verification](/api-reference/webhooks).

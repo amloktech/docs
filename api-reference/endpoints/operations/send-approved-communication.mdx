@@ -1,0 +1,19 @@
+---
+title: "Send approved communication"
+openapi: "/openapi/amlok-v1.json POST /v1/communications/{id}/send"
+playground: simple
+---
+
+<Note>
+**Draft contract.** The endpoint, scopes, and payloads below describe proposed AMLOK 0.1.0-draft. Examples are synthetic. Use your institution-issued environment URL after release validation.
+</Note>
+
+**Required scope:** `communications:send` · **Execution:** asynchronous.
+
+Check recipient, channel, consent, institution approval and provider delivery entitlement.
+
+[Data dictionary](/data-model/field-dictionary#communication) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+
+Poll `GET /v1/communications/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
+
+**Lifecycle event:** `communication.updated`. See [webhook delivery and verification](/api-reference/webhooks).

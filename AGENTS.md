@@ -38,3 +38,12 @@
 
 {/* Define what should and shouldn't be documented */}
 {/* Example: Don't document internal admin features */}
+
+## Draft API reference
+
+- The AMLOK team authorized publication of the proposed v0.1.0 contract with synthetic examples. Do not describe these endpoints as a verified production backend.
+- Source snapshot: `data/api-contract-source.json`. Keep the original Google workbook unchanged.
+- Generate the OpenAPI contract, endpoint pages, Postman collection, and navigation with `python scripts/build-api-reference.py`, then regenerate the guides with `python scripts/write-api-guides.py`.
+- Validate schemas and examples with `python scripts/validate-api-reference.py` (requires `jsonschema` and `openapi-spec-validator`). Run `python scripts/test-api-examples.py` with Node.js on PATH to check both webhook verifiers and code samples.
+- Keep the placeholder host `https://api.example.com`, visible draft labels, and simple playground mode until a verified backend contract replaces the draft.
+- Record source ambiguities and proposed refinements explicitly. Do not invent production quotas, service commitments, credentials, or implementation claims.

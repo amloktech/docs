@@ -1,0 +1,149 @@
+---
+title: "Webhooks and signatures"
+description: "Verify raw-body signatures and consume events with durable deduplication."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+## Register an event destination
+
+Use [webhook endpoint registration](/api-reference/endpoints/webhooks/create-webhook-endpoint) with an institution-approved HTTPS URL and event keys from the [event catalog](/api-reference/event-catalog).
+
+```json
+{
+  "url": "https://client.example.com/amlok-events",
+  "event_types": ["sync.completed", "sync.failed", "verification.completed"],
+  "description": "Application evidence events"
+}
+```
+
+The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
+
+## Signature contract
+
+```text
+X-AMLOK-Signature: t=<unix_seconds>,v1=<hex_hmac>
+signed_bytes = UTF8(timestamp + ".") + exact_raw_request_body
+hex_hmac = HMAC-SHA256(webhook_secret, signed_bytes)
+```
+
+Verify the exact bytes before JSON parsing or reserialization. Compare the digest in constant time. The proposed timestamp tolerance is five minutes in either direction; keep the receiver's clock synchronized.
+
+The following helpers implement the proposed format. They validate the signature and basic envelope, but your application must still enforce destination/tenant association, durable deduplication, payload validation, and processing rules.
+
+<Tabs>
+<Tab title="Node.js">
+
+```javascript
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
+// Proposed AMLOK v0.1.0 signature contract. Does not acknowledge or deduplicate.
+// rawBody must be the exact received bytes, before JSON parsing or reserialization.
+export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(Date.now() / 1000)) {
+  if (!Buffer.isBuffer(rawBody) || typeof header !== 'string' || typeof secret !== 'string' || !secret) {
+    throw new Error('Invalid webhook verification inputs');
+  }
+  const timestamps = [];
+  const signatures = [];
+  for (const entry of header.split(',')) {
+    const pair = entry.trim().split('=');
+    if (pair.length !== 2) throw new Error('Malformed signature header');
+    const [key, value] = pair;
+    if (key === 't') timestamps.push(value);
+    else if (key === 'v1') signatures.push(value);
+  }
+  if (timestamps.length !== 1 || !/^\d+$/.test(timestamps[0]) || signatures.length === 0 ||
+      signatures.some(value => !/^[a-fA-F0-9]{64}$/.test(value))) {
+    throw new Error('Malformed signature header');
+  }
+  const timestamp = Number(timestamps[0]);
+  if (!Number.isSafeInteger(timestamp) || !Number.isFinite(nowSeconds) || Math.abs(nowSeconds - timestamp) > 300) {
+    throw new Error('Webhook timestamp outside the proposed five-minute tolerance');
+  }
+  const expected = createHmac('sha256', secret)
+    .update(timestamps[0] + '.', 'utf8').update(rawBody).digest();
+  const verified = signatures.some(value => timingSafeEqual(expected, Buffer.from(value, 'hex')));
+  if (!verified) throw new Error('Invalid webhook signature');
+  const event = JSON.parse(rawBody.toString('utf8'));
+  if (!event || typeof event !== 'object' || Array.isArray(event) ||
+      typeof event.id !== 'string' || !event.id || typeof event.type !== 'string' ||
+      typeof event.resource_id !== 'string' || !Number.isInteger(event.resource_version)) {
+    throw new Error('Invalid webhook envelope');
+  }
+  return event;
+}
+
+```
+
+</Tab>
+<Tab title="Python">
+
+```python
+"""Verify the proposed AMLOK v0.1.0 signature against exact raw request bytes."""
+import hashlib
+import hmac
+import json
+import math
+import re
+import time
+
+
+def verify_webhook(raw_body, header, secret, now_seconds=None):
+    """Return a verified envelope. Caller must persist/deduplicate before 2xx."""
+    if not isinstance(raw_body, bytes) or not isinstance(header, str) or not isinstance(secret, str) or not secret:
+        raise ValueError("Invalid webhook verification inputs")
+    timestamps, signatures = [], []
+    for entry in header.split(","):
+        pair = entry.strip().split("=")
+        if len(pair) != 2:
+            raise ValueError("Malformed signature header")
+        key, value = pair
+        if key == "t":
+            timestamps.append(value)
+        elif key == "v1":
+            signatures.append(value)
+    if (len(timestamps) != 1 or not re.fullmatch(r"[0-9]+", timestamps[0]) or
+            not signatures or any(not re.fullmatch(r"[a-fA-F0-9]{64}", value) for value in signatures)):
+        raise ValueError("Malformed signature header")
+    timestamp = int(timestamps[0])
+    now = time.time() if now_seconds is None else now_seconds
+    if not math.isfinite(now) or abs(now - timestamp) > 300:
+        raise ValueError("Webhook timestamp outside the proposed five-minute tolerance")
+    signed = timestamps[0].encode("ascii") + b"." + raw_body
+    expected = hmac.new(secret.encode("utf-8"), signed, hashlib.sha256).digest()
+    if not any(hmac.compare_digest(expected, bytes.fromhex(value)) for value in signatures):
+        raise ValueError("Invalid webhook signature")
+    event = json.loads(raw_body)
+    if (not isinstance(event, dict) or not isinstance(event.get("id"), str) or not event["id"] or
+            not isinstance(event.get("type"), str) or not isinstance(event.get("resource_id"), str) or
+            type(event.get("resource_version")) is not int):
+        raise ValueError("Invalid webhook envelope")
+    return event
+
+```
+
+</Tab>
+</Tabs>
+
+## Receive, persist, acknowledge
+
+1. Apply a configured body-size limit and capture the raw bytes. The maximum payload size is a release configuration.
+2. Resolve the expected secret from the registered destination, not from an untrusted body field.
+3. Verify the signature and timestamp, then validate the event against the contract.
+4. Atomically insert the event into a durable inbox with a unique key of institution/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
+5. Return `2xx` after durable acceptance. A duplicate already accepted event can receive `2xx` without repeating its effects.
+6. Process asynchronously. Fetch the authorized resource and apply only a newer resource version.
+
+Do not mark an event complete before its effects are durably committed. A worker failure after acknowledgment must be recoverable from your inbox; the sender may not deliver again. An invalid signature should receive a non-2xx response and must not enter the business-processing queue.
+
+## Delivery, retries, and replay
+
+Delivery is proposed to be at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
+
+The draft retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. This is a proposed schedule, not a current reliability SLA. Terminal failures require delivery review and reconciliation.
+
+[Replay](/api-reference/endpoints/webhooks/replay-webhook-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Secret rotation overlap, replay retention, delivery timeouts, and administrative controls require release confirmation.
+
+Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.

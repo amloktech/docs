@@ -1,0 +1,19 @@
+---
+title: "Start lien search"
+openapi: "/openapi/amlok-v1.json POST /v1/lien-searches"
+playground: simple
+---
+
+<Note>
+**Draft contract.** The endpoint, scopes, and payloads below describe proposed AMLOK 0.1.0-draft. Examples are synthetic. Use your institution-issued environment URL after release validation.
+</Note>
+
+**Required scope:** `liens:search` · **Execution:** asynchronous.
+
+Adapter resolves provider business/person context; no filing or perfection action.
+
+[Data dictionary](/data-model/field-dictionary#lien-search) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+
+Poll `GET /v1/lien-searches/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
+
+**Lifecycle event:** `lien_search.completed`. See [webhook delivery and verification](/api-reference/webhooks).

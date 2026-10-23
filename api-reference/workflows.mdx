@@ -1,0 +1,48 @@
+---
+title: "Integration workflows"
+description: "Connect the endpoint families into verification, underwriting, monitoring, and servicing journeys."
+---
+
+<Note>
+**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
+</Note>
+
+## Verify an applicant
+
+Create a business/person, obtain authorization, and upload permitted evidence. [Start verification](/api-reference/endpoints/identity/start-verification) with an approved workflow version. If a hosted URL is returned, route the applicant through it and wait for the result.
+
+Retrieve checks and screening matches. `in_review`, unresolved identity, missing ownership evidence, and possible screening matches require explicit handling. Completion is not the same as a verified identity or institutional approval.
+
+## Underwrite from frozen evidence
+
+1. [Create the application](/api-reference/endpoints/lending/create-application) with exact amount and currency.
+2. Connect and synchronize authorized sources, then inspect coverage and freshness.
+3. Use an approved immutable input manifest for [attribute calculations](/api-reference/endpoints/risk/calculate-attributes). Manifest provisioning is an onboarding dependency; this draft does not invent a manifest-creation endpoint.
+4. [Start an underwriting run](/api-reference/endpoints/operations/start-workflow-run) with `workflow_type: underwrite`, an approved version, and input resource IDs.
+5. Retrieve the decision and immutable risk snapshot. Distinguish an advisory recommendation from the institution's decision.
+
+Missing inputs produce explicit unavailability. Do not replace an unavailable DSCR, credit score, PD, or income verification with an inferred value. Provider bank deposits alone do not establish gross income or employment.
+
+## Observe funding
+
+The draft exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. It does not include a money-transfer or lien-filing command. Funding execution and approval remain in the institution's authorized systems.
+
+## Monitor an existing exposure
+
+[Create a monitor](/api-reference/endpoints/risk/create-monitor) against an approved baseline snapshot, resource types, attribute keys, cadence, and ruleset version. Consume alerts and retrieve the supporting evidence.
+
+Compare comparable time windows and coverage. A data outage is not an improvement in borrower risk. Refresh cadence depends on source capability and consent; a daily requested cadence is not a source freshness guarantee.
+
+For a material change, create a new underwriting run and preserve the original snapshot. The workbook mentions parent-run context but does not define that request field; the published request schema therefore does not invent `parent_run_id` support.
+
+## Service and investigate
+
+Create a [case](/api-reference/endpoints/operations/create-case) and [task](/api-reference/endpoints/operations/create-task) to gather evidence or record a disposition. The task approval route records authorization against an exact version. Creation of a [communication draft](/api-reference/endpoints/operations/create-communication-draft) does not send it.
+
+The [send route](/api-reference/endpoints/operations/send-approved-communication) requires `communications:send`, a valid approval ID, and `expected_record_version`. Approval ID provisioning must be defined in the deployed workflow; a task ID must not be substituted for an approval ID without an explicit contract.
+
+Use `workflow_type: investigate` for an approved investigation run. Candidate matches remain candidate until reviewed. Record reviewer attribution and supporting evidence; do not use an automated signal as an unsupported accusation.
+
+## Five orchestrated workflow types
+
+`verify`, `underwrite`, `monitor`, `service`, and `investigate` are the proposed workflow enum. Funding and re-underwriting are lifecycle journeys, not additional enum values.
