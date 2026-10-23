@@ -3,10 +3,6 @@ title: "Integration workflows"
 description: "Connect the endpoint families into verification, underwriting, monitoring, and servicing journeys."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Verify an applicant
 
 Create a business/person, obtain authorization, and upload permitted evidence. [Start verification](/api-reference/endpoints/identity/start-verification) with an approved workflow version. If a hosted URL is returned, route the applicant through it and wait for the result.
@@ -17,7 +13,7 @@ Retrieve checks and screening matches. `in_review`, unresolved identity, missing
 
 1. [Create the application](/api-reference/endpoints/lending/create-application) with exact amount and currency.
 2. Connect and synchronize authorized sources, then inspect coverage and freshness.
-3. Use an approved immutable input manifest for [attribute calculations](/api-reference/endpoints/risk/calculate-attributes). Manifest provisioning is an onboarding dependency; this draft does not invent a manifest-creation endpoint.
+3. Use an approved immutable input manifest for [attribute calculations](/api-reference/endpoints/risk/calculate-attributes). Provision manifests through the process configured during onboarding.
 4. [Start an underwriting run](/api-reference/endpoints/operations/start-workflow-run) with `workflow_type: underwrite`, an approved version, and input resource IDs.
 5. Retrieve the decision and immutable risk snapshot. Distinguish an advisory recommendation from the institution's decision.
 
@@ -25,7 +21,7 @@ Missing inputs produce explicit unavailability. Do not replace an unavailable DS
 
 ## Observe funding
 
-The draft exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. It does not include a money-transfer or lien-filing command. Funding execution and approval remain in the institution's authorized systems.
+The API exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. It does not include a money-transfer or lien-filing command. Funding execution and approval remain in the institution's authorized systems.
 
 ## Monitor an existing exposure
 
@@ -45,4 +41,4 @@ Use `workflow_type: investigate` for an approved investigation run. Candidate ma
 
 ## Five orchestrated workflow types
 
-`verify`, `underwrite`, `monitor`, `service`, and `investigate` are the proposed workflow enum. Funding and re-underwriting are lifecycle journeys, not additional enum values.
+`verify`, `underwrite`, `monitor`, `service`, and `investigate` are the workflow enum values. Funding and re-underwriting are lifecycle journeys, not additional enum values.

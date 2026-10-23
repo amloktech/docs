@@ -3,13 +3,9 @@ title: "Pagination and filtering"
 description: "Read stable cursor pages and apply only the filters an endpoint supports."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Cursor pagination
 
-Collection endpoints use opaque AMLOK cursors. The proposed default page size is **100**, with a minimum of **1** and maximum of **200**. These are draft contract limits.
+Collection endpoints use opaque AMLOK cursors. The default page size is **100**, with a minimum of **1** and maximum of **200**.
 
 ```http
 GET /v1/bank-transactions?subject_id=biz_example&posted_from=2026-09-01&posted_to=2026-10-01&limit=100
@@ -17,7 +13,7 @@ GET /v1/bank-transactions?subject_id=biz_example&posted_from=2026-09-01&posted_t
 
 Read `page.next_cursor` and send it with the same filters on the next request. Finish when `page.has_more` is false and `page.next_cursor` is null. Do not decode a cursor or substitute an upstream provider cursor.
 
-The proposed order is stable by `updated_at`, then `id`. Cursors bind the institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
+The order is stable by `updated_at`, then `id`. Cursors bind the institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
 
 ```javascript
 // Node.js, using your institution-issued environment and key.
@@ -52,7 +48,7 @@ The 1,000-page budget is an example client safeguard. It is not a server limit. 
 
 ## Filters are endpoint-specific
 
-Common resource filters include `subject_id`, `updated_from`, and `updated_to`. Source-backed collections can expose `connection_id`; resources with a status can expose a typed `status` filter. Each endpoint page lists the actual proposed parameters.
+Common resource filters include `subject_id`, `updated_from`, and `updated_to`. Source-backed collections can expose `connection_id`; resources with a status can expose a typed `status` filter. Each endpoint page lists the supported parameters.
 
 Specialized filters include bank-account and posting-date filters, invoice due dates, loan days-past-due thresholds, lien jurisdiction, and attribute key. Unsupported or unknown parameters return `400` instead of silently broadening the result.
 

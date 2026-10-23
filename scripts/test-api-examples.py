@@ -90,7 +90,7 @@ for (const c of cases) {
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
 assert sum(len(group['item']) for group in collection['item'])==164
 variables={item['key']:item['value'] for item in collection['variable']}
-assert variables['api_key']=='' and variables['base_url']=='https://api.example.com'
+assert variables['api_key']=='' and variables['base_url']==''
 pages=list((ROOT/'api-reference').rglob('*.mdx'))
 assert len(pages)==183
 assert all('\u2014' not in page.read_text() for page in pages)

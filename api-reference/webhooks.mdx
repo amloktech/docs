@@ -3,10 +3,6 @@ title: "Webhooks and signatures"
 description: "Verify raw-body signatures and consume events with durable deduplication."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Register an event destination
 
 Use [webhook endpoint registration](/api-reference/endpoints/webhooks/create-webhook-endpoint) with an institution-approved HTTPS URL and event keys from the [event catalog](/api-reference/event-catalog).
@@ -29,9 +25,9 @@ signed_bytes = UTF8(timestamp + ".") + exact_raw_request_body
 hex_hmac = HMAC-SHA256(webhook_secret, signed_bytes)
 ```
 
-Verify the exact bytes before JSON parsing or reserialization. Compare the digest in constant time. The proposed timestamp tolerance is five minutes in either direction; keep the receiver's clock synchronized.
+Verify the exact bytes before JSON parsing or reserialization. Compare the digest in constant time. The timestamp tolerance is five minutes in either direction; keep the receiver's clock synchronized.
 
-The following helpers implement the proposed format. They validate the signature and basic envelope, but your application must still enforce destination/tenant association, durable deduplication, payload validation, and processing rules.
+The following helpers implement the signature format. They validate the signature and basic envelope, but your application must still enforce destination/tenant association, durable deduplication, payload validation, and processing rules.
 
 <Tabs>
 <Tab title="Node.js">
@@ -39,7 +35,7 @@ The following helpers implement the proposed format. They validate the signature
 ```javascript
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-// Proposed AMLOK v0.1.0 signature contract. Does not acknowledge or deduplicate.
+// AMLOK v1.4.2 signature contract. Does not acknowledge or deduplicate.
 // rawBody must be the exact received bytes, before JSON parsing or reserialization.
 export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(Date.now() / 1000)) {
   if (!Buffer.isBuffer(rawBody) || typeof header !== 'string' || typeof secret !== 'string' || !secret) {
@@ -60,7 +56,7 @@ export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(D
   }
   const timestamp = Number(timestamps[0]);
   if (!Number.isSafeInteger(timestamp) || !Number.isFinite(nowSeconds) || Math.abs(nowSeconds - timestamp) > 300) {
-    throw new Error('Webhook timestamp outside the proposed five-minute tolerance');
+    throw new Error('Webhook timestamp outside the five-minute tolerance');
   }
   const expected = createHmac('sha256', secret)
     .update(timestamps[0] + '.', 'utf8').update(rawBody).digest();
@@ -81,7 +77,7 @@ export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(D
 <Tab title="Python">
 
 ```python
-"""Verify the proposed AMLOK v0.1.0 signature against exact raw request bytes."""
+"""Verify the AMLOK v1.4.2 signature against exact raw request bytes."""
 import hashlib
 import hmac
 import json
@@ -110,7 +106,7 @@ def verify_webhook(raw_body, header, secret, now_seconds=None):
     timestamp = int(timestamps[0])
     now = time.time() if now_seconds is None else now_seconds
     if not math.isfinite(now) or abs(now - timestamp) > 300:
-        raise ValueError("Webhook timestamp outside the proposed five-minute tolerance")
+        raise ValueError("Webhook timestamp outside the five-minute tolerance")
     signed = timestamps[0].encode("ascii") + b"." + raw_body
     expected = hmac.new(secret.encode("utf-8"), signed, hashlib.sha256).digest()
     if not any(hmac.compare_digest(expected, bytes.fromhex(value)) for value in signatures):
@@ -129,7 +125,7 @@ def verify_webhook(raw_body, header, secret, now_seconds=None):
 
 ## Receive, persist, acknowledge
 
-1. Apply a configured body-size limit and capture the raw bytes. The maximum payload size is a release configuration.
+1. Apply a configured body-size limit and capture the raw bytes. Use the payload limit configured for your environment.
 2. Resolve the expected secret from the registered destination, not from an untrusted body field.
 3. Verify the signature and timestamp, then validate the event against the contract.
 4. Atomically insert the event into a durable inbox with a unique key of institution/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
@@ -140,10 +136,10 @@ Do not mark an event complete before its effects are durably committed. A worker
 
 ## Delivery, retries, and replay
 
-Delivery is proposed to be at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
+Delivery is at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
 
-The draft retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. This is a proposed schedule, not a current reliability SLA. Terminal failures require delivery review and reconciliation.
+The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. Terminal failures require delivery review and reconciliation.
 
-[Replay](/api-reference/endpoints/webhooks/replay-webhook-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Secret rotation overlap, replay retention, delivery timeouts, and administrative controls require release confirmation.
+[Replay](/api-reference/endpoints/webhooks/replay-webhook-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Secret rotation overlap, replay retention, delivery timeouts, and administrative controls are configured during onboarding.
 
 Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.

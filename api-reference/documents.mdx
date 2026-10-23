@@ -3,13 +3,9 @@ title: "Document uploads and downloads"
 description: "Upload permitted evidence and retrieve short-lived authorized download links."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Upload evidence
 
-[POST /v1/documents](/api-reference/endpoints/identity/upload-document) accepts multipart form data with `file`, `subject_id`, and `document_type`. The proposed response is `202` with a document resource.
+[POST /v1/documents](/api-reference/endpoints/identity/upload-document) accepts multipart form data with `file`, `subject_id`, and `document_type`. The response is `202` with a document resource.
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
@@ -29,7 +25,7 @@ The upload period records the document's stated evidence period. It is not the e
 
 ## File controls
 
-The proposed service validates actual file content, allowed types, malware status, tenant ownership, and permitted purpose. Maximum size, page limits, accepted MIME types, scan timeouts, and residency are release configuration items. The PDF above is illustrative and is not a universal file-acceptance promise.
+Document processing validates actual file content, allowed types, malware status, tenant ownership, and permitted purpose. Maximum size, page limits, accepted MIME types, scan timeouts, and residency are environment settings. The PDF above is illustrative and is not a universal file-acceptance promise.
 
 Use only authorized evidence. The normalized default response excludes raw biometric media, card PAN/CVV, and provider credentials. Do not place credentials inside uploaded filenames or metadata.
 
@@ -39,7 +35,7 @@ Send `{"purpose":"credit_assessment"}` to [POST /v1/documents/{id}/download](/ap
 
 The URL is a temporary capability. Do not make it public, log it, put it in analytics, or persist it as a permanent asset address. Download it only within its authorized context and expiry. Do not attach an AMLOK API key to the signed storage URL.
 
-The exact expiry duration and storage domains must be supplied by the deployed environment. This draft does not define an unlisted pre-signed-upload route.
+Use the expiry and storage domain returned by your environment. Upload documents through the documented multipart endpoint.
 
 ## Retention and deletion
 

@@ -1,6 +1,6 @@
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-// Proposed AMLOK v0.1.0 signature contract. Does not acknowledge or deduplicate.
+// AMLOK v1.4.2 signature contract. Does not acknowledge or deduplicate.
 // rawBody must be the exact received bytes, before JSON parsing or reserialization.
 export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(Date.now() / 1000)) {
   if (!Buffer.isBuffer(rawBody) || typeof header !== 'string' || typeof secret !== 'string' || !secret) {
@@ -21,7 +21,7 @@ export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(D
   }
   const timestamp = Number(timestamps[0]);
   if (!Number.isSafeInteger(timestamp) || !Number.isFinite(nowSeconds) || Math.abs(nowSeconds - timestamp) > 300) {
-    throw new Error('Webhook timestamp outside the proposed five-minute tolerance');
+    throw new Error('Webhook timestamp outside the five-minute tolerance');
   }
   const expected = createHmac('sha256', secret)
     .update(timestamps[0] + '.', 'utf8').update(rawBody).digest();

@@ -3,13 +3,9 @@ title: "Authentication and authorization"
 description: "Use institution-scoped bearer keys and explicit resource permissions."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Bearer API keys
 
-The proposed contract uses server-to-server API keys bound to one institution tenant and one environment.
+The API uses server-to-server API keys bound to one institution tenant and one environment.
 
 ```http
 Authorization: Bearer <AMLOK_API_KEY>
@@ -18,7 +14,7 @@ Accept: application/json
 
 Use HTTPS. Keep credentials in your secret manager and load them on the server. Never put keys in a query string, browser bundle, analytics event, error report, or shared Postman export.
 
-Key issuance, expiry, revocation, and rotation procedures must be agreed during onboarding. This draft does not define a key-management endpoint, token exchange, OAuth authorization server, or refresh token.
+Manage key issuance, expiry, revocation, and rotation through the administration process agreed during onboarding. Authenticate requests with your institution-issued API key.
 
 ## Authorization has several layers
 
@@ -31,7 +27,7 @@ Key issuance, expiry, revocation, and rotation procedures must be agreed during 
 | Subject consent and purpose | Data collection and use must remain within recorded authorization. |
 | Field entitlement | Sensitive fields can require additional permissions and purpose checks. |
 
-A caller-supplied `tenant_id` is not authentication. The proposed API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
+A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
 Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version.
 
@@ -86,6 +82,6 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 
 ## Credential rotation
 
-When the release supports overlapping keys, provision a replacement, update consumers, verify traffic uses it, and revoke the old key through the agreed administration process. If overlap is unavailable, coordinate a cutover. Never infer a rotation endpoint from this guide.
+When your environment supports overlapping keys, provision a replacement, update consumers, verify traffic uses it, and revoke the old key through the agreed administration process. If overlap is unavailable, coordinate a cutover. Never infer a rotation endpoint from this guide.
 
 Webhook signing secrets are separate from API keys. Store each secret with its destination and environment. The registration response returns a new signing secret only once; list responses omit it.

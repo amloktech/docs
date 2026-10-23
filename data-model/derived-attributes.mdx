@@ -1,11 +1,7 @@
 ---
 title: "Derived Attributes"
-description: "56 proposed attributes with inputs, calculations, units, and availability rules."
+description: "56 attributes with inputs, calculations, units, and availability rules."
 ---
-
-<Note>
-**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
-</Note>
 
 An attribute is available only when its required inputs, observation window, and coverage rules are satisfied. Preserve the definition version with each calculation.
 
@@ -27,8 +23,7 @@ Total posted account inflows over a covered interval.
 | Availability rule | Require complete selected-account coverage; calculate per currency. |
 | Interpretation / exclusions | Includes loans and transfers; not revenue. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -47,8 +42,7 @@ Total posted account outflows.
 | Availability rule | Same account set and currency. |
 | Interpretation / exclusions | Exclude pending and removed versions. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -67,8 +61,7 @@ Difference between inflows and outflows.
 | Availability rule | Both inputs available for identical scope. |
 | Interpretation / exclusions | Internal transfers cancel only when both legs are covered. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -87,8 +80,7 @@ Classified operating cash receipts.
 | Availability rule | Classification method and unexplained fraction disclosed. |
 | Interpretation / exclusions | Cash receipts are not accrual revenue. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -107,8 +99,7 @@ Classified operating payments.
 | Availability rule | Versioned classification and tax policy required. |
 | Interpretation / exclusions | Keep interest and capital spending policy explicit. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -127,8 +118,7 @@ Operating receipts less operating payments.
 | Availability rule | Both classifications and scope available. |
 | Interpretation / exclusions | Not EBITDA or full accounting cash-flow statement. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -147,8 +137,7 @@ Average observed end-of-day asset balance.
 | Availability rule | Full daily observations or explicitly validated reconstruction. |
 | Interpretation / exclusions | Do not treat one current balance as historical daily balances. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -167,8 +156,7 @@ Lowest daily closing balance.
 | Availability rule | Same requirements as average\_daily\_balance. |
 | Interpretation / exclusions | Keep account set and trust exclusions fixed. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -187,8 +175,7 @@ Count of days with negative operating cash balance.
 | Availability rule | Daily balances required. |
 | Interpretation / exclusions | Credit balances owed are not overdrafts. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -207,8 +194,7 @@ Explicit insufficient-funds events.
 | Availability rule | Provider-coded return or reviewed fee mapping. |
 | Interpretation / exclusions | Do not infer NSF from any low balance or any generic fee. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -227,8 +213,7 @@ Variation in comparable monthly operating receipts.
 | Availability rule | At least 6 comparable complete months; mean must be positive. |
 | Interpretation / exclusions | Seasonality and short history affect interpretation. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -247,8 +232,7 @@ Change in operating receipts against prior comparable interval.
 | Availability rule | Equal coverage, account set and classification version. |
 | Interpretation / exclusions | Return unavailable for zero denominator; do not silently label growth zero. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -267,8 +251,7 @@ Days of cash at recent net operating burn.
 | Availability rule | Fresh cash plus complete 90-day classified flows. |
 | Interpretation / exclusions | Not applicable for nonnegative surplus; no infinite numeric output. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -287,8 +270,7 @@ Cash payments classified as debt service.
 | Availability rule | Debt payment classification or servicing allocations. |
 | Interpretation / exclusions | Do not count bank record and loan repayment twice. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -307,8 +289,7 @@ Share of cash movements without a usable category.
 | Availability rule | Positive total flow; return null on no activity. |
 | Interpretation / exclusions | A high value limits cash-flow metric reliability. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -333,8 +314,7 @@ Gross successful captured payment volume.
 | Availability rule | Complete payment feed and test flags where supported. |
 | Interpretation / exclusions | Keep refunds separate; do not sum processor ledger duplicates. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -353,8 +333,7 @@ Cash settled by processors or marketplaces.
 | Availability rule | Paid settlement records with consistent timing. |
 | Interpretation / exclusions | Payout volume can lag order and payment activity. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -373,8 +352,7 @@ Refunded value relative to captured value in a specified event window.
 | Availability rule | Positive denominator; same currency and merchant scope. |
 | Interpretation / exclusions | Event-window ratio is not a cohort refund probability. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -393,8 +371,7 @@ Disputed value relative to captured value.
 | Availability rule | Positive denominator and full dispute entitlement. |
 | Interpretation / exclusions | Disputes can refer to older sales; distinguish event vs cohort measures. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -413,8 +390,7 @@ Reported processor fees per captured payment volume.
 | Availability rule | Exclude reserves and financing charges unless policy includes them. |
 | Interpretation / exclusions | Source fee timing may differ from capture timing. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -433,8 +409,7 @@ Share of payout amount matched to bank evidence.
 | Availability rule | Bank and payout currencies and dates aligned. |
 | Interpretation / exclusions | Unmatched may reflect timing, not missing funds. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -459,8 +434,7 @@ Value of accepted non-test, non-cancelled orders.
 | Availability rule | Complete order feed; tax/shipping convention stated. |
 | Interpretation / exclusions | Not accounting revenue and not received cash. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -479,8 +453,7 @@ Count of accepted non-test orders.
 | Availability rule | Deduplicate overlapping POS and online feeds. |
 | Interpretation / exclusions | Cancellations and edits need explicit inclusion policy. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -499,8 +472,7 @@ Mean accepted order amount.
 | Availability rule | Order count &gt; 0. |
 | Interpretation / exclusions | Do not mix shop and presentment currency. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -519,8 +491,7 @@ Largest customer share of invoiced sales.
 | Availability rule | Resolved customer IDs and positive net sales. |
 | Interpretation / exclusions | Use consistent tax exclusion and credit-note allocation. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -545,8 +516,7 @@ Reported accounting revenue for the stated basis.
 | Availability rule | Complete report, reporting currency and basis. |
 | Interpretation / exclusions | Never substitute gross bank deposits. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -565,8 +535,7 @@ Revenue less cost of goods sold.
 | Availability rule | Reviewed source chart mapping. |
 | Interpretation / exclusions | Do not add subtotal and component accounts together. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -585,8 +554,7 @@ Gross profit as a share of revenue.
 | Availability rule | Same period and basis. |
 | Interpretation / exclusions | Unavailable for nonpositive revenue. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -605,8 +573,7 @@ Earnings before interest, tax, depreciation and amortization under stated method
 | Availability rule | All components must be separately available. |
 | Interpretation / exclusions | Label adjustments separately; do not infer unsupported add-backs. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -625,8 +592,7 @@ Net accounting income as a share of revenue.
 | Availability rule | Comparable statement and positive revenue. |
 | Interpretation / exclusions | Do not mix consolidated income and single-entity revenue. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -645,8 +611,7 @@ Current assets relative to current liabilities.
 | Availability rule | Complete classified balance sheet. |
 | Interpretation / exclusions | Zero liability denominator is not numeric infinity. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -665,8 +630,7 @@ Liquid current assets relative to current liabilities.
 | Availability rule | Reviewed account mapping and positive denominator. |
 | Interpretation / exclusions | Exclude inventory and prepaid expenses. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -685,8 +649,7 @@ Current assets less current liabilities.
 | Availability rule | Same entity and date. |
 | Interpretation / exclusions | Restricted or trust assets must remain separately identifiable. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -705,8 +668,7 @@ Interest-bearing debt relative to book equity.
 | Availability rule | Reviewed debt definition and positive equity. |
 | Interpretation / exclusions | Negative equity is separately flagged, not converted to a normal ratio. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -725,8 +687,7 @@ Open receivables past contractual due dates.
 | Availability rule | Complete open-invoice population and due dates. |
 | Interpretation / exclusions | Source balance must be contemporaneous; missing due dates are separate. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -745,8 +706,7 @@ Overdue balance as a share of open receivables.
 | Availability rule | Positive denominator and complete open ledger. |
 | Interpretation / exclusions | Do not include void or fully credited invoices. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -765,8 +725,7 @@ Receivable balances in defined overdue buckets.
 | Availability rule | Complete dates and outstanding balances. |
 | Interpretation / exclusions | Buckets use due date, not issue date. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -785,8 +744,7 @@ Unpaid supplier bills beyond due date.
 | Availability rule | Complete open-bill population. |
 | Interpretation / exclusions | Do not infer unpaid tax from all supplier arrears. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -805,8 +763,7 @@ Receivables collection estimate.
 | Availability rule | Both balance observations and credit-sales denominator. |
 | Interpretation / exclusions | Total revenue is not an interchangeable substitute for credit sales. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -825,8 +782,7 @@ Supplier payment estimate.
 | Availability rule | Both balance observations and purchase denominator. |
 | Interpretation / exclusions | Do not silently replace purchases with COGS. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -851,8 +807,7 @@ Book value of borrower-owned stock.
 | Availability rule | Known ownership and costing basis. |
 | Interpretation / exclusions | Exclude client stock in a third-party warehouse. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -871,8 +826,7 @@ Cost-based turnover for a reporting period.
 | Availability rule | Positive inventory denominator and aligned cost basis. |
 | Interpretation / exclusions | Not sales divided by stock units. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -891,8 +845,7 @@ Days of inventory at the cost rate.
 | Availability rule | Aligned owned inventory values and COGS. |
 | Interpretation / exclusions | Unavailable when cost values or history are missing. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -911,8 +864,7 @@ Owned stock remaining more than 90 days after receipt.
 | Availability rule | Lot/cost-flow tracking and receipt history. |
 | Interpretation / exclusions | Current snapshot alone cannot establish age. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -931,8 +883,7 @@ Inventory days plus collection days less payment days.
 | Availability rule | All three metrics defined on compatible period and population. |
 | Interpretation / exclusions | Unavailable if any input is missing. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -957,8 +908,7 @@ Cash available for debt service relative to scheduled service.
 | Availability rule | Institution definition and full debt schedule required. |
 | Interpretation / exclusions | If EBITDA is a proxy, label EBITDA DSCR explicitly; not actual cash DSCR. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -977,8 +927,7 @@ Secured debt relative to supported collateral value.
 | Availability rule | Current appraisal, liens and debt scope; positive value. |
 | Interpretation / exclusions | Book inventory value is not an independent appraisal. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -997,8 +946,7 @@ Drawn exposure as a share of the approved limit.
 | Availability rule | Same currency and facility. |
 | Interpretation / exclusions | Can exceed 1; do not clamp away over-limit exposure. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1017,8 +965,7 @@ Monthly contractual debt obligation relative to verified monthly gross income.
 | Availability rule | Permitted consumer use, gross income and full debt scope. |
 | Interpretation / exclusions | Net bank deposits are not verified gross income. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1037,8 +984,7 @@ Outstanding principal in loans above a chosen delinquency threshold.
 | Availability rule | Consistent DPD policy, currency and complete portfolio. |
 | Interpretation / exclusions | Declare threshold such as 30; distinguish from borrower count ratio. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1057,8 +1003,7 @@ Eligible assets after contractual advance rates and reserves.
 | Availability rule | Documented eligibility, ownership, concentration limits and covenants. |
 | Interpretation / exclusions | No automatic credit-limit change; requires institutional decision. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1083,8 +1028,7 @@ Active filings within completed, reviewed search scope.
 | Availability rule | Completed jurisdiction scope and match review. |
 | Interpretation / exclusions | Zero results is not proof of no liens elsewhere. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1103,8 +1047,7 @@ Days to an explicitly reported lapse date.
 | Availability rule | Known lapse date and current amendment chain. |
 | Interpretation / exclusions | Do not mechanically add five years to all filings. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1129,8 +1072,7 @@ Elapsed completed months since formation.
 | Availability rule | Verified formation date. |
 | Interpretation / exclusions | Not the same as operating history or bank-account age. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1155,8 +1097,7 @@ Age of the oldest required observation in an assessment.
 | Availability rule | Defined required-source manifest. |
 | Interpretation / exclusions | Use source effective time separately when retrieval can return stale records. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>
@@ -1175,8 +1116,7 @@ Policy-defined change against the original assessment.
 | Availability rule | Comparable policy/model version or explicit migration. |
 | Interpretation / exclusions | Do not treat missing refreshed evidence as improved risk. |
 | Origin | AMLOK derived |
-| Contract status | Proposed |
-| Definition version | 0.1.0-draft |
+| Definition version | 1.4.2 |
 
 
 </Accordion>

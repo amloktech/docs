@@ -48,7 +48,6 @@ for (const category of new Set(integrations.map((integration) => integration.hre
 }
 
 let coverage = await read("data-model/provider-coverage.mdx");
-coverage = coverage.replace("Production availability is not verified.", "The draft resource and field mappings have not been verified for production use.");
 const byId = new Map(integrations.map((integration) => [integration.id.toLowerCase(), integration]));
 coverage = coverage.replace(/<Accordion title="[^"]*" id="([^"]+)">[\s\S]*?<\/Accordion>/g, (block, id) => {
   const integration = byId.get(id);
@@ -56,7 +55,7 @@ coverage = coverage.replace(/<Accordion title="[^"]*" id="([^"]+)">[\s\S]*?<\/Ac
   const label = integration.status + (integration.beta ? " (Beta)" : "");
   return block.replace(/^\| (?:Production status|Integration status) \|.*$/m, `| Integration status | [${label}](/integrations/status) |`);
 });
-const scopeNote = "Integration status reflects the current AMLOK catalog. Resource and field coverage below remain draft definitions from the source review.";
+const scopeNote = "Integration status reflects the current AMLOK catalog. Resource and field mappings describe the data associated with each provider; actual coverage depends on enabled products, permissions, and source evidence.";
 if (!coverage.includes(scopeNote)) coverage = coverage.replace(/<\/Note>/, `</Note>\n\n${scopeNote}`);
 await write("data-model/provider-coverage.mdx", coverage);
 console.log(JSON.stringify({ integrations: integrations.length, active: integrations.filter((integration) => integration.status === "Active").length, inReview: integrations.filter((integration) => integration.status === "In Review").length }));

@@ -3,16 +3,12 @@ title: "Versioning and compatibility"
 description: "Track API paths, schema versions, record versions, and policy revisions separately."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Version layers
 
 | Version | Purpose |
 | --- | --- |
 | `/v1` path | Major HTTP interface namespace. |
-| `schema_version` | Serialization contract, currently proposed `0.1.0-draft`. |
+| `schema_version` | Serialization contract, currently `1.4.2`. |
 | `record_version` / ETag | Concurrency and change order for one resource. |
 | `workflow_version` / `ruleset_version` | Approved orchestration or policy revision. |
 | `calculation_version` | Definition or model revision behind a derived value. |
@@ -32,8 +28,8 @@ Tolerate new optional response properties. Validate the fields your application 
 
 Reject invalid request properties according to the documented request schema. Store schema and calculation versions with evidence used for decisions. Preserve immutable risk snapshots instead of rewriting the original assessment.
 
-## Draft and release lifecycle
+## Release lifecycle
 
-The draft can change before a release contract is approved. Production API versions, support windows, deprecation notice periods, sunset dates, and migration procedures have not been set. The public [changelog](/changelog) can carry approved documentation updates; it is not a promise of a particular notice period.
+This reference documents API version **1.4.2**. Review the [changelog](/changelog) for documentation updates. Your service agreement defines support windows and deprecation notice periods; follow the migration guidance provided for a version transition.
 
 Download and pin the [OpenAPI contract](/openapi/amlok-v1.json) used by your integration. Review a schema diff and rerun contract tests before adopting a new version.

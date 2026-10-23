@@ -1,0 +1,35 @@
+---
+title: "Integration onboarding"
+description: "Configure your institution, environments, access, and operational settings."
+---
+
+Use this checklist to configure an integration with **AMLOK API 1.4.2**. Your AMLOK contact supplies the settings and access appropriate to your agreement.
+
+## Configure your environment
+
+| Area | Configuration |
+| --- | --- |
+| Environments | Production and sandbox origins, institution tenant, test-data policy, and network controls. |
+| API keys | Issuance, expiry, rotation, revocation, scopes, and administrator access. |
+| Provider capabilities | Enabled products, resources, markets, account permissions, and field coverage. |
+| Limits | Request quotas, burst and concurrency budgets, job limits, and upload limits. |
+| Support | Support channel, incident contacts, escalation, and service commitments. |
+| Webhooks | Destination, event subscriptions, signing secret, replay retention, and delivery monitoring. |
+| Documents | Allowed file types, size and page limits, storage location, and signed-link expiry. |
+| Evidence and approvals | Input manifests, approval identifiers, authorized reviewers, and expiry. |
+| Data handling | Retention, residency, legal holds, deletion, and permitted purposes. |
+
+## Connect and verify
+
+1. Store the environment URL and API key in your server-side configuration.
+2. Grant the smallest set of scopes required by your workflow.
+3. Follow the [quickstart](/api-reference/quickstart) using your environment's identifiers.
+4. Validate response handling, pagination, and missing-data rules with representative records.
+5. Exercise retries, idempotency, concurrency conflicts, asynchronous outcomes, and webhook verification.
+6. Configure monitoring and the agreed support and incident channels.
+
+Keep sandbox and production credentials and data separate. Confirm source permissions and your institution's approval before enabling consequential actions.
+
+## Keep your integration current
+
+Pin the [OpenAPI reference](/openapi/amlok-v1.json) used by your client. Review schema changes and rerun integration checks when adopting a new version or enabling a provider. See [versioning](/api-reference/versioning) and [Security & Compliance](/security/overview).

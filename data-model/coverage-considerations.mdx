@@ -1,0 +1,33 @@
+---
+title: "Coverage considerations"
+description: "Understand source permissions, data completeness, and supported workflow boundaries."
+---
+
+AMLOK normalizes information from connected sources and institution-supplied evidence. The fields returned for a request depend on your enabled integrations, product modules, permissions, market, and available history.
+
+## Check integration and resource coverage
+
+Use the [integration status catalog](/integrations/status) for availability and markets. Review [provider coverage](/data-model/provider-coverage), [resource coverage](/data-model/resource-coverage), and [field mappings](/data-model/field-mappings) for the corresponding data references.
+
+A required field defines a valid resource when that resource exists. It does not guarantee that every connected account supplies every resource or optional field. Inspect `data_status`, `missing_fields`, and the returned coverage period before using a result.
+
+## Match evidence to the workflow
+
+| Evidence | Interpretation |
+| --- | --- |
+| Bank transactions | Observed deposits and withdrawals; deposits alone do not establish verified gross income or employment. |
+| Accounting records | Coverage follows enabled ledger, reporting, tax, and other modules. Invoice access alone does not imply complete financial statements. |
+| Balances | A current balance is one observation. Historical metrics require the appropriate observations or an explicitly defined reconstruction. |
+| Inventory and held assets | Establish beneficial ownership before treating trust, consigned, or third-party assets as collateral or liquidity. |
+| Registry and lien records | Apply the jurisdiction and search scope. A UCC or PPSA search is not a complete real-property title search or valuation. |
+| Derived attributes | Use the required evidence, calculation version, and coverage window. Missing prerequisites produce an unavailable result. |
+
+## Permissions and additional sources
+
+Collection, processing, retention, and onward use must follow source permissions and your agreement. Consumer-reporting, credit-bureau, payroll, tax-authority, and property-title workflows require the appropriate sources and permitted purposes.
+
+Read and assessment access does not authorize money movement, filings, communication dispatch, or changes to credit terms. Use an explicitly authorized workflow for consequential actions.
+
+## Preserve data quality
+
+Keep missing, partial, stale, and conflicting evidence visible in your application. A failed lookup is not a verified no-hit result. Use [normalization rules](/data-model/normalization-rules) and [response conventions](/api-reference/response-format) to interpret the returned data consistently.

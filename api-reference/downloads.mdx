@@ -3,23 +3,19 @@ title: "Downloads and developer tools"
 description: "Use the machine-readable contract and runnable verification examples."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 <CardGroup cols={2}>
   <Card title="OpenAPI 3.1 contract" icon="file-json" href="/openapi/amlok-v1.json">164 operations, resource schemas, authentication, examples, and the webhook envelope.</Card>
   <Card title="Postman collection" icon="send" href="/downloads/amlok-api.postman_collection.json">Requests grouped by domain with synthetic saved responses.</Card>
-  <Card title="Node.js webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/8dafc008f856e0ade39292d6f2df974f5f9b4ccb/downloads/verify-webhook.mjs">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
-  <Card title="Python webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/8dafc008f856e0ade39292d6f2df974f5f9b4ccb/downloads/verify_webhook.py">Verify the same signature format using the Python standard library.</Card>
+  <Card title="Node.js webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/main/downloads/verify-webhook.mjs">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
+  <Card title="Python webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/main/downloads/verify_webhook.py">Verify the same signature format using the Python standard library.</Card>
 </CardGroup>
 
-The webhook helpers link to versioned source files. Save the Node.js helper as `verify-webhook.mjs` and the Python helper as `verify_webhook.py`.
+The webhook helpers link to the maintained source files for this reference. Save the Node.js helper as `verify-webhook.mjs` and the Python helper as `verify_webhook.py`.
 
 ## Import the Postman collection
 
 1. Import the downloaded JSON file.
-2. Set `base_url` to your institution-issued environment URL. The supplied `api.example.com` value is a placeholder.
+2. Set `base_url` to your institution-issued environment URL. The exported `base_url` value is empty so you can configure the appropriate environment.
 3. Store `api_key` locally in a protected environment or vault. The exported collection contains no credential.
 4. Set `idempotency_key` once for one intended POST action. Use a new value for a new action and preserve it for retries of the same action.
 5. Replace synthetic resource IDs and configure the current `record_etag` before a PATCH.
@@ -37,4 +33,4 @@ The webhook helpers have no third-party runtime dependency. They verify signatur
 
 The reference has been checked for OpenAPI structure and generated request/response example validity against JSON Schema. Language samples have been syntax-checked, and both signature helpers have been tested using synthetic signed events, altered bodies, expired/future timestamps, and malformed headers.
 
-This verifies documentation consistency. Backend behavior, real provider payloads, authorization enforcement, and production performance still require implementation and integration testing.
+Validate your integration with your enabled providers, environment settings, and representative test data before processing live requests.

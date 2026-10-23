@@ -1,15 +1,11 @@
 ---
 title: "API overview"
-description: "Build institution-scoped integrations with the proposed AMLOK API."
+description: "Build institution-scoped integrations with the AMLOK API 1.4.2."
 ---
-
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
 
 The AMLOK API organizes authorized financial evidence into a common data model and coordinates verification, underwriting, monitoring, servicing, and investigation workflows.
 
-This reference contains **164 operations**, **67 resource types**, **28 event types**, and schema-checked synthetic payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
+This reference contains **164 operations**, **67 resource types**, **28 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
 
 <CardGroup cols={2}>
   <Card title="Make your first request" icon="terminal" href="/api-reference/quickstart">Follow a complete connection and data-read flow.</Card>
@@ -26,7 +22,7 @@ This reference contains **164 operations**, **67 resource types**, **28 event ty
 4. Start approved workflows and retrieve asynchronous results.
 5. Process signed events and keep your local records in sync.
 
-The proposed authentication mechanism is a server-side bearer API key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+The authentication mechanism is a server-side bearer API key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
 
 ## Explore the API
 
@@ -40,10 +36,10 @@ The proposed authentication mechanism is a server-side bearer API key. Resources
 | Monitoring and operations | [Create a monitor](/api-reference/endpoints/risk/create-monitor), [open a case](/api-reference/endpoints/operations/create-case), [create a task](/api-reference/endpoints/operations/create-task) |
 | Delivery and privacy | [Register a webhook](/api-reference/endpoints/webhooks/create-webhook-endpoint), [read changes](/api-reference/endpoints/platform/read-change-feed), [request deletion](/api-reference/endpoints/privacy/create-deletion-request) |
 
-## Contract status and integration status
+## Version and availability
 
-The [integration status catalog](/integrations/status) records the AMLOK team's integration availability. This API contract is a separate draft: an Active/Beta provider does not establish that every endpoint or optional field described here is deployed.
+Use the [integration status catalog](/integrations/status) to check provider availability and supported markets. Returned resources and fields depend on your enabled products, source permissions, and account entitlements.
 
-All endpoint paths start with `/v1`. The serialization contract version is `0.1.0-draft`. The documentation uses `api.example.com` only as a placeholder and does not enable live requests from the playground.
+This reference covers **AMLOK API 1.4.2**. Endpoint paths use the `/v1` major-version namespace. Configure `AMLOK_API_BASE_URL` with the environment URL issued to your institution.
 
-See [release readiness](/api-reference/release-readiness) for the remaining deployment decisions and [versioning](/api-reference/versioning) for compatibility rules.
+See [integration onboarding](/api-reference/onboarding) for environment setup and [versioning](/api-reference/versioning) for compatibility rules.

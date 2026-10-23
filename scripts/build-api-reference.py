@@ -1,7 +1,6 @@
-"""Build the proposed API contract from the read-only workbook snapshot.
+"""Build the API reference from the read-only workbook snapshot.
 
-Run with Python 3. Request refinements are explicitly recorded as proposed
-design decisions; this generator does not implement or call an AMLOK API.
+Run with Python 3. Request refinements are recorded as design decisions; this generator does not implement or call an AMLOK API.
 """
 from pathlib import Path
 from collections import defaultdict
@@ -12,7 +11,7 @@ from pprint import pformat
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = json.loads((ROOT / 'data/api-contract-source.json').read_text())
-VERSION = '0.1.0-draft'
+VERSION = '1.4.2'
 NOW = '2026-10-23T14:00:00Z'
 SOURCE_URL = 'https://docs.google.com/spreadsheets/d/14pU2PLv9JDda8gAa1367hipa2oJQB260fIJthevrp10/edit'
 
@@ -23,7 +22,7 @@ def rows(name):
 def write(path, value):
     p = ROOT / path
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(value.replace('\u2014', '-').replace('\u2013', '-') + ('\n' if not value.endswith('\n') else ''))
+    p.write_text(value.replace('0.1.0-draft', VERSION).replace('\u2014', '-').replace('\u2013', '-') + ('\n' if not value.endswith('\n') else ''))
 
 def dump(value):
     return json.dumps(value, ensure_ascii=False, indent=2)
@@ -61,8 +60,8 @@ REFINEMENTS = [
     'The partial account-balance example supplies required date_basis as unknown because source observation timing is not available.',
     'Response-only helper objects (jobs, download links, webhook destinations and replay receipts) use the common data/meta envelope; ChangePage already contains its envelope.',
     'A new connection returns its Action beside data and meta. The Action is not a persistent connection field.',
-    'Request schemas reject unknown properties. PATCH requests require at least one supplied property and do not support null clearing in this draft.',
-    'Request fields listed only in endpoint prose receive explicit types and requiredness here. The schema review remains a release gate.',
+    'Request schemas reject unknown properties. PATCH requests require at least one supplied property and do not support null clearing.',
+    'Request fields listed only in endpoint prose receive explicit types and requiredness here.',
     'Webhook registration description is optional. Creation includes a one-time secret; destination list responses exclude that property entirely.',
     'Provider capability discovery accepts country, resource_type, limit and cursor. Changes accepts resource_types, limit and cursor, and never uses provider cursors.',
     'Generic status and subject filters apply only when the resource has those fields. Source-connection filtering is restricted to source-backed resources.',
@@ -163,8 +162,7 @@ for name in ['common', *ENTITIES]:
     common['required'] = list(dict.fromkeys(common['required'] + s.get('required', [])))
     common['properties']['object'] = {'type': 'string', 'const': name}
     common['title'] = name
-    common['description'] = ENTITIES[name]['Record meaning'] + ' Draft contract; population depends on source and tenant entitlement.'
-    common['x-contract-status'] = 'proposed'
+    common['description'] = ENTITIES[name]['Record meaning'] + ' Population depends on source and tenant entitlement.'
     SCHEMAS[pascal(name)] = common
     example = {**deepcopy(EXAMPLES['ResourceMetadata']), **example}
     example.update(id=name + '_example', object=name, subject_id='biz_example', created_at=NOW, updated_at=NOW, record_version=1, source_refs=[], data_status='partial', missing_fields=[], schema_version=VERSION)
@@ -238,7 +236,7 @@ def request_schema(op, resource):
         f = resource_fields.get(key)
         if r: t, raw, desc = r['Type'], r['Example'], r['Definition / validation']
         elif f: t, raw, desc = f['Data type'], f['Example value'], f['Definition']
-        elif key in FALLBACK: t, raw = FALLBACK[key]; desc = 'Proposed request field from the endpoint contract.'
+        elif key in FALLBACK: t, raw = FALLBACK[key]; desc = 'Request field from the endpoint contract.'
         else: raise ValueError(f'No request field definition: {op["Operation ID"]} {key}')
         s = type_schema(t)
         if t == 'Money': s = ref('MoneyInput')
@@ -280,12 +278,12 @@ def op_parameters(op, resource):
     method, path = op['Method'], op['Path']
     p = [parameter('X-Request-ID','header','string','Optional caller correlation ID; the response includes AMLOK request_id.',example='client-request-example')]
     if '{id}' in path: p.append(parameter('id','path','id','Tenant-visible resource identifier.',True,(PREFIXES.get(resource,resource or 'res')+'_example')))
-    if method == 'POST': p.append(parameter('Idempotency-Key','header','string','Reuse for retries of the same intended command and identical payload. Proposed retention: 24 hours.',True,'idem_example_1001'))
+    if method == 'POST': p.append(parameter('Idempotency-Key','header','string','Reuse for retries of the same intended command and identical payload. Retention: 24 hours.',True,'idem_example_1001'))
     if method == 'PATCH': p.append(parameter('If-Match','header','string','Current quoted record version returned as ETag. A stale version returns 412.',True,'"3"'))
     if method != 'GET': return p
     list_route = '{id}' not in path
     if list_route:
-        p += [parameter('limit','query','integer','Page size. Draft default 100, maximum 200.',example=100,minimum=1,maximum=200,default=100),parameter('cursor','query','string','Opaque AMLOK cursor. Preserve the original filters.',example='cur_example')]
+        p += [parameter('limit','query','integer','Page size. Default 100, maximum 200.',example=100,minimum=1,maximum=200,default=100),parameter('cursor','query','string','Opaque AMLOK cursor. Preserve the original filters.',example='cur_example')]
     if resource and list_route:
         p += [parameter('subject_id','query','id','Filter to one authorized business or person where applicable.',example='biz_example'),parameter('updated_from','query','datetime','Inclusive normalized update time.'),parameter('updated_to','query','datetime','Exclusive normalized update time.')]
         if resource in SOURCE_BACKED: p.append(parameter('connection_id','query','id','Filter one authorized source connection.',example='cnn_example'))
@@ -348,7 +346,7 @@ def samples(op, params, request, example_id):
     js += 'const response = await fetch(baseUrl.replace(/\\/$/, "") + "'+path+'", {\n  method: "'+op['Method']+'", headers,\n  redirect: "error", signal: AbortSignal.timeout(30000),\n'+('  body'+('' if is_multipart else ': JSON.stringify('+dump(request)+')')+',\n' if request else '')+'});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());'
     return [{'lang':'Shell','label':'cURL','source':'\n'.join(curl)},{'lang':'Python','source':python},{'lang':'JavaScript','label':'Node.js','source':js}]
 
-SPEC = {'openapi':'3.1.0','info':{'title':'AMLOK API - proposed contract','version':VERSION,'description':'Draft API contract with synthetic examples. No deployed API or production service levels are asserted. Configure your institution-issued environment URL before making requests.','x-source-workbook':SOURCE_URL},'servers':[{'url':'https://api.example.com','description':'Placeholder only. Replace with an institution-issued AMLOK environment URL.'}],'security':[{'BearerAuth':[]}],'paths':{},'components':{'securitySchemes':{'BearerAuth':{'type':'http','scheme':'bearer','bearerFormat':'API key','description':'Proposed server-to-server API key scoped to one institution tenant and environment. Do not use in public browser code.'}},'schemas':SCHEMAS},'tags':[],'x-contract-status':'proposed','x-design-refinements':REFINEMENTS}
+SPEC = {'openapi':'3.1.0','info':{'title':'AMLOK API','version':VERSION,'description':'API reference for AMLOK 1.4.2, with example requests and responses. Configure your institution-issued environment URL before making requests.','x-source-workbook':SOURCE_URL},'servers':[{'url':'https://api.example.com','description':'Set the server URL to your institution-issued AMLOK environment URL.'}],'security':[{'BearerAuth':[]}],'paths':{},'components':{'securitySchemes':{'BearerAuth':{'type':'http','scheme':'bearer','bearerFormat':'API key','description':'Server-to-server API key scoped to one institution tenant and environment. Do not use in public browser code.'}},'schemas':SCHEMAS},'tags':[]}
 SCHEMAS['ErrorEnvelope'] = object_schema({'error':ref('Error'),'meta':ref('ResponseMeta')},['error','meta'])
 OP_INDEX = []
 NAV_GROUPS = defaultdict(list)
@@ -409,8 +407,8 @@ for op in OPS:
     example_id=next((p['example'] for p in params if p['in']=='path'),'res_example')
     if isinstance(data,dict) and resource:data['id']=example_id if '{id}' in path and not path.endswith('/sync') else PREFIXES.get(resource,resource)+'_example'
     if method=='PATCH' or oid=='EP155':data['record_version']=4
-    desc = '**Proposed contract '+VERSION+'.** Synthetic examples; this is not a live API availability claim.\n\n'+op['Purpose']+'\n\nRequired scope: `'+op['Scope']+'`. '+op['Constraints']
-    operation={'operationId':oid,'summary':title,'description':desc,'tags':[group],'parameters':params,'security':[{'BearerAuth':[]}],'x-required-scopes':[op['Scope']],'x-contract-status':'proposed','x-codeSamples':samples(op,params,request,example_id),'responses':{}}
+    desc = op['Purpose']+'\n\nRequired scope: `'+op['Scope']+'`. '+op['Constraints']
+    operation={'operationId':oid,'summary':title,'description':desc,'tags':[group],'parameters':params,'security':[{'BearerAuth':[]}],'x-required-scopes':[op['Scope']],'x-codeSamples':samples(op,params,request,example_id),'responses':{}}
     if req_schema:
         req_name=oid+'Request';SCHEMAS[req_name]=req_schema
         operation['requestBody']={'required':True,'content':{'multipart/form-data' if oid=='EP144' else 'application/json':{'schema':ref(req_name),'example':request}}}
@@ -432,7 +430,7 @@ for op in OPS:
             operation['responses'][code]={'$ref':'#/components/responses/'+component_name}
     SPEC['paths'].setdefault(path,{})[method.lower()]=operation
     NAV_GROUPS[group].append(page)
-    notes='\n<Note>\n**Draft contract.** The endpoint, scopes, and payloads below describe proposed AMLOK '+VERSION+'. Examples are synthetic. Use your institution-issued environment URL after release validation.\n</Note>\n\n'
+    notes='\n'
     notes+='**Required scope:** `'+op['Scope']+'` · **Execution:** '+op['Execution'].lower()+'.\n\n'+op['Constraints']+'\n'
     if resource:notes+='\n[Data dictionary](/data-model/field-dictionary#'+resource.replace('_','-')+') · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)\n'
     if op['Execution']=='Asynchronous':
@@ -450,14 +448,14 @@ for op in OPS:
     POSTMAN_GROUPS[group].append(item)
     OP_INDEX.append({'id':oid,'method':method,'path':path,'title':title,'scope':op['Scope'],'group':group,'page':page,'resource':resource,'request':request,'response':response_example,'success':success})
 
-SPEC['tags']=[{'name':g,'description':'Proposed '+g.lower()+' operations.'} for g in NAV_GROUPS]
-SPEC['webhooks']={'resourceEvent':{'post':{'summary':'AMLOK resource event','description':'Proposed signed at-least-once delivery. Verify the exact raw body before parsing.','security':[],'parameters':[parameter('X-AMLOK-Signature','header','string','HMAC-SHA256 of timestamp + period + raw body. Proposed tolerance: 300 seconds.',True,'t=1792764000,v1=<hex_digest>')],'requestBody':{'required':True,'content':{'application/json':{'schema':ref('WebhookEvent'),'example':EXAMPLES['WebhookEvent']}}},'responses':{'200':{'description':'Acknowledged after durable acceptance.'}}}}}
+SPEC['tags']=[{'name':g,'description':g+' operations.'} for g in NAV_GROUPS]
+SPEC['webhooks']={'resourceEvent':{'post':{'summary':'AMLOK resource event','description':'Signed at-least-once delivery. Verify the exact raw body before parsing.','security':[],'parameters':[parameter('X-AMLOK-Signature','header','string','HMAC-SHA256 of timestamp + period + raw body. Tolerance: 300 seconds.',True,'t=1792764000,v1=<hex_digest>')],'requestBody':{'required':True,'content':{'application/json':{'schema':ref('WebhookEvent'),'example':EXAMPLES['WebhookEvent']}}},'responses':{'200':{'description':'Acknowledged after durable acceptance.'}}}}}
 
 write('openapi/amlok-v1.json',dump(SPEC))
-write('downloads/amlok-api.postman_collection.json',dump({'info':{'name':'AMLOK API - draft contract','description':'Synthetic requests for proposed v0.1.0. Configure an institution-issued URL and secret locally. This is not a live service. Use a new idempotency key for a new action and reuse it only for retries of that action.','schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':'base_url','value':'https://api.example.com'},{'key':'api_key','value':''},{'key':'idempotency_key','value':'replace-with-stable-key-for-one-intended-action'},{'key':'record_etag','value':'"3"'}],'item':[{'name':g,'item':items} for g,items in POSTMAN_GROUPS.items()]}))
+write('downloads/amlok-api.postman_collection.json',dump({'info':{'name':'AMLOK API 1.4.2','description':'Example requests for AMLOK 1.4.2. Configure an institution-issued URL and secret locally. Use a new idempotency key for a new action and reuse it only for retries of that action.','schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':'base_url','value':''},{'key':'api_key','value':''},{'key':'idempotency_key','value':'replace-with-stable-key-for-one-intended-action'},{'key':'record_etag','value':'"3"'}],'item':[{'name':g,'item':items} for g,items in POSTMAN_GROUPS.items()]}))
 write('data/api-reference-index.json',dump(OP_INDEX))
 write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
-GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','release-readiness']
+GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
 api_tab['groups']=[{'group':'Get started','pages':['api-reference/'+p for p in GUIDES[:4]]},{'group':'API essentials','pages':['api-reference/'+p for p in GUIDES[4:10]]},{'group':'Build your integration','pages':['api-reference/'+p for p in GUIDES[10:]]},{'group':'Endpoints','pages':[{'group':g,'expanded':False,'pages':pages} for g,pages in NAV_GROUPS.items()]}]

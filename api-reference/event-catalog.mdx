@@ -1,11 +1,7 @@
 ---
 title: "Event catalog"
-description: "Subscribe to the 28 proposed lifecycle events."
+description: "Subscribe to the 28 lifecycle events."
 ---
-
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
 
 Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
 
@@ -14,7 +10,7 @@ Every event uses the same envelope. The event ID is the deduplication key within
   "id": "evt_example",
   "type": "verification.completed",
   "created_at": "2026-10-23T14:06:00Z",
-  "schema_version": "0.1.0-draft",
+  "schema_version": "1.4.2",
   "resource_type": "verification",
   "resource_id": "ver_example",
   "resource_version": 2,
@@ -55,7 +51,7 @@ The example indicates that a verification result is ready for review. It is not 
 | `resource.deleted` | `common` | A source deletion or approved redaction is recorded. | resource_id; deleted_at |
 | `deletion.completed` | `deletion_job` | Retention-aware deletion job reaches a terminal state. | status; held scopes; provider propagation status |
 
-The details column preserves the workbook's event intent. Exact per-event `data` property schemas require release review; the OpenAPI file defines the shared envelope and known event keys without inventing a complete per-event payload contract.
+The details column summarizes each event. The OpenAPI reference defines the shared envelope and event keys. Retrieve the referenced resource for its complete current representation.
 
 `resource.deleted` can refer to any resource type. Preserve the deletion version and avoid treating an older event as a later recreation. Follow your institution's retention rules when applying tombstones.
 

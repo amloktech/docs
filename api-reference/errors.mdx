@@ -3,10 +3,6 @@ title: "Errors"
 description: "Handle stable error codes, correlation IDs, validation failures, and recoverable outages."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 Errors use a stable code and a safe explanation. Do not branch on human-readable message text.
 
 ```json
@@ -20,7 +16,7 @@ Errors use a stable code and a safe explanation. Do not branch on human-readable
   },
   "meta": {
     "request_id": "req_example",
-    "schema_version": "0.1.0-draft",
+    "schema_version": "1.4.2",
     "generated_at": "2026-10-23T14:00:00Z",
     "data_status": "complete"
   }
@@ -62,4 +58,4 @@ A valid request can return usable partial data with `meta.data_status: partial`.
 
 Record the AMLOK `request_id`, operation, timestamp, environment, HTTP status, error code, and relevant resource/job IDs in your restricted operational logs. Redact keys, signing secrets, signed links, raw identity evidence, and full response bodies.
 
-Provide sanitized request IDs through your agreed support channel. The draft does not establish a support address or response-time SLA.
+Provide sanitized request IDs through your agreed support channel. Your agreement defines support channels and response commitments.

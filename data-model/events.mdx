@@ -1,11 +1,7 @@
 ---
 title: "Events"
-description: "Proposed event names, resource triggers, and minimal event details."
+description: "Event names, resource triggers, and minimal event details."
 ---
-
-<Note>
-**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
-</Note>
 
 These event definitions identify the resource and change represented by an event. For delivery, signatures, retries, and other transport rules, see [Webhooks and signatures](/api-reference/webhooks).
 
@@ -16,7 +12,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | business |
 | Trigger | Client or provider business record created. |
 | Minimal event details | id; resource\_version |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -28,7 +23,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | person |
 | Trigger | Authorized person record created. |
 | Minimal event details | id; resource\_version |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -40,7 +34,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | connection |
 | Trigger | Connection becomes active, unavailable or revoked. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -52,7 +45,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | consent |
 | Trigger | Authorization state changes. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -64,7 +56,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | sync\_job |
 | Trigger | Run completes fully or partially. |
 | Minimal event details | status; counts; data\_status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -76,7 +67,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | sync\_job |
 | Trigger | Run fails before usable completion. |
 | Minimal event details | status; safe error code |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -88,7 +78,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | verification |
 | Trigger | Session progress or review state changes. |
 | Minimal event details | status; raw\_status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -100,7 +89,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | verification |
 | Trigger | Provider decision is available, including review or decline. |
 | Minimal event details | status; check\_ids |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -112,7 +100,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | document |
 | Trigger | Evidence parsing completes or fails. |
 | Minimal event details | extraction\_status; review\_status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -124,7 +111,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | lien\_search |
 | Trigger | Search completes in declared scope, possibly partial. |
 | Minimal event details | status; result\_count; completed jurisdictions |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -136,7 +122,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | lien\_search |
 | Trigger | Search fails; no-hit conclusion unavailable. |
 | Minimal event details | status; safe error code |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -148,7 +133,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | lien |
 | Trigger | Observed filing or amendment changes normalized record. |
 | Minimal event details | status; version |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -160,7 +144,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | application |
 | Trigger | Application state or approved data changes. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -172,7 +155,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | decision |
 | Trigger | A decision or advisory recommendation is recorded. |
 | Minimal event details | outcome; is\_recommendation |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -184,7 +166,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | loan |
 | Trigger | Loan balance, servicing state or terms change. |
 | Minimal event details | status; as\_of |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -196,7 +177,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | repayment |
 | Trigger | Repayment succeeds, fails or reverses. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -208,7 +188,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | attribute |
 | Trigger | Calculation job produces values or explicit unavailability. |
 | Minimal event details | job\_id; attribute\_ids |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -220,7 +199,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | risk\_snapshot |
 | Trigger | Immutable assessment stored. |
 | Minimal event details | as\_of; previous\_snapshot\_id |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -232,7 +210,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | monitor |
 | Trigger | Monitoring configuration or state changes. |
 | Minimal event details | status; ruleset\_version |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -244,7 +221,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | alert |
 | Trigger | Versioned rule detects a signal. |
 | Minimal event details | alert\_type; severity; evidence references |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -256,7 +232,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | alert |
 | Trigger | Review state changes. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -268,7 +243,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | case |
 | Trigger | Case assigned, progressed or resolved. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -280,7 +254,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | task |
 | Trigger | Task progress or approval state changes. |
 | Minimal event details | status; approval\_status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -292,7 +265,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | communication |
 | Trigger | Draft, dispatch or delivery state changes. |
 | Minimal event details | status |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -304,7 +276,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | workflow\_run |
 | Trigger | Run completes or returns a defined partial result. |
 | Minimal event details | status; output\_resource\_ids |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -316,7 +287,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | workflow\_run |
 | Trigger | Run stops with a recorded failure. |
 | Minimal event details | status; safe error code |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -328,7 +298,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | common |
 | Trigger | A source deletion or approved redaction is recorded. |
 | Minimal event details | resource\_id; deleted\_at |
-| Contract status | Proposed |
 
 
 </Accordion>
@@ -340,7 +309,6 @@ These event definitions identify the resource and change represented by an event
 | Resource | deletion\_job |
 | Trigger | Retention-aware deletion job reaches a terminal state. |
 | Minimal event details | status; held scopes; provider propagation status |
-| Contract status | Proposed |
 
 
 </Accordion>

@@ -34,7 +34,7 @@ for path,methods in spec['paths'].items():
             if sample['lang']=='Python':ast.parse(sample['source']);counts['pythonSamples']+=1
         if operation.get('requestBody'):
             assert method in ['post','patch']
-        assert operation['x-contract-status']=='proposed'
+        assert 'x-contract-status' not in operation
         assert operation['security']==[{'BearerAuth':[]}]
         assert operation['x-required-scopes']
 
@@ -47,7 +47,8 @@ if errors:
 assert counts['operations']==164
 assert len({op['operationId'] for methods in spec['paths'].values() for op in methods.values()})==164
 assert spec['servers'][0]['url']=='https://api.example.com'
-assert spec['info']['version']=='0.1.0-draft'
+assert spec['info']['version']=='1.4.2'
+assert '0.1.0-draft' not in json.dumps(spec)
 assert '\u2014' not in json.dumps(spec,ensure_ascii=False)
 out=root/'artifacts/api-schema-validation.json';out.write_text(json.dumps(counts,indent=2)+'\n')
 print(json.dumps(counts))

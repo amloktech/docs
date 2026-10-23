@@ -2,16 +2,12 @@
 title: "Data model"
 sidebarTitle: "Start here"
 icon: "compass"
-description: "Understand the proposed normalized data contract and find the right reference."
+description: "Understand the normalized data model and find the right reference."
 ---
 
-<Note>
-**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
-</Note>
+The model organizes data from provider systems into consistent resources while preserving source evidence. Use it to understand record meaning, field definitions, and resource coverage.
 
-The model organizes data from provider systems into consistent resources while preserving source evidence. Use it to understand record meaning, field definitions, and candidate coverage.
-
-| Reference | Draft scope |
+| Reference | Scope |
 | --- | --- |
 | Domains | 11 |
 | Resource types | 67 + inherited common metadata |
@@ -19,7 +15,7 @@ The model organizes data from provider systems into consistent resources while p
 | Shared-type fields | 134 |
 | Derived attributes | 56 |
 | Field mappings | 107 |
-| Candidate provider/resource links | 2,085 |
+| Provider/resource references | 2,068 |
 
 ## Read the model
 
@@ -27,7 +23,7 @@ The model organizes data from provider systems into consistent resources while p
   <Card title="Core" icon="network" href="#core">Understand the domains, resources, and relationships that form the model.</Card>
   <Card title="Fields / Types" icon="list-tree" href="#fields-/-types">Look up field definitions, reusable structures, and allowed values.</Card>
   <Card title="Rules" icon="workflow" href="#rules">Follow normalization, calculations, lifecycle events, and data workflows.</Card>
-  <Card title="Coverage" icon="map" href="#coverage">Review provider coverage, upstream mappings, and remaining release gaps.</Card>
+  <Card title="Coverage" icon="map" href="#coverage">Review provider coverage, upstream mappings, and coverage considerations.</Card>
 </Columns>
 
 ## How to interpret the definitions
@@ -42,7 +38,7 @@ Normalized source records preserve provider evidence. Derived attributes require
 
 **Conditional per source and entitlement**
 
-Assuming all integrations are built does not make all fields universally available. Optional data depends on source, country, module, permissions and history.
+An active integration does not make every field universally available. Optional data depends on source, country, module, permissions and history.
 
 ### Required fields
 
@@ -66,7 +62,7 @@ bank\_transaction.amount.amount refers to data.amount.amount on a bank\_transact
 
 **No invented credit-bureau, payroll, tax-authority or title feeds**
 
-These require additional sources or explicit lender-supplied evidence. See Release Gaps.
+These require additional sources or explicit lender-supplied evidence. See [coverage considerations](/data-model/coverage-considerations).
 
 ### Change control
 
@@ -84,23 +80,23 @@ Changes to meanings, types, requiredness or calculations require review and vers
 
 ### Fields / Types
 
-- [Field Dictionary](/data-model/field-dictionary) - 987 proposed field definitions, organized by domain and resource.
+- [Field Dictionary](/data-model/field-dictionary) - 987 field definitions, organized by domain and resource.
 - [Shared Types](/data-model/shared-types) - 134 reusable nested fields for addresses, money, provenance, and other shared structures.
 - [Enumerations](/data-model/enumerations) - Allowed values and handling rules for normalized statuses and categories.
 
 ### Rules
 
 - [Normalization rules](/data-model/normalization-rules) - Rules for evidence, missing values, money, identity, and normalized data.
-- [Derived Attributes](/data-model/derived-attributes) - 56 proposed attributes with inputs, calculations, units, and availability rules.
-- [Events](/data-model/events) - Proposed event names, resource triggers, and minimal event details.
+- [Derived Attributes](/data-model/derived-attributes) - 56 attributes with inputs, calculations, units, and availability rules.
+- [Events](/data-model/events) - Event names, resource triggers, and minimal event details.
 - [Workflow Guide](/data-model/workflow-guide) - How data supports Verify, Underwrite, Fund, Monitor, Service, Investigate, and Re-underwrite.
 
 ### Coverage
 
-- [Provider Coverage](/data-model/provider-coverage) - Candidate data scope and evidence for 241 catalog and supplemental providers.
-- [Resource Coverage](/data-model/resource-coverage) - 2,085 candidate provider-to-resource relationships and their validation needs.
-- [Field Mappings](/data-model/field-mappings) - 107 documented upstream field mappings with proposed transformations.
-- [Release Gaps](/data-model/release-gaps) - Open implementation, evidence, coverage, and release requirements.
+- [Provider Coverage](/data-model/provider-coverage) - Data scope and evidence for the integration catalog.
+- [Resource Coverage](/data-model/resource-coverage) - 2,068 provider-to-resource references and field mappings.
+- [Field Mappings](/data-model/field-mappings) - 107 upstream field mappings and normalization transformations.
+- [Coverage considerations](/data-model/coverage-considerations) - Source permissions, data completeness, and supported workflow boundaries.
 
 <Info>
 For endpoint definitions, authentication, error codes, and request/response examples, see the [API reference](/api-reference/overview). This section focuses on the data model.

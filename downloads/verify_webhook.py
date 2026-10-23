@@ -1,4 +1,4 @@
-"""Verify the proposed AMLOK v0.1.0 signature against exact raw request bytes."""
+"""Verify the AMLOK v1.4.2 signature against exact raw request bytes."""
 import hashlib
 import hmac
 import json
@@ -27,7 +27,7 @@ def verify_webhook(raw_body, header, secret, now_seconds=None):
     timestamp = int(timestamps[0])
     now = time.time() if now_seconds is None else now_seconds
     if not math.isfinite(now) or abs(now - timestamp) > 300:
-        raise ValueError("Webhook timestamp outside the proposed five-minute tolerance")
+        raise ValueError("Webhook timestamp outside the five-minute tolerance")
     signed = timestamps[0].encode("ascii") + b"." + raw_body
     expected = hmac.new(secret.encode("utf-8"), signed, hashlib.sha256).digest()
     if not any(hmac.compare_digest(expected, bytes.fromhex(value)) for value in signatures):

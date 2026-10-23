@@ -3,10 +3,6 @@ title: "Shared Types"
 description: "134 reusable nested fields for addresses, money, provenance, and other shared structures."
 ---
 
-<Note>
-**Proposed contract · v0.1.0-draft.** These definitions describe the planned data model. Field availability depends on the provider, country, product, permissions, and evidence coverage. Production availability is not verified.
-</Note>
-
 ## Address
 
 | Field | Type / presence | Definition | Example |
@@ -149,14 +145,14 @@ description: "134 reusable nested fields for addresses, money, provenance, and o
 | --- | --- | --- | --- |
 | `next_cursor` | `string`<br />Optional | Opaque cursor for subsequent page; null after final page. | `cur_example` |
 | `has_more` | `boolean`<br />Required | Whether more authorized records remain. | `true` |
-| `limit` | `integer`<br />Required | Applied result limit, from 1 to 200 in the proposed contract. | `100` |
+| `limit` | `integer`<br />Required | Applied result limit, from 1 to 200. | `100` |
 
 ## ResponseMeta
 
 | Field | Type / presence | Definition | Example |
 | --- | --- | --- | --- |
 | `request_id` | `string`<br />Required | AMLOK request correlation ID. | `req_example` |
-| `schema_version` | `string`<br />Required | Serialization contract version. | `0.1.0-draft` |
+| `schema_version` | `string`<br />Required | Serialization contract version. | `1.4.2` |
 | `generated_at` | `datetime`<br />Required | Response generation time, not source data freshness. | Not specified |
 | `data_status` | `enum:data_status`<br />Required | Completeness of this response within its declared scope. | `partial` |
 | `coverage` | `Coverage`<br />Optional | Requested and achieved source/time coverage. | `null` |
@@ -187,7 +183,7 @@ description: "134 reusable nested fields for addresses, money, provenance, and o
 | `id` | `id`<br />Required | Globally unique event ID within tenant for deduplication. | `evt_example` |
 | `type` | `string`<br />Required | Event key in the Events tab. | `verification.completed` |
 | `created_at` | `datetime`<br />Required | Event creation time. | Not specified |
-| `schema_version` | `string`<br />Required | Webhook contract version. | `0.1.0-draft` |
+| `schema_version` | `string`<br />Required | Webhook contract version. | `1.4.2` |
 | `resource_type` | `string`<br />Required | Type of changed object. | `verification` |
 | `resource_id` | `id`<br />Required | Object to retrieve for full authorized detail. | `ver_example` |
 | `resource_version` | `integer`<br />Required | Version that triggered the event. | `2` |

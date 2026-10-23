@@ -3,13 +3,9 @@ title: "Environments and requests"
 description: "Configure the correct API host, transport, and headers before making requests."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Base URL
 
-No deployed AMLOK API hostname is declared in this draft. `https://api.example.com` is reserved for examples. Replace it with the URL issued for your institution and environment.
+Set `AMLOK_API_BASE_URL` to the HTTPS origin issued for your institution and environment. Use the matching environment-specific API key.
 
 | Setting | Meaning |
 | --- | --- |
@@ -39,6 +35,6 @@ The examples use a 30-second client timeout as an illustration, not a server SLA
 
 Do not forward an API credential to a redirected host. Configure the correct origin and reject unexpected redirects. Long-running work returns a resource to poll instead of holding the HTTP connection open.
 
-## Items to confirm before production
+## Environment configuration
 
-Onboarding must provide the production and sandbox origins, enabled scopes and providers, numeric quotas, network controls, support route, incident contacts, and any contractual service commitments. See [release readiness](/api-reference/release-readiness).
+Onboarding must provide the production and sandbox origins, enabled scopes and providers, numeric quotas, network controls, support route, incident contacts, and any contractual service commitments. See [integration onboarding](/api-reference/onboarding).

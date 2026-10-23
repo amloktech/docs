@@ -32,18 +32,18 @@
 
 - Maintain availability, beta labels, and documented markets in `data/integration-status.json`.
 - After updating the catalog data or table template, run `node scripts/sync-integration-status.mjs` to synchronize the table, provider pages, and provider coverage.
-- Use US and CA as the default markets, as confirmed by the AMLOK team. Keep country-specific providers and catalog editions scoped to their applicable country. Integration availability does not verify the draft field and resource mappings.
+- Use US and CA as the default markets, as confirmed by the AMLOK team. Keep country-specific providers and catalog editions scoped to their applicable country. Preserve provider-specific availability and entitlement limitations when editing field and resource mappings.
 
 ## Content boundaries
 
 {/* Define what should and shouldn't be documented */}
 {/* Example: Don't document internal admin features */}
 
-## Draft API reference
+## API reference
 
-- The AMLOK team authorized publication of the proposed v0.1.0 contract with synthetic examples. Do not describe these endpoints as a verified production backend.
+- The AMLOK team identifies the API as version 1.4.2 and requested removal of draft and release-readiness notices. Keep public reference versions and generated examples consistent; preserve operational resource states such as communication drafts.
 - Source snapshot: `data/api-contract-source.json`. Keep the original Google workbook unchanged.
 - Generate the OpenAPI contract, endpoint pages, Postman collection, and navigation with `python scripts/build-api-reference.py`, then regenerate the guides with `python scripts/write-api-guides.py`.
 - Validate schemas and examples with `python scripts/validate-api-reference.py` (requires `jsonschema` and `openapi-spec-validator`). Run `python scripts/test-api-examples.py` with Node.js on PATH to check both webhook verifiers and code samples.
-- Keep the placeholder host `https://api.example.com`, visible draft labels, and simple playground mode until a verified backend contract replaces the draft.
-- Record source ambiguities and proposed refinements explicitly. Do not invent production quotas, service commitments, credentials, or implementation claims.
+- Use `AMLOK_API_BASE_URL` for institution-issued origins in examples. Keep the playground in simple mode and do not invent a production or sandbox hostname.
+- Preserve the read-only source snapshot and internal design refinements. Do not invent production quotas, service commitments, credentials, or verification results. Keep integration availability and Beta labels as explicitly approved by the AMLOK team.

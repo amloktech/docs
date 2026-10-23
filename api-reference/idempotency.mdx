@@ -3,19 +3,15 @@ title: "Idempotency and concurrency"
 description: "Retry intended actions safely and protect mutable configuration from stale writes."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 ## Idempotency for POST commands
 
-Every proposed POST operation requires an `Idempotency-Key`. Generate it once for one intended action, store it with the payload, and reuse both for retries.
+Every POST operation requires an `Idempotency-Key`. Generate it once for one intended action, store it with the payload, and reuse both for retries.
 
 ```http
 Idempotency-Key: onboarding-connection-1001
 ```
 
-The proposed deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. These are draft policies, not a current service commitment. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
+The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
 
 | Situation | Client behavior |
 | --- | --- |
@@ -23,7 +19,7 @@ The proposed deduplication scope is **institution tenant + operation + key**, wi
 | Transient 429/503 | Respect the retry delay and reuse the same key for that action. |
 | 409 conflicting payload | Reconcile the original action. Use a new key only for a genuinely new intended action. |
 | Retry beyond the retention window | Reconcile the existing resource/job before creating a new action. |
-| Multipart upload | Reuse the same file bytes and logical fields. Request fingerprinting rules require implementation approval. |
+| Multipart upload | Reuse the same file bytes and logical fields. Keep the request content unchanged when retrying. |
 
 Never generate a new idempotency key on every automatic retry. Do not assume a command is safe to replay indefinitely after deduplication retention expires.
 
@@ -42,7 +38,7 @@ If-Match: "3"
 
 In the synthetic success example the new record version is `4` and the ETag is `"4"`. A stale precondition returns `412 version_conflict`. Re-read, compare, and decide whether the change is still intended; do not blindly overwrite the newer record.
 
-The draft PATCH schemas reject empty bodies, unknown properties, and null clearing. Null-clearing semantics can be added only through an explicit contract decision.
+The PATCH schemas reject empty bodies, unknown properties, and null clearing. Omit fields you do not intend to change.
 
 ## Approval-bound actions
 

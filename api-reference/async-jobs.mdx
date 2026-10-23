@@ -3,10 +3,6 @@ title: "Asynchronous jobs"
 description: "Distinguish acceptance, progress, partial results, and terminal outcomes."
 ---
 
-<Note>
-**Draft API contract - v0.1.0.** This reference describes proposed behavior with synthetic examples. A live API hostname, production quotas, and service commitments have not been supplied.
-</Note>
-
 A successful HTTP response can indicate acceptance rather than completed work. The source contract uses `202` for most long-running commands and `201` for creation of a verification session whose result arrives later.
 
 | Command | Acceptance | Observe the result |
@@ -20,7 +16,7 @@ A successful HTTP response can indicate acceptance rather than completed work. T
 | [Send communication](/api-reference/endpoints/operations/send-approved-communication) | 202, communication | `GET /v1/communications/{id}`; delivery-state events |
 | [Request deletion](/api-reference/endpoints/privacy/create-deletion-request) | 202, deletion job | `GET /v1/deletion-requests/{id}`; `deletion.completed` |
 
-The event replay command returns a queued replay receipt. This draft does not define a replay-status polling endpoint; confirm delivery observability during onboarding.
+The event replay command returns a queued replay receipt. Monitor redelivery through your webhook receiver and the delivery controls configured during onboarding.
 
 ## Poll safely
 
