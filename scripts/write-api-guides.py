@@ -680,7 +680,7 @@ Reject invalid request properties according to the documented request schema. St
 
 ## Release lifecycle
 
-This reference documents API version **1.4.2**. Review the [changelog](/changelog) for documentation updates. Your service agreement defines support windows and deprecation notice periods; follow the migration guidance provided for a version transition.
+This reference documents API version **1.4.2**. Your service agreement defines support windows and deprecation notice periods; follow the migration guidance provided for a version transition.
 
 Download and pin the [OpenAPI contract](/openapi/amlok-v1.json) used by your integration. Review a schema diff and rerun contract tests before adopting a new version.
 ''')
