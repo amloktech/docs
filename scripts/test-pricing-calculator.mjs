@@ -76,13 +76,14 @@ test("Maximum inputs remain safe integer cents, with balanced funding", () => {
   for (const key of ["monthlyCents", "usageCents", "paymentCents", "topUpCents", "unusedCents", "fundingCents"]) assert.ok(Number.isSafeInteger(r[key]), key);
   assert.equal(r.fundingCents - r.usageCents, r.unusedCents);
 });
-test("Slider presets include every requested volume and a separate 10,000+ position", () => {
-  [0, 50, 100, 200, 500, 1000, 5000, 10000].forEach((volume, position) => assert.equal(presetPosition(String(volume)), position));
-  assert.equal(presetPosition("10001"), 8);
-  assert.equal(presetPosition("1000000"), 8);
+test("Slider presets end with a single 10,000+ position", () => {
+  [0, 50, 100, 200, 500, 1000, 5000].forEach((volume, position) => assert.equal(presetPosition(String(volume)), position));
+  assert.equal(presetPosition("10000"), 7);
+  assert.equal(presetPosition("10001"), 7);
+  assert.equal(presetPosition("1000000"), 7);
 });
 test("Exact typed volumes are priced without snapping or capping to slider presets", () => {
-  for (const quantity of [175, 12500]) {
+  for (const quantity of [175, 10000, 12500]) {
     const input = baseline(); input.enabled.signal = false; input.volumes.insights = [String(quantity), "0", "0"];
     const r = calculate(input); assert.equal(r.monthlyCents, quantity * 500); assert.equal(r.usageCents, quantity * 500 * 12);
   }

@@ -45,10 +45,11 @@ export const PricingCalculator = () => {
   // PRICING_MATH_END
 
   // VOLUME_PRESETS_START: preset selection never changes an exact typed quantity.
-  const volumePresets = [0, 50, 100, 200, 500, 1000, 5000, 10000];
+  const volumePresets = [0, 50, 100, 200, 500, 1000, 5000];
+  const customVolumePosition = volumePresets.length;
   const nearestVolumePreset = (raw) => {
     const value = Number(raw);
-    if (value > 10000) return 8;
+    if (value >= 10000) return customVolumePosition;
     if (!Number.isFinite(value) || value < 0) return 0;
     return volumePresets.reduce((closest, preset, index) => Math.abs(preset - value) < Math.abs(volumePresets[closest] - value) ? index : closest, 0);
   };
@@ -64,13 +65,13 @@ export const PricingCalculator = () => {
   const updateVolume = (product, index, value) => setVolumes((current) => ({ ...current, [product]: current[product].map((quantity, i) => i === index ? value : quantity) }));
   const chooseVolumePreset = (product, index, position) => {
     const id = `${product}-${index}`;
-    setCustomVolumes((current) => ({ ...current, [id]: position === 8 }));
+    setCustomVolumes((current) => ({ ...current, [id]: position === customVolumePosition }));
     // 10,000+ needs an exact quantity before it can produce a price.
-    updateVolume(product, index, position === 8 ? (Number(volumes[product][index]) > 10000 ? volumes[product][index] : "") : String(volumePresets[position]));
+    updateVolume(product, index, position === customVolumePosition ? (Number(volumes[product][index]) >= 10000 ? volumes[product][index] : "") : String(volumePresets[position]));
   };
   const typeVolume = (product, index, value) => {
     updateVolume(product, index, value);
-    if (value !== "") setCustomVolumes((current) => ({ ...current, [`${product}-${index}`]: Number(value) > 10000 }));
+    if (value !== "") setCustomVolumes((current) => ({ ...current, [`${product}-${index}`]: Number(value) >= 10000 }));
   };
   const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["100", "0", "0"], signal: ["200", "0", "0"] }); setCustomVolumes({}); setCommitment("1000"); setDiscount("0"); };
   const products = [
@@ -101,20 +102,20 @@ export const PricingCalculator = () => {
                 {tiers.map((tier, index) => {
                   const id = `${product.key}-${index}`;
                   const rawVolume = volumes[product.key][index];
-                  const presetIndex = customVolumes[id] ? 8 : nearestVolumePreset(rawVolume);
+                  const presetIndex = customVolumes[id] ? customVolumePosition : nearestVolumePreset(rawVolume);
                   const needsCustomVolume = customVolumes[id] && rawVolume === "";
                   const volumeLabel = `${product.name} ${tier.name} ${product.accessibleUnit}`;
                   return (
                     <div key={id} className="apc-tier">
                       <label htmlFor={`apc-${id}`}><strong>{tier.name}</strong><span>{money(tier[product.key])} / {product.unit}</span></label>
-                      <input id={`apc-${id}`} type="number" min="0" max="1000000" step="1" inputMode="numeric" placeholder={needsCustomVolume ? "10,001+" : undefined} value={rawVolume} onChange={(event) => typeVolume(product.key, index, event.target.value)} aria-label={volumeLabel} aria-invalid={Boolean(estimate.errors[id])} aria-describedby={`apc-volume-help${estimate.errors[id] ? ` apc-error-${id}` : ""}`} />
+                      <input id={`apc-${id}`} type="number" min="0" max="1000000" step="1" inputMode="numeric" placeholder={needsCustomVolume ? "10,000+" : undefined} value={rawVolume} onChange={(event) => typeVolume(product.key, index, event.target.value)} aria-label={volumeLabel} aria-invalid={Boolean(estimate.errors[id])} aria-describedby={`apc-volume-help${estimate.errors[id] ? ` apc-error-${id}` : ""}`} />
                       <div className="apc-slider-control">
-                        <input type="range" min="0" max="8" step="1" value={presetIndex} onChange={(event) => chooseVolumePreset(product.key, index, Number(event.target.value))} aria-label={`${volumeLabel} preset`} aria-valuetext={needsCustomVolume ? "More than 10,000. Enter an exact volume in the number field." : `${Number(rawVolume || 0).toLocaleString("en-CA")} ${product.accessibleUnit}${volumePresets.includes(Number(rawVolume)) ? "" : ", custom volume"}`} aria-describedby="apc-volume-help" style={{ "--apc-slider-progress": `${presetIndex / 8 * 100}%` }} />
+                        <input type="range" min="0" max={customVolumePosition} step="1" value={presetIndex} onChange={(event) => chooseVolumePreset(product.key, index, Number(event.target.value))} aria-label={`${volumeLabel} preset`} aria-valuetext={needsCustomVolume ? "10,000 or more. Enter an exact volume in the number field." : `${Number(rawVolume || 0).toLocaleString("en-CA")} ${product.accessibleUnit}${volumePresets.includes(Number(rawVolume)) ? "" : ", custom volume"}`} aria-describedby="apc-volume-help" style={{ "--apc-slider-progress": `${presetIndex / customVolumePosition * 100}%` }} />
                         <div className="apc-slider-labels" aria-hidden="true">
-                          {[...volumePresets, "10,000+"].map((value, position) => <span key={position} className={position % 2 ? "apc-tick-low" : undefined} style={{ left: `${position / 8 * 100}%` }}>{typeof value === "number" ? value.toLocaleString("en-CA") : value}</span>)}
+                          {[...volumePresets, "10,000+"].map((value, position) => <span key={position} className={position % 2 ? "apc-tick-low" : undefined} style={{ left: `${position / customVolumePosition * 100}%` }}>{typeof value === "number" ? value.toLocaleString("en-CA") : value}</span>)}
                         </div>
                       </div>
-                      {estimate.errors[id] && <p id={`apc-error-${id}`} className="apc-error">{needsCustomVolume ? "Enter an exact volume above 10,000, or choose a lower preset." : estimate.errors[id]}</p>}
+                      {estimate.errors[id] && <p id={`apc-error-${id}`} className="apc-error">{needsCustomVolume ? "Enter an exact volume of 10,000 or more, or choose a lower preset." : estimate.errors[id]}</p>}
                     </div>
                   );
                 })}
