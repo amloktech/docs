@@ -45,7 +45,7 @@ export const PricingCalculator = () => {
   // PRICING_MATH_END
 
   // VOLUME_PRESETS_START: preset selection never changes an exact typed quantity.
-  const volumePresets = [0, 50, 100, 200, 500, 1000, 5000];
+  const volumePresets = [50, 100, 200, 500, 1000, 5000];
   const customVolumePosition = volumePresets.length;
   const nearestVolumePreset = (raw) => {
     const value = Number(raw);
