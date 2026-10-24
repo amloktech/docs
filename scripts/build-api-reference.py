@@ -471,7 +471,6 @@ api_tab['groups'] = [
 endpoint_groups = api_tab['groups'][1]['pages']
 for section in endpoint_groups:
     if section['group'] == 'Wallets':
-        section['icon'] = 'wallet'
         sections = defaultdict(list)
         for op in WALLET_OPS:
             if op['group'] != 'Wallets': continue
@@ -487,7 +486,6 @@ for section in endpoint_groups:
             sections[category].append(op['page'])
         section['pages'] = [{'group':name,'expanded':False,'pages':pages} for name,pages in sections.items()]
     elif section['group'] == 'Billing':
-        section['icon'] = 'receipt'
         section['pages'] = [
             {'group':'Usage and reporting','expanded':False,'pages':[op['page'] for op in WALLET_OPS if op['path'].startswith('/v1/billing/')]},
             {'group':'Agreement cancellation','expanded':False,'pages':[op['page'] for op in WALLET_OPS if op['path'].startswith('/v1/agreement-')]},
