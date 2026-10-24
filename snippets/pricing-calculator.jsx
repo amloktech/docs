@@ -112,7 +112,7 @@ export const PricingCalculator = () => {
                       <div className="apc-slider-control">
                         <input type="range" min="0" max={customVolumePosition} step="1" value={presetIndex} onChange={(event) => chooseVolumePreset(product.key, index, Number(event.target.value))} aria-label={`${volumeLabel} preset`} aria-valuetext={needsCustomVolume ? "10,000 or more. Enter an exact volume in the number field." : `${Number(rawVolume || 0).toLocaleString("en-CA")} ${product.accessibleUnit}${volumePresets.includes(Number(rawVolume)) ? "" : ", custom volume"}`} aria-describedby="apc-volume-help" style={{ "--apc-slider-progress": `${presetIndex / customVolumePosition * 100}%` }} />
                         <div className="apc-slider-labels" aria-hidden="true">
-                          {[...volumePresets, "10,000+"].map((value, position) => <span key={position} className={position % 2 ? "apc-tick-low" : undefined} style={{ left: `${position / customVolumePosition * 100}%` }}>{typeof value === "number" ? value.toLocaleString("en-CA") : value}</span>)}
+                          {[...volumePresets, "10,000+"].map((value, position) => <span key={position} style={{ left: `${position / customVolumePosition * 100}%` }}>{typeof value === "number" ? value.toLocaleString("en-CA") : value}</span>)}
                         </div>
                       </div>
                       {estimate.errors[id] && <p id={`apc-error-${id}`} className="apc-error">{needsCustomVolume ? "Enter an exact volume of 10,000 or more, or choose a lower preset." : estimate.errors[id]}</p>}
