@@ -6,6 +6,6 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.
+Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.
 
 [Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)

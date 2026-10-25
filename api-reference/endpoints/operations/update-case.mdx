@@ -6,7 +6,7 @@ playground: simple
 
 **Required scope:** `operations:write` · **Execution:** synchronous.
 
-Audit author and reason for dispositions.
+Audit author and reason for dispositions. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
 
 [Data dictionary](/data-model/field-dictionary#case) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
 

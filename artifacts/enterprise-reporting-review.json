@@ -1,0 +1,33 @@
+{
+  "implemented": [
+    "Immediate cancellation cutoff for processing, usage deductions and upcoming top-ups",
+    "Unused holds released without post-cancellation capture",
+    "Month-end closure and immediate unused-credit refund, including promotions",
+    "Separate minimal final financial records for refunds and bank returns",
+    "Updated record versions count as newly processed records; unchanged retries deduplicate",
+    "OpenAPI read schemas support top-level projections without weakening canonical schemas",
+    "Read-only funding, reservation and ledger-detail reports",
+    "Historical negotiated rate cards and reusable financial snapshots",
+    "CSV/JSON exports with filters, snapshot identity and correct timestamp bases"
+  ],
+  "remainingQuestions": [
+    {
+      "topic": "Borrower communications",
+      "question": "Should AMLOK send borrower messages on a customer institution's behalf, or should the institution's own systems send them?",
+      "example": "An authorized email or message requesting missing bank statements or reminding a borrower to provide a document.",
+      "contractGap": "POST /v1/communications/{id}/send requires approval_id; POST /v1/tasks/{id}/approve returns Task without an approval identifier. The communication feature and its approval handoff remain unchanged pending a product decision."
+    }
+  ],
+  "validation": {
+    "operations": 189,
+    "responseExamples": 2236,
+    "reportingOperations": 21,
+    "enterpriseContractChecks": 554,
+    "policyChecks": 2050,
+    "reportingContractChecks": 875,
+    "internalLinksChecked": 7136,
+    "brokenInternalLinks": 0,
+    "calculatorCases": 15,
+    "scope": "Documentation contract, examples and calculator only. No AMLOK backend or payment rail was executed."
+  }
+}

@@ -55,6 +55,7 @@ PARAMS = rows('API Parameters')
 EVENTS = [event for event in rows('Events') if event['Event key'] != 'deletion.completed']
 ERRORS = rows('Error Codes')
 ERRORS.append({'Code':'insufficient_credits','HTTP status':'402','Meaning':'Available workspace credits cannot cover this billable operation. No work was started and no usage charge was posted.','Retryable':'No'})
+ERRORS.append({'Code':'invalid_state','HTTP status':'409','Meaning':'The operation is unavailable in the current resource or account state. Operational commands are unavailable after cancellation is submitted.','Retryable':'No'})
 SCHEMAS = {f'Enum_{k}': {'type': 'string', 'enum': v} for k, v in ENUMS.items()}
 EXAMPLES = {}
 REFINEMENTS = [
@@ -185,6 +186,16 @@ for r in WORKED:
 EXAMPLES['AccountBalance']['date_basis'] = 'unknown'
 
 RESOURCE_BY_PATH = {r['Collection endpoint']: name for name, r in ENTITIES.items()}
+
+# Sparse GET responses retain metadata but may omit unselected domain fields.
+# Full canonical schemas remain strict for complete resources and mutation results.
+for entity in ENTITIES:
+    canonical = pascal(entity)
+    projected = deepcopy(SCHEMAS[canonical])
+    projected['title'] = canonical + 'Read'
+    projected['required'] = list(SCHEMAS['ResourceMetadata']['required'])
+    projected['description'] += ' Read representation: fields selects top-level domain fields. Required metadata is always returned. Selected nested objects retain their complete schema. Without fields, return the full authorized representation.'
+    SCHEMAS[canonical + 'Read'] = projected
 GROUPS = {name: r['Category'] for name, r in ENTITIES.items()}
 SOURCE_BACKED = {name for name, r in ENTITIES.items() if r['Category'] in ['Banking', 'Payments', 'Commerce', 'Accounting', 'Inventory', 'Lending', 'Liens', 'Identity'] and name not in ['document','verification','lien_search']}
 PREFIXES = {'business':'biz','person':'per','connection':'cnn','consent':'con','sync_job':'syn','verification':'ver','document':'doc','bank_account':'bka','bank_transaction':'btx','lien_search':'lis','workflow_run':'wfr','monitor':'mon','task':'tsk','case':'case','communication':'com','application':'app'}
@@ -295,7 +306,7 @@ def op_parameters(op, resource):
         status_field = next((r for r in FIELDS[resource] if r['Field path'] == resource+'.status'),None)
         if status_field: p.append(parameter('status','query',status_field['Data type'],'Filter by this resource status.'))
     if resource:
-        p += [parameter('fields','query','string','Comma-separated relative fields. Required identity and metadata remain.',example='id,object,updated_at'),parameter('include','query','string','Comma-separated optional expansions: provenance, missing_fields. No unrestricted graph traversal.',example='provenance')]
+        p += [parameter('fields','query','string','Comma-separated top-level field names. Required identity and metadata always remain. Selected objects are complete; nested paths and wildcards are unsupported. Unknown fields return 400 validation_error.',example='id,object,updated_at'),parameter('include','query','string','Comma-separated optional expansions: provenance, missing_fields. No unrestricted graph traversal.',example='provenance')]
     for r in PARAMS:
         if r['Location'] != 'query' or r['Applies to'].startswith(('All ','Resources ','Source-backed ')): continue
         applies = r['Applies to'].replace('GET ', '').split('; ')
@@ -362,6 +373,8 @@ POSTMAN_GROUPS = defaultdict(list)
 for op in OPS:
     oid, path, method = op['Operation ID'],op['Path'],op['Method']
     op = deepcopy(op)
+    if method != 'GET' and oid != 'EP145':
+        op['Constraints'] += ' Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.'
     if oid == 'EP147':
         op['Constraints'] += ' Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.'
     if oid == 'EP148':
@@ -388,7 +401,8 @@ for op in OPS:
         name = response_type.split('<')[1].split('>')[0]
         schema_name = pascal(name) if name in ENTITIES else name
         if name=='WebhookEndpoint':schema_name='WebhookEndpointPublic'
-        response_schema,response_example=envelope(ref(schema_name),deepcopy(EXAMPLES[schema_name]),list_response)
+        read_name = schema_name + 'Read' if method == 'GET' and name in ENTITIES else schema_name
+        response_schema,response_example=envelope(ref(read_name),deepcopy(EXAMPLES[schema_name]),list_response)
     elif response_type=='ChangePage': response_schema,response_example=ref('ChangePage'),deepcopy(EXAMPLES['ChangePage'])
     else:
         schema_name='WebhookEndpointCreated' if response_type=='WebhookEndpoint' else response_type
@@ -431,7 +445,14 @@ for op in OPS:
     success_headers={'X-Request-ID':{'description':'AMLOK response correlation identifier.','schema':{'type':'string'},'example':'req_example'}}
     if resource in ['monitor','case'] and not list_response:success_headers['ETag']={'description':'Quoted record version for an If-Match update.','schema':{'type':'string'},'example':'"'+str(data['record_version'])+'"'}
     operation['responses'][success]={'description':op['Purpose']+(' Accepted work is not yet complete.' if op['Execution']=='Asynchronous' else ''),'headers':success_headers,'content':{'application/json':{'schema':response_schema,'examples':{'synthetic':{'summary':'Synthetic '+title.lower(),'value':response_example}}}}}
-    relevant=[e for e in ERRORS if (e['HTTP status'] != '402' or oid == 'EP147') and (e['HTTP status'] not in ['409','412','422'] or (e['HTTP status']=='409' and method=='POST') or (e['HTTP status']=='412' and (method=='PATCH' or oid in ['EP155','EP157'])) or (e['HTTP status']=='422' and method!='GET'))]
+    if method == 'GET' and response_type.startswith(('Single<','List<')) and name in ENTITIES:
+        projected_example = deepcopy(response_example)
+        def project(record):
+            return {key: value for key, value in record.items() if key in SCHEMAS['ResourceMetadata']['required']}
+        projected_example['data'] = [project(record) for record in data] if list_response else project(data)
+        operation['responses'][success]['content']['application/json']['examples']['projected'] = {
+            'summary':'Metadata-only response with fields=id', 'value':projected_example}
+    relevant=[e for e in ERRORS if (e['HTTP status'] != '402' or oid == 'EP147') and (e['HTTP status'] not in ['409','412','422'] or (e['HTTP status']=='409' and method in ['POST','PATCH']) or (e['HTTP status']=='412' and (method=='PATCH' or oid in ['EP155','EP157'])) or (e['HTTP status']=='422' and method!='GET'))]
     for e in relevant:
         code=e['HTTP status'];example={'error':{'code':e['Code'],'message':e['Meaning'],'retryable':e['Retryable']=='Yes','request_id':'req_example'},'meta':meta('complete')}
         response=operation['responses'].setdefault(code,{'description':'Request failed. Inspect error.code and error.retryable.','headers':deepcopy(success_headers),'content':{'application/json':{'schema':ref('ErrorEnvelope'),'examples':{}}}})

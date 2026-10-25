@@ -6,7 +6,7 @@ playground: simple
 
 **Required scope:** `identity:verify` · **Execution:** asynchronous.
 
-Return hosted_url when applicable; poll verification ID for result.
+Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
 
 [Data dictionary](/data-model/field-dictionary#verification) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
 

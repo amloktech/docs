@@ -26,7 +26,7 @@ For Standard, the entire underwriting must fit within **75,000 total records**, 
 
 ## Signal: new monthly processing
 
-Signal counts **only records newly processed during the month** for the monitored borrower/business. It uses the existing underwriting baseline together with new evidence and changes to reassess risk. Unchanged historical records retained in the baseline do not count again merely because Signal consults them.
+Signal counts **only records newly processed during the month** for the monitored borrower/business. It uses the existing underwriting baseline together with new evidence and changes to reassess risk. Each updated version of an existing record counts as a new record when processed. Count a distinct source record and version once in the applicable processing window; retries and repeated reads of that unchanged version do not add records. Unchanged historical records retained in the baseline do not count again merely because Signal consults them. For example, 1,000 new records and 200 updated versions of existing records count as 1,200 newly processed records.
 
 Monitoring and change-driven reassessment are included in the Signal rate. A detected event does not launch a separately billed Insights underwriting. The total monthly workload combines the borrower/business's monitoring checks and data sources.
 

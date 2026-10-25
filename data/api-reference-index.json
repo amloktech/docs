@@ -8648,6 +8648,70 @@
     "success": "200"
   },
   {
+    "id": "WA062",
+    "method": "GET",
+    "path": "/v1/billing/snapshot",
+    "title": "Retrieve current billing snapshot",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/retrieve-current-billing-snapshot",
+    "resource": "billing_snapshot",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "billing_snapshot_example",
+        "object": "billing_snapshot",
+        "record_version": 1,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
+        "billing_account_id": "billing_account_example",
+        "as_of": "2026-10-23T14:00:00Z",
+        "ledger_sequence": 3,
+        "consistency": "immutable_workspace_billing_snapshot"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA063",
+    "method": "GET",
+    "path": "/v1/billing/snapshots/{id}",
+    "title": "Retrieve billing snapshot",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/retrieve-billing-snapshot",
+    "resource": "billing_snapshot",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "billing_snapshot_example",
+        "object": "billing_snapshot",
+        "record_version": 1,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
+        "billing_account_id": "billing_account_example",
+        "as_of": "2026-10-23T14:00:00Z",
+        "ledger_sequence": 3,
+        "consistency": "immutable_workspace_billing_snapshot"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
     "id": "WA001",
     "method": "GET",
     "path": "/v1/billing/account",
@@ -8691,9 +8755,14 @@
         "payment_frequency": "every_12_months",
         "cancellation_notice_days": 0,
         "closure_timing": "end_of_request_month",
+        "processing_cutoff": "immediate_on_cancellation",
+        "status": "active",
+        "cancellation_requested_at": null,
+        "scheduled_closure_at": null,
         "minimum_top_up_amount": "500.00",
         "refund_destination": "saved_portal_bank_account",
-        "policy_version": "unified-workspace-credits"
+        "policy_version": "unified-workspace-credits",
+        "snapshot_id": "billing_snapshot_example"
       },
       "meta": {
         "request_id": "req_example",
@@ -8724,6 +8793,10 @@
         "workspace_id": "wsp_example",
         "currency": "CAD",
         "effective_from": "2026-10-01T00:00:00Z",
+        "effective_to": null,
+        "agreement_id": "agr_example",
+        "agreement_version": "3",
+        "supersedes_id": null,
         "rates": [
           {
             "product": "insights",
@@ -8739,7 +8812,8 @@
               "record_limit": 75000,
               "minimum_banking_history_months": 12,
               "analysis_scope": "Routine reconciliation and standard analysis",
-              "record_counting_basis": "per_underwriting"
+              "record_counting_basis": "per_underwriting",
+              "record_counting_rule": "distinct_record_versions"
             }
           },
           {
@@ -8756,7 +8830,8 @@
               "record_limit": 250000,
               "minimum_banking_history_months": 12,
               "analysis_scope": "Multiple entities or channels and deeper reconciliation",
-              "record_counting_basis": "per_underwriting"
+              "record_counting_basis": "per_underwriting",
+              "record_counting_rule": "distinct_record_versions"
             }
           },
           {
@@ -8773,7 +8848,8 @@
               "record_limit": 1000000,
               "minimum_banking_history_months": 12,
               "analysis_scope": "Extensive relationships, exceptions, and investigation",
-              "record_counting_basis": "per_underwriting"
+              "record_counting_basis": "per_underwriting",
+              "record_counting_rule": "distinct_record_versions"
             }
           },
           {
@@ -8790,7 +8866,8 @@
               "record_limit": 75000,
               "minimum_banking_history_months": null,
               "analysis_scope": "Routine reconciliation and standard analysis",
-              "record_counting_basis": "new_records_per_month"
+              "record_counting_basis": "new_records_per_month",
+              "record_counting_rule": "distinct_record_versions"
             }
           },
           {
@@ -8807,7 +8884,8 @@
               "record_limit": 250000,
               "minimum_banking_history_months": null,
               "analysis_scope": "Multiple entities or channels and deeper reconciliation",
-              "record_counting_basis": "new_records_per_month"
+              "record_counting_basis": "new_records_per_month",
+              "record_counting_rule": "distinct_record_versions"
             }
           },
           {
@@ -8824,10 +8902,309 @@
               "record_limit": 1000000,
               "minimum_banking_history_months": null,
               "analysis_scope": "Extensive relationships, exceptions, and investigation",
-              "record_counting_basis": "new_records_per_month"
+              "record_counting_basis": "new_records_per_month",
+              "record_counting_rule": "distinct_record_versions"
             }
           }
-        ]
+        ],
+        "snapshot_id": "billing_snapshot_example"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA060",
+    "method": "GET",
+    "path": "/v1/billing/rate-cards",
+    "title": "List historical rate cards",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/list-historical-rate-cards",
+    "resource": "billing_rate_card",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "billing_rate_card_example",
+          "object": "billing_rate_card",
+          "record_version": 1,
+          "created_at": "2026-10-23T14:00:00Z",
+          "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
+          "currency": "CAD",
+          "effective_from": "2026-10-01T00:00:00Z",
+          "effective_to": null,
+          "agreement_id": "agr_example",
+          "agreement_version": "3",
+          "supersedes_id": null,
+          "rates": [
+            {
+              "product": "insights",
+              "tier": "standard",
+              "unit": "completed_underwriting",
+              "base_rate": "5.00",
+              "discount_percent": "0",
+              "effective_rate": "5.00",
+              "pricing_basis": "published",
+              "workload_limits": {
+                "bank_accounts": 2,
+                "business_integrations": 5,
+                "record_limit": 75000,
+                "minimum_banking_history_months": 12,
+                "analysis_scope": "Routine reconciliation and standard analysis",
+                "record_counting_basis": "per_underwriting",
+                "record_counting_rule": "distinct_record_versions"
+              }
+            },
+            {
+              "product": "insights",
+              "tier": "advanced",
+              "unit": "completed_underwriting",
+              "base_rate": "15.00",
+              "discount_percent": "0",
+              "effective_rate": "15.00",
+              "pricing_basis": "published",
+              "workload_limits": {
+                "bank_accounts": 4,
+                "business_integrations": 10,
+                "record_limit": 250000,
+                "minimum_banking_history_months": 12,
+                "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+                "record_counting_basis": "per_underwriting",
+                "record_counting_rule": "distinct_record_versions"
+              }
+            },
+            {
+              "product": "insights",
+              "tier": "complex",
+              "unit": "completed_underwriting",
+              "base_rate": "35.00",
+              "discount_percent": "0",
+              "effective_rate": "35.00",
+              "pricing_basis": "published",
+              "workload_limits": {
+                "bank_accounts": 8,
+                "business_integrations": 20,
+                "record_limit": 1000000,
+                "minimum_banking_history_months": 12,
+                "analysis_scope": "Extensive relationships, exceptions, and investigation",
+                "record_counting_basis": "per_underwriting",
+                "record_counting_rule": "distinct_record_versions"
+              }
+            },
+            {
+              "product": "signal",
+              "tier": "standard",
+              "unit": "active_account_month",
+              "base_rate": "3.00",
+              "discount_percent": "0",
+              "effective_rate": "3.00",
+              "pricing_basis": "published",
+              "workload_limits": {
+                "bank_accounts": 2,
+                "business_integrations": 5,
+                "record_limit": 75000,
+                "minimum_banking_history_months": null,
+                "analysis_scope": "Routine reconciliation and standard analysis",
+                "record_counting_basis": "new_records_per_month",
+                "record_counting_rule": "distinct_record_versions"
+              }
+            },
+            {
+              "product": "signal",
+              "tier": "advanced",
+              "unit": "active_account_month",
+              "base_rate": "5.00",
+              "discount_percent": "0",
+              "effective_rate": "5.00",
+              "pricing_basis": "published",
+              "workload_limits": {
+                "bank_accounts": 4,
+                "business_integrations": 10,
+                "record_limit": 250000,
+                "minimum_banking_history_months": null,
+                "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+                "record_counting_basis": "new_records_per_month",
+                "record_counting_rule": "distinct_record_versions"
+              }
+            },
+            {
+              "product": "signal",
+              "tier": "complex",
+              "unit": "active_account_month",
+              "base_rate": "8.00",
+              "discount_percent": "0",
+              "effective_rate": "8.00",
+              "pricing_basis": "published",
+              "workload_limits": {
+                "bank_accounts": 8,
+                "business_integrations": 20,
+                "record_limit": 1000000,
+                "minimum_banking_history_months": null,
+                "analysis_scope": "Extensive relationships, exceptions, and investigation",
+                "record_counting_basis": "new_records_per_month",
+                "record_counting_rule": "distinct_record_versions"
+              }
+            }
+          ],
+          "snapshot_id": "billing_snapshot_example"
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA061",
+    "method": "GET",
+    "path": "/v1/billing/rate-cards/{id}",
+    "title": "Retrieve historical rate card",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/retrieve-historical-rate-card",
+    "resource": "billing_rate_card",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "billing_rate_card_example",
+        "object": "billing_rate_card",
+        "record_version": 1,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
+        "currency": "CAD",
+        "effective_from": "2026-10-01T00:00:00Z",
+        "effective_to": null,
+        "agreement_id": "agr_example",
+        "agreement_version": "3",
+        "supersedes_id": null,
+        "rates": [
+          {
+            "product": "insights",
+            "tier": "standard",
+            "unit": "completed_underwriting",
+            "base_rate": "5.00",
+            "discount_percent": "0",
+            "effective_rate": "5.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 2,
+              "business_integrations": 5,
+              "record_limit": 75000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Routine reconciliation and standard analysis",
+              "record_counting_basis": "per_underwriting",
+              "record_counting_rule": "distinct_record_versions"
+            }
+          },
+          {
+            "product": "insights",
+            "tier": "advanced",
+            "unit": "completed_underwriting",
+            "base_rate": "15.00",
+            "discount_percent": "0",
+            "effective_rate": "15.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 4,
+              "business_integrations": 10,
+              "record_limit": 250000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+              "record_counting_basis": "per_underwriting",
+              "record_counting_rule": "distinct_record_versions"
+            }
+          },
+          {
+            "product": "insights",
+            "tier": "complex",
+            "unit": "completed_underwriting",
+            "base_rate": "35.00",
+            "discount_percent": "0",
+            "effective_rate": "35.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 8,
+              "business_integrations": 20,
+              "record_limit": 1000000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Extensive relationships, exceptions, and investigation",
+              "record_counting_basis": "per_underwriting",
+              "record_counting_rule": "distinct_record_versions"
+            }
+          },
+          {
+            "product": "signal",
+            "tier": "standard",
+            "unit": "active_account_month",
+            "base_rate": "3.00",
+            "discount_percent": "0",
+            "effective_rate": "3.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 2,
+              "business_integrations": 5,
+              "record_limit": 75000,
+              "minimum_banking_history_months": null,
+              "analysis_scope": "Routine reconciliation and standard analysis",
+              "record_counting_basis": "new_records_per_month",
+              "record_counting_rule": "distinct_record_versions"
+            }
+          },
+          {
+            "product": "signal",
+            "tier": "advanced",
+            "unit": "active_account_month",
+            "base_rate": "5.00",
+            "discount_percent": "0",
+            "effective_rate": "5.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 4,
+              "business_integrations": 10,
+              "record_limit": 250000,
+              "minimum_banking_history_months": null,
+              "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+              "record_counting_basis": "new_records_per_month",
+              "record_counting_rule": "distinct_record_versions"
+            }
+          },
+          {
+            "product": "signal",
+            "tier": "complex",
+            "unit": "active_account_month",
+            "base_rate": "8.00",
+            "discount_percent": "0",
+            "effective_rate": "8.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 8,
+              "business_integrations": 20,
+              "record_limit": 1000000,
+              "minimum_banking_history_months": null,
+              "analysis_scope": "Extensive relationships, exceptions, and investigation",
+              "record_counting_basis": "new_records_per_month",
+              "record_counting_rule": "distinct_record_versions"
+            }
+          }
+        ],
+        "snapshot_id": "billing_snapshot_example"
       },
       "meta": {
         "request_id": "req_example",
@@ -8874,7 +9251,8 @@
           "billing_period_start": "2026-10-01T00:00:00Z",
           "billing_period_end": "2026-11-01T00:00:00Z",
           "rate_card_id": "billing_rate_card_example",
-          "ledger_entry_id": "ledger_usage_example"
+          "ledger_entry_id": "ledger_usage_example",
+          "snapshot_id": "billing_snapshot_example"
         }
       ],
       "page": {
@@ -8926,7 +9304,8 @@
         "billing_period_start": "2026-10-01T00:00:00Z",
         "billing_period_end": "2026-11-01T00:00:00Z",
         "rate_card_id": "billing_rate_card_example",
-        "ledger_entry_id": "ledger_usage_example"
+        "ledger_entry_id": "ledger_usage_example",
+        "snapshot_id": "billing_snapshot_example"
       },
       "meta": {
         "request_id": "req_example",
@@ -8987,7 +9366,8 @@
           }
         ],
         "total_net_amount": "1100.00",
-        "provisional": true
+        "provisional": true,
+        "snapshot_id": "billing_snapshot_example"
       },
       "meta": {
         "request_id": "req_example",
@@ -9012,7 +9392,9 @@
       "to": "2026-11-01T00:00:00Z",
       "report_type": "usage",
       "format": "csv",
-      "time_basis": "posted_at"
+      "time_basis": "posted_at",
+      "snapshot_id": "billing_snapshot_example",
+      "filters": {}
     },
     "response": {
       "data": {
@@ -9032,7 +9414,9 @@
         "as_of": "2026-10-23T14:00:00Z",
         "row_count": null,
         "expires_at": null,
-        "failure_code": null
+        "failure_code": null,
+        "snapshot_id": "billing_snapshot_example",
+        "filters": {}
       },
       "meta": {
         "request_id": "req_example",
@@ -9072,7 +9456,9 @@
           "as_of": "2026-10-23T14:00:00Z",
           "row_count": null,
           "expires_at": null,
-          "failure_code": null
+          "failure_code": null,
+          "snapshot_id": "billing_snapshot_example",
+          "filters": {}
         }
       ],
       "page": {
@@ -9117,7 +9503,9 @@
         "as_of": "2026-10-23T14:00:00Z",
         "row_count": null,
         "expires_at": null,
-        "failure_code": null
+        "failure_code": null,
+        "snapshot_id": "billing_snapshot_example",
+        "filters": {}
       },
       "meta": {
         "request_id": "req_example",
@@ -9195,7 +9583,8 @@
           "adjustments": "0.00",
           "closing_balance": "10900.00",
           "ledger_sequence_from": 1,
-          "ledger_sequence_to": 3
+          "ledger_sequence_to": 3,
+          "snapshot_id": "billing_snapshot_example"
         }
       ],
       "page": {
@@ -9245,7 +9634,143 @@
         "adjustments": "0.00",
         "closing_balance": "10900.00",
         "ledger_sequence_from": 1,
-        "ledger_sequence_to": 3
+        "ledger_sequence_to": 3,
+        "snapshot_id": "billing_snapshot_example"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA064",
+    "method": "GET",
+    "path": "/v1/billing/funding",
+    "title": "List funding records",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/list-funding-records",
+    "resource": "billing_funding",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "billing_funding_example",
+          "object": "billing_funding",
+          "record_version": 1,
+          "created_at": "2026-10-23T14:00:00Z",
+          "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
+          "billing_account_id": "billing_account_example",
+          "currency": "CAD",
+          "amount": "500.00",
+          "source": "customer_top_up",
+          "payment_method_type": "bank_account",
+          "status": "pending",
+          "initiated_at": "2026-10-23T14:00:00Z",
+          "settled_at": null,
+          "failure_code": null,
+          "invoice_reference": null,
+          "receipt_reference": null,
+          "ledger_entry_id": null,
+          "client_reference": "funding-october",
+          "snapshot_id": "billing_snapshot_example"
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA065",
+    "method": "GET",
+    "path": "/v1/billing/funding/{id}",
+    "title": "Retrieve funding record",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/retrieve-funding-record",
+    "resource": "billing_funding",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "billing_funding_example",
+        "object": "billing_funding",
+        "record_version": 1,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
+        "billing_account_id": "billing_account_example",
+        "currency": "CAD",
+        "amount": "500.00",
+        "source": "customer_top_up",
+        "payment_method_type": "bank_account",
+        "status": "pending",
+        "initiated_at": "2026-10-23T14:00:00Z",
+        "settled_at": null,
+        "failure_code": null,
+        "invoice_reference": null,
+        "receipt_reference": null,
+        "ledger_entry_id": null,
+        "client_reference": "funding-october",
+        "snapshot_id": "billing_snapshot_example"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA066",
+    "method": "GET",
+    "path": "/v1/billing/credit-holds",
+    "title": "List credit reservations",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/list-credit-reservations",
+    "resource": "billing_credit_hold",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "billing_credit_hold_example",
+          "object": "billing_credit_hold",
+          "record_version": 1,
+          "created_at": "2026-10-23T14:00:00Z",
+          "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
+          "billing_account_id": "billing_account_example",
+          "currency": "CAD",
+          "amount": "500.00",
+          "source_resource_id": "wfr_batch_example",
+          "product": "insights",
+          "status": "active",
+          "resolved_at": null,
+          "ledger_entry_id": null,
+          "snapshot_id": "billing_snapshot_example"
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
       },
       "meta": {
         "request_id": "req_example",
@@ -9281,7 +9806,8 @@
         "pending_incoming": "500.00",
         "total_posted": "10900.00",
         "total_held": "500.00",
-        "available_for_usage": "10400.00"
+        "available_for_usage": "10400.00",
+        "snapshot_id": "billing_snapshot_example"
       },
       "meta": {
         "request_id": "req_example",
@@ -9320,13 +9846,53 @@
           "movement_id": "billing_usage_signal",
           "reverses_entry_id": null,
           "posted_at": "2026-10-23T14:00:00Z",
-          "client_reference": "signal-october"
+          "client_reference": "signal-october",
+          "snapshot_id": "billing_snapshot_example"
         }
       ],
       "page": {
         "has_more": false,
         "next_cursor": null,
         "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "WA067",
+    "method": "GET",
+    "path": "/v1/billing/credit-ledger/{id}",
+    "title": "Retrieve credit ledger entry",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/retrieve-credit-ledger-entry",
+    "resource": "billing_credit_entry",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "billing_credit_entry_example",
+        "object": "billing_credit_entry",
+        "record_version": 1,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
+        "billing_account_id": "billing_account_example",
+        "sequence": 3,
+        "currency": "CAD",
+        "amount": "-600.00",
+        "balance_after": "10900.00",
+        "entry_type": "usage",
+        "movement_id": "billing_usage_signal",
+        "reverses_entry_id": null,
+        "posted_at": "2026-10-23T14:00:00Z",
+        "client_reference": "signal-october",
+        "snapshot_id": "billing_snapshot_example"
       },
       "meta": {
         "request_id": "req_example",

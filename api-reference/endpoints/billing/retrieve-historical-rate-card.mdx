@@ -1,0 +1,11 @@
+---
+title: "Retrieve historical rate card"
+openapi: "/openapi/amlok-v1.json GET /v1/billing/rate-cards/{id}"
+playground: simple
+---
+
+**Required scope:** `billing:read`
+
+Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.
+
+[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)

@@ -618,7 +618,7 @@
                 "consents"
               ]
             },
-            "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization.",
+            "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"subject_type\": \"business\",\n  \"purposes\": [\n    \"credit_assessment\"\n  ],\n  \"scopes\": [\n    \"banking:read\"\n  ],\n  \"policy_version\": \"consent-v1\",\n  \"evidence_document_id\": \"doc_consent\"\n}",
@@ -658,7 +658,7 @@
                     "consents"
                   ]
                 },
-                "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization.",
+                "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"subject_type\": \"business\",\n  \"purposes\": [\n    \"credit_assessment\"\n  ],\n  \"scopes\": [\n    \"banking:read\"\n  ],\n  \"policy_version\": \"consent-v1\",\n  \"evidence_document_id\": \"doc_consent\"\n}",
@@ -711,7 +711,7 @@
                 "revoke"
               ]
             },
-            "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy.",
+            "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -753,7 +753,7 @@
                     "revoke"
                   ]
                 },
-                "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy.",
+                "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -804,7 +804,7 @@
                 "connections"
               ]
             },
-            "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response.",
+            "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\"\n}",
@@ -844,7 +844,7 @@
                     "connections"
                   ]
                 },
-                "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response.",
+                "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\"\n}",
@@ -897,7 +897,7 @@
                 "sync"
               ]
             },
-            "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially.",
+            "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"resources\": [\n    \"bank_transaction\"\n  ],\n  \"from\": \"2026-09-01\",\n  \"to\": \"2026-10-01\"\n}",
@@ -939,7 +939,7 @@
                     "sync"
                   ]
                 },
-                "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially.",
+                "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"resources\": [\n    \"bank_transaction\"\n  ],\n  \"from\": \"2026-09-01\",\n  \"to\": \"2026-10-01\"\n}",
@@ -992,7 +992,7 @@
                 "disconnect"
               ]
             },
-            "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command.",
+            "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -1034,7 +1034,7 @@
                     "disconnect"
                   ]
                 },
-                "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command.",
+                "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -2016,7 +2016,7 @@
                 "businesses"
               ]
             },
-            "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification.",
+            "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"legal_name\": \"Example Manufacturing Inc.\",\n  \"client_reference\": \"app-1029\",\n  \"incorporation_country\": \"CA\"\n}",
@@ -2056,7 +2056,7 @@
                     "businesses"
                   ]
                 },
-                "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification.",
+                "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"legal_name\": \"Example Manufacturing Inc.\",\n  \"client_reference\": \"app-1029\",\n  \"incorporation_country\": \"CA\"\n}",
@@ -2107,7 +2107,7 @@
                 "people"
               ]
             },
-            "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose.",
+            "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"given_name\": \"Alex\",\n  \"family_name\": \"Example\",\n  \"email\": \"alex@example.com\"\n}",
@@ -2147,7 +2147,7 @@
                     "people"
                   ]
                 },
-                "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose.",
+                "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"given_name\": \"Alex\",\n  \"family_name\": \"Example\",\n  \"email\": \"alex@example.com\"\n}",
@@ -2198,7 +2198,7 @@
                 "verifications"
               ]
             },
-            "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result.",
+            "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"per_example\",\n  \"verification_type\": \"kyc\",\n  \"workflow_version\": \"kyc-ca-v1\",\n  \"return_url\": \"https://client.example.com/verified\"\n}",
@@ -2238,7 +2238,7 @@
                     "verifications"
                   ]
                 },
-                "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result.",
+                "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"per_example\",\n  \"verification_type\": \"kyc\",\n  \"workflow_version\": \"kyc-ca-v1\",\n  \"return_url\": \"https://client.example.com/verified\"\n}",
@@ -2285,7 +2285,7 @@
                 "documents"
               ]
             },
-            "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state.",
+            "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -2342,7 +2342,7 @@
                     "documents"
                   ]
                 },
-                "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state.",
+                "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -7411,7 +7411,7 @@
                 "applications"
               ]
             },
-            "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund.",
+            "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"applicant_entity_id\": \"biz_example\",\n  \"product_type\": \"term_loan\",\n  \"requested_amount\": {\n    \"amount\": \"100000.00\",\n    \"currency\": \"CAD\"\n  },\n  \"purpose\": \"Equipment purchase\",\n  \"requested_term_months\": 36\n}",
@@ -7451,7 +7451,7 @@
                     "applications"
                   ]
                 },
-                "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund.",
+                "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"applicant_entity_id\": \"biz_example\",\n  \"product_type\": \"term_loan\",\n  \"requested_amount\": {\n    \"amount\": \"100000.00\",\n    \"currency\": \"CAD\"\n  },\n  \"purpose\": \"Equipment purchase\",\n  \"requested_term_months\": 36\n}",
@@ -7855,7 +7855,7 @@
                 "lien-searches"
               ]
             },
-            "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action.",
+            "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"debtor_name\": \"Example Manufacturing Inc.\",\n  \"debtor_type\": \"business\",\n  \"search_type\": \"name\",\n  \"jurisdictions\": [\n    \"US-DE\"\n  ]\n}",
@@ -7895,7 +7895,7 @@
                     "lien-searches"
                   ]
                 },
-                "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action.",
+                "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"debtor_name\": \"Example Manufacturing Inc.\",\n  \"debtor_type\": \"business\",\n  \"search_type\": \"name\",\n  \"jurisdictions\": [\n    \"US-DE\"\n  ]\n}",
@@ -8415,7 +8415,7 @@
                 "attribute-calculations"
               ]
             },
-            "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
+            "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"keys\": [\n    \"operating_inflows\"\n  ],\n  \"window_start\": \"2026-09-01\",\n  \"window_end\": \"2026-10-01\",\n  \"input_manifest_id\": \"manifest_example\"\n}",
@@ -8455,7 +8455,7 @@
                     "attribute-calculations"
                   ]
                 },
-                "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
+                "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"keys\": [\n    \"operating_inflows\"\n  ],\n  \"window_start\": \"2026-09-01\",\n  \"window_end\": \"2026-10-01\",\n  \"input_manifest_id\": \"manifest_example\"\n}",
@@ -8565,7 +8565,7 @@
                 "monitors"
               ]
             },
-            "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
+            "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"baseline_snapshot_id\": \"rsk_baseline\",\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ],\n  \"attribute_keys\": [\n    \"operating_inflows\"\n  ],\n  \"cadence\": \"daily\",\n  \"ruleset_version\": \"monitor-v1\"\n}",
@@ -8605,7 +8605,7 @@
                     "monitors"
                   ]
                 },
-                "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
+                "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"baseline_snapshot_id\": \"rsk_baseline\",\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ],\n  \"attribute_keys\": [\n    \"operating_inflows\"\n  ],\n  \"cadence\": \"daily\",\n  \"ruleset_version\": \"monitor-v1\"\n}",
@@ -8657,7 +8657,7 @@
                 "mon_example"
               ]
             },
-            "description": "Change monitoring configuration with optimistic concurrency.\n\nRequired scope: `monitoring:write`. Only explicit supplied fields change; null-clearing rules validated.",
+            "description": "Change monitoring configuration with optimistic concurrency.\n\nRequired scope: `monitoring:write`. Only explicit supplied fields change; null-clearing rules validated. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"paused\"\n}",
@@ -8698,7 +8698,7 @@
                     "mon_example"
                   ]
                 },
-                "description": "Change monitoring configuration with optimistic concurrency.\n\nRequired scope: `monitoring:write`. Only explicit supplied fields change; null-clearing rules validated.",
+                "description": "Change monitoring configuration with optimistic concurrency.\n\nRequired scope: `monitoring:write`. Only explicit supplied fields change; null-clearing rules validated. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"status\": \"paused\"\n}",
@@ -9722,7 +9722,7 @@
                 "workflow-runs"
               ]
             },
-            "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
+            "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"underwrite-v1\",\n  \"input_resource_ids\": [\n    \"app_example\",\n    \"doc_example\"\n  ],\n  \"application_id\": \"app_example\"\n}",
@@ -9762,7 +9762,7 @@
                     "workflow-runs"
                   ]
                 },
-                "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
+                "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"underwrite-v1\",\n  \"input_resource_ids\": [\n    \"app_example\",\n    \"doc_example\"\n  ],\n  \"application_id\": \"app_example\"\n}",
@@ -9813,7 +9813,7 @@
                 "cases"
               ]
             },
-            "description": "Open a servicing or investigation case.\n\nRequired scope: `operations:write`. Creates an internal case, not a borrower message.",
+            "description": "Open a servicing or investigation case.\n\nRequired scope: `operations:write`. Creates an internal case, not a borrower message. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_01JAMLOK\",\n  \"case_type\": \"fraud_review\",\n  \"alert_ids\": [],\n  \"application_id\": \"app_example\",\n  \"loan_id\": \"loa_example\"\n}",
@@ -9853,7 +9853,7 @@
                     "cases"
                   ]
                 },
-                "description": "Open a servicing or investigation case.\n\nRequired scope: `operations:write`. Creates an internal case, not a borrower message.",
+                "description": "Open a servicing or investigation case.\n\nRequired scope: `operations:write`. Creates an internal case, not a borrower message. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_01JAMLOK\",\n  \"case_type\": \"fraud_review\",\n  \"alert_ids\": [],\n  \"application_id\": \"app_example\",\n  \"loan_id\": \"loa_example\"\n}",
@@ -9905,7 +9905,7 @@
                 "case_example"
               ]
             },
-            "description": "Update case assignment or disposition.\n\nRequired scope: `operations:write`. Audit author and reason for dispositions.",
+            "description": "Update case assignment or disposition.\n\nRequired scope: `operations:write`. Audit author and reason for dispositions. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"status\": \"in_progress\",\n  \"assigned_to\": \"user_reviewer_example\"\n}",
@@ -9946,7 +9946,7 @@
                     "case_example"
                   ]
                 },
-                "description": "Update case assignment or disposition.\n\nRequired scope: `operations:write`. Audit author and reason for dispositions.",
+                "description": "Update case assignment or disposition.\n\nRequired scope: `operations:write`. Audit author and reason for dispositions. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"status\": \"in_progress\",\n  \"assigned_to\": \"user_reviewer_example\"\n}",
@@ -9997,7 +9997,7 @@
                 "tasks"
               ]
             },
-            "description": "Create an agent or human task.\n\nRequired scope: `operations:write`. Effectful tasks must enter approval state.",
+            "description": "Create an agent or human task.\n\nRequired scope: `operations:write`. Effectful tasks must enter approval state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_01JAMLOK\",\n  \"task_type\": \"review_evidence\",\n  \"case_id\": \"cas_example\",\n  \"workflow_run_id\": \"wfr_example\"\n}",
@@ -10037,7 +10037,7 @@
                     "tasks"
                   ]
                 },
-                "description": "Create an agent or human task.\n\nRequired scope: `operations:write`. Effectful tasks must enter approval state.",
+                "description": "Create an agent or human task.\n\nRequired scope: `operations:write`. Effectful tasks must enter approval state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_01JAMLOK\",\n  \"task_type\": \"review_evidence\",\n  \"case_id\": \"cas_example\",\n  \"workflow_run_id\": \"wfr_example\"\n}",
@@ -10090,7 +10090,7 @@
                 "approve"
               ]
             },
-            "description": "Record an authorized institution approval.\n\nRequired scope: `operations:approve`. Approve an immutable action payload; changed action requires new approval.",
+            "description": "Record an authorized institution approval.\n\nRequired scope: `operations:approve`. Approve an immutable action payload; changed action requires new approval. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"expected_record_version\": 3,\n  \"approval_reason\": \"Authorized reviewer approved the exact task payload.\"\n}",
@@ -10132,7 +10132,7 @@
                     "approve"
                   ]
                 },
-                "description": "Record an authorized institution approval.\n\nRequired scope: `operations:approve`. Approve an immutable action payload; changed action requires new approval.",
+                "description": "Record an authorized institution approval.\n\nRequired scope: `operations:approve`. Approve an immutable action payload; changed action requires new approval. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"expected_record_version\": 3,\n  \"approval_reason\": \"Authorized reviewer approved the exact task payload.\"\n}",
@@ -10183,7 +10183,7 @@
                 "communications"
               ]
             },
-            "description": "Prepare a borrower communication draft.\n\nRequired scope: `communications:write`. Creation alone does not send.",
+            "description": "Prepare a borrower communication draft.\n\nRequired scope: `communications:write`. Creation alone does not send. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_01JAMLOK\",\n  \"recipient_entity_id\": \"per_example\",\n  \"channel\": \"email\",\n  \"template_id\": \"request_financials_v1\",\n  \"case_id\": \"cas_example\",\n  \"subject\": \"Additional evidence requested\",\n  \"body\": \"Please upload your latest financial statement through your secure portal.\"\n}",
@@ -10223,7 +10223,7 @@
                     "communications"
                   ]
                 },
-                "description": "Prepare a borrower communication draft.\n\nRequired scope: `communications:write`. Creation alone does not send.",
+                "description": "Prepare a borrower communication draft.\n\nRequired scope: `communications:write`. Creation alone does not send. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_01JAMLOK\",\n  \"recipient_entity_id\": \"per_example\",\n  \"channel\": \"email\",\n  \"template_id\": \"request_financials_v1\",\n  \"case_id\": \"cas_example\",\n  \"subject\": \"Additional evidence requested\",\n  \"body\": \"Please upload your latest financial statement through your secure portal.\"\n}",
@@ -10276,7 +10276,7 @@
                 "send"
               ]
             },
-            "description": "Dispatch an explicitly approved communication.\n\nRequired scope: `communications:send`. Check recipient, channel, consent, institution approval and provider delivery entitlement.",
+            "description": "Dispatch an explicitly approved communication.\n\nRequired scope: `communications:send`. Check recipient, channel, consent, institution approval and provider delivery entitlement. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"approval_id\": \"approval_example\",\n  \"expected_record_version\": 3\n}",
@@ -10318,7 +10318,7 @@
                     "send"
                   ]
                 },
-                "description": "Dispatch an explicitly approved communication.\n\nRequired scope: `communications:send`. Check recipient, channel, consent, institution approval and provider delivery entitlement.",
+                "description": "Dispatch an explicitly approved communication.\n\nRequired scope: `communications:send`. Check recipient, channel, consent, institution approval and provider delivery entitlement. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"approval_id\": \"approval_example\",\n  \"expected_record_version\": 3\n}",
@@ -10374,7 +10374,7 @@
                 "webhook-endpoints"
               ]
             },
-            "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules.",
+            "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"url\": \"https://client.example.com/amlok-events\",\n  \"event_types\": [\n    \"verification.completed\"\n  ],\n  \"description\": \"Application events for the underwriting service\"\n}",
@@ -10414,7 +10414,7 @@
                     "webhook-endpoints"
                   ]
                 },
-                "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules.",
+                "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"url\": \"https://client.example.com/amlok-events\",\n  \"event_types\": [\n    \"verification.completed\"\n  ],\n  \"description\": \"Application events for the underwriting service\"\n}",
@@ -10524,7 +10524,7 @@
                 "replay"
               ]
             },
-            "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt.",
+            "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"event_id\": \"evt_example\"\n}",
@@ -10566,7 +10566,7 @@
                     "replay"
                   ]
                 },
-                "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt.",
+                "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"event_id\": \"evt_example\"\n}",
@@ -10595,7 +10595,7 @@
       "name": "Reporting",
       "item": [
         {
-          "name": "Retrieve billing account",
+          "name": "Retrieve current billing snapshot",
           "request": {
             "method": "GET",
             "header": [
@@ -10604,8 +10604,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/account",
-            "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "url": "{{base_url}}/v1/billing/snapshot",
+            "description": "Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, pending funding, holds, and the posted ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10618,8 +10618,8 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/account",
-                "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "url": "{{base_url}}/v1/billing/snapshot",
+                "description": "Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, pending funding, holds, and the posted ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10629,7 +10629,85 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_account_example\",\n    \"object\": \"billing_account\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"minimum_monthly_commitment\": \"1000.00\",\n    \"payment_for_12_months\": \"12000.00\",\n    \"term_start\": \"2026-10-01T00:00:00Z\",\n    \"term_end\": \"2027-10-01T00:00:00Z\",\n    \"renewal_payment_at\": \"2027-10-01T00:00:00Z\",\n    \"credit_type\": \"prepaid_service_credits\",\n    \"outflow_policy\": \"product_usage_or_final_cancellation_refund\",\n    \"refund_policy\": \"full_unused_balance_on_final_cancellation\",\n    \"access\": \"reporting_only\",\n    \"portal_controls\": [\n      \"payment_methods\",\n      \"automatic_top_ups\",\n      \"account_cancellation\"\n    ],\n    \"funding_methods\": [\n      \"card\",\n      \"bank_account\"\n    ],\n    \"default_auto_top_up_threshold\": \"200.00\",\n    \"minimum_top_up_threshold\": \"200.00\",\n    \"payment_frequency\": \"every_12_months\",\n    \"cancellation_notice_days\": 0,\n    \"closure_timing\": \"end_of_request_month\",\n    \"minimum_top_up_amount\": \"500.00\",\n    \"refund_destination\": \"saved_portal_bank_account\",\n    \"policy_version\": \"unified-workspace-credits\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_snapshot_example\",\n    \"object\": \"billing_snapshot\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"consistency\": \"immutable_workspace_billing_snapshot\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve billing snapshot",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/snapshots/billing_snapshot_example",
+            "description": "Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, pending funding, holds, and the posted ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/snapshots/billing_snapshot_example",
+                "description": "Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, pending funding, holds, and the posted ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_snapshot_example\",\n    \"object\": \"billing_snapshot\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"consistency\": \"immutable_workspace_billing_snapshot\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve billing account",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/account?snapshot_id=billing_snapshot_example",
+            "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Processing, usage deductions, and upcoming top-ups stop immediately when cancellation is submitted or set by the account manager. Release pending reservations without another debit. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/account?snapshot_id=billing_snapshot_example",
+                "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Processing, usage deductions, and upcoming top-ups stop immediately when cancellation is submitted or set by the account manager. Release pending reservations without another debit. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_account_example\",\n    \"object\": \"billing_account\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"minimum_monthly_commitment\": \"1000.00\",\n    \"payment_for_12_months\": \"12000.00\",\n    \"term_start\": \"2026-10-01T00:00:00Z\",\n    \"term_end\": \"2027-10-01T00:00:00Z\",\n    \"renewal_payment_at\": \"2027-10-01T00:00:00Z\",\n    \"credit_type\": \"prepaid_service_credits\",\n    \"outflow_policy\": \"product_usage_or_final_cancellation_refund\",\n    \"refund_policy\": \"full_unused_balance_on_final_cancellation\",\n    \"access\": \"reporting_only\",\n    \"portal_controls\": [\n      \"payment_methods\",\n      \"automatic_top_ups\",\n      \"account_cancellation\"\n    ],\n    \"funding_methods\": [\n      \"card\",\n      \"bank_account\"\n    ],\n    \"default_auto_top_up_threshold\": \"200.00\",\n    \"minimum_top_up_threshold\": \"200.00\",\n    \"payment_frequency\": \"every_12_months\",\n    \"cancellation_notice_days\": 0,\n    \"closure_timing\": \"end_of_request_month\",\n    \"processing_cutoff\": \"immediate_on_cancellation\",\n    \"status\": \"active\",\n    \"cancellation_requested_at\": null,\n    \"scheduled_closure_at\": null,\n    \"minimum_top_up_amount\": \"500.00\",\n    \"refund_destination\": \"saved_portal_bank_account\",\n    \"policy_version\": \"unified-workspace-credits\",\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10643,8 +10721,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/rate-card",
-            "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "url": "{{base_url}}/v1/billing/rate-card?snapshot_id=billing_snapshot_example",
+            "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; each updated record version counts as new, while retries and unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10657,8 +10735,8 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/rate-card",
-                "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "url": "{{base_url}}/v1/billing/rate-card?snapshot_id=billing_snapshot_example",
+                "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; each updated record version counts as new, while retries and unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10668,7 +10746,85 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_rate_card_example\",\n    \"object\": \"billing_rate_card\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"effective_from\": \"2026-10-01T00:00:00Z\",\n    \"rates\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"per_underwriting\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"advanced\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"15.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"15.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"per_underwriting\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"complex\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"35.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"35.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"per_underwriting\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"3.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"3.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"new_records_per_month\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"advanced\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"new_records_per_month\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"complex\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"8.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"8.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"new_records_per_month\"\n        }\n      }\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_rate_card_example\",\n    \"object\": \"billing_rate_card\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"effective_from\": \"2026-10-01T00:00:00Z\",\n    \"effective_to\": null,\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"supersedes_id\": null,\n    \"rates\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"per_underwriting\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"advanced\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"15.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"15.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"per_underwriting\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"complex\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"35.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"35.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"per_underwriting\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"3.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"3.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"new_records_per_month\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"advanced\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"new_records_per_month\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"complex\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"8.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"8.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"new_records_per_month\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      }\n    ],\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List historical rate cards",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/rate-cards?snapshot_id=billing_snapshot_example&limit=100",
+            "description": "Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/rate-cards?snapshot_id=billing_snapshot_example&limit=100",
+                "description": "Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_rate_card_example\",\n      \"object\": \"billing_rate_card\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"currency\": \"CAD\",\n      \"effective_from\": \"2026-10-01T00:00:00Z\",\n      \"effective_to\": null,\n      \"agreement_id\": \"agr_example\",\n      \"agreement_version\": \"3\",\n      \"supersedes_id\": null,\n      \"rates\": [\n        {\n          \"product\": \"insights\",\n          \"tier\": \"standard\",\n          \"unit\": \"completed_underwriting\",\n          \"base_rate\": \"5.00\",\n          \"discount_percent\": \"0\",\n          \"effective_rate\": \"5.00\",\n          \"pricing_basis\": \"published\",\n          \"workload_limits\": {\n            \"bank_accounts\": 2,\n            \"business_integrations\": 5,\n            \"record_limit\": 75000,\n            \"minimum_banking_history_months\": 12,\n            \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n            \"record_counting_basis\": \"per_underwriting\",\n            \"record_counting_rule\": \"distinct_record_versions\"\n          }\n        },\n        {\n          \"product\": \"insights\",\n          \"tier\": \"advanced\",\n          \"unit\": \"completed_underwriting\",\n          \"base_rate\": \"15.00\",\n          \"discount_percent\": \"0\",\n          \"effective_rate\": \"15.00\",\n          \"pricing_basis\": \"published\",\n          \"workload_limits\": {\n            \"bank_accounts\": 4,\n            \"business_integrations\": 10,\n            \"record_limit\": 250000,\n            \"minimum_banking_history_months\": 12,\n            \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n            \"record_counting_basis\": \"per_underwriting\",\n            \"record_counting_rule\": \"distinct_record_versions\"\n          }\n        },\n        {\n          \"product\": \"insights\",\n          \"tier\": \"complex\",\n          \"unit\": \"completed_underwriting\",\n          \"base_rate\": \"35.00\",\n          \"discount_percent\": \"0\",\n          \"effective_rate\": \"35.00\",\n          \"pricing_basis\": \"published\",\n          \"workload_limits\": {\n            \"bank_accounts\": 8,\n            \"business_integrations\": 20,\n            \"record_limit\": 1000000,\n            \"minimum_banking_history_months\": 12,\n            \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n            \"record_counting_basis\": \"per_underwriting\",\n            \"record_counting_rule\": \"distinct_record_versions\"\n          }\n        },\n        {\n          \"product\": \"signal\",\n          \"tier\": \"standard\",\n          \"unit\": \"active_account_month\",\n          \"base_rate\": \"3.00\",\n          \"discount_percent\": \"0\",\n          \"effective_rate\": \"3.00\",\n          \"pricing_basis\": \"published\",\n          \"workload_limits\": {\n            \"bank_accounts\": 2,\n            \"business_integrations\": 5,\n            \"record_limit\": 75000,\n            \"minimum_banking_history_months\": null,\n            \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n            \"record_counting_basis\": \"new_records_per_month\",\n            \"record_counting_rule\": \"distinct_record_versions\"\n          }\n        },\n        {\n          \"product\": \"signal\",\n          \"tier\": \"advanced\",\n          \"unit\": \"active_account_month\",\n          \"base_rate\": \"5.00\",\n          \"discount_percent\": \"0\",\n          \"effective_rate\": \"5.00\",\n          \"pricing_basis\": \"published\",\n          \"workload_limits\": {\n            \"bank_accounts\": 4,\n            \"business_integrations\": 10,\n            \"record_limit\": 250000,\n            \"minimum_banking_history_months\": null,\n            \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n            \"record_counting_basis\": \"new_records_per_month\",\n            \"record_counting_rule\": \"distinct_record_versions\"\n          }\n        },\n        {\n          \"product\": \"signal\",\n          \"tier\": \"complex\",\n          \"unit\": \"active_account_month\",\n          \"base_rate\": \"8.00\",\n          \"discount_percent\": \"0\",\n          \"effective_rate\": \"8.00\",\n          \"pricing_basis\": \"published\",\n          \"workload_limits\": {\n            \"bank_accounts\": 8,\n            \"business_integrations\": 20,\n            \"record_limit\": 1000000,\n            \"minimum_banking_history_months\": null,\n            \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n            \"record_counting_basis\": \"new_records_per_month\",\n            \"record_counting_rule\": \"distinct_record_versions\"\n          }\n        }\n      ],\n      \"snapshot_id\": \"billing_snapshot_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve historical rate card",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/rate-cards/billing_rate_card_example?snapshot_id=billing_snapshot_example",
+            "description": "Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/rate-cards/billing_rate_card_example?snapshot_id=billing_snapshot_example",
+                "description": "Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_rate_card_example\",\n    \"object\": \"billing_rate_card\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"effective_from\": \"2026-10-01T00:00:00Z\",\n    \"effective_to\": null,\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"supersedes_id\": null,\n    \"rates\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"per_underwriting\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"advanced\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"15.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"15.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"per_underwriting\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"complex\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"35.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"35.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"per_underwriting\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"3.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"3.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"new_records_per_month\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"advanced\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"new_records_per_month\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"complex\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"8.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"8.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"new_records_per_month\",\n          \"record_counting_rule\": \"distinct_record_versions\"\n        }\n      }\n    ],\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10682,8 +10838,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/usage?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&limit=100",
-            "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "url": "{{base_url}}/v1/billing/usage?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&snapshot_id=billing_snapshot_example&limit=100",
+            "description": "Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10696,8 +10852,8 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/usage?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&limit=100",
-                "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "url": "{{base_url}}/v1/billing/usage?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&snapshot_id=billing_snapshot_example&limit=100",
+                "description": "Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10707,7 +10863,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_usage_example\",\n      \"object\": \"billing_usage\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"product\": \"insights\",\n      \"tier\": \"standard\",\n      \"source_resource_id\": \"uw_example\",\n      \"unit\": \"completed_underwriting\",\n      \"quantity\": \"1\",\n      \"unit_rate\": \"5.00\",\n      \"currency\": \"CAD\",\n      \"amount\": \"5.00\",\n      \"entry_type\": \"charge\",\n      \"reverses_usage_id\": null,\n      \"status\": \"posted\",\n      \"occurred_at\": \"2026-10-23T14:00:00Z\",\n      \"posted_at\": \"2026-10-23T14:00:00Z\",\n      \"billing_period_start\": \"2026-10-01T00:00:00Z\",\n      \"billing_period_end\": \"2026-11-01T00:00:00Z\",\n      \"rate_card_id\": \"billing_rate_card_example\",\n      \"ledger_entry_id\": \"ledger_usage_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_usage_example\",\n      \"object\": \"billing_usage\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"product\": \"insights\",\n      \"tier\": \"standard\",\n      \"source_resource_id\": \"uw_example\",\n      \"unit\": \"completed_underwriting\",\n      \"quantity\": \"1\",\n      \"unit_rate\": \"5.00\",\n      \"currency\": \"CAD\",\n      \"amount\": \"5.00\",\n      \"entry_type\": \"charge\",\n      \"reverses_usage_id\": null,\n      \"status\": \"posted\",\n      \"occurred_at\": \"2026-10-23T14:00:00Z\",\n      \"posted_at\": \"2026-10-23T14:00:00Z\",\n      \"billing_period_start\": \"2026-10-01T00:00:00Z\",\n      \"billing_period_end\": \"2026-11-01T00:00:00Z\",\n      \"rate_card_id\": \"billing_rate_card_example\",\n      \"ledger_entry_id\": \"ledger_usage_example\",\n      \"snapshot_id\": \"billing_snapshot_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10721,8 +10877,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/usage/billing_usage_example",
-            "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "url": "{{base_url}}/v1/billing/usage/billing_usage_example?snapshot_id=billing_snapshot_example",
+            "description": "Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10735,8 +10891,8 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/usage/billing_usage_example",
-                "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "url": "{{base_url}}/v1/billing/usage/billing_usage_example?snapshot_id=billing_snapshot_example",
+                "description": "Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10746,7 +10902,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_usage_example\",\n    \"object\": \"billing_usage\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"product\": \"insights\",\n    \"tier\": \"standard\",\n    \"source_resource_id\": \"uw_example\",\n    \"unit\": \"completed_underwriting\",\n    \"quantity\": \"1\",\n    \"unit_rate\": \"5.00\",\n    \"currency\": \"CAD\",\n    \"amount\": \"5.00\",\n    \"entry_type\": \"charge\",\n    \"reverses_usage_id\": null,\n    \"status\": \"posted\",\n    \"occurred_at\": \"2026-10-23T14:00:00Z\",\n    \"posted_at\": \"2026-10-23T14:00:00Z\",\n    \"billing_period_start\": \"2026-10-01T00:00:00Z\",\n    \"billing_period_end\": \"2026-11-01T00:00:00Z\",\n    \"rate_card_id\": \"billing_rate_card_example\",\n    \"ledger_entry_id\": \"ledger_usage_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_usage_example\",\n    \"object\": \"billing_usage\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"product\": \"insights\",\n    \"tier\": \"standard\",\n    \"source_resource_id\": \"uw_example\",\n    \"unit\": \"completed_underwriting\",\n    \"quantity\": \"1\",\n    \"unit_rate\": \"5.00\",\n    \"currency\": \"CAD\",\n    \"amount\": \"5.00\",\n    \"entry_type\": \"charge\",\n    \"reverses_usage_id\": null,\n    \"status\": \"posted\",\n    \"occurred_at\": \"2026-10-23T14:00:00Z\",\n    \"posted_at\": \"2026-10-23T14:00:00Z\",\n    \"billing_period_start\": \"2026-10-01T00:00:00Z\",\n    \"billing_period_end\": \"2026-11-01T00:00:00Z\",\n    \"rate_card_id\": \"billing_rate_card_example\",\n    \"ledger_entry_id\": \"ledger_usage_example\",\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10760,7 +10916,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/consumption?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&group_by=product_tier",
+            "url": "{{base_url}}/v1/billing/consumption?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&group_by=product_tier&snapshot_id=billing_snapshot_example",
             "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
@@ -10774,7 +10930,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/consumption?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&group_by=product_tier",
+                "url": "{{base_url}}/v1/billing/consumption?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&group_by=product_tier&snapshot_id=billing_snapshot_example",
                 "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
@@ -10785,7 +10941,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_consumption_example\",\n    \"object\": \"billing_consumption\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"time_basis\": \"posted_at\",\n    \"group_by\": \"product_tier\",\n    \"rows\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"bucket_start\": \"2026-10-01T00:00:00Z\",\n        \"bucket_end\": \"2026-11-01T00:00:00Z\",\n        \"quantity\": \"100\",\n        \"unit\": \"completed_underwriting\",\n        \"gross_amount\": \"500.00\",\n        \"adjustment_amount\": \"0.00\",\n        \"net_amount\": \"500.00\"\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"bucket_start\": \"2026-10-01T00:00:00Z\",\n        \"bucket_end\": \"2026-11-01T00:00:00Z\",\n        \"quantity\": \"200\",\n        \"unit\": \"active_account_month\",\n        \"gross_amount\": \"600.00\",\n        \"adjustment_amount\": \"0.00\",\n        \"net_amount\": \"600.00\"\n      }\n    ],\n    \"total_net_amount\": \"1100.00\",\n    \"provisional\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_consumption_example\",\n    \"object\": \"billing_consumption\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"time_basis\": \"posted_at\",\n    \"group_by\": \"product_tier\",\n    \"rows\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"bucket_start\": \"2026-10-01T00:00:00Z\",\n        \"bucket_end\": \"2026-11-01T00:00:00Z\",\n        \"quantity\": \"100\",\n        \"unit\": \"completed_underwriting\",\n        \"gross_amount\": \"500.00\",\n        \"adjustment_amount\": \"0.00\",\n        \"net_amount\": \"500.00\"\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"bucket_start\": \"2026-10-01T00:00:00Z\",\n        \"bucket_end\": \"2026-11-01T00:00:00Z\",\n        \"quantity\": \"200\",\n        \"unit\": \"active_account_month\",\n        \"gross_amount\": \"600.00\",\n        \"adjustment_amount\": \"0.00\",\n        \"net_amount\": \"600.00\"\n      }\n    ],\n    \"total_net_amount\": \"1100.00\",\n    \"provisional\": true,\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10811,7 +10967,7 @@
             "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\"\n}",
+              "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\",\n  \"snapshot_id\": \"billing_snapshot_example\",\n  \"filters\": {}\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -10842,7 +10998,7 @@
                 "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\"\n}",
+                  "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\",\n  \"snapshot_id\": \"billing_snapshot_example\",\n  \"filters\": {}\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -10858,7 +11014,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_report_example\",\n    \"object\": \"billing_report\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"report_type\": \"usage\",\n    \"format\": \"csv\",\n    \"time_basis\": \"posted_at\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"status\": \"queued\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"row_count\": null,\n    \"expires_at\": null,\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_report_example\",\n    \"object\": \"billing_report\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"report_type\": \"usage\",\n    \"format\": \"csv\",\n    \"time_basis\": \"posted_at\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"status\": \"queued\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"row_count\": null,\n    \"expires_at\": null,\n    \"failure_code\": null,\n    \"snapshot_id\": \"billing_snapshot_example\",\n    \"filters\": {}\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         },
@@ -10873,7 +11029,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/reports?limit=100",
-            "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "description": "Read current export-job status, its frozen financial snapshot and expiry. Job status is current, while exported data stays bound to snapshot_id. Order by created_at then id.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10887,7 +11043,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/reports?limit=100",
-                "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "description": "Read current export-job status, its frozen financial snapshot and expiry. Job status is current, while exported data stays bound to snapshot_id. Order by created_at then id.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10897,7 +11053,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_report_example\",\n      \"object\": \"billing_report\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"from\": \"2026-10-01T00:00:00Z\",\n      \"to\": \"2026-11-01T00:00:00Z\",\n      \"report_type\": \"usage\",\n      \"format\": \"csv\",\n      \"time_basis\": \"posted_at\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"status\": \"queued\",\n      \"as_of\": \"2026-10-23T14:00:00Z\",\n      \"row_count\": null,\n      \"expires_at\": null,\n      \"failure_code\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_report_example\",\n      \"object\": \"billing_report\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"from\": \"2026-10-01T00:00:00Z\",\n      \"to\": \"2026-11-01T00:00:00Z\",\n      \"report_type\": \"usage\",\n      \"format\": \"csv\",\n      \"time_basis\": \"posted_at\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"status\": \"queued\",\n      \"as_of\": \"2026-10-23T14:00:00Z\",\n      \"row_count\": null,\n      \"expires_at\": null,\n      \"failure_code\": null,\n      \"snapshot_id\": \"billing_snapshot_example\",\n      \"filters\": {}\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10912,7 +11068,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/reports/billing_report_example",
-            "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "description": "Read current export-job status, its frozen financial snapshot and expiry. Job status is current, while exported data stays bound to snapshot_id. Order by created_at then id.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10926,7 +11082,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/reports/billing_report_example",
-                "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "description": "Read current export-job status, its frozen financial snapshot and expiry. Job status is current, while exported data stays bound to snapshot_id. Order by created_at then id.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10936,7 +11092,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_report_example\",\n    \"object\": \"billing_report\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"report_type\": \"usage\",\n    \"format\": \"csv\",\n    \"time_basis\": \"posted_at\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"status\": \"queued\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"row_count\": null,\n    \"expires_at\": null,\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_report_example\",\n    \"object\": \"billing_report\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"report_type\": \"usage\",\n    \"format\": \"csv\",\n    \"time_basis\": \"posted_at\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"status\": \"queued\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"row_count\": null,\n    \"expires_at\": null,\n    \"failure_code\": null,\n    \"snapshot_id\": \"billing_snapshot_example\",\n    \"filters\": {}\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11024,7 +11180,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/statements?limit=100",
-            "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "description": "Statements reconcile posted ledger movements and carry their own frozen snapshot_id. Final revisions are immutable; later corrections create a linked revision. Return revisions in period-start, revision, id order. Date filters match overlapping statement periods. Use report_type statement to export the exact statement snapshot and period.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -11038,7 +11194,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/statements?limit=100",
-                "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "description": "Statements reconcile posted ledger movements and carry their own frozen snapshot_id. Final revisions are immutable; later corrections create a linked revision. Return revisions in period-start, revision, id order. Date filters match overlapping statement periods. Use report_type statement to export the exact statement snapshot and period.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -11048,7 +11204,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_statement_example\",\n      \"object\": \"billing_statement\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"from\": \"2026-10-01T00:00:00Z\",\n      \"to\": \"2026-11-01T00:00:00Z\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"currency\": \"CAD\",\n      \"status\": \"provisional\",\n      \"revision\": 1,\n      \"supersedes_id\": null,\n      \"as_of\": \"2026-10-23T14:00:00Z\",\n      \"opening_balance\": \"12000.00\",\n      \"funding\": \"0.00\",\n      \"usage\": \"1100.00\",\n      \"refunds\": \"0.00\",\n      \"adjustments\": \"0.00\",\n      \"closing_balance\": \"10900.00\",\n      \"ledger_sequence_from\": 1,\n      \"ledger_sequence_to\": 3\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_statement_example\",\n      \"object\": \"billing_statement\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"from\": \"2026-10-01T00:00:00Z\",\n      \"to\": \"2026-11-01T00:00:00Z\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"currency\": \"CAD\",\n      \"status\": \"provisional\",\n      \"revision\": 1,\n      \"supersedes_id\": null,\n      \"as_of\": \"2026-10-23T14:00:00Z\",\n      \"opening_balance\": \"12000.00\",\n      \"funding\": \"0.00\",\n      \"usage\": \"1100.00\",\n      \"refunds\": \"0.00\",\n      \"adjustments\": \"0.00\",\n      \"closing_balance\": \"10900.00\",\n      \"ledger_sequence_from\": 1,\n      \"ledger_sequence_to\": 3,\n      \"snapshot_id\": \"billing_snapshot_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11063,7 +11219,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/statements/billing_statement_example",
-            "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "description": "Statements reconcile posted ledger movements and carry their own frozen snapshot_id. Final revisions are immutable; later corrections create a linked revision. Return revisions in period-start, revision, id order. Date filters match overlapping statement periods. Use report_type statement to export the exact statement snapshot and period.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -11077,7 +11233,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/statements/billing_statement_example",
-                "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "description": "Statements reconcile posted ledger movements and carry their own frozen snapshot_id. Final revisions are immutable; later corrections create a linked revision. Return revisions in period-start, revision, id order. Date filters match overlapping statement periods. Use report_type statement to export the exact statement snapshot and period.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -11087,7 +11243,124 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_statement_example\",\n    \"object\": \"billing_statement\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"status\": \"provisional\",\n    \"revision\": 1,\n    \"supersedes_id\": null,\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"opening_balance\": \"12000.00\",\n    \"funding\": \"0.00\",\n    \"usage\": \"1100.00\",\n    \"refunds\": \"0.00\",\n    \"adjustments\": \"0.00\",\n    \"closing_balance\": \"10900.00\",\n    \"ledger_sequence_from\": 1,\n    \"ledger_sequence_to\": 3\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_statement_example\",\n    \"object\": \"billing_statement\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"status\": \"provisional\",\n    \"revision\": 1,\n    \"supersedes_id\": null,\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"opening_balance\": \"12000.00\",\n    \"funding\": \"0.00\",\n    \"usage\": \"1100.00\",\n    \"refunds\": \"0.00\",\n    \"adjustments\": \"0.00\",\n    \"closing_balance\": \"10900.00\",\n    \"ledger_sequence_from\": 1,\n    \"ledger_sequence_to\": 3,\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List funding records",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/funding?snapshot_id=billing_snapshot_example&limit=100",
+            "description": "Read annual prepayments, customer top-ups and promotional additions. Filters use initiated_at and ordering is initiated_at then id. Only settled funding adds credits; pending payments remain excluded. Invoice and receipt references are populated when issued. Payment method type is shown without bank or card credentials. Funding source is audit provenance, not a separate spending balance or consumption priority. No endpoint initiates, retries or cancels a payment.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/funding?snapshot_id=billing_snapshot_example&limit=100",
+                "description": "Read annual prepayments, customer top-ups and promotional additions. Filters use initiated_at and ordering is initiated_at then id. Only settled funding adds credits; pending payments remain excluded. Invoice and receipt references are populated when issued. Payment method type is shown without bank or card credentials. Funding source is audit provenance, not a separate spending balance or consumption priority. No endpoint initiates, retries or cancels a payment.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_funding_example\",\n      \"object\": \"billing_funding\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"source\": \"customer_top_up\",\n      \"payment_method_type\": \"bank_account\",\n      \"status\": \"pending\",\n      \"initiated_at\": \"2026-10-23T14:00:00Z\",\n      \"settled_at\": null,\n      \"failure_code\": null,\n      \"invoice_reference\": null,\n      \"receipt_reference\": null,\n      \"ledger_entry_id\": null,\n      \"client_reference\": \"funding-october\",\n      \"snapshot_id\": \"billing_snapshot_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve funding record",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/funding/billing_funding_example?snapshot_id=billing_snapshot_example",
+            "description": "Read annual prepayments, customer top-ups and promotional additions. Filters use initiated_at and ordering is initiated_at then id. Only settled funding adds credits; pending payments remain excluded. Invoice and receipt references are populated when issued. Payment method type is shown without bank or card credentials. Funding source is audit provenance, not a separate spending balance or consumption priority. No endpoint initiates, retries or cancels a payment.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/funding/billing_funding_example?snapshot_id=billing_snapshot_example",
+                "description": "Read annual prepayments, customer top-ups and promotional additions. Filters use initiated_at and ordering is initiated_at then id. Only settled funding adds credits; pending payments remain excluded. Invoice and receipt references are populated when issued. Payment method type is shown without bank or card credentials. Funding source is audit provenance, not a separate spending balance or consumption priority. No endpoint initiates, retries or cancels a payment.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_funding_example\",\n    \"object\": \"billing_funding\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"source\": \"customer_top_up\",\n    \"payment_method_type\": \"bank_account\",\n    \"status\": \"pending\",\n    \"initiated_at\": \"2026-10-23T14:00:00Z\",\n    \"settled_at\": null,\n    \"failure_code\": null,\n    \"invoice_reference\": null,\n    \"receipt_reference\": null,\n    \"ledger_entry_id\": null,\n    \"client_reference\": \"funding-october\",\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List credit reservations",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/credit-holds?status=active&snapshot_id=billing_snapshot_example&limit=100",
+            "description": "Explain amounts reserved from the credit balance. Active reservations reduce available credits but are not posted usage debits. Order by created_at then id; date filters use created_at. Captured reservations reference the single posted ledger movement; released reservations add no debit. Cancellation releases active reservations immediately without capture. This endpoint cannot approve or change a reservation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/credit-holds?status=active&snapshot_id=billing_snapshot_example&limit=100",
+                "description": "Explain amounts reserved from the credit balance. Active reservations reduce available credits but are not posted usage debits. Order by created_at then id; date filters use created_at. Captured reservations reference the single posted ledger movement; released reservations add no debit. Cancellation releases active reservations immediately without capture. This endpoint cannot approve or change a reservation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_credit_hold_example\",\n      \"object\": \"billing_credit_hold\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"source_resource_id\": \"wfr_batch_example\",\n      \"product\": \"insights\",\n      \"status\": \"active\",\n      \"resolved_at\": null,\n      \"ledger_entry_id\": null,\n      \"snapshot_id\": \"billing_snapshot_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11101,8 +11374,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/credits",
-            "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+            "url": "{{base_url}}/v1/billing/credits?snapshot_id=billing_snapshot_example",
+            "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. While the account is active, processing may use credits below CAD 200 and is rejected when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after releasing unused reservations; cancellation stops processing and further usage deductions immediately. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -11115,8 +11388,8 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/credits",
-                "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+                "url": "{{base_url}}/v1/billing/credits?snapshot_id=billing_snapshot_example",
+                "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. While the account is active, processing may use credits below CAD 200 and is rejected when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after releasing unused reservations; cancellation stops processing and further usage deductions immediately. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -11126,7 +11399,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_credit_balance_example\",\n    \"object\": \"billing_credit_balance\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"pending_incoming\": \"500.00\",\n    \"total_posted\": \"10900.00\",\n    \"total_held\": \"500.00\",\n    \"available_for_usage\": \"10400.00\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_credit_balance_example\",\n    \"object\": \"billing_credit_balance\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"pending_incoming\": \"500.00\",\n    \"total_posted\": \"10900.00\",\n    \"total_held\": \"500.00\",\n    \"available_for_usage\": \"10400.00\",\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11140,7 +11413,7 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/billing/credit-ledger?limit=100",
+            "url": "{{base_url}}/v1/billing/credit-ledger?snapshot_id=billing_snapshot_example&limit=100",
             "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
@@ -11154,7 +11427,7 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/billing/credit-ledger?limit=100",
+                "url": "{{base_url}}/v1/billing/credit-ledger?snapshot_id=billing_snapshot_example&limit=100",
                 "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
@@ -11165,7 +11438,46 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_credit_entry_example\",\n      \"object\": \"billing_credit_entry\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"sequence\": 3,\n      \"currency\": \"CAD\",\n      \"amount\": \"-600.00\",\n      \"balance_after\": \"10900.00\",\n      \"entry_type\": \"usage\",\n      \"movement_id\": \"billing_usage_signal\",\n      \"reverses_entry_id\": null,\n      \"posted_at\": \"2026-10-23T14:00:00Z\",\n      \"client_reference\": \"signal-october\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_credit_entry_example\",\n      \"object\": \"billing_credit_entry\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"workspace_id\": \"wsp_example\",\n      \"billing_account_id\": \"billing_account_example\",\n      \"sequence\": 3,\n      \"currency\": \"CAD\",\n      \"amount\": \"-600.00\",\n      \"balance_after\": \"10900.00\",\n      \"entry_type\": \"usage\",\n      \"movement_id\": \"billing_usage_signal\",\n      \"reverses_entry_id\": null,\n      \"posted_at\": \"2026-10-23T14:00:00Z\",\n      \"client_reference\": \"signal-october\",\n      \"snapshot_id\": \"billing_snapshot_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve credit ledger entry",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/billing/credit-ledger/billing_credit_entry_example?snapshot_id=billing_snapshot_example",
+            "description": "Read an immutable posted movement by ledger_entry_id from a usage, funding or reservation record. Reversals reference the original entry. Balance_after describes the full account ledger, even when a filtered list omits other movements. The selected snapshot must include the movement; otherwise return 404.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/billing/credit-ledger/billing_credit_entry_example?snapshot_id=billing_snapshot_example",
+                "description": "Read an immutable posted movement by ledger_entry_id from a usage, funding or reservation record. Reversals reference the original entry. Balance_after describes the full account ledger, even when a filtered list omits other movements. The selected snapshot must include the movement; otherwise return 404.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_credit_entry_example\",\n    \"object\": \"billing_credit_entry\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"sequence\": 3,\n    \"currency\": \"CAD\",\n    \"amount\": \"-600.00\",\n    \"balance_after\": \"10900.00\",\n    \"entry_type\": \"usage\",\n    \"movement_id\": \"billing_usage_signal\",\n    \"reverses_entry_id\": null,\n    \"posted_at\": \"2026-10-23T14:00:00Z\",\n    \"client_reference\": \"signal-october\",\n    \"snapshot_id\": \"billing_snapshot_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         }

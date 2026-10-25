@@ -183,7 +183,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 Caller-supplied `tenant_id` or `workspace_id` values cannot select another workspace. The API derives the workspace and institution from the key. Every subject, document, manifest, baseline, and webhook destination must belong to that workspace. Use a separately provisioned key for another workspace.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation is available at any time without notice, with full closure at the end of the request month and an immediate refund of all unused credits to the saved portal bank account. Deletion follows month closure and generation of final information. Report generation and downloads do not change credits.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation is available at any time without notice, with an immediate stop to processing, usage deductions, and upcoming top-ups. Full closure is at the end of the request month with an immediate refund of all unused credits to the saved portal bank account. Deletion follows month closure and generation of final information. Report generation and downloads do not change credits.
 
 ## Scope reference
 
@@ -298,7 +298,11 @@ An observed zero lien count for one completed jurisdiction says nothing about an
 
 `record_version` tracks a particular resource. `schema_version` identifies the serialization contract. Use the quoted ETag with `If-Match` for supported mutable configuration.
 
-The `fields` parameter selects relative resource fields while preserving required identity and metadata. `include` permits `provenance` and `missing_fields`; it does not grant access or allow arbitrary relationship expansion. The [data dictionary](/data-model/field-dictionary) describes full objects, while projected responses can omit fields not selected.
+The `fields` parameter selects comma-separated **top-level field names** while preserving required identity and metadata. For example, `fields=id,amount` returns the mandatory metadata and the complete `amount` object when authorized. Nested paths, wildcards, and unknown field names return `400 validation_error`.
+
+GET endpoints use a dedicated `*Read` schema whose domain fields can be omitted by projection. Present fields retain their canonical types, nullability, and nested requirements. Full canonical schemas remain available for complete objects and mutation responses. Omitting `fields` returns the full authorized representation. This uses standard OpenAPI 3.1 Schema Objects, so generated clients must treat unselected properties as absent rather than null.
+
+`include` permits `provenance` and `missing_fields`; it does not grant access or allow arbitrary relationship expansion. The [data dictionary](/data-model/field-dictionary) describes full objects. See the [OpenAPI Schema Object specification](https://spec.openapis.org/oas/v3.1.1.html#schema-object) for the schema vocabulary.
 ''')
 
 write('pagination','Pagination and filtering','Read stable cursor pages and apply only the filters an endpoint supports.', '''
@@ -355,7 +359,7 @@ Intervals are start-inclusive and end-exclusive unless the individual field expl
 
 ## Historical reads and changes
 
-`as_of` is supported only for stored point-in-time attribute or risk-snapshot results. It is not a universal historical-read parameter.
+`as_of` is supported only for stored point-in-time attribute or risk-snapshot results. It is not a universal historical-read parameter. Billing uses an immutable `snapshot_id` instead: obtain it from [the current billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot), then reuse it across financial reads and exports. Cursor pages remain bound to the same snapshot and filters.
 
 Use [the change feed](@@EP164@@) for normalized created, updated, and deleted actions. Keep its cursor separate from collection cursors and source-adapter cursors. Bootstrap by reading the required collections; the cursor bootstrap, expiry, and retention windows remain deployment decisions.
 ''')
@@ -409,6 +413,7 @@ See [errors](/api-reference/errors) and [asynchronous jobs](/api-reference/async
 
 error_table='\n'.join('| `'+r[0]+'` | '+r[1]+' | '+r[3]+' | '+r[4]+' |' for r in SOURCE['Error Codes']['values'][1:])
 error_table+='\n| `insufficient_credits` | 402 | No, until funded | Fund the workspace in the portal, then retry the rejected workflow. Unprocessed work is not charged. |'
+error_table+='\n| `invalid_state` | 409 | No, until state permits | Operational commands stop immediately on cancellation. Read-only reporting remains available until deletion; report downloads require a ready export. |'
 write('errors','Errors','Handle stable error codes, correlation IDs, validation failures, and recoverable outages.', '''
 Errors use a stable code and a safe explanation. Do not branch on human-readable message text.
 
@@ -523,7 +528,7 @@ Sync-style jobs use `queued`, `running`, `completed`, `partial`, `failed`, and `
 - A completed lien search with no results applies only to the declared completed scope.
 - Attribute calculation can complete with individual values marked `unavailable`.
 - A queued communication is not delivered, and a completed workflow is not permission to fund a loan.
-- Account cancellation closes at the end of the request month. After that month closes and final information is generated, deletion removes all associated workspace data; there is no public deletion-command API.
+- Account cancellation immediately stops processing, usage deductions, and upcoming top-ups. Cancel pending work and release unused holds without capture. Full account closure is at the end of the request month. After that month closes and final information is generated, deletion removes all associated workspace data; there is no public deletion-command API.
 
 Retrieve the authoritative resource after an event. Use `resource_version` to avoid overwriting a newer record with an older delivery. See [webhooks](/api-reference/webhooks).
 ''')
@@ -664,7 +669,7 @@ Use the expiry and storage domain returned by your environment. Upload documents
 
 ## Retention and deletion
 
-Retention is managed by authorized users through workspace configuration in the AMLOK platform and in accordance with applicable compliance frameworks. Consent revocation or connection disconnection stops future collection; it does not itself delete stored evidence. After the cancellation request month closes and final information is generated, workspace deletion removes all associated workspace data. This API does not expose deletion-request endpoints. See [privacy and data handling](/security/privacy).
+Retention is managed by authorized users through workspace configuration in the AMLOK platform and in accordance with applicable compliance frameworks. Consent revocation or connection disconnection stops future collection; it does not itself delete stored evidence. After the cancellation request month closes and final information is generated, workspace deletion removes all associated workspace data. Necessary final billing, refund, and bank-return records are retained separately without borrower source data, documents, analysis outputs, or active workspace access. This API does not expose deletion-request endpoints. See [privacy and data handling](/security/privacy).
 ''')
 
 write('versioning','Versioning and compatibility','Track API paths, schema versions, record versions, and policy revisions separately.', '''
@@ -727,7 +732,7 @@ Register only institution-controlled HTTPS destinations. Deployment must validat
 
 ## Retention and incident handling
 
-Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Workspace deletion is managed in the platform, not through a public deletion-request API. Cancellation may be requested at any time without notice through the client portal or a dedicated enterprise account manager. Closure is at the end of the request month, with an immediate full unused-credit refund to the saved bank account. Deletion occurs after that month closes and final information is generated.
+Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Necessary final billing, refund, and bank-return records are retained separately without borrower source data, documents, analysis outputs, or active workspace access. Workspace deletion is managed in the platform, not through a public deletion-request API. Cancellation may be requested at any time without notice through the client portal or a dedicated enterprise account manager. Closure is at the end of the request month, with an immediate full unused-credit refund to the saved bank account. Deletion occurs after that month closes and final information is generated.
 
 Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. Record these settings during [integration onboarding](/api-reference/onboarding).
 ''')
@@ -762,7 +767,7 @@ The API exposes lender-supplied loans, facilities, guarantees, collateral, and r
 
 Compare comparable time windows and coverage. A data outage is not an improvement in borrower risk. Refresh cadence depends on source capability and consent; a daily requested cadence is not a source freshness guarantee.
 
-For a material change, Signal reassesses risk using existing baseline data and newly processed records. This work is included in Signal and does not launch or charge another Insights underwriting. Preserve the original snapshot and the new evidence for audit. A separately requested full underwriting is a distinct Insights operation.
+For a material change, Signal reassesses risk using existing baseline data and newly processed records. Each updated version counts as a new record; retries and repeated reads of the same unchanged version do not count again. This work is included in Signal and does not launch or charge another Insights underwriting. Preserve the original snapshot and the new evidence for audit. A separately requested full underwriting is a distinct Insights operation.
 
 ## Service and investigate
 

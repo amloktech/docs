@@ -23,16 +23,16 @@ The credit snapshot reports exact CAD decimal strings:
 
 - `total_posted`: credits remaining after posted additions, deductions, refunds, and corrections.
 - `total_held`: credits reserved for pending processing, not an additional posted debit.
-- `available_for_usage`: posted credits less existing holds; all of this amount can cover new processing.
+- `available_for_usage`: posted credits less existing holds; this amount can cover processing only while the account is active. A positive balance does not override cancellation.
 - `pending_incoming`: funding awaiting settlement, excluded from available credits.
 
 `available_for_usage = total_posted - total_held`
 
 CAD 200.00 is the default automatic top-up trigger, not a protected balance floor. With auto-pay enabled, a balance below the configured threshold triggers the selected top-up of at least CAD 500.00. With auto-pay off, no collection occurs.
 
-In either case, requests can continue below CAD 200.00 while available credits cover them. A new billable operation or reservation that cannot be funded is rejected with `402 insufficient_credits`, without charging for unprocessed work. A captured hold replaces the reservation with the charge, avoiding a double deduction. Read-only reporting remains available on an active account.
+In either case, requests can continue below CAD 200.00 while available credits cover them. A new billable operation or reservation that cannot be funded is rejected with `402 insufficient_credits`, without charging for unprocessed work. A captured hold replaces the reservation with the charge, avoiding a double deduction. Read-only reporting remains available, including during the cancellation closure period, until workspace deletion.
 
-For example, CAD 10,900.00 posted credits and CAD 500.00 held leave **CAD 10,400.00 available for new processing**. Pending incoming funds do not increase it. At month-end account closure, all unused credits, including promotional top-ups, are refundable after pending usage is resolved.
+For example, CAD 10,900.00 posted credits and CAD 500.00 held leave **CAD 10,400.00 available for new processing**. Pending incoming funds do not increase it. At month-end account closure, all unused credits, including promotional top-ups, are refundable after unused reservations are released; no usage charges are posted after cancellation.
 
 ## Ledger and product reporting
 
@@ -48,4 +48,12 @@ Report creation and download links do not change credits. There are no public wa
 
 In the portal, the minimum automatic top-up threshold is CAD 200.00 and the minimum customer-funded top-up is CAD 500.00. Customers can fund by card or bank account and must save a bank account for cancellation refunds. Enterprise clients can also request cancellation through their dedicated account manager.
 
+When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled and unused reservations are released without another charge.
+
 Cancellation can be requested at any time without notice. Account closure is at the end of the request month; workspace data is deleted after that month closes and final information is generated. AMLOK immediately refunds the entire unused credit balance to the saved bank account when the account closes; bank receipt can take **7-10 business days**. Used credits are non-refundable. See [credits and billing](/pricing/credits-and-billing) and [cancellation and refunds](/pricing/refunds-and-payouts).
+
+AMLOK retains only the necessary final billing, refund, and bank-return records separately from the deleted workspace to reconcile the refund and resolve delivery issues. These records do not retain borrower source data, documents, or analysis outputs and do not keep the workspace or its API access active.
+
+## Audit and reconciliation
+
+Use [consumption reporting](/api-reference/consumption-reporting#reproduce-a-report) to reuse an immutable `snapshot_id` across balances, movements, usage, funding and reservations. [Funding history](/api-reference/endpoints/billing/list-funding-records) reports payment status and receipt references. [Credit reservations](/api-reference/endpoints/billing/list-credit-reservations) explain held amounts. Historical rate cards preserve negotiated pricing for earlier charges. These reports and their exports never initiate payments, transfer credits or request refunds.

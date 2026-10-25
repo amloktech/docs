@@ -44,6 +44,7 @@ The example has HTTP `422`. `meta.data_status: complete` describes the error res
 | `source_unavailable` | 503 | Yes | Retry with backoff or retrieve explicit partial results. |
 | `internal_error` | 500 | Conditional | Use request_id for support; keep idempotency key for safe retry. |
 | `insufficient_credits` | 402 | No, until funded | Fund the workspace in the portal, then retry the rejected workflow. Unprocessed work is not charged. |
+| `invalid_state` | 409 | No, until state permits | Operational commands stop immediately on cancellation. Read-only reporting remains available until deletion; report downloads require a ready export. |
 
 ## Retry decisions
 

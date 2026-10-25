@@ -6,7 +6,7 @@ playground: simple
 
 **Required scope:** `identity:write` · **Execution:** synchronous.
 
-Does not represent successful registry verification.
+Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
 
 [Data dictionary](/data-model/field-dictionary#business) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
 

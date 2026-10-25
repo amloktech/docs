@@ -56,6 +56,6 @@ Intervals are start-inclusive and end-exclusive unless the individual field expl
 
 ## Historical reads and changes
 
-`as_of` is supported only for stored point-in-time attribute or risk-snapshot results. It is not a universal historical-read parameter.
+`as_of` is supported only for stored point-in-time attribute or risk-snapshot results. It is not a universal historical-read parameter. Billing uses an immutable `snapshot_id` instead: obtain it from [the current billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot), then reuse it across financial reads and exports. Cursor pages remain bound to the same snapshot and filters.
 
 Use [the change feed](/api-reference/endpoints/platform/read-change-feed) for normalized created, updated, and deleted actions. Keep its cursor separate from collection cursors and source-adapter cursors. Bootstrap by reading the required collections; the cursor bootstrap, expiry, and retention windows remain deployment decisions.

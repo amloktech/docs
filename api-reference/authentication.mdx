@@ -29,7 +29,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 Caller-supplied `tenant_id` or `workspace_id` values cannot select another workspace. The API derives the workspace and institution from the key. Every subject, document, manifest, baseline, and webhook destination must belong to that workspace. Use a separately provisioned key for another workspace.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation is available at any time without notice, with full closure at the end of the request month and an immediate refund of all unused credits to the saved portal bank account. Deletion follows month closure and generation of final information. Report generation and downloads do not change credits.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation is available at any time without notice, with an immediate stop to processing, usage deductions, and upcoming top-ups. Full closure is at the end of the request month with an immediate refund of all unused credits to the saved portal bank account. Deletion follows month closure and generation of final information. Report generation and downloads do not change credits.
 
 ## Scope reference
 
@@ -41,7 +41,7 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `audit:read` | 2 | [List audit events](/api-reference/endpoints/operations/list-audit-events) |
 | `banking:read` | 10 | [List bank accounts](/api-reference/endpoints/banking/list-bank-accounts) |
 | `billing:export` | 4 | [Create billing report](/api-reference/endpoints/billing/create-billing-report) |
-| `billing:read` | 9 | [Retrieve billing account](/api-reference/endpoints/billing/retrieve-billing-account) |
+| `billing:read` | 17 | [Retrieve current billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot) |
 | `commerce:read` | 8 | [List counterparties](/api-reference/endpoints/commerce/list-counterparties) |
 | `communications:read` | 2 | [List communications](/api-reference/endpoints/operations/list-communications) |
 | `communications:send` | 1 | [Send approved communication](/api-reference/endpoints/operations/send-approved-communication) |

@@ -6,6 +6,6 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.
+Statements reconcile posted ledger movements and carry their own frozen snapshot_id. Final revisions are immutable; later corrections create a linked revision. Return revisions in period-start, revision, id order. Date filters match overlapping statement periods. Use report_type statement to export the exact statement snapshot and period.
 
 [Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)

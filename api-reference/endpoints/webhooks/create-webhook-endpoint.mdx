@@ -6,4 +6,4 @@ playground: simple
 
 **Required scope:** `webhooks:write` · **Execution:** synchronous.
 
-Return signing secret only once; validate destination against SSRF and tenant rules.
+Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.

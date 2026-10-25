@@ -21,7 +21,7 @@ def valid(name,value):
 def response(path,method='GET'):
     return ops[(path,method)]['response']['data']
 
-check(len(index)==13,'Expected 13 reporting operations')
+check(len(index)==21,'Expected 21 read-only reporting operations')
 for path in spec['paths']:
     check(not path.startswith(('/v1/wallet','/v1/agreement-','/v1/deletion-requests')),'Unsupported customer endpoint remains: '+path)
 for name in spec['components']['schemas']:
