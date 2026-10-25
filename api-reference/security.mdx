@@ -7,9 +7,9 @@ Protect your integration with tenant-scoped access, least privilege, and control
 
 ## Institution and subject boundaries
 
-Bind requests to the tenant represented by the API key. Check ownership of every referenced subject, document, connection, case, approval, and snapshot. A valid ID from another tenant must not become visible through a relationship, filter, download, or event.
+Bind requests to the tenant represented by the API key. Check ownership of every referenced subject, document, connection, manifest, and snapshot. A valid ID from another tenant must not become visible through a relationship, filter, download, or event.
 
-Grant the smallest useful scopes. Separate service accounts by environment and workload. A read-only analytical service should not hold communication-send or approval permissions.
+Grant the smallest useful scopes. Separate service accounts by environment and workload. A read-only analytical service should not hold workflow-execution or configuration-write permissions.
 
 ## Evidence and consent
 
@@ -19,7 +19,7 @@ Mask or tokenize restricted identifiers by default. Avoid storing unnecessary id
 
 ## Audit trails
 
-Capture institution, service identity, purpose, operation, resource version, correlation ID, and outcome in your restricted audit system. Record who approved a side effect and the exact version approved. Preserve evidence manifests and immutable decision snapshots.
+Capture institution, service identity, purpose, operation, resource version, correlation ID, and outcome in your restricted audit system. Record the analysis configuration, input versions, and result reviewed. Preserve evidence manifests and immutable decision snapshots.
 
 Redact keys, webhook secrets, signed URLs, raw documents, and sensitive payload fields. Do not rely on broad request/response logging as an audit strategy.
 

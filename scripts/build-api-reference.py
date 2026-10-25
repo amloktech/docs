@@ -8,6 +8,7 @@ from copy import deepcopy
 import json
 import re
 from pprint import pformat
+from public_api_scope import public_rows, public_example, REMOVED_OPERATION_IDS
 
 ROOT = Path(__file__).resolve().parent.parent
 SOURCE = json.loads((ROOT / 'data/api-contract-source.json').read_text())
@@ -17,7 +18,7 @@ SOURCE_URL = 'https://docs.google.com/spreadsheets/d/14pU2PLv9JDda8gAa1367hipa2o
 
 def rows(name):
     values = SOURCE[name]['values']
-    return [dict(zip(values[0], row + [None] * (len(values[0]) - len(row)))) for row in values[1:] if row and row[0]]
+    return public_rows(name, [dict(zip(values[0], row + [None] * (len(values[0]) - len(row)))) for row in values[1:] if row and row[0]])
 
 def write(path, value):
     p = ROOT / path
@@ -49,7 +50,6 @@ SHARED = defaultdict(list)
 for r in rows('Shared Types'): SHARED[r['Type']].append(r)
 ENUMS = defaultdict(list)
 for r in rows('Enumerations'): ENUMS[r['Enum']].append(r['Allowed value'])
-REMOVED_OPERATION_IDS = {'EP161', 'EP162'}
 OPS = [op for op in rows('API Endpoints') if op['Operation ID'] not in REMOVED_OPERATION_IDS]
 PARAMS = rows('API Parameters')
 EVENTS = [event for event in rows('Events') if event['Event key'] != 'deletion.completed']
@@ -59,6 +59,7 @@ ERRORS.append({'Code':'invalid_state','HTTP status':'409','Meaning':'The operati
 SCHEMAS = {f'Enum_{k}': {'type': 'string', 'enum': v} for k, v in ENUMS.items()}
 EXAMPLES = {}
 REFINEMENTS = [
+    'Removed servicing cases, tasks, borrower communications, payment promises, their 14 endpoints, schemas and events. Workflows support verification, underwriting, monitoring and analytical investigation only; the institution owns intervention and borrower outreach.',
     'Privacy retention is managed through platform configuration. Removed customer deletion-request operations EP161 and EP162; final workspace deletion removes all workspace data. The original workbook snapshot remains unchanged.',
     'Lien-search search_type is normalized to name, identifier, vin or serial. The identifier field is required for non-name searches.',
     'The partial account-balance example supplies required date_basis as unknown because source observation timing is not available.',
@@ -72,7 +73,7 @@ REFINEMENTS = [
     'ResponseMeta.data_status describes response completeness; newly accepted asynchronous work uses pending. Creation examples do not fabricate completed results.',
     'Page.next_cursor is explicitly nullable, as required by the pagination rule. Shared optional fields permit null where the normalization rule requires missing-value representation.',
     'Multipart document upload is the documented ingestion route. No unlisted pre-signed-upload endpoint is invented.',
-    'The workbook describes key administration, signing-secret rotation, approval IDs but does not define management endpoints for them. These remain onboarding dependencies. Frozen manifests and monitoring baselines have explicit read-only discovery endpoints.',
+    'The workbook describes key administration, signing-secret rotation but does not define management endpoints for them. These remain onboarding dependencies. Frozen manifests and monitoring baselines have explicit read-only discovery endpoints.',
 ]
 
 def type_schema(t):
@@ -178,7 +179,7 @@ for name in ['common', *ENTITIES]:
 # Preserve the workbook's worked examples where supplied.
 WORKED = rows('Examples')
 for r in WORKED:
-    response = json.loads(r['Response JSON'])
+    response = public_example(json.loads(r['Response JSON']))
     data = response.get('data')
     record = data[0] if isinstance(data, list) and data else data
     if isinstance(record, dict) and record.get('object') in ENTITIES:
@@ -198,7 +199,7 @@ for entity in ENTITIES:
     SCHEMAS[canonical + 'Read'] = projected
 GROUPS = {name: r['Category'] for name, r in ENTITIES.items()}
 SOURCE_BACKED = {name for name, r in ENTITIES.items() if r['Category'] in ['Banking', 'Payments', 'Commerce', 'Accounting', 'Inventory', 'Lending', 'Liens', 'Identity'] and name not in ['document','verification','lien_search']}
-PREFIXES = {'business':'biz','person':'per','connection':'cnn','consent':'con','sync_job':'syn','verification':'ver','document':'doc','bank_account':'bka','bank_transaction':'btx','lien_search':'lis','workflow_run':'wfr','monitor':'mon','task':'tsk','case':'case','communication':'com','application':'app'}
+PREFIXES = {'business':'biz','person':'per','connection':'cnn','consent':'con','sync_job':'syn','verification':'ver','document':'doc','bank_account':'bka','bank_transaction':'btx','lien_search':'lis','workflow_run':'wfr','monitor':'mon','application':'app'}
 
 COMMANDS = {
  'EP135': ('legal_name', 'client_reference registration_number incorporation_country'),
@@ -217,12 +218,6 @@ COMMANDS = {
  'EP148': ('subject_id keys window_start window_end input_manifest_id', ''),
  'EP150': ('subject_id baseline_snapshot_id resource_types attribute_keys cadence ruleset_version', ''),
  'EP151': ('', 'status cadence attribute_keys ruleset_version'),
- 'EP152': ('subject_id case_type', 'alert_ids application_id loan_id'),
- 'EP153': ('', 'status assigned_to resolution_code resolution_notes'),
- 'EP154': ('subject_id task_type', 'case_id workflow_run_id due_at'),
- 'EP155': ('expected_record_version approval_reason', ''),
- 'EP156': ('subject_id recipient_entity_id channel template_id', 'case_id subject body'),
- 'EP157': ('approval_id expected_record_version', ''),
  'EP158': ('url event_types', 'description'),
  'EP160': ('event_id', ''),
  'EP161': ('subject_id reason scope', ''),
@@ -230,8 +225,6 @@ COMMANDS = {
 FALLBACK = {
  'reason': ('string', 'Requested by the authorized institution.'),
  'purpose': ('string', 'credit_assessment'),
- 'expected_record_version': ('integer', '3'),
- 'approval_reason': ('string', 'Authorized reviewer approved the exact task payload.'),
  'event_id': ('id', 'evt_example'),
  'resource_type': ('string', 'bank_transaction'),
  'description': ('string', 'Application events for the underwriting service'),
@@ -280,8 +273,6 @@ def request_schema(op, resource):
     if op['Operation ID'] == 'EP144': example = {'file':'statement-2026-09.pdf','subject_id':'biz_example','document_type':'bank_statement','period_start':'2026-09-01','period_end':'2026-09-30'}
     if op['Operation ID'] == 'EP143': example.pop('identifier', None)
     if op['Operation ID'] == 'EP151': example = {'status':'paused'}
-    if op['Operation ID'] == 'EP154': example.update(task_type='review_evidence')
-    if op['Operation ID'] == 'EP156': example.update(channel='email', subject='Additional evidence requested', body='Please upload your latest financial statement through your secure portal.')
     return s, example
 
 def parameter(name, location, t, description, required=False, example=None, **extra):
@@ -330,7 +321,7 @@ def title_for(op, resource):
     if op['Operation ID']=='EP162':return 'Retrieve deletion request'
     noun = path.split('/')[2].replace('-', ' ')
     if op['Method'] == 'GET': return ('Retrieve ' if '{id}' in path else 'List ') + (resource.replace('_',' ') if '{id}' in path and resource else noun)
-    custom = {'EP138':'Revoke consent','EP139':'Create connection','EP140':'Start connection sync','EP141':'Disconnect connection','EP142':'Start verification','EP143':'Start lien search','EP144':'Upload document','EP145':'Create document download link','EP147':'Start workflow run','EP148':'Calculate attributes','EP155':'Approve task','EP156':'Create communication draft','EP157':'Send approved communication','EP158':'Create webhook endpoint','EP160':'Replay webhook event','EP161':'Create deletion request'}
+    custom = {'EP138':'Revoke consent','EP139':'Create connection','EP140':'Start connection sync','EP141':'Disconnect connection','EP142':'Start verification','EP143':'Start lien search','EP144':'Upload document','EP145':'Create document download link','EP147':'Start workflow run','EP148':'Calculate attributes','EP158':'Create webhook endpoint','EP160':'Replay webhook event','EP161':'Create deletion request'}
     return custom.get(op['Operation ID'],('Update ' if op['Method']=='PATCH' else 'Create ')+(resource.replace('_',' ') if resource else noun))
 
 def samples(op, params, request, example_id):
@@ -430,12 +421,10 @@ for op in OPS:
                 if k in data:data[k]=None
             for k in ['records_added','records_updated','records_removed','coverage_start','coverage_end']:
                 if k in data:data[k]=None
-        if oid=='EP156':data.update(status='draft',sent_at=None,delivered_at=None,approval_id=None)
-        if oid=='EP155':data.update(approval_status='approved',status='queued',approved_at=NOW,approved_by='user_reviewer_example',completed_at=None)
     if list_response and resource=='connection':data[0]['error_code']=None
     example_id=next((p['example'] for p in params if p['in']=='path'),'res_example')
     if isinstance(data,dict) and resource:data['id']=example_id if '{id}' in path and not path.endswith('/sync') else PREFIXES.get(resource,resource)+'_example'
-    if method=='PATCH' or oid=='EP155':data['record_version']=4
+    if method=='PATCH':data['record_version']=4
     desc = op['Purpose']+'\n\nRequired scope: `'+op['Scope']+'`. '+op['Constraints']
     operation={'operationId':oid,'summary':title,'description':desc,'tags':[group],'parameters':params,'security':[{'BearerAuth':[]}],'x-required-scopes':[op['Scope']],'x-codeSamples':samples(op,params,request,example_id),'responses':{}}
     if req_schema:
@@ -443,7 +432,7 @@ for op in OPS:
         operation['requestBody']={'required':True,'content':{'multipart/form-data' if oid=='EP144' else 'application/json':{'schema':ref(req_name),'example':request}}}
     success=op['Success HTTP']
     success_headers={'X-Request-ID':{'description':'AMLOK response correlation identifier.','schema':{'type':'string'},'example':'req_example'}}
-    if resource in ['monitor','case'] and not list_response:success_headers['ETag']={'description':'Quoted record version for an If-Match update.','schema':{'type':'string'},'example':'"'+str(data['record_version'])+'"'}
+    if resource == 'monitor' and not list_response:success_headers['ETag']={'description':'Quoted record version for an If-Match update.','schema':{'type':'string'},'example':'"'+str(data['record_version'])+'"'}
     operation['responses'][success]={'description':op['Purpose']+(' Accepted work is not yet complete.' if op['Execution']=='Asynchronous' else ''),'headers':success_headers,'content':{'application/json':{'schema':response_schema,'examples':{'synthetic':{'summary':'Synthetic '+title.lower(),'value':response_example}}}}}
     if method == 'GET' and response_type.startswith(('Single<','List<')) and name in ENTITIES:
         projected_example = deepcopy(response_example)
@@ -452,7 +441,7 @@ for op in OPS:
         projected_example['data'] = [project(record) for record in data] if list_response else project(data)
         operation['responses'][success]['content']['application/json']['examples']['projected'] = {
             'summary':'Metadata-only response with fields=id', 'value':projected_example}
-    relevant=[e for e in ERRORS if (e['HTTP status'] != '402' or oid == 'EP147') and (e['HTTP status'] not in ['409','412','422'] or (e['HTTP status']=='409' and method in ['POST','PATCH']) or (e['HTTP status']=='412' and (method=='PATCH' or oid in ['EP155','EP157'])) or (e['HTTP status']=='422' and method!='GET'))]
+    relevant=[e for e in ERRORS if (e['HTTP status'] != '402' or oid == 'EP147') and (e['HTTP status'] not in ['409','412','422'] or (e['HTTP status']=='409' and method in ['POST','PATCH']) or (e['HTTP status']=='412' and method=='PATCH') or (e['HTTP status']=='422' and method!='GET'))]
     for e in relevant:
         code=e['HTTP status'];example={'error':{'code':e['Code'],'message':e['Meaning'],'retryable':e['Retryable']=='Yes','request_id':'req_example'},'meta':meta('complete')}
         response=operation['responses'].setdefault(code,{'description':'Request failed. Inspect error.code and error.retryable.','headers':deepcopy(success_headers),'content':{'application/json':{'schema':ref('ErrorEnvelope'),'examples':{}}}})

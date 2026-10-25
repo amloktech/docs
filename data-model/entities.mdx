@@ -1,6 +1,6 @@
 ---
 title: "Entities"
-description: "Record meaning, identity, and population conditions for 67 resources and shared metadata."
+description: "Record meaning, identity, and population conditions for 63 resources and shared metadata."
 ---
 
 Every top-level resource inherits `common` metadata. `common` is not a separately listable resource.
@@ -734,7 +734,7 @@ Credit request and its lifecycle.
 | --- | --- |
 | Grain / identity | One application per source record / observation |
 | Source families | LEND origination; client API |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#application)
@@ -749,7 +749,7 @@ Approved credit agreement and aggregate exposure.
 | --- | --- |
 | Grain / identity | One credit facility per source record / observation |
 | Source families | LEND; client |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#credit-facility)
@@ -764,7 +764,7 @@ Loan contract and current servicing state.
 | --- | --- |
 | Grain / identity | One loan per source record / observation |
 | Source families | LEND; client |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#loan)
@@ -779,7 +779,7 @@ One scheduled repayment obligation.
 | --- | --- |
 | Grain / identity | One installment per source record / observation |
 | Source families | LEND |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#installment)
@@ -794,7 +794,7 @@ A servicing payment event and its allocation.
 | --- | --- |
 | Grain / identity | One repayment per source record / observation |
 | Source families | LEND; client payment system |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#repayment)
@@ -809,7 +809,7 @@ Asset pledged or proposed to secure an obligation.
 | --- | --- |
 | Grain / identity | One collateral per source record / observation |
 | Source families | LEND; client; INV evidence |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#collateral)
@@ -824,7 +824,7 @@ Documented personal or corporate guarantee.
 | --- | --- |
 | Grain / identity | One guarantee per source record / observation |
 | Source families | LEND; client documents |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#guarantee)
@@ -839,7 +839,7 @@ Contractual test with a versioned threshold and observed result.
 | --- | --- |
 | Grain / identity | One covenant per source record / observation |
 | Source families | LEND; client; AMLOK derived |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#covenant)
@@ -854,7 +854,7 @@ Versioned lender decision or AMLOK recommendation with attributable evidence.
 | --- | --- |
 | Grain / identity | One decision per source record / observation |
 | Source families | LEND decision engines; client; AMLOK |
-| Lifecycle | Underwrite; Monitor; Service |
+| Lifecycle | Underwrite; Monitor |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#decision)
@@ -984,75 +984,15 @@ Material change or risk signal with evidence and review state.
 
 <AccordionGroup>
 
-<Accordion title="case" id="case">
-
-Investigation, servicing or review case.
-
-| Property | Definition |
-| --- | --- |
-| Grain / identity | One case per source record / observation |
-| Source families | AMLOK; LEND CRM/servicing |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
-| Population conditions | Source, module, country, consent and contracted permissions determine population. |
-
-[Read field definitions](/data-model/field-dictionary#case)
-
-</Accordion>
-
-<Accordion title="task" id="task">
-
-Agent or human work item, including approval before external effects.
-
-| Property | Definition |
-| --- | --- |
-| Grain / identity | One task per source record / observation |
-| Source families | AMLOK; LEND workflow |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
-| Population conditions | Source, module, country, consent and contracted permissions determine population. |
-
-[Read field definitions](/data-model/field-dictionary#task)
-
-</Accordion>
-
-<Accordion title="communication" id="communication">
-
-Borrower-facing communication record; drafting is separate from sending.
-
-| Property | Definition |
-| --- | --- |
-| Grain / identity | One communication per source record / observation |
-| Source families | AMLOK; LEND CRM/servicing |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
-| Population conditions | Source, module, country, consent and contracted permissions determine population. |
-
-[Read field definitions](/data-model/field-dictionary#communication)
-
-</Accordion>
-
-<Accordion title="payment_promise" id="payment-promise">
-
-Borrower repayment commitment and observed fulfillment.
-
-| Property | Definition |
-| --- | --- |
-| Grain / identity | One payment promise per source record / observation |
-| Source families | LEND servicing; AMLOK |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
-| Population conditions | Source, module, country, consent and contracted permissions determine population. |
-
-[Read field definitions](/data-model/field-dictionary#payment-promise)
-
-</Accordion>
-
 <Accordion title="workflow_run" id="workflow-run">
 
-Coordinated execution of Verify, Underwrite, Monitor, Service or Investigate.
+Coordinated execution of Verify, Underwrite, Monitor or Investigate.
 
 | Property | Definition |
 | --- | --- |
 | Grain / identity | One workflow run per source record / observation |
 | Source families | AMLOK |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Lifecycle | Verify; Underwrite; Monitor; Investigate |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#workflow-run)
@@ -1067,7 +1007,7 @@ Evidence or approval required to complete a workflow.
 | --- | --- |
 | Grain / identity | One requirement per source record / observation |
 | Source families | AMLOK; LEND |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Lifecycle | Verify; Underwrite; Monitor; Investigate |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#requirement)
@@ -1082,7 +1022,7 @@ Append-only record of actions, versions and access.
 | --- | --- |
 | Grain / identity | One audit event per source record / observation |
 | Source families | AMLOK |
-| Lifecycle | Verify; Underwrite; Monitor; Service; Investigate |
+| Lifecycle | Verify; Underwrite; Monitor; Investigate |
 | Population conditions | Source, module, country, consent and contracted permissions determine population. |
 
 [Read field definitions](/data-model/field-dictionary#audit-event)

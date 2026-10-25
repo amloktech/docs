@@ -62,9 +62,12 @@ for file in ['pricing/refunds-and-payouts.mdx','pricing/contract-terms.mdx','pri
  check('after account closure' not in text,'Obsolete cutoff '+file)
 backup=Path('/private/tmp/amlok-enterprise-reporting-before')
 check((backup/'data/api-contract-source.json').read_bytes()==(ROOT/'data/api-contract-source.json').read_bytes(),'Workbook changed')
+from public_api_scope import REMOVED_OPERATION_IDS
 old=json.loads((backup/'openapi/amlok-v1.json').read_text())
 for path,methods in old['paths'].items():
- for method,op in methods.items():check(spec['paths'][path][method]['operationId']==op['operationId'],'Operation ID changed')
+ for method,op in methods.items():
+  if op['operationId'] in REMOVED_OPERATION_IDS: continue
+  check(spec['paths'][path][method]['operationId']==op['operationId'],'Operation ID changed')
 out={'checks':checks,'reportingOperations':len(index),'scope':'Documentation contract and examples only; no backend or payment execution.'}
 (ROOT/'artifacts/enterprise-reporting-validation.json').write_text(json.dumps(out,indent=2)+'\n')
 print(json.dumps(out))

@@ -13,7 +13,6 @@ A successful HTTP response can indicate acceptance rather than completed work. T
 | [Upload document](/api-reference/endpoints/identity/upload-document) | 202, document | `GET /v1/documents/{id}`; `document.processed` |
 | [Run workflow](/api-reference/endpoints/operations/start-workflow-run) | 202, workflow run | `GET /v1/workflow-runs/{id}`; workflow events |
 | [Calculate attributes](/api-reference/endpoints/risk/calculate-attributes) | 202, calculation job | `GET /v1/attribute-calculations/{id}`; `attributes.calculated` |
-| [Send communication](/api-reference/endpoints/operations/send-approved-communication) | 202, communication | `GET /v1/communications/{id}`; delivery-state events |
 
 The event replay command returns a queued replay receipt. Monitor redelivery through your webhook receiver and the delivery controls configured during onboarding.
 
@@ -29,7 +28,7 @@ Sync-style jobs use `queued`, `running`, `completed`, `partial`, `failed`, and `
 - Verification completion means a result is available; it can be declined or require review.
 - A completed lien search with no results applies only to the declared completed scope.
 - Attribute calculation can complete with individual values marked `unavailable`.
-- A queued communication is not delivered, and a completed workflow is not permission to fund a loan.
+- A completed assessment is not authorization to fund a loan or contact a borrower.
 - Account cancellation immediately stops processing, usage deductions, and upcoming top-ups. Cancel pending work and release unused holds without capture. Full account closure is at the end of the request month. After that month closes and final information is generated, deletion removes all associated workspace data; there is no public deletion-command API.
 
 Retrieve the authoritative resource after an event. Use `resource_version` to avoid overwriting a newer record with an older delivery. See [webhooks](/api-reference/webhooks).

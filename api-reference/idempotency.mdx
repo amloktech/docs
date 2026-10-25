@@ -25,7 +25,7 @@ Never generate a new idempotency key on every automatic retry. Do not assume a c
 
 ## Optimistic concurrency for PATCH
 
-Read the current [monitor](/api-reference/endpoints/risk/retrieve-monitor) or case, retain the quoted `ETag`, and send it in `If-Match`. The PATCH body changes only explicitly supplied fields.
+Read the current [monitor](/api-reference/endpoints/risk/retrieve-monitor), retain the quoted `ETag`, and send it in `If-Match`. The PATCH body changes only explicitly supplied fields.
 
 ```http
 PATCH /v1/monitors/mon_example
@@ -41,9 +41,5 @@ In the synthetic success example the new record version is `4` and the ETag is `
 The PATCH schemas reject empty bodies, unknown properties, and null clearing. Omit fields you do not intend to change.
 
 A pre-execution `402 insufficient_credits` rejection does not reserve an accepted operation or charge credits. After funding, retry the same intended request with the same key.
-
-## Approval-bound actions
-
-Task approval and communication dispatch additionally bind `expected_record_version` to the approved content. Changing the recipient, channel, or action payload requires a new approval. An approval must not become blanket permission for a future version.
 
 See [errors](/api-reference/errors) and [asynchronous jobs](/api-reference/async-jobs) for recovery behavior.

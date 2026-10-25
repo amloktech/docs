@@ -1,6 +1,6 @@
 ---
 title: "Event catalog"
-description: "Subscribe to 30 lifecycle events."
+description: "Subscribe to 27 lifecycle events."
 ---
 
 Every event uses the same envelope. The event ID is the deduplication key within the workspace and environment. `resource_version` identifies the version that triggered the event.
@@ -43,9 +43,6 @@ The example indicates that a verification result is ready for review. It is not 
 | `monitor.updated` | `monitor` | Monitoring configuration or state changes. | status; ruleset_version |
 | `alert.created` | `alert` | Versioned rule detects a signal. | alert_type; severity; evidence references |
 | `alert.updated` | `alert` | Review state changes. | status |
-| `case.updated` | `case` | Case assigned, progressed or resolved. | status |
-| `task.updated` | `task` | Task progress or approval state changes. | status; approval_status |
-| `communication.updated` | `communication` | Draft, dispatch or delivery state changes. | status |
 | `workflow.completed` | `workflow_run` | Run completes or returns a defined partial result. | status; output_resource_ids |
 | `workflow.failed` | `workflow_run` | Run stops with a recorded failure. | status; safe error code |
 | `resource.deleted` | `common` | A source deletion or approved redaction is recorded. | resource_id; deleted_at |

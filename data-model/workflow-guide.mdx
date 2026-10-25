@@ -1,6 +1,6 @@
 ---
 title: "Workflow Guide"
-description: "How data supports Verify, Underwrite, Fund, Monitor, Service, Investigate, and Re-underwrite."
+description: "How data supports Verify, Underwrite, Fund, Monitor, Investigate, and Re-underwrite."
 ---
 
 ## Verify
@@ -41,17 +41,7 @@ description: "How data supports Verify, Underwrite, Fund, Monitor, Service, Inve
 | Inputs | Baseline snapshot; active connections; consent; monitor rules |
 | Work performed | Refresh permitted evidence and compare comparable windows. |
 | Outputs | attribute; risk\_snapshot; alert |
-| Decision boundary | Data outages generate coverage/freshness issues, not an assumed improvement. |
-
-## Service
-
-| Property | Definition |
-| --- | --- |
-| Trigger | Borrower inquiry, missing evidence or arrears |
-| Inputs | loan; installment; repayment; case |
-| Work performed | Prepare information requests, reminders and repayment-promise follow-up. |
-| Outputs | task; communication; payment\_promise |
-| Decision boundary | Communication sends require specific approval and scope. |
+| Decision boundary | Alerts identify changes that may require institution review. Data outages generate coverage/freshness issues, not an assumed improvement. |
 
 ## Investigate
 
@@ -59,9 +49,9 @@ description: "How data supports Verify, Underwrite, Fund, Monitor, Service, Inve
 | --- | --- |
 | Trigger | Suspicious evidence, screening match or related-party signal |
 | Inputs | screening\_match; relationship; document; transactions; alerts |
-| Work performed | Collect evidence, review candidate matches and record a disposition. |
-| Outputs | case; task; reviewed relationship or screening disposition |
-| Decision boundary | A possible match is not a confirmed match; preserve reviewer attribution. |
+| Work performed | Analyze permitted evidence, compare candidate matches and explain risk findings. |
+| Outputs | Risk findings; supporting evidence; reviewed relationship or screening conclusions |
+| Decision boundary | A possible match is not a confirmed match. The institution reviews the evidence and owns any intervention or borrower outreach. |
 
 ## Re-underwrite
 
@@ -73,3 +63,7 @@ description: "How data supports Verify, Underwrite, Fund, Monitor, Service, Inve
 | Outputs | workflow\_run; decision; new risk\_snapshot |
 | Decision boundary | Never overwrite the original assessment; credit-limit action remains institution controlled. |
 
+
+## Institution intervention
+
+AMLOK provides assessments, alerts, and supporting evidence to help your institution decide when to intervene. Webhooks deliver these signals to your registered systems. Your institution handles borrower communications and follow-up in its own systems.

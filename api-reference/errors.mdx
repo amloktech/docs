@@ -50,7 +50,7 @@ The example has HTTP `422`. `meta.data_status: complete` describes the error res
 
 Honor `error.retryable` and `Retry-After` when provided. A source error or internal error can require investigation; its HTTP class alone does not establish that repeating a command is safe. Preserve the idempotency key for the same POST action.
 
-Do not retry malformed input, invalid credentials, missing permissions, or stale approvals without resolving the cause. Do not broaden subject IDs or permissions in response to an authorization error.
+Do not retry malformed input, invalid credentials, missing permissions, or stale resource versions without resolving the cause. Do not broaden subject IDs or permissions in response to an authorization error.
 
 ## Insufficient credits
 

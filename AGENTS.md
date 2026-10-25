@@ -47,7 +47,7 @@
 
 ## API reference
 
-- The AMLOK team identifies the API as version 1.4.2 and requested removal of draft and release-readiness notices. Keep public reference versions and generated examples consistent; preserve operational resource states such as communication drafts.
+- The AMLOK team identifies the API as version 1.4.2 and requested removal of draft and release-readiness notices. Keep public reference versions and generated examples consistent; preserve valid operational resource states.
 - Source snapshot: `data/api-contract-source.json`. Keep the original Google workbook unchanged.
 - Generate the OpenAPI contract, endpoint pages, Postman collection, and navigation with `python scripts/build-api-reference.py`, then regenerate the guides with `python scripts/write-api-guides.py`.
 - Validate schemas and examples with `python scripts/validate-api-reference.py` (requires `jsonschema` and `openapi-spec-validator`). Run `python scripts/test-api-examples.py` with Node.js on PATH to check both webhook verifiers and code samples.
@@ -70,3 +70,5 @@
 - Internal supplemental verification and registry providers are not customer integrations. Do not reintroduce their named pages, provider-coverage sections or field mappings. Preserve generic jurisdiction/regulatory terminology and the original source snapshot.
 
 - Run `python scripts/test-wallet-contract.py` after wallet changes. These checks validate the documentation contract and examples; they do not execute a backend or payment rail. Keep payment-provider enablement, custody, settlement expectations and regulatory disclosures tied to onboarding rather than inventing a production arrangement.
+
+- Assessment boundary: AMLOK identifies risk and intervention signals. Do not expose servicing cases, tasks, borrower communications, payment promises, or their approval/send workflows. Institution staff handle outreach and intervention in their own systems. Apply scripts/public_api_scope.py when generating from the original workbook. Preserve loan and repayment data as read-only evidence.

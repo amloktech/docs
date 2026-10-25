@@ -1,4 +1,5 @@
 [
+  "Removed servicing cases, tasks, borrower communications, payment promises, their 14 endpoints, schemas and events. Workflows support verification, underwriting, monitoring and analytical investigation only; the institution owns intervention and borrower outreach.",
   "Privacy retention is managed through platform configuration. Removed customer deletion-request operations EP161 and EP162; final workspace deletion removes all workspace data. The original workbook snapshot remains unchanged.",
   "Lien-search search_type is normalized to name, identifier, vin or serial. The identifier field is required for non-name searches.",
   "The partial account-balance example supplies required date_basis as unknown because source observation timing is not available.",
@@ -12,7 +13,7 @@
   "ResponseMeta.data_status describes response completeness; newly accepted asynchronous work uses pending. Creation examples do not fabricate completed results.",
   "Page.next_cursor is explicitly nullable, as required by the pagination rule. Shared optional fields permit null where the normalization rule requires missing-value representation.",
   "Multipart document upload is the documented ingestion route. No unlisted pre-signed-upload endpoint is invented.",
-  "The workbook describes key administration, signing-secret rotation, approval IDs but does not define management endpoints for them. These remain onboarding dependencies. Frozen manifests and monitoring baselines have explicit read-only discovery endpoints.",
+  "The workbook describes key administration, signing-secret rotation but does not define management endpoints for them. These remain onboarding dependencies. Frozen manifests and monitoring baselines have explicit read-only discovery endpoints.",
   "The public API is reporting-only. Client portal controls manage card or bank-account funding, top-up thresholds of at least CAD 200, top-up amounts of at least CAD 500, and cancellation. No public wallet or payment-setting operations exist.",
   "Cancellation can be requested at any time with no notice, in the portal or through an enterprise account manager. Processing, usage deductions, and upcoming top-ups stop immediately on cancellation; pending reservations are released. Closure occurs at the end of the request month. Workspace deletion follows month closure and generation of final information. AMLOK immediately refunds all unused credits, including promotional credits, to the saved portal bank account when the account closes. Bank receipt may take 7-10 business days. Used credits are non-refundable.",
   "Each workspace has one shared balance with no paid/promotional consumption priority. Reports identify workspace and product usage. CAD 200 triggers automatic top-ups if enabled, not a processing floor. New processing is rejected only when available credits cannot cover it; pending payments are not spendable.",

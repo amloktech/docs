@@ -1,6 +1,6 @@
 ---
 title: "Integration workflows"
-description: "Connect the endpoint families into verification, underwriting, monitoring, and servicing journeys."
+description: "Connect the endpoint families into verification, underwriting, monitoring, and intervention signals."
 ---
 
 ## Verify an applicant
@@ -34,14 +34,14 @@ Compare comparable time windows and coverage. A data outage is not an improvemen
 
 For a material change, Signal reassesses risk using existing baseline data and newly processed records. Each updated version counts as a new record; retries and repeated reads of the same unchanged version do not count again. This work is included in Signal and does not launch or charge another Insights underwriting. Preserve the original snapshot and the new evidence for audit. A separately requested full underwriting is a distinct Insights operation.
 
-## Service and investigate
+## Review intervention signals
 
-Create a [case](/api-reference/endpoints/operations/create-case) and [task](/api-reference/endpoints/operations/create-task) to gather evidence or record a disposition. The task approval route records authorization against an exact version. Creation of a [communication draft](/api-reference/endpoints/operations/create-communication-draft) does not send it.
+Read alerts alongside the current risk snapshot, the monitoring baseline, and supporting source evidence. Review severity, the rule or threshold that triggered the alert, data freshness, and missing coverage before deciding whether intervention is needed.
 
-The [send route](/api-reference/endpoints/operations/send-approved-communication) requires `communications:send`, a valid approval ID, and `expected_record_version`. Approval ID provisioning must be defined in the deployed workflow; a task ID must not be substituted for an approval ID without an explicit contract.
+Signed webhooks notify your institution's registered systems that results or alerts are available. They do not contact borrowers. Your institution decides whether and how to intervene using its own staff, policies, and systems.
 
-Use `workflow_type: investigate` for an approved investigation run. Candidate matches remain candidate until reviewed. Record reviewer attribution and supporting evidence; do not use an automated signal as an unsupported accusation.
+Use `workflow_type: investigate` to analyze suspicious evidence or related-party signals. Its purpose is evidence review and risk assessment. AMLOK does not create servicing cases, assign follow-up tasks, send borrower messages, collect repayments, or manage payment promises.
 
-## Five orchestrated workflow types
+## Four assessment workflow types
 
-`verify`, `underwrite`, `monitor`, `service`, and `investigate` are the workflow enum values. Funding and re-underwriting are lifecycle journeys, not additional enum values.
+`verify`, `underwrite`, `monitor`, and `investigate` are the workflow enum values. Funding and re-underwriting are lifecycle journeys, not additional enum values.
