@@ -35058,7 +35058,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -35938,7 +35938,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -36818,7 +36818,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -38364,7 +38364,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -39241,7 +39241,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -39792,7 +39792,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -40695,7 +40695,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -41405,7 +41405,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -41643,7 +41643,7 @@
       "post": {
         "operationId": "WA029",
         "summary": "Create wallet movement quote",
-        "description": "Quote the full remaining paid balance for a final-cancellation refund. Require a cancellation belonging to the same agreement, institution and wallet, status refund_pending, an effective date at or before now, completed reconciliation, a final statement, and resolved usage holds and funding attempts. Otherwise return 409 cancellation_not_final. The server computes the amount and allocations across original funding sources; client amounts and partial cash-outs are rejected. Quotes bind cancellation, final statement revision, wallet version and destinations. No funds are reserved. Recheck every condition atomically on refund submission. For a definitive failed or returned refund, supply refund_id and quote only its still-unpaid balance; unresolved rail outcomes cannot be requoted for retry.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Quote the full remaining paid balance for a final-cancellation refund. Require a cancellation belonging to the same agreement, institution and wallet, status reconciling or refund_pending, an effective date at or before now, completed reconciliation, a final statement, and resolved usage holds and funding attempts. Quotes and delivery instructions may be prepared before closure, but no refund is issued before account closure. Otherwise return 409 cancellation_not_final. The server computes the amount and allocations across original funding sources; client amounts and partial cash-outs are rejected. Quotes bind cancellation, final statement revision, wallet version and destinations. No funds are reserved. Recheck every condition atomically on refund submission. For a definitive failed or returned refund, supply refund_id and quote only its still-unpaid balance; unresolved rail outcomes cannot be requoted for retry.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -41975,7 +41975,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -42366,7 +42366,7 @@
       "post": {
         "operationId": "WA039",
         "summary": "Create wallet refund",
-        "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Prepare the full reconciled remaining paid-balance refund only after final agreement cancellation. Complete destination verification and delivery approval before account closure. AMLOK issues the refund automatically and immediately after account closure, without requiring a separate customer API call. Funds may take 7-10 business days to reach the bank account, depending on the bank. account_closed_at records closure; issued_at records issuance, not bank receipt. Preparation can return requires_approval or pending with null timestamps; issuance requires account_closed_at and sets issued_at. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint. A retry preserves the original issued_at, records each new payout submission separately, and cannot reopen the account.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -42457,6 +42457,8 @@
                         "payout_ids": [],
                         "ledger_entry_ids": [],
                         "status": "requires_approval",
+                        "account_closed_at": null,
+                        "issued_at": null,
                         "cancellable": true,
                         "failure_code": null
                       },
@@ -42701,7 +42703,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -42932,7 +42934,7 @@
       "get": {
         "operationId": "WA040",
         "summary": "List wallet refunds",
-        "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Prepare the full reconciled remaining paid-balance refund only after final agreement cancellation. Complete destination verification and delivery approval before account closure. AMLOK issues the refund automatically and immediately after account closure, without requiring a separate customer API call. Funds may take 7-10 business days to reach the bank account, depending on the bank. account_closed_at records closure; issued_at records issuance, not bank receipt. Preparation can return requires_approval or pending with null timestamps; issuance requires account_closed_at and sets issued_at. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint. A retry preserves the original issued_at, records each new payout submission separately, and cannot reopen the account.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -43051,6 +43053,8 @@
                           "payout_ids": [],
                           "ledger_entry_ids": [],
                           "status": "requires_approval",
+                          "account_closed_at": null,
+                          "issued_at": null,
                           "cancellable": true,
                           "failure_code": null
                         }
@@ -43125,7 +43129,7 @@
       "get": {
         "operationId": "WA041",
         "summary": "Retrieve wallet refund",
-        "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Prepare the full reconciled remaining paid-balance refund only after final agreement cancellation. Complete destination verification and delivery approval before account closure. AMLOK issues the refund automatically and immediately after account closure, without requiring a separate customer API call. Funds may take 7-10 business days to reach the bank account, depending on the bank. account_closed_at records closure; issued_at records issuance, not bank receipt. Preparation can return requires_approval or pending with null timestamps; issuance requires account_closed_at and sets issued_at. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint. A retry preserves the original issued_at, records each new payout submission separately, and cannot reopen the account.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -43216,6 +43220,8 @@
                         "payout_ids": [],
                         "ledger_entry_ids": [],
                         "status": "requires_approval",
+                        "account_closed_at": null,
+                        "issued_at": null,
                         "cancellable": true,
                         "failure_code": null
                       },
@@ -43395,6 +43401,8 @@
                         "payout_ids": [],
                         "ledger_entry_ids": [],
                         "status": "cancelled",
+                        "account_closed_at": null,
+                        "issued_at": null,
                         "cancellable": false,
                         "failure_code": null
                       },
@@ -43639,7 +43647,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -43982,6 +43990,8 @@
                         "payout_ids": [],
                         "ledger_entry_ids": [],
                         "status": "requires_approval",
+                        "account_closed_at": null,
+                        "issued_at": null,
                         "cancellable": true,
                         "failure_code": null
                       },
@@ -44226,7 +44236,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -44459,7 +44469,7 @@
       "get": {
         "operationId": "WA043",
         "summary": "List wallet payouts",
-        "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. AMLOK issues the full refund immediately after account closure; bank receipt may take 7-10 business days, depending on the bank. submitted_at identifies a payment attempt and paid_at confirms its delivery. A return restores the returned principal once to the closed wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -44631,7 +44641,7 @@
       "get": {
         "operationId": "WA044",
         "summary": "Retrieve wallet payout",
-        "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. AMLOK issues the full refund immediately after account closure; bank receipt may take 7-10 business days, depending on the bank. submitted_at identifies a payment attempt and paid_at confirms its delivery. A return restores the returned principal once to the closed wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -45422,7 +45432,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -45976,7 +45986,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -46209,7 +46219,7 @@
       "post": {
         "operationId": "WA049",
         "summary": "Create agreement cancellation",
-        "description": "Request final agreement cancellation using the quoted agreement version and signed notice terms. Confirmation establishes the effective date. At that date, stop new usage and automatic top-ups; reconcile all incurred product usage and in-flight funding, then set refund_pending and return the entire remaining paid balance. The cancellation links its final statement, refund amount and refund records. No withdrawal request is needed to establish the refund obligation.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Request final agreement cancellation using the quoted agreement version and signed notice terms. Confirmation establishes the effective date. At that date, stop new usage and automatic top-ups; reconcile all incurred product usage and in-flight funding, verify refund instructions, then close the account and immediately issue the full remaining paid-balance refund automatically. Record account_closed_at and set refund_pending while bank delivery completes. Funds may take 7-10 business days to reach the bank account, depending on the bank. The cancellation links its final statement, refund amount and refund records. No withdrawal request is needed to establish the refund obligation.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Billing"
         ],
@@ -46284,6 +46294,7 @@
                         "effective_at": null,
                         "final_statement_id": null,
                         "reconciled_at": null,
+                        "account_closed_at": null,
                         "final_refund_amount": null,
                         "refunded_amount": "0.00",
                         "refund_ids": [],
@@ -46532,7 +46543,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -46764,7 +46775,7 @@
       "get": {
         "operationId": "WA050",
         "summary": "List agreement cancellations",
-        "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement, reconciled_at and account_closed_at. The account is already closed and the refund is issued immediately after closure, while bank receipt may take 7-10 business days depending on the bank. completed describes financial reconciliation, not the account-closure date, and requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Billing"
         ],
@@ -46867,6 +46878,7 @@
                           "effective_at": null,
                           "final_statement_id": null,
                           "reconciled_at": null,
+                          "account_closed_at": null,
                           "final_refund_amount": null,
                           "refunded_amount": "0.00",
                           "refund_ids": [],
@@ -46945,7 +46957,7 @@
       "get": {
         "operationId": "WA051",
         "summary": "Retrieve agreement cancellation",
-        "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement, reconciled_at and account_closed_at. The account is already closed and the refund is issued immediately after closure, while bank receipt may take 7-10 business days depending on the bank. completed describes financial reconciliation, not the account-closure date, and requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Billing"
         ],
@@ -47020,6 +47032,7 @@
                         "effective_at": null,
                         "final_statement_id": null,
                         "reconciled_at": null,
+                        "account_closed_at": null,
                         "final_refund_amount": null,
                         "refunded_amount": "0.00",
                         "refund_ids": [],
@@ -47187,6 +47200,7 @@
                         "effective_at": null,
                         "final_statement_id": null,
                         "reconciled_at": null,
+                        "account_closed_at": null,
                         "final_refund_amount": null,
                         "refunded_amount": "0.00",
                         "refund_ids": [],
@@ -47435,7 +47449,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -47667,7 +47681,7 @@
       "post": {
         "operationId": "WA053",
         "summary": "Create wallet closure",
-        "description": "Close only after final agreement cancellation, full remaining paid-balance refund and resolution of holds and in-flight funding. Require the same cancellation_id and legal owner. Zero-cost promotional credits are retired without cash payment. Closure cannot be used as an alternative cash-out path, does not delete audit records, and never re-enables funding or usage. A later payout return reopens refund reconciliation, not service access.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Close only after final agreement cancellation, final usage reconciliation, resolved funding and usage holds, and verified and approved refund instructions. Require the same cancellation_id and legal owner. Reserve the full reconciled paid balance for its cancellation refund; that reserved balance and subsequent bank processing do not block account closure. Complete account closure and immediately issue the refund automatically. Record closed_at and link refund_ids. Funds may take 7-10 business days to reach the bank account, depending on the bank. Closure and refund issuance must be durably linked so a retry cannot lose the refund obligation or issue a duplicate. A closed wallet permits refund delivery and reconciliation only, never new funding or usage. Zero-cost promotional credits are retired without cash payment. Closure cannot be used as an alternative cash-out path, does not delete audit records, and never re-enables funding or usage. A later payout return reopens refund reconciliation, not service access.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -47736,15 +47750,15 @@
                         "updated_at": "2026-10-23T14:00:00Z",
                         "wallet_id": "wal_example",
                         "cancellation_id": "cancellation_final_example",
-                        "reason": "Close after final cancellation and refund.",
+                        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
                         "client_reference": "closure-1001",
                         "status": "requested",
                         "blocking_reasons": [
-                          "remaining_balance",
-                          "pending_settlements"
+                          "pending_reconciliation"
                         ],
                         "final_statement_id": null,
-                        "closed_at": null
+                        "closed_at": null,
+                        "refund_ids": []
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -47987,7 +48001,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -48194,7 +48208,7 @@
               "example": {
                 "wallet_id": "wal_example",
                 "cancellation_id": "cancellation_final_example",
-                "reason": "Final cancellation refund completed.",
+                "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
                 "client_reference": "closure-1001"
               }
             }
@@ -48204,23 +48218,23 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/wallet-closures\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"reason\": \"Final cancellation refund completed.\",\n  \"client_reference\": \"closure-1001\"\n}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/wallet-closures\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"reason\": \"Close on final cancellation and immediately issue the remaining-balance refund.\",\n  \"client_reference\": \"closure-1001\"\n}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/wallet-closures\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'wallet_id': 'wal_example',\n 'cancellation_id': 'cancellation_final_example',\n 'reason': 'Final cancellation refund completed.',\n 'client_reference': 'closure-1001'},\n)\nresponse.raise_for_status()\nprint(response.json())"
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/wallet-closures\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'wallet_id': 'wal_example',\n 'cancellation_id': 'cancellation_final_example',\n 'reason': 'Close on final cancellation and immediately '\n           'issue the remaining-balance refund.',\n 'client_reference': 'closure-1001'},\n)\nresponse.raise_for_status()\nprint(response.json())"
           },
           {
             "lang": "JavaScript",
             "label": "Node.js",
-            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/wallet-closures\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"reason\": \"Final cancellation refund completed.\",\n  \"client_reference\": \"closure-1001\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/wallet-closures\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"reason\": \"Close on final cancellation and immediately issue the remaining-balance refund.\",\n  \"client_reference\": \"closure-1001\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
           }
         ]
       },
       "get": {
         "operationId": "WA054",
         "summary": "List wallet closures",
-        "description": "Read closure blockers and final statement. A blocked closure does not forfeit funds.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read closure blockers, final statement, closed_at and linked refund_ids. A completed closure can have an issued refund still in bank processing; closure does not imply funds have arrived. A blocked closure does not forfeit funds.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -48327,15 +48341,15 @@
                           "updated_at": "2026-10-23T14:00:00Z",
                           "wallet_id": "wal_example",
                           "cancellation_id": "cancellation_final_example",
-                          "reason": "Close after final cancellation and refund.",
+                          "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
                           "client_reference": "closure-1001",
                           "status": "requested",
                           "blocking_reasons": [
-                            "remaining_balance",
-                            "pending_settlements"
+                            "pending_reconciliation"
                           ],
                           "final_statement_id": null,
-                          "closed_at": null
+                          "closed_at": null,
+                          "refund_ids": []
                         }
                       ],
                       "page": {
@@ -48408,7 +48422,7 @@
       "get": {
         "operationId": "WA055",
         "summary": "Retrieve wallet closure",
-        "description": "Read closure blockers and final statement. A blocked closure does not forfeit funds.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read closure blockers, final statement, closed_at and linked refund_ids. A completed closure can have an issued refund still in bank processing; closure does not imply funds have arrived. A blocked closure does not forfeit funds.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -48477,15 +48491,15 @@
                         "updated_at": "2026-10-23T14:00:00Z",
                         "wallet_id": "wal_example",
                         "cancellation_id": "cancellation_final_example",
-                        "reason": "Close after final cancellation and refund.",
+                        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
                         "client_reference": "closure-1001",
                         "status": "requested",
                         "blocking_reasons": [
-                          "remaining_balance",
-                          "pending_settlements"
+                          "pending_reconciliation"
                         ],
                         "final_statement_id": null,
-                        "closed_at": null
+                        "closed_at": null,
+                        "refund_ids": []
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -48552,7 +48566,7 @@
       "post": {
         "operationId": "WA056",
         "summary": "Withdraw wallet closure",
-        "description": "Withdraw a closure before completion. Does not automatically re-enable an automatic funding mandate.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Withdraw a closure before completion. Final agreement cancellation and the remaining-balance refund obligation still apply; AMLOK completes the account-closure and refund process. This does not re-enable service access or an automatic funding mandate.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
         "tags": [
           "Wallets"
         ],
@@ -48641,15 +48655,15 @@
                         "updated_at": "2026-10-23T14:00:00Z",
                         "wallet_id": "wal_example",
                         "cancellation_id": "cancellation_final_example",
-                        "reason": "Close after final cancellation and refund.",
+                        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
                         "client_reference": "closure-1001",
                         "status": "withdrawn",
                         "blocking_reasons": [
-                          "remaining_balance",
-                          "pending_settlements"
+                          "pending_reconciliation"
                         ],
                         "final_statement_id": null,
-                        "closed_at": null
+                        "closed_at": null,
+                        "refund_ids": []
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -48892,7 +48906,7 @@
                     "value": {
                       "error": {
                         "code": "closure_balance_remaining",
-                        "message": "Funds, holds, or pending settlements remain unresolved.",
+                        "message": "Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure.",
                         "retryable": false,
                         "request_id": "req_example"
                       },
@@ -49097,7 +49111,7 @@
                 "$ref": "#/components/schemas/WalletReason"
               },
               "example": {
-                "reason": "Keep this wallet."
+                "reason": "Correct closure instructions before account closure."
               }
             }
           }
@@ -49106,16 +49120,16 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/wallet-closures/res_example/cancel\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'If-Match: \"1\"' \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"reason\": \"Keep this wallet.\"\n}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/wallet-closures/res_example/cancel\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'If-Match: \"1\"' \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"reason\": \"Correct closure instructions before account closure.\"\n}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nheaders[\"If-Match\"] = '\"1\"'\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/wallet-closures/res_example/cancel\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'reason': 'Keep this wallet.'},\n)\nresponse.raise_for_status()\nprint(response.json())"
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nheaders[\"If-Match\"] = '\"1\"'\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/wallet-closures/res_example/cancel\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'reason': 'Correct closure instructions before account '\n           'closure.'},\n)\nresponse.raise_for_status()\nprint(response.json())"
           },
           {
             "lang": "JavaScript",
             "label": "Node.js",
-            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nheaders[\"If-Match\"] = '\"1\"';\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/wallet-closures/res_example/cancel\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"reason\": \"Keep this wallet.\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nheaders[\"If-Match\"] = '\"1\"';\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/wallet-closures/res_example/cancel\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"reason\": \"Correct closure instructions before account closure.\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
           }
         ]
       }
@@ -81324,6 +81338,30 @@
               "returned"
             ]
           },
+          "account_closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Account closure time. Null while final reconciliation and refund instructions are being prepared."
+          },
+          "issued_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Time AMLOK issues the refund immediately after account closure, before bank receipt. Null before issuance; preserved across delivery retries. Funds may take 7-10 business days to reach the bank account, depending on the bank."
+          },
           "cancellable": {
             "type": "boolean"
           },
@@ -81363,10 +81401,60 @@
           "payout_ids",
           "ledger_entry_ids",
           "status",
+          "account_closed_at",
+          "issued_at",
           "cancellable",
           "failure_code"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "issued_at": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "issued_at"
+              ]
+            },
+            "then": {
+              "properties": {
+                "account_closed_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "submitted",
+                    "partially_paid",
+                    "paid",
+                    "returned"
+                  ]
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "account_closed_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "issued_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        ]
       },
       "WalletPayout": {
         "type": "object",
@@ -81873,6 +81961,17 @@
               }
             ]
           },
+          "account_closed_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "final_refund_amount": {
             "anyOf": [
               {
@@ -81934,6 +82033,7 @@
           "effective_at",
           "final_statement_id",
           "reconciled_at",
+          "account_closed_at",
           "final_refund_amount",
           "refunded_amount",
           "refund_ids",
@@ -82047,7 +82147,16 @@
               {
                 "type": "null"
               }
-            ]
+            ],
+            "description": "Account closure time. The full remaining paid-balance refund is issued immediately afterward; closure does not wait for bank delivery."
+          },
+          "refund_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Cancellation refund obligations linked to this closure, including payments still in bank processing."
           }
         },
         "required": [
@@ -82063,9 +82172,36 @@
           "status",
           "blocking_reasons",
           "final_statement_id",
-          "closed_at"
+          "closed_at",
+          "refund_ids"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "completed"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "closed_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "final_statement_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "blocking_reasons": {
+                  "maxItems": 0
+                }
+              }
+            }
+          }
+        ]
       }
     },
     "responses": {

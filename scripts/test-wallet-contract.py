@@ -86,8 +86,23 @@ retry=spec['paths']['/v1/wallet-refunds/{id}/retry']['post']
 check('refund_not_retryable' in retry['responses']['409']['content']['application/json']['examples'],'Missing unknown-outcome retry protection')
 closure=ops[('/v1/wallet-closures','POST')]['request'];bad=deepcopy(closure);bad.pop('cancellation_id')
 check(not valid('CreateWalletClosure',bad),'Closure bypasses cancellation linkage')
+prepared=response('/v1/wallet-refunds','POST')
+check(prepared['issued_at'] is None and prepared['account_closed_at'] is None,'Preparation fabricates account closure or refund issuance')
+issued={**prepared,'status':'submitted','account_closed_at':'2026-10-23T14:00:00Z','issued_at':'2026-10-23T14:00:00Z','cancellable':False,'approval_id':None}
+check(valid('WalletRefund',issued),'Issued refund awaiting bank receipt rejected')
+check(issued['paid_amount']=='0.00' and issued['remaining_amount']==issued['amount'],'Issuance falsely implies bank receipt')
+for field in ['account_closed_at','issued_at']:
+    check(not valid('WalletRefund',{**issued,field:None}),'Submitted refund omits '+field)
+check(not valid('WalletRefund',{**prepared,'issued_at':'2026-10-23T14:00:00Z'}),'Refund issued before account closure')
+closed={**response('/v1/wallet-closures','POST'),'status':'completed','blocking_reasons':[],
+    'final_statement_id':issued['final_statement_id'],'closed_at':issued['account_closed_at'],'refund_ids':[issued['id']]}
+check(valid('WalletClosure',closed),'Closure wrongly requires bank settlement')
+for field,value in [('closed_at',None),('final_statement_id',None),('blocking_reasons',['pending_reconciliation'])]:
+    check(not valid('WalletClosure',{**closed,field:value}),'Completed closure accepts unresolved '+field)
+check('immediately after account closure' in create_refund['description'],'Missing immediate refund issuance policy')
+check('7-10 business days' in create_refund['description'],'Missing bank delivery expectation')
 cancellation=response('/v1/agreement-cancellations','POST')
-check(cancellation['final_refund_amount'] is None and cancellation['reconciled_at'] is None and cancellation['status']=='requested','Request fabricates final reconciliation')
+check(cancellation['final_refund_amount'] is None and cancellation['reconciled_at'] is None and cancellation['account_closed_at'] is None and cancellation['status']=='requested','Request fabricates final reconciliation or closure')
 estimate=response('/v1/agreement-cancellation-quotes','POST')
 check(Decimal(estimate['estimated_refund'])==Decimal(estimate['unused_credits'])-Decimal(estimate['estimated_final_usage']),'Cancellation estimate double-deducts hold')
 for resource in ['wallet-top-ups','wallet-refunds']:

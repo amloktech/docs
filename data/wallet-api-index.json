@@ -1364,6 +1364,8 @@
         "payout_ids": [],
         "ledger_entry_ids": [],
         "status": "requires_approval",
+        "account_closed_at": null,
+        "issued_at": null,
         "cancellable": true,
         "failure_code": null
       },
@@ -1418,6 +1420,8 @@
           "payout_ids": [],
           "ledger_entry_ids": [],
           "status": "requires_approval",
+          "account_closed_at": null,
+          "issued_at": null,
           "cancellable": true,
           "failure_code": null
         }
@@ -1477,6 +1481,8 @@
         "payout_ids": [],
         "ledger_entry_ids": [],
         "status": "requires_approval",
+        "account_closed_at": null,
+        "issued_at": null,
         "cancellable": true,
         "failure_code": null
       },
@@ -1532,6 +1538,8 @@
         "payout_ids": [],
         "ledger_entry_ids": [],
         "status": "cancelled",
+        "account_closed_at": null,
+        "issued_at": null,
         "cancellable": false,
         "failure_code": null
       },
@@ -1588,6 +1596,8 @@
         "payout_ids": [],
         "ledger_entry_ids": [],
         "status": "requires_approval",
+        "account_closed_at": null,
+        "issued_at": null,
         "cancellable": true,
         "failure_code": null
       },
@@ -1875,6 +1885,7 @@
         "effective_at": null,
         "final_statement_id": null,
         "reconciled_at": null,
+        "account_closed_at": null,
         "final_refund_amount": null,
         "refunded_amount": "0.00",
         "refund_ids": [],
@@ -1917,6 +1928,7 @@
           "effective_at": null,
           "final_statement_id": null,
           "reconciled_at": null,
+          "account_closed_at": null,
           "final_refund_amount": null,
           "refunded_amount": "0.00",
           "refund_ids": [],
@@ -1964,6 +1976,7 @@
         "effective_at": null,
         "final_statement_id": null,
         "reconciled_at": null,
+        "account_closed_at": null,
         "final_refund_amount": null,
         "refunded_amount": "0.00",
         "refund_ids": [],
@@ -2007,6 +2020,7 @@
         "effective_at": null,
         "final_statement_id": null,
         "reconciled_at": null,
+        "account_closed_at": null,
         "final_refund_amount": null,
         "refunded_amount": "0.00",
         "refund_ids": [],
@@ -2035,7 +2049,7 @@
     "request": {
       "wallet_id": "wal_example",
       "cancellation_id": "cancellation_final_example",
-      "reason": "Final cancellation refund completed.",
+      "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
       "client_reference": "closure-1001"
     },
     "response": {
@@ -2047,15 +2061,15 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "wallet_id": "wal_example",
         "cancellation_id": "cancellation_final_example",
-        "reason": "Close after final cancellation and refund.",
+        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
         "client_reference": "closure-1001",
         "status": "requested",
         "blocking_reasons": [
-          "remaining_balance",
-          "pending_settlements"
+          "pending_reconciliation"
         ],
         "final_statement_id": null,
-        "closed_at": null
+        "closed_at": null,
+        "refund_ids": []
       },
       "meta": {
         "request_id": "req_example",
@@ -2086,15 +2100,15 @@
           "updated_at": "2026-10-23T14:00:00Z",
           "wallet_id": "wal_example",
           "cancellation_id": "cancellation_final_example",
-          "reason": "Close after final cancellation and refund.",
+          "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
           "client_reference": "closure-1001",
           "status": "requested",
           "blocking_reasons": [
-            "remaining_balance",
-            "pending_settlements"
+            "pending_reconciliation"
           ],
           "final_statement_id": null,
-          "closed_at": null
+          "closed_at": null,
+          "refund_ids": []
         }
       ],
       "page": {
@@ -2130,15 +2144,15 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "wallet_id": "wal_example",
         "cancellation_id": "cancellation_final_example",
-        "reason": "Close after final cancellation and refund.",
+        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
         "client_reference": "closure-1001",
         "status": "requested",
         "blocking_reasons": [
-          "remaining_balance",
-          "pending_settlements"
+          "pending_reconciliation"
         ],
         "final_statement_id": null,
-        "closed_at": null
+        "closed_at": null,
+        "refund_ids": []
       },
       "meta": {
         "request_id": "req_example",
@@ -2159,7 +2173,7 @@
     "page": "api-reference/endpoints/wallets/withdraw-wallet-closure",
     "resource": "wallet_closure",
     "request": {
-      "reason": "Keep this wallet."
+      "reason": "Correct closure instructions before account closure."
     },
     "response": {
       "data": {
@@ -2170,15 +2184,15 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "wallet_id": "wal_example",
         "cancellation_id": "cancellation_final_example",
-        "reason": "Close after final cancellation and refund.",
+        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
         "client_reference": "closure-1001",
         "status": "withdrawn",
         "blocking_reasons": [
-          "remaining_balance",
-          "pending_settlements"
+          "pending_reconciliation"
         ],
         "final_statement_id": null,
-        "closed_at": null
+        "closed_at": null,
+        "refund_ids": []
       },
       "meta": {
         "request_id": "req_example",
