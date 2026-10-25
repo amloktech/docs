@@ -19,7 +19,7 @@ export const PricingCalculator = () => {
       return number;
     };
     const commitment = readNumber(input.commitment, "commitment", "Monthly minimum", 1000, 100000000, true);
-    const discount = readNumber(input.discount, "discount", "Agreed discount", 0, 100, true);
+    const discount = input.useAgreedRates ? 0 : readNumber(input.discount, "discount", "Agreed discount", 0, 100, true);
     if (!input.enabled.insights && !input.enabled.signal) errors.products = "Select at least one product.";
     const discountBasisPoints = Math.round(discount * 100);
     const rows = [];
@@ -28,8 +28,12 @@ export const PricingCalculator = () => {
         const id = `${product}-${index}`;
         const label = `${product === "insights" ? "Insights" : "Signal"} ${tier.name} volume`;
         const quantity = input.enabled[product] ? readNumber(input.volumes[product][index], id, label, 0, 1000000, false) : 0;
+        const unitCents = input.useAgreedRates && input.enabled[product]
+          ? Math.round(readNumber(input.agreedRates[product][index], `rate-${id}`, `${label} unit rate`, 0, 1000000, true) * 100)
+          : tier[product];
+        // Agreed rates are final effective rates. Do not apply the discount a second time.
         // Round each monthly product/tier subtotal to cents, then project 12 equal months.
-        rows.push({ product, tier: tier.name, quantity, unitCents: tier[product], cents: Math.round(quantity * tier[product] * (10000 - discountBasisPoints) / 10000) });
+        rows.push({ product, tier: tier.name, quantity, unitCents, cents: Math.round(quantity * unitCents * (10000 - discountBasisPoints) / 10000) });
       });
     }
     if (Object.keys(errors).length) return { valid: false, errors };
@@ -38,8 +42,12 @@ export const PricingCalculator = () => {
     const monthlyCents = insightsCents + signalCents;
     const usageCents = monthlyCents * 12;
     const paymentCents = Math.round(commitment * 100) * 12;
-    const topUpCents = Math.max(0, usageCents - paymentCents);
-    const unusedCents = Math.max(0, paymentCents - usageCents);
+    const processingFloorCents = 20000;
+    const minimumTopUpCents = 50000;
+    // Planning assumes minimum-size top-ups; actual portal settings can fund more, earlier.
+    const fundingGapCents = Math.max(0, usageCents + processingFloorCents - paymentCents);
+    const topUpCents = Math.ceil(fundingGapCents / minimumTopUpCents) * minimumTopUpCents;
+    const unusedCents = paymentCents + topUpCents - usageCents;
     return { valid: true, errors, rows, insightsCents, signalCents, monthlyCents, usageCents, paymentCents, topUpCents, unusedCents, fundingCents: paymentCents + topUpCents, commitment, discount };
   };
   // PRICING_MATH_END
@@ -60,7 +68,9 @@ export const PricingCalculator = () => {
   const [customVolumes, setCustomVolumes] = useState({});
   const [commitment, setCommitment] = useState("1000");
   const [discount, setDiscount] = useState("0");
-  const estimate = calculatePricing({ enabled, volumes, commitment, discount });
+  const [useAgreedRates, setUseAgreedRates] = useState(false);
+  const [agreedRates, setAgreedRates] = useState({ insights: ["5", "15", "35"], signal: ["3", "5", "8"] });
+  const estimate = calculatePricing({ enabled, volumes, commitment, discount, useAgreedRates, agreedRates });
   const money = (cents) => `CAD ${(cents / 100).toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const updateVolume = (product, index, value) => setVolumes((current) => ({ ...current, [product]: current[product].map((quantity, i) => i === index ? value : quantity) }));
   const chooseVolumePreset = (product, index, position) => {
@@ -73,7 +83,7 @@ export const PricingCalculator = () => {
     updateVolume(product, index, value);
     if (value !== "") setCustomVolumes((current) => ({ ...current, [`${product}-${index}`]: Number(value) >= 10000 }));
   };
-  const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["100", "0", "0"], signal: ["200", "0", "0"] }); setCustomVolumes({}); setCommitment("1000"); setDiscount("0"); };
+  const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["100", "0", "0"], signal: ["200", "0", "0"] }); setCustomVolumes({}); setCommitment("1000"); setDiscount("0"); setUseAgreedRates(false); setAgreedRates({ insights: ["5", "15", "35"], signal: ["3", "5", "8"] }); };
   const products = [
     { key: "insights", name: "AMLOK Insights", description: "Completed underwritings per month", unit: "underwriting", accessibleUnit: "underwritings per month" },
     { key: "signal", name: "AMLOK Signal", description: "Active monitored accounts each month", unit: "account / month", accessibleUnit: "active accounts per month" },
@@ -107,7 +117,7 @@ export const PricingCalculator = () => {
                   const volumeLabel = `${product.name} ${tier.name} ${product.accessibleUnit}`;
                   return (
                     <div key={id} className="apc-tier">
-                      <label htmlFor={`apc-${id}`}><strong>{tier.name}</strong><span>{money(tier[product.key])} / {product.unit}</span></label>
+                      <label htmlFor={`apc-${id}`}><strong>{tier.name}</strong><span>{useAgreedRates ? "Your agreed rate below" : `${money(tier[product.key])} / ${product.unit}`}</span></label>
                       <input id={`apc-${id}`} type="number" min="0" max="1000000" step="1" inputMode="numeric" placeholder={needsCustomVolume ? "10,000+" : undefined} value={rawVolume} onChange={(event) => typeVolume(product.key, index, event.target.value)} aria-label={volumeLabel} aria-invalid={Boolean(estimate.errors[id])} aria-describedby={`apc-volume-help${estimate.errors[id] ? ` apc-error-${id}` : ""}`} />
                       <div className="apc-slider-control">
                         <input type="range" min="0" max={customVolumePosition} step="1" value={presetIndex} onChange={(event) => chooseVolumePreset(product.key, index, Number(event.target.value))} aria-label={`${volumeLabel} preset`} aria-valuetext={needsCustomVolume ? "10,000 or more. Enter an exact volume in the number field." : `${Number(rawVolume || 0).toLocaleString("en-CA")} ${product.accessibleUnit}${volumePresets.includes(Number(rawVolume)) ? "" : ", custom volume"}`} aria-describedby="apc-volume-help" style={{ "--apc-slider-progress": `${presetIndex / customVolumePosition * 100}%` }} />
@@ -134,11 +144,30 @@ export const PricingCalculator = () => {
               </div>
               <div>
                 <label htmlFor="apc-discount">Agreed unit-rate discount (%)</label>
-                <input id="apc-discount" type="number" min="0" max="100" step="0.01" inputMode="decimal" value={discount} onChange={(event) => setDiscount(event.target.value)} aria-invalid={Boolean(estimate.errors.discount)} aria-describedby="apc-discount-help apc-error-discount" />
-                <p id="apc-discount-help">Optional. Applies equally to both products. No discount is assumed.</p>
+                <input id="apc-discount" type="number" min="0" max="100" step="0.01" inputMode="decimal" value={discount} disabled={useAgreedRates} onChange={(event) => setDiscount(event.target.value)} aria-invalid={Boolean(estimate.errors.discount)} aria-describedby="apc-discount-help apc-error-discount" />
+                <p id="apc-discount-help">{useAgreedRates ? "Your agreed rates already include discounts. No additional discount is applied." : "Optional. Applies equally to both products. No discount is assumed."}</p>
                 <p id="apc-error-discount" className="apc-error">{estimate.errors.discount || ""}</p>
               </div>
             </div>
+          </section>
+          <section className="apc-panel apc-terms" aria-labelledby="apc-rates-title">
+            <h2 id="apc-rates-title">Negotiated rates</h2>
+            <label className="apc-product-toggle">
+              <input type="checkbox" checked={useAgreedRates} onChange={(event) => setUseAgreedRates(event.target.checked)} />
+              <span>Use my agreed unit rates</span>
+            </label>
+            <p>Enter final CAD rates from your agreement. Custom quotes keep the Standard, Advanced, or Complex tier assigned by AMLOK.</p>
+            {useAgreedRates && <div className="apc-terms-grid">
+              {products.filter((product) => enabled[product.key]).map((product) => tiers.map((tier, index) => {
+                const id = `rate-${product.key}-${index}`;
+                return <div key={id}>
+                  <label htmlFor={`apc-${id}`}>{product.name} - {tier.name}</label>
+                  <input id={`apc-${id}`} type="number" min="0" max="1000000" step="0.01" inputMode="decimal" value={agreedRates[product.key][index]} onChange={(event) => setAgreedRates((current) => ({ ...current, [product.key]: current[product.key].map((rate, i) => i === index ? event.target.value : rate) }))} aria-invalid={Boolean(estimate.errors[id])} aria-describedby={`apc-error-${id}`} />
+                  <p>CAD / {product.unit}</p>
+                  <p id={`apc-error-${id}`} className="apc-error">{estimate.errors[id] || ""}</p>
+                </div>;
+              }))}
+            </div>}
           </section>
         </div>
         <aside className="apc-summary" aria-labelledby="apc-estimate-title">
@@ -157,8 +186,8 @@ export const PricingCalculator = () => {
                 <div><dt>Projected unused credits</dt><dd data-testid="unused-credits">{money(estimate.unusedCents)}</dd></div>
                 <div className="apc-total-row"><dt>Total funding over 12 months</dt><dd data-testid="total-funding">{money(estimate.fundingCents)}</dd></div>
               </dl>
-              <p className="apc-explanation">{estimate.topUpCents > 0 ? "Estimated usage exceeds prepaid credits. Purchase additional credits as needed, or agree to automatic top-ups." : "The prepaid credits cover this usage estimate. Unused credits remain available while your account stays active."}</p>
-              <p className="apc-footnote">The payment funds your usage wallet. It is counted once in total funding. A unit-rate discount reduces usage deductions, not your monthly minimum.</p>
+              <p className="apc-explanation">{estimate.topUpCents > 0 ? "Additional funding includes CAD 500 top-ups needed to cover estimated usage while retaining the CAD 200 processing floor. Configure actual amounts and triggers in the client portal." : "Prepaid credits cover this estimate while retaining the CAD 200 processing floor. Unused credits remain in your shared workspace balance."}</p>
+              <p className="apc-footnote">The prepayment is counted once. This estimate uses CAD 500 top-ups; higher portal settings or payment timing can require more funding. Agreed rates or discounts change usage deductions, not your monthly minimum.</p>
             </div>
           ) : <p className="apc-invalid-summary">Complete the highlighted fields to see your estimate.</p>}
         </aside>

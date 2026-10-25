@@ -48,7 +48,7 @@ Financial-data and reporting operations use a server-side bearer API key. The he
 | Payments, commerce, accounting, inventory | Browse the endpoint groups in the sidebar and the [data dictionary](/data-model/field-dictionary). |
 | Lending and assessment | [Create an application](@@EP146@@), [run a workflow](@@EP147@@), [calculate attributes](@@EP148@@) |
 | Monitoring and operations | [Create a monitor](@@EP150@@), [open a case](@@EP152@@), [create a task](@@EP154@@) |
-| Reporting | [Credit reporting](/api-reference/credit-reporting), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
+| Reporting | [Credit reporting](/api-reference/credit-reporting), [consumption reporting](/api-reference/consumption-reporting), [cancellation and refunds](/pricing/refunds-and-payouts) |
 | Delivery | [Register a webhook](@@EP158@@), [read changes](@@EP164@@) |
 | Service availability | [Healthcheck](@@ST001@@), [service status](@@ST002@@) |
 
@@ -183,7 +183,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. Payment arrangements, agreement changes, cancellation, closure and the resulting refund are handled by your account manager. Report generation and downloads do not change credits.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation includes workspace deletion and refund of all unused credits to the saved portal bank account at closure. Report generation and downloads do not change credits.
 
 ## Scope reference
 
@@ -514,7 +514,7 @@ Sync-style jobs use `queued`, `running`, `completed`, `partial`, `failed`, and `
 - A completed lien search with no results applies only to the declared completed scope.
 - Attribute calculation can complete with individual values marked `unavailable`.
 - A queued communication is not delivered, and a completed workflow is not permission to fund a loan.
-- Deletion can retain legally held data or report incomplete provider propagation.
+- Completed workspace deletion removes all associated workspace data. Account cancellation includes this deletion; there is no public deletion-command API.
 
 Retrieve the authoritative resource after an event. Use `resource_version` to avoid overwriting a newer record with an older delivery. See [webhooks](/api-reference/webhooks).
 ''')
@@ -718,7 +718,7 @@ Register only institution-controlled HTTPS destinations. Deployment must validat
 
 ## Retention and incident handling
 
-Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Workspace deletion is managed in the platform, not through a public deletion-request API. Account cancellation is coordinated separately through your account manager.
+Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Workspace deletion is managed in the platform, not through a public deletion-request API. Account cancellation is requested in the client portal or through a dedicated enterprise account manager; it includes workspace deletion and an immediate unused-credit refund at account closure.
 
 Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. Record these settings during [integration onboarding](/api-reference/onboarding).
 ''')
@@ -819,7 +819,7 @@ Use this checklist to configure an integration with **AMLOK API 1.4.2**. Your AM
 | Area | Configuration |
 | --- | --- |
 | Environments | Production and sandbox origins, institution tenant, test-data policy, and network controls. |
-| Credit reporting | Authorized access to credit balances, usage, statements and exports. Your account manager handles payment arrangements, cancellation and the final refund. |
+| Credit reporting | Authorized access to credit balances, usage, statements and exports. The portal manages card/bank funding, top-up settings and cancellation. Each workspace has one balance with a CAD 200 processing floor and CAD 500 minimum customer-funded top-up; enterprise clients can also use their account manager. |
 | API keys | Issuance, expiry, rotation, revocation, scopes, and administrator access. |
 | Provider capabilities | Enabled products, resources, markets, account permissions, and field coverage. |
 | Limits | Request quotas, burst and concurrency budgets, job limits, and upload limits. |

@@ -1,70 +1,58 @@
 ---
 title: "Credits and billing"
-description: "How your minimum monthly commitment, paid annually, funds a shared credit wallet with rollover and top-ups."
+description: "One workspace credit balance, annual payment of your monthly minimum, and portal-managed top-ups."
 ---
 
 ## Monthly minimum, paid annually
 
-Agree your minimum monthly commitment during contracting. Pay it annually by prepaying 12 times that amount at contract signing and each contract renewal. The payment funds one shared credit wallet.
+Your quote sets a minimum monthly commitment, starting at **CAD 1,000**. Pay 12 times that amount at agreement signing and each renewal: **CAD 12,000 at the minimum** for a 12-month agreement. The payment becomes unused credits in your workspace balance; it is not an additional fee on top of product usage.
 
-| Item | Minimum plan |
-| --- | ---: |
-| Minimum monthly commitment | CAD 1,000 |
-| Contract term | 12 months |
-| Payment at signing and each renewal | CAD 12,000 for the next 12 months |
-| Credit balance funded by that payment | CAD 12,000 |
+## One balance for your workspace
 
-The prepayment is usable credit for eligible products and workflows. It is not an additional platform charge on top of those usage deductions.
+Your workspace has one shared credit balance for all eligible AMLOK products. The annual prepayment, additional paid top-ups, and promotional top-ups from the AMLOK commercial team all increase the same balance. There are no separate spending buckets or consumption priorities based on how credits were added.
 
-## How deductions work
+As billable processing occurs, AMLOK deducts the agreed cost from that balance:
 
-The examples express credits as a **CAD monetary balance**. Deduct the contracted product rate for each billable unit:
+- **Insights:** the agreed rate for each completed underwriting.
+- **Signal:** the agreed rate once per active borrower/business per month in the workspace, regardless of the number of monitoring checks. Partial-month proration follows your agreement.
 
-- **Insights:** completed underwritings multiplied by the applicable tier rate.
-- **Signal:** billable active account-months multiplied by the applicable tier rate, using the account-counting and proration rules in your order form.
+Reporting identifies the product, tier, billable unit, quantity, effective rate, and charge so you can understand each deduction. Products share funding; their different billing units remain distinct. See [consumption reporting](/api-reference/consumption-reporting).
 
-`Closing balance = opening balance + settled funding - product usage - final-cancellation refunds + reconciliation adjustments`
+`Closing credits = opening credits + posted top-ups - product usage - cancellation refunds + reconciliation adjustments`
 
-For a 10% contracted unit-rate discount, a Standard Insights underwriting would use **CAD 4.50** instead of CAD 5. This is an illustration, not a published discount offer.
+Credits already consumed by a product are non-refundable. Corrections to an erroneous or reversed charge are recorded separately and are not a refund of correctly billed usage.
 
-Your order form should identify the usage records used to reconcile each debit: product, application or account identifier, billing period or event date, tier, quantity, contracted rate, and amount. Use [consumption reporting](/api-reference/consumption-reporting) to retrieve charges, product and tier totals, ledger movements, statements, and CSV or JSON exports.
+## Payment methods and automatic top-ups
 
-## Flexible allocation
+Manage payment methods and top-up settings in the **client portal**. Accepted funding methods are **card or bank account**. You can change the payment method, the balance threshold that triggers a top-up, and the amount added each time.
 
-Use the wallet across eligible Insights and Signal workflows, regardless of the product mix assumed during contracting. Credits are not divided into twelve monthly balances or reserved for a particular product unless your order form explicitly defines an eligibility restriction.
+| Setting | Rule |
+| --- | --- |
+| Automatic top-up threshold | CAD 200 or higher. Choose a higher threshold to allow time for funding and anticipated usage. |
+| Customer-funded top-up amount | At least CAD 500 per top-up. |
+| Processing balance floor | CAD 200. Billable processing cannot reduce available credits below this amount. |
+| Refund destination | At least one bank account must be saved in the portal for cancellation refunds, including when you fund by card. |
 
-Spending more than the minimum monthly commitment in one month does not itself trigger an overage. Additional funding is needed when the **shared wallet balance** is insufficient for the requested usage.
+An authorized automatic top-up is triggered when available credits reach or fall below your configured threshold. A paid top-up adds usable credits when the payment settles; pending payments do not fund processing. Commercial promotional top-ups add credits when posted by AMLOK.
 
-## No monthly expiration and active-account rollover
+AMLOK checks the projected available balance before accepting a billable deduction or reserving credits for pending work. If that activity would reduce available credits below **CAD 200**, processing pauses until sufficient credits are available. Existing holds count toward this check, so concurrent activity cannot spend the same credits twice. The CAD 200 floor remains unused credit and is included in the cancellation refund.
 
-Unused credits remain available while you maintain an active account. They carry forward across months and renewals.
+Automatic top-ups help maintain continuity, but a pending or failed payment can still cause a processing pause. Set a threshold and top-up amount appropriate to your usage and payment settlement time. Credit reporting remains available while processing is paused on an active account.
 
-Rollover preserves the unused balance. Review and agree the minimum monthly commitment at each renewal, then pay the next 12 months upfront. Your order form must state how carried credits interact with that payment and define the conditions for an active account, including any suspension or lapse.
+Portal payment and cancellation controls are separate from the public API. The public API provides reporting and exports only; it cannot change payment methods, initiate top-ups, configure thresholds, request cancellation, or move funds.
 
-Cancellation ends this active-account condition. Remaining-credit treatment is addressed in [agreement terms](/pricing/contract-terms).
+## Rollover and renewal
 
-## Additional credits and agreed top-ups
-
-Contact your account manager to arrange additional credits when needed. Any automatic top-up arrangement requires your authorization in advance and is administered by AMLOK.
-
-Your agreement defines the trigger balance, purchase amount, payment arrangements, spending limits, failed-payment handling, and what happens to processing when there are insufficient credits.
-
-Request payment-method or top-up changes through your account manager. The customer credit view is read-only: you can review balances, consumption, credit activity, and statements, but it has no payment controls. The customer API exposes reporting only and cannot initiate top-ups or change payment settings.
-
-A top-up increases the available wallet balance once the funding payment settles. Pending funds are not spendable. It does not by itself change the agreed product rates or create a new 12-month term; any change to those terms belongs in a separate agreement.
+Credits do not expire monthly. Unused credits remain in the shared balance while your account is active, including across renewal. At the annual review, AMLOK reassesses your monthly minimum, workload limits, product rates, and applicable discounts. Payment of the next 12 months' minimum is due at renewal; any agreed treatment of carried credits is recorded in your renewal agreement.
 
 ## Currency and separate charges
 
-Prices and wallet examples are in **Canadian dollars (CAD)**. If you pay in another currency, agree the conversion rate source, conversion date, fees, and credited CAD amount before payment.
+Prices and credits are in **Canadian dollars (CAD)**. If you pay in another currency, agree the conversion methodology and credited CAD amount before payment. Third-party provider charges are separate from AMLOK processing rates and the service-credit balance. Your agreement identifies those charges and applicable taxes.
 
-Third-party provider fees are outside the AMLOK processing rates and are billed separately from the service-credit wallet. Your order form specifies those charges and the treatment of applicable taxes. They are not deducted from the remaining paid-balance refund on final cancellation.
+## Cancellation and unused credits
 
-## Refunds on final cancellation
+Request account cancellation in the client portal. Enterprise clients can also use their dedicated account manager. Cancellation initiates workspace deletion and reconciliation of final usage. All workspace data is deleted as part of completed cancellation.
 
-Wallet funds are used for AMLOK products. They cannot be withdrawn on demand or transferred to another wallet. Both prepaid minimum-commitment credits and additional top-ups follow this rule.
+AMLOK issues an **immediate refund of the entire unused credit balance** when the account closes after final reconciliation, including promotional credits and the unused CAD 200 floor. The refund goes to the bank account saved in the portal, not automatically to the card used for funding. Funds may take **7-10 business days**, depending on your bank. Used credits are non-refundable.
 
-On final cancellation of your agreement, AMLOK reconciles product usage and settled payments before closing your account. AMLOK issues the **full remaining paid-balance refund immediately after account closure**. Funds may take **7-10 business days** to reach your bank account, depending on your bank.
-
-Changing a payment method, disabling automatic top-ups, or pausing usage does not trigger a refund. Promotional credits have no cash refund value.
-
-Your account manager coordinates cancellation and the refund process. Your agreement specifies the notice period and effective cancellation date. These actions are not exposed as customer API endpoints. See [refunds and payouts](/pricing/refunds-and-payouts) for the remaining-balance calculation and payment process, and [credit reporting](/api-reference/credit-reporting) for API access.
+See [agreement terms](/pricing/contract-terms), [cancellation and refunds](/pricing/refunds-and-payouts), and [credit reporting](/api-reference/credit-reporting).

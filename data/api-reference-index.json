@@ -8664,6 +8664,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "currency": "CAD",
         "agreement_id": "agr_example",
         "agreement_version": "3",
@@ -8674,9 +8675,22 @@
         "renewal_payment_at": "2027-10-01T00:00:00Z",
         "credit_type": "prepaid_service_credits",
         "outflow_policy": "product_usage_or_final_cancellation_refund",
-        "refund_policy": "full_remaining_paid_balance_on_final_cancellation",
+        "refund_policy": "full_unused_balance_on_final_cancellation",
         "access": "reporting_only",
-        "policy_version": "credits-reporting-only"
+        "portal_controls": [
+          "payment_methods",
+          "automatic_top_ups",
+          "account_cancellation"
+        ],
+        "funding_methods": [
+          "card",
+          "bank_account"
+        ],
+        "processing_balance_floor": "200.00",
+        "minimum_top_up_threshold": "200.00",
+        "minimum_top_up_amount": "500.00",
+        "refund_destination": "saved_portal_bank_account",
+        "policy_version": "unified-workspace-credits"
       },
       "meta": {
         "request_id": "req_example",
@@ -8704,6 +8718,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "currency": "CAD",
         "effective_from": "2026-10-01T00:00:00Z",
         "rates": [
@@ -8713,7 +8728,15 @@
             "unit": "completed_underwriting",
             "base_rate": "5.00",
             "discount_percent": "0",
-            "effective_rate": "5.00"
+            "effective_rate": "5.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 2,
+              "business_integrations": 5,
+              "records_per_analysis": 75000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Routine reconciliation and standard analysis"
+            }
           },
           {
             "product": "insights",
@@ -8721,7 +8744,15 @@
             "unit": "completed_underwriting",
             "base_rate": "15.00",
             "discount_percent": "0",
-            "effective_rate": "15.00"
+            "effective_rate": "15.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 4,
+              "business_integrations": 10,
+              "records_per_analysis": 250000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+            }
           },
           {
             "product": "insights",
@@ -8729,7 +8760,15 @@
             "unit": "completed_underwriting",
             "base_rate": "35.00",
             "discount_percent": "0",
-            "effective_rate": "35.00"
+            "effective_rate": "35.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 8,
+              "business_integrations": 20,
+              "records_per_analysis": 1000000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+            }
           },
           {
             "product": "signal",
@@ -8737,7 +8776,15 @@
             "unit": "active_account_month",
             "base_rate": "3.00",
             "discount_percent": "0",
-            "effective_rate": "3.00"
+            "effective_rate": "3.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 2,
+              "business_integrations": 5,
+              "records_per_analysis": 75000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Routine reconciliation and standard analysis"
+            }
           },
           {
             "product": "signal",
@@ -8745,7 +8792,15 @@
             "unit": "active_account_month",
             "base_rate": "5.00",
             "discount_percent": "0",
-            "effective_rate": "5.00"
+            "effective_rate": "5.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 4,
+              "business_integrations": 10,
+              "records_per_analysis": 250000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+            }
           },
           {
             "product": "signal",
@@ -8753,7 +8808,15 @@
             "unit": "active_account_month",
             "base_rate": "8.00",
             "discount_percent": "0",
-            "effective_rate": "8.00"
+            "effective_rate": "8.00",
+            "pricing_basis": "published",
+            "workload_limits": {
+              "bank_accounts": 8,
+              "business_integrations": 20,
+              "records_per_analysis": 1000000,
+              "minimum_banking_history_months": 12,
+              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+            }
           }
         ]
       },
@@ -8784,6 +8847,7 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
           "billing_account_id": "billing_account_example",
           "product": "insights",
           "tier": "standard",
@@ -8835,6 +8899,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "billing_account_id": "billing_account_example",
         "product": "insights",
         "tier": "standard",
@@ -8880,6 +8945,8 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
+        "billing_account_id": "billing_account_example",
         "currency": "CAD",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
@@ -8945,6 +9012,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
         "report_type": "usage",
@@ -8984,6 +9052,7 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
           "from": "2026-10-01T00:00:00Z",
           "to": "2026-11-01T00:00:00Z",
           "report_type": "usage",
@@ -9028,6 +9097,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
         "report_type": "usage",
@@ -9068,6 +9138,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "url": "https://downloads.example.com/authorized-report",
         "expires_at": "2026-10-23T14:05:00Z",
         "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -9099,6 +9170,7 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
           "from": "2026-10-01T00:00:00Z",
           "to": "2026-11-01T00:00:00Z",
           "billing_account_id": "billing_account_example",
@@ -9148,6 +9220,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
         "billing_account_id": "billing_account_example",
@@ -9191,30 +9264,17 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
+        "workspace_id": "wsp_example",
         "billing_account_id": "billing_account_example",
         "currency": "CAD",
         "as_of": "2026-10-23T14:00:00Z",
         "ledger_sequence": 3,
-        "committed_credits": {
-          "posted": "10900.00",
-          "held": "500.00",
-          "available": "10400.00"
-        },
-        "additional_funds": {
-          "posted": "0.00",
-          "held": "0.00",
-          "available": "0.00"
-        },
-        "promotional_credits": {
-          "posted": "0.00",
-          "held": "0.00",
-          "available": "0.00"
-        },
-        "pending_incoming": "250.00",
+        "pending_incoming": "500.00",
         "total_posted": "10900.00",
         "total_held": "500.00",
         "available_for_usage": "10400.00",
-        "remaining_paid_credits": "10900.00"
+        "processing_floor": "200.00",
+        "spendable_for_processing": "10200.00"
       },
       "meta": {
         "request_id": "req_example",
@@ -9243,14 +9303,13 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
+          "workspace_id": "wsp_example",
           "billing_account_id": "billing_account_example",
           "sequence": 3,
           "currency": "CAD",
           "amount": "-600.00",
           "balance_after": "10900.00",
           "entry_type": "usage",
-          "bucket": "committed_credits",
-          "credit_lot_id": "lot_example",
           "movement_id": "billing_usage_signal",
           "reverses_entry_id": null,
           "posted_at": "2026-10-23T14:00:00Z",

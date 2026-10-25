@@ -1,25 +1,30 @@
 ---
 title: "Account management"
-description: "Work with your account manager on agreements, renewal, cancellation, and final refunds."
+description: "Manage payments and cancellation in the portal, with dedicated account-manager support for enterprise clients."
 ---
 
-Your account manager coordinates commercial changes and the final cancellation of your AMLOK agreement. These are managed account processes, not customer API operations.
+Use the **client portal** to manage payment methods, automatic top-ups, and account cancellation. Enterprise clients can also work with their dedicated account manager on cancellation, agreements, rates, workload limits, and renewal.
 
-Contact your account manager for changes to the monthly minimum commitment, products, complexity tiers, volume discounts, renewal, cancellation notice, and the effective end date. If you do not have their contact details, email [support@amlok.tech](mailto:support@amlok.tech?subject=AMLOK%20account%20management) and include your company and workspace reference.
+For assistance, email [support@amlok.tech](mailto:support@amlok.tech?subject=AMLOK%20account%20management) with your company and workspace reference. Do not include full bank or card credentials in email.
 
-## Final cancellation and refund
+## Payments and top-ups
 
-1. Send the request to your account manager. AMLOK confirms the notice requirements and effective cancellation date under your agreement.
-2. AMLOK stops new usage and automatic top-ups at the effective end date and reconciles final usage and pending funding.
-3. AMLOK confirms the remaining paid balance and refund payment instructions before closing the account.
-4. **Immediately after account closure, AMLOK issues the full remaining paid-balance refund.** Funds may take **7-10 business days** to reach your bank account, depending on your bank.
+Add or change a **card or bank account** in the portal. Set your automatic top-up trigger at **CAD 200 or higher** and the amount at **CAD 500 or higher**. AMLOK pauses billable processing before it would reduce available credits below **CAD 200**. Pending payments do not fund new processing; a higher threshold can provide more time for settlement.
 
-You do not submit a refund, payout, approval, transfer, or closure command through the API. Your account manager coordinates the refund and provides its reference and delivery updates. A failed or returned payment does not cancel the refund obligation.
+Save at least one bank account for refunds, including if you normally fund by card. Your workspace has one credit balance across all products, including promotional top-ups. See [credits and billing](/pricing/credits-and-billing).
 
-Your credit view is read-only. Payment-method changes, additional credits, and agreed top-up changes go through your account manager. The wallet cannot be withdrawn while the agreement remains active. See [agreement terms](/pricing/contract-terms) and [refunds and payouts](/pricing/refunds-and-payouts).
+## Cancellation and refund
+
+1. Export any records you need, confirm the saved refund bank account, and request cancellation in the portal. Enterprise clients may request it through their account manager.
+2. The workspace is scheduled for deletion. New billable activity and automatic top-ups stop at the effective service end date, and final usage and pending funding are reconciled.
+3. All workspace data is deleted as part of completed cancellation. AMLOK confirms the unused balance and saved refund destination before account closure.
+4. **AMLOK issues an immediate refund of the entire unused credit balance when the account closes.** This includes promotional credits and the unused CAD 200 floor. Used credits are non-refundable.
+5. Bank receipt can take **7-10 business days**, depending on the bank. Closure does not wait for delivery. Support or the enterprise account manager assists with a failed or returned refund.
+
+The client portal provides these account controls. The public API provides reporting only, with no payment-setting, cancellation, refund, payout, approval, or transfer commands. See [cancellation and refunds](/pricing/refunds-and-payouts).
 
 ## Workspace retention and deletion
 
-Authorized users manage retention through workspace settings in the AMLOK platform, in accordance with applicable compliance requirements. **When workspace deletion is completed, all data associated with that workspace is deleted.** The API does not provide a separate deletion-request endpoint.
+Authorized users configure retention in the AMLOK platform according to applicable compliance requirements. Cancellation includes workspace deletion; **when deletion is complete, all associated workspace data is deleted**. Disconnecting an individual integration is not an account cancellation.
 
-Account cancellation and workspace deletion are distinct actions. Coordinate the necessary final statements and exports with your account manager before completing workspace deletion. See [privacy and data handling](/security/privacy).
+See [privacy and data handling](/security/privacy) for retention and data scope.

@@ -18,9 +18,9 @@ test("Mixed monthly usage consumes credits without adding the prepayment twice",
   assert.equal(r.monthlyCents, 110000);
   assert.equal(r.paymentCents, 1200000);
   assert.equal(r.usageCents, 1320000);
-  assert.equal(r.topUpCents, 120000);
-  assert.equal(r.unusedCents, 0);
-  assert.equal(r.fundingCents, 1320000);
+  assert.equal(r.topUpCents, 150000);
+  assert.equal(r.unusedCents, 30000);
+  assert.equal(r.fundingCents, 1350000);
 });
 test("Each of the six approved rates is used independently", () => {
   for (const [product, prices] of [["insights", [500, 1500, 3500]], ["signal", [300, 500, 800]]]) {
@@ -32,7 +32,7 @@ test("Each of the six approved rates is used independently", () => {
 });
 test("Published mixed-portfolio example exactly consumes CAD 12,000", () => {
   const input = baseline(); input.volumes.insights = ["50", "10", "0"];
-  const r = calculate(input); assert.equal(r.usageCents, 1200000); assert.equal(r.topUpCents, 0); assert.equal(r.unusedCents, 0);
+  const r = calculate(input); assert.equal(r.usageCents, 1200000); assert.equal(r.topUpCents, 50000); assert.equal(r.unusedCents, 50000);
 });
 test("Below-minimum usage leaves credits available", () => {
   const input = baseline(); input.enabled.insights = false; input.volumes.signal = ["300", "0", "0"];
@@ -40,7 +40,7 @@ test("Below-minimum usage leaves credits available", () => {
 });
 test("Discount applies to usage, never the monthly minimum", () => {
   const input = baseline(); input.discount = "10";
-  const r = calculate(input); assert.equal(r.monthlyCents, 99000); assert.equal(r.paymentCents, 1200000); assert.equal(r.unusedCents, 12000);
+  const r = calculate(input); assert.equal(r.monthlyCents, 99000); assert.equal(r.paymentCents, 1200000); assert.equal(r.topUpCents, 50000); assert.equal(r.unusedCents, 62000);
 });
 test("A larger commitment changes prepayment but not consumption", () => {
   const input = baseline(); input.commitment = "2000";
@@ -87,5 +87,18 @@ test("Exact typed volumes are priced without snapping or capping to slider prese
     const input = baseline(); input.enabled.signal = false; input.volumes.insights = [String(quantity), "0", "0"];
     const r = calculate(input); assert.equal(r.monthlyCents, quantity * 500); assert.equal(r.usageCents, quantity * 500 * 12);
   }
+});
+test("Processing floor triggers minimum-size funding before credit exhaustion", () => {
+  const input = baseline(); input.enabled.signal = false; input.volumes.insights = ["196", "0", "0"];
+  let r = calculate(input); assert.equal(r.topUpCents, 0); assert.equal(r.unusedCents, 24000);
+  input.volumes.insights[0] = "197";
+  r = calculate(input); assert.equal(r.topUpCents, 50000); assert.equal(r.unusedCents, 68000);
+});
+test("Negotiated product rates replace published rates without double-discounting", () => {
+  const input = baseline(); input.useAgreedRates = true; input.discount = "50";
+  input.agreedRates = { insights: ["4.50", "13.50", "31.50"], signal: ["2.50", "4", "7"] };
+  const r = calculate(input); assert.equal(r.monthlyCents, 95000); assert.equal(r.discount, 0);
+  assert.equal(r.rows[0].unitCents, 450); assert.equal(r.rows[3].unitCents, 250);
+  input.agreedRates.insights[0] = "4.555"; assert.equal(calculate(input).valid, false);
 });
 console.log(`${tests} pricing calculator checks passed.`);

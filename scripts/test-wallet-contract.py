@@ -39,18 +39,37 @@ check(not (ROOT/'api-reference/wallets.mdx').exists(),'Interactive wallet guide 
 check(not (ROOT/'data/wallet-api-index.json').exists(),'Old wallet index remains')
 account=response('/v1/billing/account')
 check(account['outflow_policy']=='product_usage_or_final_cancellation_refund','Wrong wallet policy')
-check(account['refund_policy']=='full_remaining_paid_balance_on_final_cancellation','Wrong refund policy')
+check(account['refund_policy']=='full_unused_balance_on_final_cancellation','Wrong refund policy')
 check(account['access']=='reporting_only' and 'enabled_capabilities' not in account,'Interactive account capability remains')
+check(set(account['portal_controls'])=={'payment_methods','automatic_top_ups','account_cancellation'},'Portal controls missing')
+check(set(account['funding_methods'])=={'card','bank_account'},'Incorrect funding methods')
+check(account['refund_destination']=='saved_portal_bank_account','Refund must use saved bank account')
+check(account['processing_balance_floor']==account['minimum_top_up_threshold']=='200.00','Wrong processing floor or threshold minimum')
+check(account['minimum_top_up_amount']=='500.00','Wrong top-up minimum')
 for policy in ['active_agreement_refunds','withdraw_anytime']:
     check(not valid('BillingAccount',{**account,'refund_policy':policy}),'Wrong policy accepted')
 balance=response('/v1/billing/credits')
-for name in ['committed_credits','additional_funds','promotional_credits']:
-    bucket=balance[name]
-    check(Decimal(bucket['available'])==Decimal(bucket['posted'])-Decimal(bucket['held']),name+' does not reconcile')
-check(Decimal(balance['total_posted'])==sum(Decimal(balance[b]['posted']) for b in ['committed_credits','additional_funds','promotional_credits']),'Posted sum')
-check(Decimal(balance['remaining_paid_credits'])==sum(Decimal(balance[b]['posted']) for b in ['committed_credits','additional_funds']),'Paid principal includes promotional or excludes held paid credits')
+for obsolete in ['committed_credits','additional_funds','promotional_credits','remaining_paid_credits']:
+    check(obsolete not in balance,'Obsolete credit bucket remains')
+    check(not valid('BillingCreditBalance',{**balance,obsolete:{}}),'Schema accepts obsolete bucket')
 check('withdrawable' not in balance,'Balance advertises immediate cash-out')
 check(Decimal(balance['available_for_usage'])==Decimal(balance['total_posted'])-Decimal(balance['total_held']),'Pending funding counted as available')
+check(Decimal(balance['spendable_for_processing'])==max(Decimal(0),Decimal(balance['available_for_usage'])-Decimal(balance['processing_floor'])),'Processing floor not protected')
+check(not valid('BillingCreditBalance',{**balance,'processing_floor':'199.99'}),'Incorrect processing floor accepted')
+check(balance['workspace_id']==account['workspace_id']=='wsp_example','Workspace context missing')
+entry=response('/v1/billing/credit-ledger')[0]
+check(not set(entry)&{'bucket','credit_lot_id'},'Ledger still allocates consumption by source bucket')
+check(not valid('BillingCreditEntry',{**entry,'bucket':'promotional_credits'}),'Ledger accepts source-priority allocation')
+rate_card=response('/v1/billing/rate-card')
+for rate in rate_card['rates']:
+    check(rate['workload_limits']['minimum_banking_history_months']==12,'Banking history requirement missing')
+    check(rate['workload_limits']['records_per_analysis']=={'standard':75000,'advanced':250000,'complex':1000000}[rate['tier']],'Published per-analysis limit wrong')
+negotiated=deepcopy(rate_card['rates'][0]);negotiated.update(pricing_basis='negotiated',effective_rate='4.50',discount_percent='10')
+check(valid('BillingRate',negotiated),'Negotiated rate must retain existing tier')
+check(not valid('BillingRate',{**negotiated,'tier':'custom'}),'Fourth reporting tier accepted')
+custom=deepcopy(rate_card['rates'][2]);custom.update(pricing_basis='negotiated');custom['workload_limits']['records_per_analysis']=2000000
+check(valid('BillingRate',custom),'Explicit custom allowance cannot be represented')
+check(not valid('BillingWorkloadLimits',{**custom['workload_limits'],'minimum_banking_history_months':11}),'History shorter than twelve months accepted')
 statement=response('/v1/billing/statements/{id}')
 closing=sum(Decimal(statement[k]) for k in ['opening_balance','funding','adjustments'])-sum(Decimal(statement[k]) for k in ['usage','refunds'])
 check(closing==Decimal(statement['closing_balance'])==Decimal(balance['total_posted']),'Statement not reconciled')
@@ -81,6 +100,8 @@ check(all(isinstance(p,str) for p in reporting['pages']),'Reporting contains red
 check(not any(g['group'] in ['Billing','Privacy','Wallets'] for g in groups),'Retired endpoint group remains')
 for op in index:
     operation=spec['paths'][op['path']][op['method'].lower()]
+    records=op['response']['data'] if isinstance(op['response']['data'],list) else [op['response']['data']]
+    check(all(record['workspace_id']==account['workspace_id'] for record in records),'Report crosses workspace context')
     check(operation['operationId']==OPERATION_IDS[op['method']+' '+op['path']],'Existing operation identity changed')
     check(set(operation['x-required-scopes']) <= {'billing:read','billing:export'},'Unsupported reporting scopes remain')
     check(op['method']=='GET' or (op['method']=='POST' and op['path'] in ['/v1/billing/reports','/v1/billing/reports/{id}/download-link']),'Customer can mutate credits or payment settings')

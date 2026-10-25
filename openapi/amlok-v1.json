@@ -33515,7 +33515,7 @@
       "get": {
         "operationId": "WA001",
         "summary": "Retrieve billing account",
-        "description": "Read agreed pricing and the prepaid-service-credit policy. Customer access is reporting-only. Your account manager handles payment arrangements, agreement changes, final cancellation and the resulting refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read the unified workspace billing policy, CAD 200 hard processing floor, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Final cancellation deletes workspace data and immediately refunds the full unused balance, including promotional credits, to the saved portal bank account when the account closes. Used credits are non-refundable.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -33571,6 +33571,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "currency": "CAD",
                         "agreement_id": "agr_example",
                         "agreement_version": "3",
@@ -33581,9 +33582,22 @@
                         "renewal_payment_at": "2027-10-01T00:00:00Z",
                         "credit_type": "prepaid_service_credits",
                         "outflow_policy": "product_usage_or_final_cancellation_refund",
-                        "refund_policy": "full_remaining_paid_balance_on_final_cancellation",
+                        "refund_policy": "full_unused_balance_on_final_cancellation",
                         "access": "reporting_only",
-                        "policy_version": "credits-reporting-only"
+                        "portal_controls": [
+                          "payment_methods",
+                          "automatic_top_ups",
+                          "account_cancellation"
+                        ],
+                        "funding_methods": [
+                          "card",
+                          "bank_account"
+                        ],
+                        "processing_balance_floor": "200.00",
+                        "minimum_top_up_threshold": "200.00",
+                        "minimum_top_up_amount": "500.00",
+                        "refund_destination": "saved_portal_bank_account",
+                        "policy_version": "unified-workspace-credits"
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -33650,7 +33664,7 @@
       "get": {
         "operationId": "WA002",
         "summary": "Retrieve billing rate card",
-        "description": "Read effective product rates and negotiated discounts. Historical usage retains its own rate-card identifier.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. At least 12 months of banking history count inside records_per_analysis. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -33706,6 +33720,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "currency": "CAD",
                         "effective_from": "2026-10-01T00:00:00Z",
                         "rates": [
@@ -33715,7 +33730,15 @@
                             "unit": "completed_underwriting",
                             "base_rate": "5.00",
                             "discount_percent": "0",
-                            "effective_rate": "5.00"
+                            "effective_rate": "5.00",
+                            "pricing_basis": "published",
+                            "workload_limits": {
+                              "bank_accounts": 2,
+                              "business_integrations": 5,
+                              "records_per_analysis": 75000,
+                              "minimum_banking_history_months": 12,
+                              "analysis_scope": "Routine reconciliation and standard analysis"
+                            }
                           },
                           {
                             "product": "insights",
@@ -33723,7 +33746,15 @@
                             "unit": "completed_underwriting",
                             "base_rate": "15.00",
                             "discount_percent": "0",
-                            "effective_rate": "15.00"
+                            "effective_rate": "15.00",
+                            "pricing_basis": "published",
+                            "workload_limits": {
+                              "bank_accounts": 4,
+                              "business_integrations": 10,
+                              "records_per_analysis": 250000,
+                              "minimum_banking_history_months": 12,
+                              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+                            }
                           },
                           {
                             "product": "insights",
@@ -33731,7 +33762,15 @@
                             "unit": "completed_underwriting",
                             "base_rate": "35.00",
                             "discount_percent": "0",
-                            "effective_rate": "35.00"
+                            "effective_rate": "35.00",
+                            "pricing_basis": "published",
+                            "workload_limits": {
+                              "bank_accounts": 8,
+                              "business_integrations": 20,
+                              "records_per_analysis": 1000000,
+                              "minimum_banking_history_months": 12,
+                              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+                            }
                           },
                           {
                             "product": "signal",
@@ -33739,7 +33778,15 @@
                             "unit": "active_account_month",
                             "base_rate": "3.00",
                             "discount_percent": "0",
-                            "effective_rate": "3.00"
+                            "effective_rate": "3.00",
+                            "pricing_basis": "published",
+                            "workload_limits": {
+                              "bank_accounts": 2,
+                              "business_integrations": 5,
+                              "records_per_analysis": 75000,
+                              "minimum_banking_history_months": 12,
+                              "analysis_scope": "Routine reconciliation and standard analysis"
+                            }
                           },
                           {
                             "product": "signal",
@@ -33747,7 +33794,15 @@
                             "unit": "active_account_month",
                             "base_rate": "5.00",
                             "discount_percent": "0",
-                            "effective_rate": "5.00"
+                            "effective_rate": "5.00",
+                            "pricing_basis": "published",
+                            "workload_limits": {
+                              "bank_accounts": 4,
+                              "business_integrations": 10,
+                              "records_per_analysis": 250000,
+                              "minimum_banking_history_months": 12,
+                              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+                            }
                           },
                           {
                             "product": "signal",
@@ -33755,7 +33810,15 @@
                             "unit": "active_account_month",
                             "base_rate": "8.00",
                             "discount_percent": "0",
-                            "effective_rate": "8.00"
+                            "effective_rate": "8.00",
+                            "pricing_basis": "published",
+                            "workload_limits": {
+                              "bank_accounts": 8,
+                              "business_integrations": 20,
+                              "records_per_analysis": 1000000,
+                              "minimum_banking_history_months": 12,
+                              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+                            }
                           }
                         ]
                       },
@@ -33824,7 +33887,7 @@
       "get": {
         "operationId": "WA003",
         "summary": "List usage records",
-        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -33973,6 +34036,7 @@
                           "record_version": 1,
                           "created_at": "2026-10-23T14:00:00Z",
                           "updated_at": "2026-10-23T14:00:00Z",
+                          "workspace_id": "wsp_example",
                           "billing_account_id": "billing_account_example",
                           "product": "insights",
                           "tier": "standard",
@@ -34063,7 +34127,7 @@
       "get": {
         "operationId": "WA004",
         "summary": "Retrieve usage record",
-        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34130,6 +34194,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "billing_account_id": "billing_account_example",
                         "product": "insights",
                         "tier": "standard",
@@ -34214,7 +34279,7 @@
       "get": {
         "operationId": "WA005",
         "summary": "Retrieve consumption summary",
-        "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34322,6 +34387,8 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
+                        "billing_account_id": "billing_account_example",
                         "currency": "CAD",
                         "from": "2026-10-01T00:00:00Z",
                         "to": "2026-11-01T00:00:00Z",
@@ -34420,7 +34487,7 @@
       "post": {
         "operationId": "WA006",
         "summary": "Create billing report",
-        "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34487,6 +34554,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "from": "2026-10-01T00:00:00Z",
                         "to": "2026-11-01T00:00:00Z",
                         "report_type": "usage",
@@ -34579,7 +34647,7 @@
       "get": {
         "operationId": "WA007",
         "summary": "List billing reports",
-        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34665,6 +34733,7 @@
                           "record_version": 1,
                           "created_at": "2026-10-23T14:00:00Z",
                           "updated_at": "2026-10-23T14:00:00Z",
+                          "workspace_id": "wsp_example",
                           "from": "2026-10-01T00:00:00Z",
                           "to": "2026-11-01T00:00:00Z",
                           "report_type": "usage",
@@ -34748,7 +34817,7 @@
       "get": {
         "operationId": "WA008",
         "summary": "Retrieve billing report",
-        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34815,6 +34884,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "from": "2026-10-01T00:00:00Z",
                         "to": "2026-11-01T00:00:00Z",
                         "report_type": "usage",
@@ -34892,7 +34962,7 @@
       "post": {
         "operationId": "WA009",
         "summary": "Create billing report download link",
-        "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34969,6 +35039,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "url": "https://downloads.example.com/authorized-report",
                         "expires_at": "2026-10-23T14:05:00Z",
                         "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
@@ -35051,7 +35122,7 @@
       "get": {
         "operationId": "WA010",
         "summary": "List billing statements",
-        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35137,6 +35208,7 @@
                           "record_version": 1,
                           "created_at": "2026-10-23T14:00:00Z",
                           "updated_at": "2026-10-23T14:00:00Z",
+                          "workspace_id": "wsp_example",
                           "from": "2026-10-01T00:00:00Z",
                           "to": "2026-11-01T00:00:00Z",
                           "billing_account_id": "billing_account_example",
@@ -35225,7 +35297,7 @@
       "get": {
         "operationId": "WA011",
         "summary": "Retrieve billing statement",
-        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35292,6 +35364,7 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "from": "2026-10-01T00:00:00Z",
                         "to": "2026-11-01T00:00:00Z",
                         "billing_account_id": "billing_account_example",
@@ -35374,7 +35447,7 @@
       "get": {
         "operationId": "WA058",
         "summary": "Retrieve credit balance",
-        "description": "Read the authenticated institution billing account credit snapshot. Paid and promotional credits are separate. Pending incoming payments are excluded from usable credits. Holds reserve usage without a second debit. remaining_paid_credits is paid principal, not an on-demand withdrawal balance. This endpoint cannot change credits or payment arrangements.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35430,30 +35503,17 @@
                         "record_version": 1,
                         "created_at": "2026-10-23T14:00:00Z",
                         "updated_at": "2026-10-23T14:00:00Z",
+                        "workspace_id": "wsp_example",
                         "billing_account_id": "billing_account_example",
                         "currency": "CAD",
                         "as_of": "2026-10-23T14:00:00Z",
                         "ledger_sequence": 3,
-                        "committed_credits": {
-                          "posted": "10900.00",
-                          "held": "500.00",
-                          "available": "10400.00"
-                        },
-                        "additional_funds": {
-                          "posted": "0.00",
-                          "held": "0.00",
-                          "available": "0.00"
-                        },
-                        "promotional_credits": {
-                          "posted": "0.00",
-                          "held": "0.00",
-                          "available": "0.00"
-                        },
-                        "pending_incoming": "250.00",
+                        "pending_incoming": "500.00",
                         "total_posted": "10900.00",
                         "total_held": "500.00",
                         "available_for_usage": "10400.00",
-                        "remaining_paid_credits": "10900.00"
+                        "processing_floor": "200.00",
+                        "spendable_for_processing": "10200.00"
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -35520,7 +35580,7 @@
       "get": {
         "operationId": "WA059",
         "summary": "List credit ledger entries",
-        "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write.",
+        "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35616,14 +35676,13 @@
                           "record_version": 1,
                           "created_at": "2026-10-23T14:00:00Z",
                           "updated_at": "2026-10-23T14:00:00Z",
+                          "workspace_id": "wsp_example",
                           "billing_account_id": "billing_account_example",
                           "sequence": 3,
                           "currency": "CAD",
                           "amount": "-600.00",
                           "balance_after": "10900.00",
                           "entry_type": "usage",
-                          "bucket": "committed_credits",
-                          "credit_lot_id": "lot_example",
                           "movement_id": "billing_usage_signal",
                           "reverses_entry_id": null,
                           "posted_at": "2026-10-23T14:00:00Z",
@@ -65792,6 +65851,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
           "currency": {
             "type": "string",
             "enum": [
@@ -65843,13 +65907,58 @@
           "refund_policy": {
             "type": "string",
             "enum": [
-              "full_remaining_paid_balance_on_final_cancellation"
+              "full_unused_balance_on_final_cancellation"
             ]
           },
           "access": {
             "type": "string",
             "enum": [
               "reporting_only"
+            ]
+          },
+          "portal_controls": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "payment_methods",
+                "automatic_top_ups",
+                "account_cancellation"
+              ]
+            }
+          },
+          "funding_methods": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "card",
+                "bank_account"
+              ]
+            }
+          },
+          "processing_balance_floor": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Nonnegative CAD amount, exact decimal string in major units.",
+            "const": "200.00"
+          },
+          "minimum_top_up_threshold": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Nonnegative CAD amount, exact decimal string in major units.",
+            "const": "200.00"
+          },
+          "minimum_top_up_amount": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Nonnegative CAD amount, exact decimal string in major units.",
+            "const": "500.00"
+          },
+          "refund_destination": {
+            "type": "string",
+            "enum": [
+              "saved_portal_bank_account"
             ]
           },
           "policy_version": {
@@ -65863,6 +65972,7 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "currency",
           "agreement_id",
           "agreement_version",
@@ -65875,6 +65985,12 @@
           "outflow_policy",
           "refund_policy",
           "access",
+          "portal_controls",
+          "funding_methods",
+          "processing_balance_floor",
+          "minimum_top_up_threshold",
+          "minimum_top_up_amount",
+          "refund_destination",
           "policy_version"
         ],
         "additionalProperties": false
@@ -65917,6 +66033,17 @@
             "type": "string",
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
             "description": "Nonnegative CAD amount, exact decimal string in major units."
+          },
+          "pricing_basis": {
+            "type": "string",
+            "enum": [
+              "published",
+              "negotiated"
+            ],
+            "description": "A custom quote uses negotiated pricing under an existing tier, with explicit agreed limits."
+          },
+          "workload_limits": {
+            "$ref": "#/components/schemas/BillingWorkloadLimits"
           }
         },
         "required": [
@@ -65925,7 +66052,42 @@
           "unit",
           "base_rate",
           "discount_percent",
-          "effective_rate"
+          "effective_rate",
+          "pricing_basis",
+          "workload_limits"
+        ],
+        "additionalProperties": false
+      },
+      "BillingWorkloadLimits": {
+        "type": "object",
+        "properties": {
+          "bank_accounts": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "business_integrations": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "records_per_analysis": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "minimum_banking_history_months": {
+            "type": "integer",
+            "minimum": 12
+          },
+          "analysis_scope": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "bank_accounts",
+          "business_integrations",
+          "records_per_analysis",
+          "minimum_banking_history_months",
+          "analysis_scope"
         ],
         "additionalProperties": false
       },
@@ -65952,6 +66114,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
           "currency": {
             "type": "string",
             "enum": [
@@ -65975,6 +66142,7 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "currency",
           "effective_from",
           "rates"
@@ -66004,6 +66172,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
           "billing_account_id": {
             "type": "string",
             "minLength": 1
@@ -66025,14 +66198,16 @@
           },
           "source_resource_id": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Underwriting identifier for Insights; stable borrower/business identifier for Signal, never an individual monitor or facility identifier."
           },
           "unit": {
             "type": "string",
             "enum": [
               "completed_underwriting",
               "active_account_month"
-            ]
+            ],
+            "description": "Signal counts each active borrower/business once per workspace per month, regardless of checks, monitoring configurations, facilities or data connections. Partial-month and tier-change treatment follows the agreement without duplicate charges for the same active period."
           },
           "quantity": {
             "type": "string",
@@ -66125,6 +66300,7 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "billing_account_id",
           "product",
           "tier",
@@ -66235,6 +66411,15 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
+          "billing_account_id": {
+            "type": "string",
+            "minLength": 1
+          },
           "currency": {
             "type": "string",
             "enum": [
@@ -66289,6 +66474,8 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
+          "billing_account_id",
           "currency",
           "from",
           "to",
@@ -66388,6 +66575,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
           "from": {
             "type": "string",
             "format": "date-time"
@@ -66476,6 +66668,7 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "from",
           "to",
           "report_type",
@@ -66513,6 +66706,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
           "url": {
             "type": "string",
             "format": "uri"
@@ -66532,6 +66730,7 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "url",
           "expires_at",
           "sha256"
@@ -66560,6 +66759,11 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
           },
           "from": {
             "type": "string",
@@ -66650,6 +66854,7 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "from",
           "to",
           "billing_account_id",
@@ -66692,6 +66897,11 @@
             "type": "string",
             "format": "date-time"
           },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
           "billing_account_id": {
             "type": "string",
             "minLength": 1
@@ -66709,84 +66919,6 @@
           "ledger_sequence": {
             "type": "integer",
             "minimum": 0
-          },
-          "committed_credits": {
-            "type": "object",
-            "properties": {
-              "posted": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              },
-              "held": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              },
-              "available": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              }
-            },
-            "required": [
-              "posted",
-              "held",
-              "available"
-            ],
-            "additionalProperties": false
-          },
-          "additional_funds": {
-            "type": "object",
-            "properties": {
-              "posted": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              },
-              "held": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              },
-              "available": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              }
-            },
-            "required": [
-              "posted",
-              "held",
-              "available"
-            ],
-            "additionalProperties": false
-          },
-          "promotional_credits": {
-            "type": "object",
-            "properties": {
-              "posted": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              },
-              "held": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              },
-              "available": {
-                "type": "string",
-                "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-                "description": "Nonnegative CAD amount, exact decimal string in major units."
-              }
-            },
-            "required": [
-              "posted",
-              "held",
-              "available"
-            ],
-            "additionalProperties": false
           },
           "pending_incoming": {
             "type": "string",
@@ -66808,7 +66940,13 @@
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
             "description": "Nonnegative CAD amount, exact decimal string in major units."
           },
-          "remaining_paid_credits": {
+          "processing_floor": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Nonnegative CAD amount, exact decimal string in major units.",
+            "const": "200.00"
+          },
+          "spendable_for_processing": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
             "description": "Nonnegative CAD amount, exact decimal string in major units."
@@ -66820,18 +66958,17 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "billing_account_id",
           "currency",
           "as_of",
           "ledger_sequence",
-          "committed_credits",
-          "additional_funds",
-          "promotional_credits",
           "pending_incoming",
           "total_posted",
           "total_held",
           "available_for_usage",
-          "remaining_paid_credits"
+          "processing_floor",
+          "spendable_for_processing"
         ],
         "additionalProperties": false
       },
@@ -66857,6 +66994,11 @@
           "updated_at": {
             "type": "string",
             "format": "date-time"
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
           },
           "billing_account_id": {
             "type": "string",
@@ -66891,18 +67033,6 @@
               "adjustment",
               "reversal"
             ]
-          },
-          "bucket": {
-            "type": "string",
-            "enum": [
-              "committed_credits",
-              "additional_funds",
-              "promotional_credits"
-            ]
-          },
-          "credit_lot_id": {
-            "type": "string",
-            "minLength": 1
           },
           "movement_id": {
             "type": "string",
@@ -66941,14 +67071,13 @@
           "record_version",
           "created_at",
           "updated_at",
+          "workspace_id",
           "billing_account_id",
           "sequence",
           "currency",
           "amount",
           "balance_after",
           "entry_type",
-          "bucket",
-          "credit_lot_id",
           "movement_id",
           "reverses_entry_id",
           "posted_at",

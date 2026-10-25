@@ -1,49 +1,53 @@
 ---
 title: "Credit reporting"
-description: "View your prepaid credit balance, consumption, ledger history, and statements."
+description: "Report on one workspace credit balance, product consumption, ledger history, and statements."
 ---
 
-Your AMLOK credit account is **read-only for customers**. Reporting shows credits received, product usage, remaining credits, and adjustments. It does not provide an interactive wallet or payment controls.
+Each workspace has one unified billing account and credit balance across eligible AMLOK products. The **public API is reporting-only**. The client portal separately lets customers manage card or bank-account funding, automatic top-up settings, and cancellation.
 
 | Information | Reporting endpoint |
 | --- | --- |
+| Agreed billing policy | [Retrieve billing account](/api-reference/endpoints/billing/retrieve-billing-account) |
 | Current credit balance | [Retrieve credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) |
 | Posted credit activity | [List credit ledger entries](/api-reference/endpoints/billing/list-credit-ledger-entries) |
 | Individual product charges | [List usage records](/api-reference/endpoints/billing/list-usage-records) |
-| Usage by product, tier, and period | [Retrieve consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
-| Period balances and reconciliation | [List billing statements](/api-reference/endpoints/billing/list-billing-statements) |
+| Usage by product and tier | [Retrieve consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
+| Period reconciliation | [List billing statements](/api-reference/endpoints/billing/list-billing-statements) |
 | Downloadable reports | [Create billing report](/api-reference/endpoints/billing/create-billing-report) |
 
-## Understand your balance
+## One credit balance
 
-The credit balance identifies your billing account and its snapshot time, `as_of`. All amounts are exact CAD decimal strings.
+Reports identify the authorized `workspace_id` and billing account. Paid funding and commercial promotional top-ups are combined; there are no separate source-based spending balances or consumption priorities. Product and tier identify the reason and rate for a charge, not a separate wallet.
 
-- `committed_credits` records prepaid minimum-commitment credits.
-- `additional_funds` records additional paid credits.
-- `promotional_credits` records non-cash credits separately from paid principal.
-- Each bucket shows `posted`, `held`, and `available` amounts.
-- `pending_incoming` shows payments still awaiting settlement and is excluded from available credits.
-- `available_for_usage` is the amount available for eligible AMLOK product usage.
-- `remaining_paid_credits` is the remaining paid principal, including paid credits reserved for pending usage. It is not an amount you can withdraw on demand.
+The credit snapshot reports exact CAD decimal strings:
+
+- `total_posted`: credits remaining after posted additions, deductions, refunds, and corrections.
+- `total_held`: credits reserved for pending processing, not an additional posted debit.
+- `available_for_usage`: posted credits less holds, before protecting the processing floor.
+- `processing_floor`: CAD `200.00`, kept unused while the account is active.
+- `spendable_for_processing`: available credits above that floor.
+- `pending_incoming`: funding still awaiting settlement, excluded from usable credits.
 
 `available_for_usage = total_posted - total_held`
 
-A hold reserves credits for pending activity without creating a second charge. AMLOK reconciles the hold when the activity is resolved. Paid and promotional credits remain separate in reporting.
+`spendable_for_processing = max(0, available_for_usage - processing_floor)`
 
-## Review credit activity
+New billable processing or a new reservation must not take available credits below the floor. Capture of an existing hold replaces the reservation with the charge rather than deducting twice. Failed or pending funding can pause processing until sufficient usable credits arrive; reporting remains accessible on an active account.
 
-Ledger entries are immutable, ordered by `sequence`, and show the signed amount and resulting `balance_after`. Use `sequence_after` and cursor pagination to read subsequent entries. Corrections appear as new entries linked to the original record.
+For example, CAD 10,900 posted credits and CAD 500 held leave CAD 10,400 available, of which **CAD 10,200** can fund new processing while retaining the CAD 200 floor. The whole unused balance, including the floor and promotional credits, is refundable on final cancellation after pending usage is resolved.
 
-Statements reconcile opening credits, settled additions, product usage, final-cancellation refunds, adjustments, and closing credits. Use the same billing account, date window, time basis, and snapshot when comparing reports. See [consumption reporting](/api-reference/consumption-reporting).
+## Ledger and product reporting
 
-## Access and exports
+Ledger entries are immutable and ordered by `sequence`. Each entry shows a signed amount, resulting balance, movement reference, and any reversal link. There is no paid-versus-promotional debit allocation. Use `sequence_after` and cursor pagination for subsequent entries.
 
-`billing:read` permits authorized credit, usage, and statement reads. `billing:export` permits report generation and authorized download links. Both are restricted to your institution's billing account.
+Statements reconcile opening credits, top-ups, product usage, cancellation refunds, and adjustments. Insights and Signal retain their own units, tiers, and effective rates within the same workspace account. See [consumption reporting](/api-reference/consumption-reporting).
 
-Creating a report or download link only prepares reporting data. It does not change credits, charge a payment method, initiate a top-up, or move funds. There are no customer wallet endpoints or wallet-management scopes.
+## API access and portal controls
 
-## Payment and agreement assistance
+`billing:read` authorizes credit, usage, and statement reads; `billing:export` authorizes report generation and download links. Reads and exports must be restricted to the authorized workspace within the institution. A response's `workspace_id` is context, not authorization, and callers cannot select another workspace by adding an undocumented parameter.
 
-Contact your account manager for additional credits, payment arrangements, or changes to agreed top-ups. These are managed outside the customer credit view and API.
+Report creation and download links do not change credits. There are no public wallet-management, payment-method, top-up, threshold-setting, cancellation, refund, or transfer endpoints.
 
-Your account manager also coordinates final cancellation and the full remaining paid-balance refund. AMLOK issues the refund **immediately after account closure**; bank receipt may take **7-10 business days**, depending on the bank. See [credits and billing](/pricing/credits-and-billing), [refunds and payouts](/pricing/refunds-and-payouts), and [account management](/support/account-management).
+In the portal, the minimum automatic top-up threshold is CAD 200 and the minimum customer-funded top-up is CAD 500. Customers can fund by card or bank account and must save a bank account for cancellation refunds. Enterprise clients can also request cancellation through their dedicated account manager.
+
+Cancellation includes workspace deletion. AMLOK immediately refunds the entire unused credit balance to the saved bank account when the account closes; bank receipt can take **7-10 business days**. Used credits are non-refundable. See [credits and billing](/pricing/credits-and-billing) and [cancellation and refunds](/pricing/refunds-and-payouts).

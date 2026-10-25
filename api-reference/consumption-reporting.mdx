@@ -3,6 +3,8 @@ title: "Consumption reporting"
 description: "Reconcile product usage, pricing, credit deductions, statements, and exports."
 ---
 
+Your workspace has one billing account and credit balance across products. Paid and promotional top-ups have no consumption priority. Reports include the authorized workspace identifier and preserve product-specific billing units.
+
 Use consumption reporting to answer three questions: **what was used, what it cost, and how your credit balance changed**.
 
 | Question | Resource |
@@ -24,7 +26,7 @@ Each usage record contains the billing account, product, complexity tier, source
 | AMLOK Insights | Completed underwriting | CAD 5 | CAD 15 | CAD 35 |
 | AMLOK Signal | Active account-month | CAD 3 | CAD 5 | CAD 8 |
 
-The effective rate card reflects agreed discounts. Signal account counting and proration follow the signed agreement; a fractional quantity must reflect that policy. Reporting does not create a different billing event or add a fee.
+The effective rate card identifies published or negotiated pricing and agreed workload limits. Custom quotes retain `standard`, `advanced`, or `complex`; there is no separate custom tier. Use the actual `unit_rate` and `rate_card_id` on each usage record. The record allowance applies per underwriting or analysis and includes at least 12 months of banking history. The effective rate card reflects agreed discounts. For Signal, count each active borrower/business once per workspace per month, regardless of monitoring configurations, checks, facilities, or data connections. The source identifier is the borrower/business identifier, not an individual monitor ID. Partial-month proration and tier changes follow the signed agreement; fractional quantities must not duplicate the same active period. Reporting does not create a different billing event or add a fee.
 
 `charge amount = billable quantity × effective unit rate`
 
@@ -63,11 +65,13 @@ The named debit and credit columns are nonnegative magnitudes. `adjustments` is 
 | Posted Signal usage | -600.00 |
 | Closing posted balance | **10,900.00** |
 | Still held for pending product usage | 500.00 |
-| Available for product usage | **10,400.00** |
+| Available after holds | **10,400.00** |
+| Protected processing floor | 200.00 |
+| Spendable on new processing | **10,200.00** |
 
-A pending incoming top-up of CAD 250 does not change these totals. A hold is not a second debit. AMLOK captures it once when posting the movement, or releases it when the activity is cancelled or definitively fails.
+A pending incoming top-up of CAD 500 does not change these totals. A hold is not a second debit. AMLOK captures it once when posting the movement, or releases it when the activity is cancelled or definitively fails.
 
-Your credit view is reporting-only. It has no payment or balance-management controls. On final agreement cancellation, the full remaining paid balance is refunded after usage reconciliation. That refund is reported separately from product usage. AMLOK resolves pending usage before finalization: if it becomes a CAD 500 product charge, the remaining paid balance is CAD 10,400; if released without a charge, it is CAD 10,900.
+The public credit API is reporting-only. The client portal separately provides payment-method, top-up-setting, and cancellation controls. Billable processing pauses before it would take available credits below CAD 200. On final agreement cancellation, the entire unused credit balance is refunded after usage reconciliation. That refund is reported separately from product usage. AMLOK resolves pending usage before finalization: if it becomes a CAD 500 product charge, the unused credit balance is CAD 10,400; if released without a charge, it is CAD 10,900.
 
 ## Export and finalize
 
@@ -78,8 +82,8 @@ Your credit view is reporting-only. It has no payment or balance-management cont
 
 JSON exports retain decimal strings. CSV exports escape formula-like cells and contain no API keys or payment credentials. Expired exports require a new report request; they must not redirect silently to a newer snapshot.
 
-Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Your account manager provides cancellation confirmation and final refund details separately from the reporting API.
+Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Cancellation confirmation and refund details are provided through the account cancellation process, with dedicated account-manager assistance for enterprise clients.
 
-AMLOK issues the full remaining paid-balance refund immediately after account closure. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Use the confirmation and payment reference provided by your account manager to follow delivery. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
+Cancellation includes workspace deletion. AMLOK issues the full unused-credit refund, including promotional credits and the unused CAD 200 floor, to the bank account saved in the portal immediately at account closure. Used credits are non-refundable. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Keep the cancellation confirmation and refund reference for delivery assistance through support or your enterprise account manager. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
 
-See [credit reporting](/api-reference/credit-reporting) and [refunds and payouts](/pricing/refunds-and-payouts).
+See [credit reporting](/api-reference/credit-reporting) and [cancellation and refunds](/pricing/refunds-and-payouts).

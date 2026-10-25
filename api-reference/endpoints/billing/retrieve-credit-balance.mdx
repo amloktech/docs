@@ -6,6 +6,6 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Read the authenticated institution billing account credit snapshot. Paid and promotional credits are separate. Pending incoming payments are excluded from usable credits. Holds reserve usage without a second debit. remaining_paid_credits is paid principal, not an on-demand withdrawal balance. This endpoint cannot change credits or payment arrangements.
+Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.
 
-[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)
