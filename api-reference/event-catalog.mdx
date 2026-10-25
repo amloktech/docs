@@ -1,6 +1,6 @@
 ---
 title: "Event catalog"
-description: "Subscribe to 32 lifecycle events."
+description: "Subscribe to 30 lifecycle events."
 ---
 
 Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
@@ -52,8 +52,6 @@ The example indicates that a verification result is ready for review. It is not 
 | `billing.usage.posted` | `billing_usage` | A usage charge or compensating adjustment is posted. | Resource ID, version and status; retrieve full details. |
 | `billing.report.updated` | `billing_report` | A report is ready, failed, or expired. | Resource ID, version and status; retrieve full details. |
 | `billing.statement.finalized` | `billing_statement` | A statement revision is finalized. | Resource ID, version and status; retrieve full details. |
-| `wallet.balance.updated` | `wallet` | A posted entry or hold changes a balance. | Resource ID, version and status; retrieve full details. |
-| `wallet.top_up.updated` | `wallet_top_up` | A funding attempt changes state. | Resource ID, version and status; retrieve full details. |
 
 The details column summarizes each event. The OpenAPI reference defines the shared envelope and event keys. Retrieve the referenced resource for its complete current representation.
 

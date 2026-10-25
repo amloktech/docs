@@ -48,8 +48,8 @@ for name,schema in spec['components']['schemas'].items():Draft202012Validator.ch
 if errors:
     print('\n'.join(errors));raise SystemExit(f'{len(errors)} invalid examples')
 index=json.loads((root/'data/api-reference-index.json').read_text())
-wallet_index=json.loads((root/'data/wallet-api-index.json').read_text())
-assert counts['operations']==162+len(wallet_index)+2==len(index)
+reporting_index=json.loads((root/'data/reporting-api-index.json').read_text())
+assert counts['operations']==162+len(reporting_index)+2==len(index)
 assert len({op['operationId'] for methods in spec['paths'].values() for op in methods.values()})==len(index)
 assert spec['servers'][0]['url']=='https://api.example.com'
 assert spec['info']['version']=='1.4.2'

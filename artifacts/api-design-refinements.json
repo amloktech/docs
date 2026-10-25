@@ -13,9 +13,7 @@
   "Page.next_cursor is explicitly nullable, as required by the pagination rule. Shared optional fields permit null where the normalization rule requires missing-value representation.",
   "Multipart document upload is the documented ingestion route. No unlisted pre-signed-upload endpoint is invented.",
   "The workbook describes key administration, signing-secret rotation, approval IDs and frozen input manifests but does not define management endpoints for them. Provisioning remains an onboarding dependency.",
-  "The customer API exposes reporting, wallet reads and funding only. Account managers handle agreements, final cancellation, closure and the resulting refund. No customer refund, payout, transfer, wallet-approval or closure endpoints are published. This contract does not implement a backend.",
-  "AMLOK issues the full remaining paid-balance refund immediately after account closure. Bank receipt may take 7-10 business days, depending on the bank. Reconcile usage and funding and verify refund instructions before closure; an outstanding cancellation refund does not keep the account open.",
-  "Funding mutations preserve durable business references beyond request-idempotency retention. Pending top-ups do not become usable credits before settlement.",
-  "CAD is the documented settlement currency. Cancellation refunds are server-calculated from paid principal after final usage, with no wallet fees or deduction of remaining term obligations. Promotional benefits have no cash principal. Payment reversals and corrections are system reconciliation, never client cash-out capabilities.",
-  "Funding uses payment methods authorized during onboarding. Cancellation refunds are administered by AMLOK, with confirmation through the account manager. Examples do not establish a production provider or regulatory status."
+  "Customer credit access is reporting-only. The API exposes credit balances, ledger history, usage, statements and exports, with no wallet endpoints, funding methods, top-ups, settings or money movements. Report generation and download links do not change credits.",
+  "AMLOK issues the full remaining paid-balance refund immediately after account closure. Bank receipt may take 7-10 business days, depending on the bank. Account managers coordinate cancellation and reconciliation before closure.",
+  "CAD credit reports separate paid principal from promotional benefits. Pending payments are excluded from available credits. Statements reconcile posted additions, usage, final-cancellation refunds and adjustments."
 ]

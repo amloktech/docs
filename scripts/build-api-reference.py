@@ -454,7 +454,7 @@ for op in OPS:
     OP_INDEX.append({'id':oid,'method':method,'path':path,'title':title,'scope':op['Scope'],'group':group,'page':page,'resource':resource,'request':request,'response':response_example,'success':success})
 
 from wallet_contract import extend
-WALLET_OPS = extend(globals())
+REPORTING_OPS = extend(globals())
 from status_contract import extend as extend_status
 STATUS_OPS = extend_status(globals())
 active_pages = {op['page'] for op in OP_INDEX}
@@ -472,14 +472,14 @@ write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
 GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
-ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting and wallets', 'wallet', ['wallets', 'consumption-reporting']), ('Security and versioning', 'lock', ['security', 'versioning'])]
-ENDPOINT_ICONS = {'Platform':'server','Identity':'fingerprint','Banking':'landmark','Payments':'credit-card','Commerce':'shopping-cart','Accounting':'calculator','Inventory':'boxes','Lending':'hand-coins','Liens':'file-lock','Risk':'chart-no-axes-combined','Operations':'workflow','Webhooks':'webhook','Reporting':'chart-column','Wallets':'wallet'}
+ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting', 'chart-column', ['credit-reporting', 'consumption-reporting']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+ENDPOINT_ICONS = {'Platform':'server','Identity':'fingerprint','Banking':'landmark','Payments':'credit-card','Commerce':'shopping-cart','Accounting':'calculator','Inventory':'boxes','Lending':'hand-coins','Liens':'file-lock','Risk':'chart-no-axes-combined','Operations':'workflow','Webhooks':'webhook','Reporting':'chart-column'}
 api_tab['groups'] = [
     {'group': 'Get started', 'pages': ['api-reference/' + p for p in GUIDES[:4]]},
     {'group': 'Endpoints', 'pages': [{'group': g, 'icon': ENDPOINT_ICONS[g], 'expanded': False, 'pages': pages} for g, pages in NAV_GROUPS.items()]},
     {'group': 'Essentials', 'pages': [{'group': name, 'icon': icon, 'expanded': False, 'pages': ['api-reference/' + p for p in pages]} for name, icon, pages in ESSENTIAL_GROUPS]},
 ]
-# Reporting and wallet endpoints remain directly under their main category.
+# Reporting endpoints remain directly under their main category.
 # Account-manager actions and platform retention settings are not public API groups.
 config['api']={'playground':{'display':'simple'},'examples':{'languages':['curl','python','javascript']}}
 write('docs.json',dump(config))

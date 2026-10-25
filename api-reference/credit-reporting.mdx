@@ -1,0 +1,49 @@
+---
+title: "Credit reporting"
+description: "View your prepaid credit balance, consumption, ledger history, and statements."
+---
+
+Your AMLOK credit account is **read-only for customers**. Reporting shows credits received, product usage, remaining credits, and adjustments. It does not provide an interactive wallet or payment controls.
+
+| Information | Reporting endpoint |
+| --- | --- |
+| Current credit balance | [Retrieve credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) |
+| Posted credit activity | [List credit ledger entries](/api-reference/endpoints/billing/list-credit-ledger-entries) |
+| Individual product charges | [List usage records](/api-reference/endpoints/billing/list-usage-records) |
+| Usage by product, tier, and period | [Retrieve consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
+| Period balances and reconciliation | [List billing statements](/api-reference/endpoints/billing/list-billing-statements) |
+| Downloadable reports | [Create billing report](/api-reference/endpoints/billing/create-billing-report) |
+
+## Understand your balance
+
+The credit balance identifies your billing account and its snapshot time, `as_of`. All amounts are exact CAD decimal strings.
+
+- `committed_credits` records prepaid minimum-commitment credits.
+- `additional_funds` records additional paid credits.
+- `promotional_credits` records non-cash credits separately from paid principal.
+- Each bucket shows `posted`, `held`, and `available` amounts.
+- `pending_incoming` shows payments still awaiting settlement and is excluded from available credits.
+- `available_for_usage` is the amount available for eligible AMLOK product usage.
+- `remaining_paid_credits` is the remaining paid principal, including paid credits reserved for pending usage. It is not an amount you can withdraw on demand.
+
+`available_for_usage = total_posted - total_held`
+
+A hold reserves credits for pending activity without creating a second charge. AMLOK reconciles the hold when the activity is resolved. Paid and promotional credits remain separate in reporting.
+
+## Review credit activity
+
+Ledger entries are immutable, ordered by `sequence`, and show the signed amount and resulting `balance_after`. Use `sequence_after` and cursor pagination to read subsequent entries. Corrections appear as new entries linked to the original record.
+
+Statements reconcile opening credits, settled additions, product usage, final-cancellation refunds, adjustments, and closing credits. Use the same billing account, date window, time basis, and snapshot when comparing reports. See [consumption reporting](/api-reference/consumption-reporting).
+
+## Access and exports
+
+`billing:read` permits authorized credit, usage, and statement reads. `billing:export` permits report generation and authorized download links. Both are restricted to your institution's billing account.
+
+Creating a report or download link only prepares reporting data. It does not change credits, charge a payment method, initiate a top-up, or move funds. There are no customer wallet endpoints or wallet-management scopes.
+
+## Payment and agreement assistance
+
+Contact your account manager for additional credits, payment arrangements, or changes to agreed top-ups. These are managed outside the customer credit view and API.
+
+Your account manager also coordinates final cancellation and the full remaining paid-balance refund. AMLOK issues the refund **immediately after account closure**; bank receipt may take **7-10 business days**, depending on the bank. See [credits and billing](/pricing/credits-and-billing), [refunds and payouts](/pricing/refunds-and-payouts), and [account management](/support/account-management).

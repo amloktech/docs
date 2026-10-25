@@ -59,16 +59,3 @@ A valid request can return usable partial data with `meta.data_status: partial`.
 Record the AMLOK `request_id`, operation, timestamp, environment, HTTP status, error code, and relevant resource/job IDs in your restricted operational logs. Redact keys, signing secrets, signed links, raw identity evidence, and full response bodies.
 
 Provide sanitized request IDs through your agreed support channel. Your agreement defines support channels and response commitments.
-
-## Reporting and wallet errors
-
-| Code | HTTP | Meaning |
-| --- | --- | --- |
-| `duplicate_client_reference` | 409 | This business reference already identifies another intended funding action. |
-| `wallet_restricted` | 409 | This wallet is restricted or closed for funding. |
-| `funding_method_not_verified` | 422 | Use a verified funding method authorized by the same legal entity. |
-| `unsupported_wallet_currency` | 422 | The funding currency or payment route is not enabled. |
-| `wallet_capability_disabled` | 403 | This funding capability is not enabled for the institution. |
-| `funding_method_in_use` | 409 | An active automatic top-up policy or pending payment still uses this method. |
-
-For an unknown payment outcome, retrieve the original top-up before retrying. See [wallet lifecycle](/api-reference/wallets).

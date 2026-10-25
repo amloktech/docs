@@ -1,22 +1,23 @@
 ---
 title: "Consumption reporting"
-description: "Reconcile product usage, pricing, wallet deductions, statements, and exports."
+description: "Reconcile product usage, pricing, credit deductions, statements, and exports."
 ---
 
-Use consumption reporting to answer three questions: **what was used, what it cost, and how the wallet changed**.
+Use consumption reporting to answer three questions: **what was used, what it cost, and how your credit balance changed**.
 
 | Question | Resource |
 | --- | --- |
 | What are our agreed rates and minimum? | [Billing account](/api-reference/endpoints/billing/retrieve-billing-account) and [rate card](/api-reference/endpoints/billing/retrieve-billing-rate-card) |
 | What triggered each charge? | [Usage records](/api-reference/endpoints/billing/list-usage-records) |
 | How much did each product and tier consume? | [Consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
-| What changed the wallet? | [Ledger entries](/api-reference/endpoints/wallets/list-wallet-ledger-entries) |
+| What credits remain? | [Credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) |
+| What changed the balance? | [Credit ledger entries](/api-reference/endpoints/billing/list-credit-ledger-entries) |
 | How do we reconcile a period? | [Billing statements](/api-reference/endpoints/billing/list-billing-statements) |
 | How do we download a full dataset? | [Billing reports](/api-reference/endpoints/billing/create-billing-report) |
 
 ## Billable usage
 
-Each usage record contains the wallet, product, complexity tier, source application or account, billable unit, quantity, effective unit rate, amount, period, timestamps, rate-card ID, and ledger reference.
+Each usage record contains the billing account, product, complexity tier, source application or account, billable unit, quantity, effective unit rate, amount, period, timestamps, rate-card ID, and ledger reference.
 
 | Product | Billable unit | Standard | Advanced | Complex |
 | --- | --- | ---: | ---: | ---: |
@@ -45,11 +46,11 @@ Every aggregation retains product, tier and unit. `group_by=day` or `month` adds
 
 The [consumption endpoint](/api-reference/endpoints/billing/retrieve-consumption-summary) includes complete cURL, Python, and Node.js requests with the required date window, time basis and grouping.
 
-For a synthetic month with 100 Standard Insights underwritings and 200 Standard Signal account-months, the totals are CAD 500 and CAD 600, or **CAD 1,100**. This consumes CAD 1,100 from the wallet; it is not an extra platform charge.
+For a synthetic month with 100 Standard Insights underwritings and 200 Standard Signal account-months, the totals are CAD 500 and CAD 600, or **CAD 1,100**. This consumes CAD 1,100 from your prepaid credits; it is not an extra platform charge.
 
-## Reconcile the wallet
+## Reconcile your credits
 
-Wallet statements use posted time and signed ledger entries:
+Billing statements use posted time and signed ledger entries:
 
 `closing = opening + funding - usage - final-cancellation refunds + adjustments`
 
@@ -64,13 +65,13 @@ The named debit and credit columns are nonnegative magnitudes. `adjustments` is 
 | Still held for pending product usage | 500.00 |
 | Available for product usage | **10,400.00** |
 
-A pending incoming top-up of CAD 250 does not change these totals. A hold is not a second debit. Capture it once when posting the movement; release it only when cancelled or definitively failed without moving funds.
+A pending incoming top-up of CAD 250 does not change these totals. A hold is not a second debit. AMLOK captures it once when posting the movement, or releases it when the activity is cancelled or definitively fails.
 
-Wallet transfers and on-demand withdrawals are not supported. On final agreement cancellation, the full remaining paid balance is refunded after usage reconciliation. That refund is reported separately from product usage. Resolve the pending usage hold before finalization: if it becomes a CAD 500 product charge, the remaining paid balance is CAD 10,400; if released without a charge, it is CAD 10,900.
+Your credit view is reporting-only. It has no payment or balance-management controls. On final agreement cancellation, the full remaining paid balance is refunded after usage reconciliation. That refund is reported separately from product usage. AMLOK resolves pending usage before finalization: if it becomes a CAD 500 product charge, the remaining paid balance is CAD 10,400; if released without a charge, it is CAD 10,900.
 
 ## Export and finalize
 
-1. Create a report for `usage`, `ledger`, or `statement`, with its wallet, window, format and time basis.
+1. Create a report for `usage`, `ledger`, or `statement`, with its window, format and time basis. Reports are scoped to your authenticated institution's billing account.
 2. Poll its returned ID until `ready`; `202` only acknowledges the job.
 3. Create a short-lived [download link](/api-reference/endpoints/billing/create-billing-report-download-link).
 4. Validate the file hash, store it under your institution's access policy, and retain the report's `as_of` value.
@@ -81,4 +82,4 @@ Final statement revisions are immutable. A later correction creates a new revisi
 
 AMLOK issues the full remaining paid-balance refund immediately after account closure. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Use the confirmation and payment reference provided by your account manager to follow delivery. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
 
-See [wallet lifecycle](/api-reference/wallets) and [refunds and payouts](/pricing/refunds-and-payouts).
+See [credit reporting](/api-reference/credit-reporting) and [refunds and payouts](/pricing/refunds-and-payouts).

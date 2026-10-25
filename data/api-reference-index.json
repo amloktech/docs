@@ -8672,14 +8672,11 @@
         "term_start": "2026-10-01T00:00:00Z",
         "term_end": "2027-10-01T00:00:00Z",
         "renewal_payment_at": "2027-10-01T00:00:00Z",
-        "wallet_type": "prepaid_service_credits",
+        "credit_type": "prepaid_service_credits",
         "outflow_policy": "product_usage_or_final_cancellation_refund",
         "refund_policy": "full_remaining_paid_balance_on_final_cancellation",
-        "enabled_capabilities": [
-          "funding",
-          "auto_top_up"
-        ],
-        "policy_version": "wallet-policy-account-manager-cancellation"
+        "access": "reporting_only",
+        "policy_version": "credits-reporting-only"
       },
       "meta": {
         "request_id": "req_example",
@@ -8787,7 +8784,7 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
-          "wallet_id": "wal_example",
+          "billing_account_id": "billing_account_example",
           "product": "insights",
           "tier": "standard",
           "source_resource_id": "uw_example",
@@ -8838,7 +8835,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
+        "billing_account_id": "billing_account_example",
         "product": "insights",
         "tier": "standard",
         "source_resource_id": "uw_example",
@@ -8937,7 +8934,6 @@
     "request": {
       "from": "2026-10-01T00:00:00Z",
       "to": "2026-11-01T00:00:00Z",
-      "wallet_id": "wal_example",
       "report_type": "usage",
       "format": "csv",
       "time_basis": "posted_at"
@@ -8951,10 +8947,10 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
-        "wallet_id": "wal_example",
         "report_type": "usage",
         "format": "csv",
         "time_basis": "posted_at",
+        "billing_account_id": "billing_account_example",
         "status": "queued",
         "as_of": "2026-10-23T14:00:00Z",
         "row_count": null,
@@ -8990,10 +8986,10 @@
           "updated_at": "2026-10-23T14:00:00Z",
           "from": "2026-10-01T00:00:00Z",
           "to": "2026-11-01T00:00:00Z",
-          "wallet_id": "wal_example",
           "report_type": "usage",
           "format": "csv",
           "time_basis": "posted_at",
+          "billing_account_id": "billing_account_example",
           "status": "queued",
           "as_of": "2026-10-23T14:00:00Z",
           "row_count": null,
@@ -9034,10 +9030,10 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
-        "wallet_id": "wal_example",
         "report_type": "usage",
         "format": "csv",
         "time_basis": "posted_at",
+        "billing_account_id": "billing_account_example",
         "status": "queued",
         "as_of": "2026-10-23T14:00:00Z",
         "row_count": null,
@@ -9105,7 +9101,7 @@
           "updated_at": "2026-10-23T14:00:00Z",
           "from": "2026-10-01T00:00:00Z",
           "to": "2026-11-01T00:00:00Z",
-          "wallet_id": "wal_example",
+          "billing_account_id": "billing_account_example",
           "currency": "CAD",
           "status": "provisional",
           "revision": 1,
@@ -9154,7 +9150,7 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "from": "2026-10-01T00:00:00Z",
         "to": "2026-11-01T00:00:00Z",
-        "wallet_id": "wal_example",
+        "billing_account_id": "billing_account_example",
         "currency": "CAD",
         "status": "provisional",
         "revision": 1,
@@ -9179,96 +9175,23 @@
     "success": "200"
   },
   {
-    "id": "WA013",
+    "id": "WA058",
     "method": "GET",
-    "path": "/v1/wallets",
-    "title": "List wallets",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallets",
-    "resource": "wallet",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_example",
-          "object": "wallet",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "name": "Operating wallet",
-          "currency": "CAD",
-          "agreement_id": "agr_example",
-          "legal_owner_id": "institution_example",
-          "status": "active",
-          "usage_enabled": true
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA014",
-    "method": "GET",
-    "path": "/v1/wallets/{id}",
-    "title": "Retrieve wallet",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet",
-    "resource": "wallet",
+    "path": "/v1/billing/credits",
+    "title": "Retrieve credit balance",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/retrieve-credit-balance",
+    "resource": "billing_credit_balance",
     "request": null,
     "response": {
       "data": {
-        "id": "wallet_example",
-        "object": "wallet",
+        "id": "billing_credit_balance_example",
+        "object": "billing_credit_balance",
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "name": "Operating wallet",
-        "currency": "CAD",
-        "agreement_id": "agr_example",
-        "legal_owner_id": "institution_example",
-        "status": "active",
-        "usage_enabled": true
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA015",
-    "method": "GET",
-    "path": "/v1/wallets/{id}/balance",
-    "title": "Retrieve wallet balance",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-balance",
-    "resource": "wallet_balance",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_balance_example",
-        "object": "wallet_balance",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
+        "billing_account_id": "billing_account_example",
         "currency": "CAD",
         "as_of": "2026-10-23T14:00:00Z",
         "ledger_sequence": 3,
@@ -9303,24 +9226,24 @@
     "success": "200"
   },
   {
-    "id": "WA016",
+    "id": "WA059",
     "method": "GET",
-    "path": "/v1/wallets/{id}/ledger",
-    "title": "List wallet ledger entries",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-ledger-entries",
-    "resource": "wallet_ledger_entry",
+    "path": "/v1/billing/credit-ledger",
+    "title": "List credit ledger entries",
+    "scope": "billing:read",
+    "group": "Reporting",
+    "page": "api-reference/endpoints/billing/list-credit-ledger-entries",
+    "resource": "billing_credit_entry",
     "request": null,
     "response": {
       "data": [
         {
-          "id": "wallet_ledger_entry_example",
-          "object": "wallet_ledger_entry",
+          "id": "billing_credit_entry_example",
+          "object": "billing_credit_entry",
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
-          "wallet_id": "wal_example",
+          "billing_account_id": "billing_account_example",
           "sequence": 3,
           "currency": "CAD",
           "amount": "-600.00",
@@ -9338,438 +9261,6 @@
         "has_more": false,
         "next_cursor": null,
         "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA017",
-    "method": "GET",
-    "path": "/v1/wallets/{id}/credit-lots",
-    "title": "List wallet credit lots",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-credit-lots",
-    "resource": "wallet_credit_lot",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_credit_lot_example",
-          "object": "wallet_credit_lot",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "wallet_id": "wal_example",
-          "currency": "CAD",
-          "origin_type": "minimum_commitment",
-          "origin_top_up_id": "top_up_annual",
-          "original_amount": "12000.00",
-          "remaining_amount": "10900.00",
-          "held_amount": "500.00",
-          "refund_policy": "on_final_cancellation",
-          "restrictions": []
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA018",
-    "method": "GET",
-    "path": "/v1/wallets/{id}/holds",
-    "title": "List wallet holds",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-holds",
-    "resource": "wallet_hold",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_hold_example",
-          "object": "wallet_hold",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "wallet_id": "wal_example",
-          "currency": "CAD",
-          "amount": "500.00",
-          "movement_id": "billing_usage_pending",
-          "reason": "usage",
-          "status": "active",
-          "expires_at": null
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA019",
-    "method": "POST",
-    "path": "/v1/wallet-sessions",
-    "title": "Create wallet payment session",
-    "scope": "wallets:funding",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-payment-session",
-    "resource": "wallet_session",
-    "request": {
-      "purpose": "funding_method",
-      "return_url": "https://client.example.com/wallet/return"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_session_example",
-        "object": "wallet_session",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "purpose": "funding_method",
-        "url": "https://payments.example.com/hosted-session",
-        "expires_at": "2026-10-23T14:15:00Z"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "201"
-  },
-  {
-    "id": "WA020",
-    "method": "GET",
-    "path": "/v1/wallet-payment-methods",
-    "title": "List wallet payment methods",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-payment-methods",
-    "resource": "wallet_payment_method",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_payment_method_example",
-          "object": "wallet_payment_method",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "legal_owner_id": "institution_example",
-          "status": "verified",
-          "masked_label": "Business bank account ending 1234",
-          "currency": "CAD",
-          "capabilities": [
-            "funding"
-          ]
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA021",
-    "method": "GET",
-    "path": "/v1/wallet-payment-methods/{id}",
-    "title": "Retrieve wallet payment method",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-payment-method",
-    "resource": "wallet_payment_method",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_payment_method_example",
-        "object": "wallet_payment_method",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "legal_owner_id": "institution_example",
-        "status": "verified",
-        "masked_label": "Business bank account ending 1234",
-        "currency": "CAD",
-        "capabilities": [
-          "funding"
-        ]
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA022",
-    "method": "POST",
-    "path": "/v1/wallet-payment-methods/{id}/disable",
-    "title": "Disable wallet payment method",
-    "scope": "wallets:funding",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/disable-wallet-payment-method",
-    "resource": "wallet_payment_method",
-    "request": {
-      "reason": "Replace bank account."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_payment_method_example",
-        "object": "wallet_payment_method",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "legal_owner_id": "institution_example",
-        "status": "disabled",
-        "masked_label": "Business bank account ending 1234",
-        "currency": "CAD",
-        "capabilities": [
-          "funding"
-        ]
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA023",
-    "method": "POST",
-    "path": "/v1/wallet-top-ups",
-    "title": "Create wallet top-up",
-    "scope": "wallets:funding",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-top-up",
-    "resource": "wallet_top_up",
-    "request": {
-      "wallet_id": "wal_example",
-      "funding_method_id": "wallet_payment_method_example",
-      "amount": "250.00",
-      "currency": "CAD",
-      "client_reference": "top-up-1001"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_top_up_example",
-        "object": "wallet_top_up",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
-        "funding_method_id": "wallet_payment_method_example",
-        "amount": "250.00",
-        "currency": "CAD",
-        "client_reference": "top-up-1001",
-        "status": "pending",
-        "action_url": null,
-        "settled_at": null,
-        "ledger_entry_ids": [],
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA024",
-    "method": "GET",
-    "path": "/v1/wallet-top-ups",
-    "title": "List wallet top-ups",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-top-ups",
-    "resource": "wallet_top_up",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_top_up_example",
-          "object": "wallet_top_up",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "wallet_id": "wal_example",
-          "funding_method_id": "wallet_payment_method_example",
-          "amount": "250.00",
-          "currency": "CAD",
-          "client_reference": "top-up-1001",
-          "status": "pending",
-          "action_url": null,
-          "settled_at": null,
-          "ledger_entry_ids": [],
-          "failure_code": null
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA025",
-    "method": "GET",
-    "path": "/v1/wallet-top-ups/{id}",
-    "title": "Retrieve wallet top-up",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-top-up",
-    "resource": "wallet_top_up",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_top_up_example",
-        "object": "wallet_top_up",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
-        "funding_method_id": "wallet_payment_method_example",
-        "amount": "250.00",
-        "currency": "CAD",
-        "client_reference": "top-up-1001",
-        "status": "pending",
-        "action_url": null,
-        "settled_at": null,
-        "ledger_entry_ids": [],
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA027",
-    "method": "GET",
-    "path": "/v1/wallets/{id}/auto-top-up",
-    "title": "Retrieve automatic top-up policy",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-automatic-top-up-policy",
-    "resource": "wallet_auto_top_up",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_auto_top_up_example",
-        "object": "wallet_auto_top_up",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "enabled": false,
-        "threshold": "250.00",
-        "top_up_amount": "1000.00",
-        "monthly_cap": "5000.00",
-        "funding_method_id": "wallet_payment_method_example",
-        "authorization_id": "mandate_example",
-        "currency": "CAD",
-        "wallet_id": "wal_example",
-        "spent_this_month": "0.00"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA028",
-    "method": "PATCH",
-    "path": "/v1/wallets/{id}/auto-top-up",
-    "title": "Update automatic top-up policy",
-    "scope": "wallets:funding",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/update-automatic-top-up-policy",
-    "resource": "wallet_auto_top_up",
-    "request": {
-      "enabled": false,
-      "threshold": "250.00",
-      "top_up_amount": "1000.00",
-      "monthly_cap": "5000.00",
-      "funding_method_id": "wallet_payment_method_example",
-      "authorization_id": "mandate_example",
-      "currency": "CAD"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_auto_top_up_example",
-        "object": "wallet_auto_top_up",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "enabled": false,
-        "threshold": "250.00",
-        "top_up_amount": "1000.00",
-        "monthly_cap": "5000.00",
-        "funding_method_id": "wallet_payment_method_example",
-        "authorization_id": "mandate_example",
-        "currency": "CAD",
-        "wallet_id": "wal_example",
-        "spent_this_month": "0.00"
       },
       "meta": {
         "request_id": "req_example",

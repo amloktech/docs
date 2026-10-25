@@ -1,6 +1,6 @@
 """Author the narrative companion to the generated API reference."""
 from pathlib import Path
-from wallet_contract import WALLET_EVENTS, WALLET_ERRORS
+from wallet_contract import REPORTING_EVENTS
 import json
 
 ROOT=Path(__file__).resolve().parent.parent
@@ -8,7 +8,7 @@ SOURCE=json.loads((ROOT/'data/api-contract-source.json').read_text())
 INDEX=json.loads((ROOT/'data/api-reference-index.json').read_text())
 OPS={r['id']:r for r in INDEX}
 EVENT_ROWS=[r for r in SOURCE['Events']['values'][1:] if r[0] != 'deletion.completed']
-EVENT_COUNT=len(EVENT_ROWS)+len(WALLET_EVENTS)
+EVENT_COUNT=len(EVENT_ROWS)+len(REPORTING_EVENTS)
 
 def write(name,title,description,body):
     body=body.replace('164 operations', str(len(INDEX))+' operations').replace('28 event types',str(EVENT_COUNT)+' event types')
@@ -19,7 +19,7 @@ def write(name,title,description,body):
 write('overview','API overview','Build institution-scoped integrations with the AMLOK API 1.4.2.', '''
 The AMLOK API organizes authorized financial evidence into a common data model and coordinates verification, underwriting, monitoring, servicing, and investigation workflows.
 
-This reference contains **164 operations**, **67 financial-data resource types plus billing and wallet resources**, **28 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
+This reference contains **164 operations**, **67 financial-data resource types plus credit and billing reporting resources**, **28 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
 
 <CardGroup cols={2}>
   <Card title="Make your first request" icon="terminal" href="/api-reference/quickstart">Follow a complete connection and data-read flow.</Card>
@@ -36,7 +36,7 @@ This reference contains **164 operations**, **67 financial-data resource types p
 4. Start approved workflows and retrieve asynchronous results.
 5. Process signed events and keep your local records in sync.
 
-Financial-data, reporting, and wallet operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+Financial-data and reporting operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
 
 ## Explore the API
 
@@ -48,7 +48,7 @@ Financial-data, reporting, and wallet operations use a server-side bearer API ke
 | Payments, commerce, accounting, inventory | Browse the endpoint groups in the sidebar and the [data dictionary](/data-model/field-dictionary). |
 | Lending and assessment | [Create an application](@@EP146@@), [run a workflow](@@EP147@@), [calculate attributes](@@EP148@@) |
 | Monitoring and operations | [Create a monitor](@@EP150@@), [open a case](@@EP152@@), [create a task](@@EP154@@) |
-| Reporting and wallets | [Wallet lifecycle](/api-reference/wallets), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
+| Reporting | [Credit reporting](/api-reference/credit-reporting), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
 | Delivery | [Register a webhook](@@EP158@@), [read changes](@@EP164@@) |
 | Service availability | [Healthcheck](@@ST001@@), [service status](@@ST002@@) |
 
@@ -159,7 +159,7 @@ for scope in sorted({op['scope'] for op in INDEX if op['scope']}):
 write('authentication','Authentication and authorization','Use institution-scoped bearer keys and explicit resource permissions.', '''
 ## Bearer API keys
 
-Financial-data, reporting, and wallet operations use server-to-server API keys bound to one institution tenant and one environment. [Healthcheck](@@ST001@@) and [service status](@@ST002@@) are public read-only exceptions and require no API key.
+Financial-data and reporting operations use server-to-server API keys bound to one institution tenant and one environment. [Healthcheck](@@ST001@@) and [service status](@@ST002@@) are public read-only exceptions and require no API key.
 
 ```http
 Authorization: Bearer <AMLOK_API_KEY>
@@ -183,7 +183,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Reporting read access does not authorize wallet funding. Agreement changes, cancellation, closure and the resulting refund are handled by your account manager. The customer API has no refund, payout, transfer, wallet-approval or cancellation operations.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. Payment arrangements, agreement changes, cancellation, closure and the resulting refund are handled by your account manager. Report generation and downloads do not change credits.
 
 ## Scope reference
 
@@ -247,7 +247,7 @@ Onboarding must provide the production and sandbox origins, enabled scopes and p
 write('response-format','Responses and data conventions','Interpret envelopes, exact amounts, missing values, coverage, and record versions.', '''
 ## Envelopes
 
-Financial-data, reporting, and wallet operations use a consistent envelope. Single responses contain `data` and `meta`. Collection responses also contain `page`. Errors contain `error` and `meta`. The public healthcheck and service-status endpoints use their lightweight status schemas without a `data` / `meta` wrapper; see their individual response definitions.
+Financial-data and reporting operations use a consistent envelope. Single responses contain `data` and `meta`. Collection responses also contain `page`. Errors contain `error` and `meta`. The public healthcheck and service-status endpoints use their lightweight status schemas without a `data` / `meta` wrapper; see their individual response definitions.
 
 ```json
 {
@@ -369,7 +369,7 @@ Every POST operation requires an `Idempotency-Key`. Generate it once for one int
 Idempotency-Key: onboarding-connection-1001
 ```
 
-The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`. Wallet money commands also enforce a durable `client_reference` for the institution, environment and operation beyond this request-key window. See [wallet retry and reconciliation rules](/api-reference/wallets#safe-retries-and-approvals).
+The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
 
 | Situation | Client behavior |
 | --- | --- |
@@ -588,7 +588,7 @@ Event bodies contain resource references and limited status changes. Retrieve se
 ''')
 
 event_table='\n'.join('| `'+r[0]+'` | `'+r[1]+'` | '+r[2]+' | '+r[3]+' |' for r in EVENT_ROWS)
-event_table+='\n'+'\n'.join('| `'+event+'` | `'+resource+'` | '+trigger+' | Resource ID, version and status; retrieve full details. |' for event,resource,trigger in WALLET_EVENTS)
+event_table+='\n'+'\n'.join('| `'+event+'` | `'+resource+'` | '+trigger+' | Resource ID, version and status; retrieve full details. |' for event,resource,trigger in REPORTING_EVENTS)
 write('event-catalog','Event catalog','Subscribe to '+str(EVENT_COUNT)+' lifecycle events.', '''
 Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
 
@@ -742,7 +742,7 @@ Missing inputs produce explicit unavailability. Do not replace an unavailable DS
 
 ## Observe funding
 
-The API exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. [AMLOK wallets](/api-reference/wallets) hold prepaid service credits for AMLOK product usage, with remaining paid balances refunded only on final agreement cancellation. They do not transfer funds between wallets, disburse borrower loans, or execute lien filings; borrower funding and filings remain in the institution's authorized systems.
+The API exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. [Credit reporting](/api-reference/credit-reporting) shows prepaid AMLOK service credits and consumption. It provides no payment controls. Borrower funding and filings remain in the institution's authorized systems.
 
 ## Monitor an existing exposure
 
@@ -796,7 +796,7 @@ The webhook helpers link to the maintained source files for this reference. Save
 5. Replace synthetic resource IDs and configure the current `record_etag` before a PATCH.
 6. Select a local file before trying the multipart upload request.
 
-Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes send approved communications or initiate wallet top-ups.
+Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes send approved communications or initiate processing.
 
 ## Language examples
 
@@ -819,7 +819,7 @@ Use this checklist to configure an integration with **AMLOK API 1.4.2**. Your AM
 | Area | Configuration |
 | --- | --- |
 | Environments | Production and sandbox origins, institution tenant, test-data policy, and network controls. |
-| Wallet funding | Authorized funding methods, top-up limits, automatic top-up settings, funding verification, settlement, and failure handling. Account-manager processes handle cancellation and the final refund. |
+| Credit reporting | Authorized access to credit balances, usage, statements and exports. Your account manager handles payment arrangements, cancellation and the final refund. |
 | API keys | Issuance, expiry, rotation, revocation, scopes, and administrator access. |
 | Provider capabilities | Enabled products, resources, markets, account permissions, and field coverage. |
 | Limits | Request quotas, burst and concurrency budgets, job limits, and upload limits. |
@@ -845,7 +845,3 @@ Keep sandbox and production credentials and data separate. Confirm source permis
 Pin the [OpenAPI reference](/openapi/amlok-v1.json) used by your client. Review schema changes and rerun integration checks when adopting a new version or enabling a provider. See [versioning](/api-reference/versioning) and [Security & Compliance](/security/overview).
 ''')
 print('Wrote 19 API guides')
-
-# Keep wallet failures discoverable in the shared error guide.
-error_path=ROOT/"api-reference/errors.mdx"
-error_path.write_text(error_path.read_text()+"\n## Reporting and wallet errors\n\n| Code | HTTP | Meaning |\n| --- | --- | --- |\n"+"\n".join("| `"+code+"` | "+str(status)+" | "+meaning+" |" for code,(status,meaning) in WALLET_ERRORS.items())+"\n\nFor an unknown payment outcome, retrieve the original top-up before retrying. See [wallet lifecycle](/api-reference/wallets).\n")
