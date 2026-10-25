@@ -16,14 +16,14 @@ def write(name,title,description,body):
     text='---\ntitle: '+json.dumps(title)+'\ndescription: '+json.dumps(description)+'\n---\n\n'+body.strip()+'\n'
     (ROOT/'api-reference'/f'{name}.mdx').write_text(text.replace('0.1.0-draft','1.4.2').replace('\u2014','-').replace('\u2013','-'))
 
-write('overview','API overview','Build institution-scoped integrations with the AMLOK API 1.4.2.', '''
+write('overview','API overview','Build workspace-scoped integrations with the AMLOK API 1.4.2.', '''
 The AMLOK API organizes authorized financial evidence into a common data model and coordinates verification, underwriting, monitoring, servicing, and investigation workflows.
 
 This reference contains **164 operations**, **67 financial-data resource types plus credit and billing reporting resources**, **28 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
 
 <CardGroup cols={2}>
   <Card title="Make your first request" icon="terminal" href="/api-reference/quickstart">Follow a complete connection and data-read flow.</Card>
-  <Card title="Authentication and scopes" icon="key-round" href="/api-reference/authentication">Understand API keys, institution boundaries, and permissions.</Card>
+  <Card title="Authentication and scopes" icon="key-round" href="/api-reference/authentication">Understand API keys, workspace boundaries, and permissions.</Card>
   <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">Verify signatures, deduplicate deliveries, and process changes.</Card>
   <Card title="OpenAPI and examples" icon="download" href="/api-reference/downloads">Download the specification, Postman collection, and verification code.</Card>
 </CardGroup>
@@ -36,7 +36,7 @@ This reference contains **164 operations**, **67 financial-data resource types p
 4. Start approved workflows and retrieve asynchronous results.
 5. Process signed events and keep your local records in sync.
 
-Financial-data and reporting operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+Financial-data and reporting operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Each key authorizes exactly one workspace. Resources are workspace-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
 
 ## Explore the API
 
@@ -156,10 +156,10 @@ scope_rows=[]
 for scope in sorted({op['scope'] for op in INDEX if op['scope']}):
     ops=[op for op in INDEX if op['scope']==scope]
     scope_rows.append('| `'+scope+'` | '+str(len(ops))+' | ['+ops[0]['title']+'](/'+ops[0]['page']+') |')
-write('authentication','Authentication and authorization','Use institution-scoped bearer keys and explicit resource permissions.', '''
+write('authentication','Authentication and authorization','Use workspace-scoped bearer keys and explicit resource permissions.', '''
 ## Bearer API keys
 
-Financial-data and reporting operations use server-to-server API keys bound to one institution tenant and one environment. [Healthcheck](@@ST001@@) and [service status](@@ST002@@) are public read-only exceptions and require no API key.
+Financial-data and reporting operations use server-to-server API keys bound to exactly one workspace, institution tenant, and environment. [Healthcheck](@@ST001@@) and [service status](@@ST002@@) are public read-only exceptions and require no API key.
 
 ```http
 Authorization: Bearer <AMLOK_API_KEY>
@@ -175,15 +175,15 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 | Check | What it controls |
 | --- | --- |
 | Environment | A sandbox credential must not authorize production data. |
-| Institution tenant | Every resource and linked ID must belong to the authenticated tenant. |
+| Institution and workspace | Every resource and linked ID must belong to the one workspace bound to the key. |
 | Endpoint scope | The operation requires its documented scope. |
 | Product and provider entitlement | The institution must be entitled to the requested product and source. |
 | Subject consent and purpose | Data collection and use must remain within recorded authorization. |
 | Field entitlement | Sensitive fields can require additional permissions and purpose checks. |
 
-A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
+Caller-supplied `tenant_id` or `workspace_id` values cannot select another workspace. The API derives the workspace and institution from the key. Every subject, document, manifest, baseline, and webhook destination must belong to that workspace. Use a separately provisioned key for another workspace.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation includes workspace deletion and refund of all unused credits to the saved portal bank account at closure. Report generation and downloads do not change credits.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation is available at any time without notice, with full closure at the end of the request month and an immediate refund of all unused credits to the saved portal bank account. Deletion follows month closure and generation of final information. Report generation and downloads do not change credits.
 
 ## Scope reference
 
@@ -225,7 +225,7 @@ Paths begin `/v1`. JSON writes use `Content-Type: application/json`. JSON reads 
 
 | Header | When to send it |
 | --- | --- |
-| `Authorization` | Every API request. |
+| `Authorization` | Every authenticated financial-data or reporting request. |
 | `Content-Type` | JSON body or multipart upload. Let the HTTP client set the multipart boundary. |
 | `X-Request-ID` | Optional caller correlation ID. Record AMLOK's returned `request_id` separately. |
 | `Idempotency-Key` | Every POST command, including download-link issuance and event replay. |
@@ -312,7 +312,7 @@ GET /v1/bank-transactions?subject_id=biz_example&posted_from=2026-09-01&posted_t
 
 Read `page.next_cursor` and send it with the same filters on the next request. Finish when `page.has_more` is false and `page.next_cursor` is null. Do not decode a cursor or substitute an upstream provider cursor.
 
-The order is stable by `updated_at`, then `id`. Cursors bind the institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
+Resource collections use stable `updated_at`, then `id` ordering. The credit ledger instead uses ascending `sequence` with its documented `sequence_after` filter. Cursors bind the workspace, institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
 
 ```javascript
 // Node.js, using your institution-issued environment and key.
@@ -369,7 +369,7 @@ Every POST operation requires an `Idempotency-Key`. Generate it once for one int
 Idempotency-Key: onboarding-connection-1001
 ```
 
-The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
+The deduplication scope is **institution + workspace + environment + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
 
 | Situation | Client behavior |
 | --- | --- |
@@ -398,6 +398,8 @@ In the synthetic success example the new record version is `4` and the ETag is `
 
 The PATCH schemas reject empty bodies, unknown properties, and null clearing. Omit fields you do not intend to change.
 
+A pre-execution `402 insufficient_credits` rejection does not reserve an accepted operation or charge credits. After funding, retry the same intended request with the same key.
+
 ## Approval-bound actions
 
 Task approval and communication dispatch additionally bind `expected_record_version` to the approved content. Changing the recipient, channel, or action payload requires a new approval. An approval must not become blanket permission for a future version.
@@ -406,6 +408,7 @@ See [errors](/api-reference/errors) and [asynchronous jobs](/api-reference/async
 ''')
 
 error_table='\n'.join('| `'+r[0]+'` | '+r[1]+' | '+r[3]+' | '+r[4]+' |' for r in SOURCE['Error Codes']['values'][1:])
+error_table+='\n| `insufficient_credits` | 402 | No, until funded | Fund the workspace in the portal, then retry the rejected workflow. Unprocessed work is not charged. |'
 write('errors','Errors','Handle stable error codes, correlation IDs, validation failures, and recoverable outages.', '''
 Errors use a stable code and a safe explanation. Do not branch on human-readable message text.
 
@@ -441,6 +444,12 @@ Honor `error.retryable` and `Retry-After` when provided. A source error or inter
 
 Do not retry malformed input, invalid credentials, missing permissions, or stale approvals without resolving the cause. Do not broaden subject IDs or permissions in response to an authorization error.
 
+## Insufficient credits
+
+A billable workflow returns `402 insufficient_credits` when available credits cannot cover its cost. CAD 200.00 is an automatic top-up trigger, not a processing floor. Requests may continue below it while funded. Pending payments are excluded from available credits. The rejection occurs before work is accepted, without a usage debit. After credits are available, retry the same intended request with the same idempotency key; a pre-execution insufficient-credit rejection does not reserve the key as an accepted operation.
+
+Read-only reports and baseline retrieval do not require a new usage charge. Signal reassessment is included in Signal, not billed as another Insights underwriting.
+
 ## Partial results versus request errors
 
 A valid request can return usable partial data with `meta.data_status: partial`. Job-level errors and resource `missing_fields` explain the missing scope. Do not treat a `200` as evidence that every provider succeeded, or an unavailable metric as zero.
@@ -453,7 +462,7 @@ Provide sanitized request IDs through your agreed support channel. Your agreemen
 ''')
 
 write('rate-limits','Rate limits and retries','Handle throttling and transient failures without duplicating work.', '''
-The API applies institution and provider-aware limits. Numeric quotas, burst allowances, concurrent-job limits, and per-provider refresh budgets are configured for your environment. Refer to your agreement and response headers for the applicable limits.
+The API applies workspace and provider-aware limits. Numeric quotas, burst allowances, concurrent-job limits, and per-provider refresh budgets are configured for your environment. Refer to your agreement and response headers for the applicable limits.
 
 ## Throttled responses
 
@@ -514,7 +523,7 @@ Sync-style jobs use `queued`, `running`, `completed`, `partial`, `failed`, and `
 - A completed lien search with no results applies only to the declared completed scope.
 - Attribute calculation can complete with individual values marked `unavailable`.
 - A queued communication is not delivered, and a completed workflow is not permission to fund a loan.
-- Completed workspace deletion removes all associated workspace data. Account cancellation includes this deletion; there is no public deletion-command API.
+- Account cancellation closes at the end of the request month. After that month closes and final information is generated, deletion removes all associated workspace data; there is no public deletion-command API.
 
 Retrieve the authoritative resource after an event. Use `resource_version` to avoid overwriting a newer record with an older delivery. See [webhooks](/api-reference/webhooks).
 ''')
@@ -534,7 +543,7 @@ Use [webhook endpoint registration](@@EP158@@) with an institution-approved HTTP
 }
 ```
 
-The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
+The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, workspace, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
 
 ## Signature contract
 
@@ -570,7 +579,7 @@ The following helpers implement the signature format. They validate the signatur
 1. Apply a configured body-size limit and capture the raw bytes. Use the payload limit configured for your environment.
 2. Resolve the expected secret from the registered destination, not from an untrusted body field.
 3. Verify the signature and timestamp, then validate the event against the contract.
-4. Atomically insert the event into a durable inbox with a unique key of institution/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
+4. Atomically insert the event into a durable inbox with a unique key of workspace/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
 5. Return `2xx` after durable acceptance. A duplicate already accepted event can receive `2xx` without repeating its effects.
 6. Process asynchronously. Fetch the authorized resource and apply only a newer resource version.
 
@@ -590,7 +599,7 @@ Event bodies contain resource references and limited status changes. Retrieve se
 event_table='\n'.join('| `'+r[0]+'` | `'+r[1]+'` | '+r[2]+' | '+r[3]+' |' for r in EVENT_ROWS)
 event_table+='\n'+'\n'.join('| `'+event+'` | `'+resource+'` | '+trigger+' | Resource ID, version and status; retrieve full details. |' for event,resource,trigger in REPORTING_EVENTS)
 write('event-catalog','Event catalog','Subscribe to '+str(EVENT_COUNT)+' lifecycle events.', '''
-Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
+Every event uses the same envelope. The event ID is the deduplication key within the workspace and environment. `resource_version` identifies the version that triggered the event.
 
 ```json
 {
@@ -655,7 +664,7 @@ Use the expiry and storage domain returned by your environment. Upload documents
 
 ## Retention and deletion
 
-Retention is managed by authorized users through workspace configuration in the AMLOK platform and in accordance with applicable compliance frameworks. Consent revocation or connection disconnection stops future collection; it does not itself delete stored evidence. When workspace deletion is completed, all associated workspace data is deleted. This API does not expose deletion-request endpoints. See [privacy and data handling](/security/privacy).
+Retention is managed by authorized users through workspace configuration in the AMLOK platform and in accordance with applicable compliance frameworks. Consent revocation or connection disconnection stops future collection; it does not itself delete stored evidence. After the cancellation request month closes and final information is generated, workspace deletion removes all associated workspace data. This API does not expose deletion-request endpoints. See [privacy and data handling](/security/privacy).
 ''')
 
 write('versioning','Versioning and compatibility','Track API paths, schema versions, record versions, and policy revisions separately.', '''
@@ -718,7 +727,7 @@ Register only institution-controlled HTTPS destinations. Deployment must validat
 
 ## Retention and incident handling
 
-Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Workspace deletion is managed in the platform, not through a public deletion-request API. Account cancellation is requested in the client portal or through a dedicated enterprise account manager; it includes workspace deletion and an immediate unused-credit refund at account closure.
+Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Workspace deletion is managed in the platform, not through a public deletion-request API. Cancellation may be requested at any time without notice through the client portal or a dedicated enterprise account manager. Closure is at the end of the request month, with an immediate full unused-credit refund to the saved bank account. Deletion occurs after that month closes and final information is generated.
 
 Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. Record these settings during [integration onboarding](/api-reference/onboarding).
 ''')
@@ -734,7 +743,7 @@ Retrieve checks and screening matches. `in_review`, unresolved identity, missing
 
 1. [Create the application](@@EP146@@) with exact amount and currency.
 2. Connect and synchronize authorized sources, then inspect coverage and freshness.
-3. Use an approved immutable input manifest for [attribute calculations](@@EP148@@). Provision manifests through the process configured during onboarding.
+3. [List ready input manifests](@@BM001@@) for the subject after synchronization. Use the returned manifest ID for [attribute calculations](@@EP148@@), with a calculation window contained in the frozen manifest window. Retrieve the manifest to confirm coverage; missing coverage is not a zero value.
 4. [Start an underwriting run](@@EP147@@) with `workflow_type: underwrite`, an approved version, and input resource IDs.
 5. Retrieve the decision and immutable risk snapshot. Distinguish an advisory recommendation from the institution's decision.
 
@@ -746,11 +755,14 @@ The API exposes lender-supplied loans, facilities, guarantees, collateral, and r
 
 ## Monitor an existing exposure
 
-[Create a monitor](@@EP150@@) against an approved baseline snapshot, resource types, attribute keys, cadence, and ruleset version. Consume alerts and retrieve the supporting evidence.
+1. [List ready monitoring baselines](@@BB001@@) for the borrower/business. AMLOK prepares these from a completed assessment or the agreed existing-portfolio onboarding process. If none is ready, complete that process before creating a monitor.
+2. [Retrieve the baseline](@@BB002@@) and its linked risk snapshot. The response provides the frozen input-manifest ID and approved snapshot ID.
+3. [Create a monitor](@@EP150@@) using the returned `snapshot_id` as `baseline_snapshot_id`, with resource types, attribute keys, cadence, and ruleset version. All linked IDs must belong to the same subject and key-bound workspace.
+4. Consume alerts and retrieve supporting evidence. Baseline reads do not launch or charge an Insights underwriting.
 
 Compare comparable time windows and coverage. A data outage is not an improvement in borrower risk. Refresh cadence depends on source capability and consent; a daily requested cadence is not a source freshness guarantee.
 
-For a material change, create a new underwriting run and preserve the original snapshot. The workbook mentions parent-run context but does not define that request field; the published request schema therefore does not invent `parent_run_id` support.
+For a material change, Signal reassesses risk using existing baseline data and newly processed records. This work is included in Signal and does not launch or charge another Insights underwriting. Preserve the original snapshot and the new evidence for audit. A separately requested full underwriting is a distinct Insights operation.
 
 ## Service and investigate
 
@@ -818,15 +830,15 @@ Use this checklist to configure an integration with **AMLOK API 1.4.2**. Your AM
 
 | Area | Configuration |
 | --- | --- |
-| Environments | Production and sandbox origins, institution tenant, test-data policy, and network controls. |
-| Credit reporting | Authorized access to credit balances, usage, statements and exports. The portal manages card/bank funding, top-up settings and cancellation. Each workspace has one balance with a CAD 200 processing floor and CAD 500 minimum customer-funded top-up; enterprise clients can also use their account manager. |
+| Environments | Production and sandbox origins, one workspace per API key, institution tenant, test-data policy, and network controls. |
+| Credit reporting | Authorized access to credit balances, usage, statements and exports. The portal manages card/bank funding, top-up settings and cancellation. Each key belongs to one workspace. Its shared balance has a CAD 200.00 default auto-pay trigger and CAD 500.00 minimum top-up; requests can continue below the trigger while available credits cover the cost; enterprise clients can also use their account manager. |
 | API keys | Issuance, expiry, rotation, revocation, scopes, and administrator access. |
 | Provider capabilities | Enabled products, resources, markets, account permissions, and field coverage. |
 | Limits | Request quotas, burst and concurrency budgets, job limits, and upload limits. |
 | Support | Support channel, incident contacts, escalation, and service commitments. |
 | Webhooks | Destination, event subscriptions, signing secret, replay retention, and delivery monitoring. |
 | Documents | Allowed file types, size and page limits, storage location, and signed-link expiry. |
-| Evidence and approvals | Input manifests, approval identifiers, authorized reviewers, and expiry. |
+| Evidence and approvals | Read frozen input manifests and approved monitoring baselines through the API. Configure authorized reviewers, approval identifiers, and expiry during onboarding. |
 | Data handling | Retention, residency, legal holds, deletion, and permitted purposes. |
 
 ## Connect and verify

@@ -1,11 +1,11 @@
 ---
 title: "Authentication and authorization"
-description: "Use institution-scoped bearer keys and explicit resource permissions."
+description: "Use workspace-scoped bearer keys and explicit resource permissions."
 ---
 
 ## Bearer API keys
 
-Financial-data and reporting operations use server-to-server API keys bound to one institution tenant and one environment. [Healthcheck](/api-reference/endpoints/platform/healthcheck) and [service status](/api-reference/endpoints/platform/service-status) are public read-only exceptions and require no API key.
+Financial-data and reporting operations use server-to-server API keys bound to exactly one workspace, institution tenant, and environment. [Healthcheck](/api-reference/endpoints/platform/healthcheck) and [service status](/api-reference/endpoints/platform/service-status) are public read-only exceptions and require no API key.
 
 ```http
 Authorization: Bearer <AMLOK_API_KEY>
@@ -21,15 +21,15 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 | Check | What it controls |
 | --- | --- |
 | Environment | A sandbox credential must not authorize production data. |
-| Institution tenant | Every resource and linked ID must belong to the authenticated tenant. |
+| Institution and workspace | Every resource and linked ID must belong to the one workspace bound to the key. |
 | Endpoint scope | The operation requires its documented scope. |
 | Product and provider entitlement | The institution must be entitled to the requested product and source. |
 | Subject consent and purpose | Data collection and use must remain within recorded authorization. |
 | Field entitlement | Sensitive fields can require additional permissions and purpose checks. |
 
-A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
+Caller-supplied `tenant_id` or `workspace_id` values cannot select another workspace. The API derives the workspace and institution from the key. Every subject, document, manifest, baseline, and webhook destination must belong to that workspace. Use a separately provisioned key for another workspace.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation includes workspace deletion and refund of all unused credits to the saved portal bank account at closure. Report generation and downloads do not change credits.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Credit access is reporting-only. No customer wallet or payment-setting endpoints are exposed. The client portal manages payment methods, top-up settings, and cancellation. Enterprise clients can also request cancellation through their dedicated account manager. Cancellation is available at any time without notice, with full closure at the end of the request month and an immediate refund of all unused credits to the saved portal bank account. Deletion follows month closure and generation of final information. Report generation and downloads do not change credits.
 
 ## Scope reference
 
@@ -60,7 +60,7 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `lending:write` | 1 | [Create application](/api-reference/endpoints/lending/create-application) |
 | `liens:read` | 6 | [List lien searches](/api-reference/endpoints/liens/list-lien-searches) |
 | `liens:search` | 1 | [Start lien search](/api-reference/endpoints/liens/start-lien-search) |
-| `monitoring:read` | 2 | [List monitors](/api-reference/endpoints/risk/list-monitors) |
+| `monitoring:read` | 4 | [List monitors](/api-reference/endpoints/risk/list-monitors) |
 | `monitoring:write` | 2 | [Create monitor](/api-reference/endpoints/risk/create-monitor) |
 | `operations:approve` | 1 | [Approve task](/api-reference/endpoints/operations/approve-task) |
 | `operations:read` | 8 | [List cases](/api-reference/endpoints/operations/list-cases) |
@@ -68,7 +68,7 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `payments:read` | 12 | [List merchant accounts](/api-reference/endpoints/payments/list-merchant-accounts) |
 | `platform:read` | 3 | [List reconciliation links](/api-reference/endpoints/platform/list-reconciliation-links) |
 | `risk:calculate` | 1 | [Calculate attributes](/api-reference/endpoints/risk/calculate-attributes) |
-| `risk:read` | 7 | [List attributes](/api-reference/endpoints/risk/list-attributes) |
+| `risk:read` | 9 | [List attributes](/api-reference/endpoints/risk/list-attributes) |
 | `webhooks:read` | 1 | [List webhook endpoints](/api-reference/endpoints/webhooks/list-webhook-endpoints) |
 | `webhooks:write` | 2 | [Create webhook endpoint](/api-reference/endpoints/webhooks/create-webhook-endpoint) |
 | `workflows:execute` | 1 | [Start workflow run](/api-reference/endpoints/operations/start-workflow-run) |

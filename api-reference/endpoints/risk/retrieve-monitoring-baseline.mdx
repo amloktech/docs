@@ -1,0 +1,13 @@
+---
+title: "Retrieve monitoring baseline"
+openapi: "/openapi/amlok-v1.json GET /v1/monitoring-baselines/{id}"
+playground: simple
+---
+
+**Required scope:** monitoring:read
+
+Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization.
+
+If the list is empty, finish evidence synchronization and the agreed assessment or baseline onboarding process. Do not fabricate an identifier or treat missing baseline data as zero risk.
+
+[Baseline workflow](/api-reference/workflows#monitor-and-investigate) · [Authentication](/api-reference/authentication)

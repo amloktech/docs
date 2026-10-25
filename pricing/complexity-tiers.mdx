@@ -1,10 +1,10 @@
 ---
 title: "Complexity tiers"
-description: "Workload limits by bank accounts, business integrations, total records per analysis, and analysis scope."
+description: "Limits for bank accounts, business integrations, underwriting records, monthly monitoring records, and analysis scope."
 mode: "wide"
 ---
 
-Complexity tiers reflect the full borrower-permissioned workload for a business. Bank accounts, business integrations, total records analyzed, and analysis scope all determine the applicable tier. Insights and Signal can use different tiers when their processing requirements differ.
+AMLOK assigns complexity based on the full borrower-permissioned workload: bank accounts, business integrations, records processed, and analysis scope. Insights and Signal can use different tiers when their work differs.
 
 ## Compare the limits
 
@@ -12,23 +12,30 @@ Complexity tiers reflect the full borrower-permissioned workload for a business.
 | --- | ---: | ---: | ---: |
 | Connected bank accounts, up to | 2 | 4 | 8 |
 | Business integrations in addition to banking, up to | 5 | 10 | 20 |
-| Total records per underwriting or analysis, up to | 75,000 | 250,000 | 1,000,000 |
+| Insights: total records per underwriting, up to | 75,000 | 250,000 | 1,000,000 |
+| Signal: newly processed records per borrower/business per month, up to | 75,000 | 250,000 | 1,000,000 |
 | Analysis scope | Routine reconciliation and standard analysis | Multiple entities or channels and deeper reconciliation | Extensive relationships, exceptions, and investigation |
 
-The numeric values are **workload limits**, not illustrative monthly volumes. Record counts include all sources processed in that underwriting or analysis: bank transactions, payment records, commerce orders, accounting records, documents, and separately analyzed line items. Banking connections do not count toward the separate business-integration limit.
+These are **workload limits**. They cover all relevant sources: bank transactions, payment records, commerce orders, accounting records, documents, and separately analyzed line items. Banking connections do not count toward the business-integration limit.
 
-## Historical coverage is part of the record limit
+## Insights: full underwriting history
 
-Analysis of bank statements and transactions covers **at least 12 months**. All records processed for that history count toward the tier's total record limit. The history requirement does not provide an additional allowance of 75,000 records per month.
+A full underwriting analyzes the agreed historical evidence. Banking statements and transactions cover **at least 12 months**, and all records processed for that history count inside the tier limit.
 
-For Standard, the full underwriting or analysis must fit within **75,000 total records**, including at least 12 months of banking history and the other connected business data being analyzed. A longer agreed lookback also counts toward the same limit. Missing required history is a coverage issue; it is not treated as 12 months of complete evidence.
+For Standard, the entire underwriting must fit within **75,000 total records**, including the banking history and other business-system data. A longer agreed lookback uses the same total allowance. Missing history is a coverage issue; it is not represented as complete evidence.
+
+## Signal: new monthly processing
+
+Signal counts **only records newly processed during the month** for the monitored borrower/business. It uses the existing underwriting baseline together with new evidence and changes to reassess risk. Unchanged historical records retained in the baseline do not count again merely because Signal consults them.
+
+Monitoring and change-driven reassessment are included in the Signal rate. A detected event does not launch a separately billed Insights underwriting. The total monthly workload combines the borrower/business's monitoring checks and data sources.
 
 ## How AMLOK assigns the tier
 
-The AMLOK team selects the lowest tier that covers **every workload dimension and the required analysis scope**. The most demanding dimension determines the tier; allowances cannot be mixed across tiers.
+The AMLOK team selects the lowest tier that covers **every workload dimension and the required scope**. The most demanding dimension determines the tier; limits cannot be mixed across tiers.
 
-For example, two bank accounts, six business integrations, and 40,000 records require at least Advanced because six integrations exceed the Standard limit. A workload of 300,000 records requires at least Complex even if the source counts fit within Standard.
+For example, two bank accounts, six business integrations, and 40,000 applicable records require at least Advanced because six integrations exceed Standard. A workload of 300,000 applicable records requires at least Complex even when the source counts fit Standard.
 
-If no published tier covers the workload, AMLOK provides a custom quote with agreed limits and scope before processing. A custom quote is recorded under **Standard, Advanced, or Complex with a negotiated rate and explicit workload limits**; it is not a fourth API or reporting tier.
+If no published tier covers the work, AMLOK provides a custom quote with agreed limits and scope. Reporting represents it as **Standard, Advanced, or Complex with a negotiated rate and explicit limits**, rather than a fourth tier.
 
-We review the assigned tier, limits, and negotiated rates at the annual agreement review. If a workload exceeds its current limits during the term, agree the applicable tier or custom scope with AMLOK before running the additional processing. Reporting identifies the assigned tier and actual agreed rate for each charge.
+We review tiers, workload limits, and rates at the annual agreement review. Agree a change in scope with AMLOK before running work that exceeds the current limits during the term.

@@ -11,7 +11,7 @@ Every POST operation requires an `Idempotency-Key`. Generate it once for one int
 Idempotency-Key: onboarding-connection-1001
 ```
 
-The deduplication scope is **institution tenant + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
+The deduplication scope is **institution + workspace + environment + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
 
 | Situation | Client behavior |
 | --- | --- |
@@ -39,6 +39,8 @@ If-Match: "3"
 In the synthetic success example the new record version is `4` and the ETag is `"4"`. A stale precondition returns `412 version_conflict`. Re-read, compare, and decide whether the change is still intended; do not blindly overwrite the newer record.
 
 The PATCH schemas reject empty bodies, unknown properties, and null clearing. Omit fields you do not intend to change.
+
+A pre-execution `402 insufficient_credits` rejection does not reserve an accepted operation or charge credits. After funding, retry the same intended request with the same key.
 
 ## Approval-bound actions
 

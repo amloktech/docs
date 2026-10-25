@@ -6,28 +6,30 @@ mode: "wide"
 
 import { PricingCalculator } from "/snippets/pricing-calculator.jsx";
 
-Choose your products and enter monthly volumes for each complexity tier. The estimate separates **usage deductions** from the **payment due at contract signing or renewal**.
+Choose your products and enter monthly volumes for each complexity tier. The estimate separates **usage deductions** from the **payment due at agreement signing or renewal**.
 
 <PricingCalculator />
 
 ## How to use the estimate
 
-- **Insights:** enter completed underwritings per month. Split your expected volume across Standard, Advanced, and Complex.
+- **Insights:** enter completed underwritings per month. Select the tiers in your portfolio and enter at least 50 for each selected tier. Unselected tiers contribute no usage; their quantity field is disabled.
 - **Signal:** enter the average number of distinct active borrowers/businesses in each full month. Count each once in the workspace, regardless of the number of checks, lending facilities, connected bank accounts, or integrations. Assign each to its agreed tier without duplicating it across tiers.
-- **Minimum monthly commitment:** starts at CAD 1,000, paid annually as 12 times the agreed amount at signing and each renewal.
+- **Minimum monthly commitment:** starts at CAD 1,000.00, paid annually as 12 times the agreed amount at signing and each renewal.
 - **Agreed discount:** enter a discount only if it applies to your agreement. It applies equally to published product rates, without reducing the monthly minimum.
 - **Negotiated rates:** select **Use my agreed unit rates** to enter final CAD rates for each product and tier. These replace published rates, and the percentage discount is not applied again. Custom quotes keep the tier assigned by AMLOK.
 
 ## Calculation assumptions
 
-The estimate repeats the entered monthly volumes for 12 months, uses full monitoring months, and starts with no carried credit balance. It rounds each monthly product-and-tier subtotal to the nearest cent before projecting 12 months.
+The estimate repeats the entered monthly volumes for 12 months, uses full monitoring months, and starts with no carried credit balance. It rounds the effective unit rate to two decimals first using decimal half-up rounding, multiplies by the whole-number quantity, and projects 12 months. Reported monetary values have two decimals.
 
-Additional funding is estimated in CAD 500 top-ups and preserves the CAD 200 hard processing floor. For example, using exactly CAD 12,000 of an initial CAD 12,000 balance requires an additional CAD 500 top-up, leaving CAD 500 unused. The floor is not a fee.
+Automatic top-up planning starts with a CAD 200.00 trigger and CAD 500.00 amount. You can change these assumptions or turn auto-pay off. With auto-pay off, additional funding means manual top-ups needed to cover the projected usage. Requests can use credits below CAD 200.00; they are rejected only if available credits cannot cover them.
+
+For example, exactly CAD 12,000.00 of usage against CAD 12,000.00 prepaid needs no extra funding with auto-pay off. With auto-pay on at the default settings and prompt settlement, crossing below CAD 200.00 triggers an additional CAD 500.00 top-up, leaving CAD 500.00 unused.
 
 The payment at signing or renewal funds the shared workspace credit balance. **Total funding** is that payment plus any additional credits needed to cover estimated usage. It does not add the same usage charges a second time.
 
 Unused credits remain available while your account stays active. Actual top-ups follow the threshold, amount, and payment method configured in the portal. Higher triggers or larger top-ups can leave more unused credits than this estimate. Payment settlement time and processing holds can also affect timing; the calculator does not simulate individual requests or funding delays. Renewal treatment of carried credits follows your signed agreement.
 
-This is a planning estimate, not a quote. It excludes taxes, third-party provider fees, and partial-month adjustments. Enter your final agreed rates to estimate custom-priced workloads; the calculator does not assign tiers or approve workload exceptions. The figures describe usage, not a monthly invoice. Final rates and workload limits are agreed in your order form.
+This is a planning estimate, not a quote. It excludes taxes, third-party provider fees, and partial-month adjustments. Enter your final agreed rates to estimate custom-priced workloads; the calculator does not assign tiers or approve workload exceptions. Signal reassessments are included in Signal and do not add Insights usage. The figures describe usage deductions, not a scheduled monthly payment. Final rates and workload limits are agreed in your order form.
 
 See [complexity tiers](/pricing/complexity-tiers), [credits and billing](/pricing/credits-and-billing), and [common questions](/pricing/contract-terms#common-questions) for more detail.

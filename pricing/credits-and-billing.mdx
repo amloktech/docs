@@ -1,58 +1,61 @@
 ---
 title: "Credits and billing"
-description: "One workspace credit balance, annual payment of your monthly minimum, and portal-managed top-ups."
+description: "Fund your workspace, manage automatic top-ups, and understand how usage consumes credits."
 ---
 
 ## Monthly minimum, paid annually
 
-Your quote sets a minimum monthly commitment, starting at **CAD 1,000**. Pay 12 times that amount at agreement signing and each renewal: **CAD 12,000 at the minimum** for a 12-month agreement. The payment becomes unused credits in your workspace balance; it is not an additional fee on top of product usage.
+Your minimum monthly commitment is based on estimated monthly volume and starts at **CAD 1,000.00**. You pay **12 times that amount at signing and every 12 months at renewal**. At the minimum, the payment is **CAD 12,000.00**.
 
-## One balance for your workspace
+There is no scheduled monthly payment. Monthly usage is deducted from the prepaid balance. Additional top-ups fund usage when needed and do not start a new agreement term.
 
-Your workspace has one shared credit balance for all eligible AMLOK products. The annual prepayment, additional paid top-ups, and promotional top-ups from the AMLOK commercial team all increase the same balance. There are no separate spending buckets or consumption priorities based on how credits were added.
+## One workspace credit balance
 
-As billable processing occurs, AMLOK deducts the agreed cost from that balance:
+Your workspace shares one balance across AMLOK Insights and AMLOK Signal. Paid and promotional top-ups both become unused credits in that balance, with no consumption priority.
 
-- **Insights:** the agreed rate for each completed underwriting.
-- **Signal:** the agreed rate once per active borrower/business per month in the workspace, regardless of the number of monitoring checks. Partial-month proration follows your agreement.
+- **Insights:** a completed full underwriting consumes credits at the assigned tier and agreed rate.
+- **Signal:** each active borrower or business is charged once per workspace per month. Monitoring and change-driven reassessment are included, without an additional Insights charge.
+- **Unused credits:** remain available while your account is active.
+- **Used credits:** are non-refundable.
 
-Reporting identifies the product, tier, billable unit, quantity, effective rate, and charge so you can understand each deduction. Products share funding; their different billing units remain distinct. See [consumption reporting](/api-reference/consumption-reporting).
+## Additional credits and automatic top-ups
 
-`Closing credits = opening credits + posted top-ups - product usage - cancellation refunds + reconciliation adjustments`
+In the **client portal**, you can add or change a **card or bank account**, enable or disable automatic payments, and configure the top-up threshold and amount.
 
-Credits already consumed by a product are non-refundable. Corrections to an erroneous or reversed charge are recorded separately and are not a refund of correctly billed usage.
-
-## Payment methods and automatic top-ups
-
-Manage payment methods and top-up settings in the **client portal**. Accepted funding methods are **card or bank account**. You can change the payment method, the balance threshold that triggers a top-up, and the amount added each time.
-
-| Setting | Rule |
+| Setting | Policy |
 | --- | --- |
-| Automatic top-up threshold | CAD 200 or higher. Choose a higher threshold to allow time for funding and anticipated usage. |
-| Customer-funded top-up amount | At least CAD 500 per top-up. |
-| Processing balance floor | CAD 200. Billable processing cannot reduce available credits below this amount. |
-| Refund destination | At least one bank account must be saved in the portal for cancellation refunds, including when you fund by card. |
+| Automatic top-up trigger | CAD 200.00 by default; you can select a higher threshold |
+| Minimum automatic top-up amount | CAD 500.00; the amount charged is the amount you selected |
+| Payment methods | Card or bank account |
+| When auto-pay is enabled | A balance below your threshold triggers collection from your selected payment method |
+| When auto-pay is disabled | No automatic collection occurs; you can add credits through the portal |
 
-An authorized automatic top-up is triggered when available credits reach or fall below your configured threshold. A paid top-up adds usable credits when the payment settles; pending payments do not fund processing. Commercial promotional top-ups add credits when posted by AMLOK.
+**CAD 200.00 is a trigger, not a balance floor.** Requests can continue below it while available credits cover their cost. For example, a CAD 35.00 charge can reduce CAD 215.00 to CAD 180.00. With auto-pay enabled at the default threshold, that balance triggers your selected top-up.
 
-AMLOK checks the projected available balance before accepting a billable deduction or reserving credits for pending work. If that activity would reduce available credits below **CAD 200**, processing pauses until sufficient credits are available. Existing holds count toward this check, so concurrent activity cannot spend the same credits twice. The CAD 200 floor remains unused credit and is included in the cancellation refund.
+A pending or failed payment is not spendable. Existing reservations also reduce available credits. If credits cannot cover the next billable operation, AMLOK rejects it with an insufficient-credits error and does not charge for unprocessed work. Retry after funding is available. Read-only reports remain accessible while your account is active.
 
-Automatic top-ups help maintain continuity, but a pending or failed payment can still cause a processing pause. Set a threshold and top-up amount appropriate to your usage and payment settlement time. Credit reporting remains available while processing is paused on an active account.
+A higher threshold and a suitable top-up amount help avoid interruptions, but processing still depends on available credits and successful payment.
 
-Portal payment and cancellation controls are separate from the public API. The public API provides reporting and exports only; it cannot change payment methods, initiate top-ups, configure thresholds, request cancellation, or move funds.
+## Renewal and rollover
 
-## Rollover and renewal
+At each 12-month review, AMLOK reviews actual usage, expected growth, workload complexity, and applicable volume discounts. The next monthly minimum and rates are agreed for renewal, and the payment for the next 12 months is due at renewal.
 
-Credits do not expire monthly. Unused credits remain in the shared balance while your account is active, including across renewal. At the annual review, AMLOK reassesses your monthly minimum, workload limits, product rates, and applicable discounts. Payment of the next 12 months' minimum is due at renewal; any agreed treatment of carried credits is recorded in your renewal agreement.
+Unused credits carry forward while the account remains active. Your agreement specifies how any carried balance is treated when calculating the renewal payment.
 
-## Currency and separate charges
+## Rates and rounding
 
-Prices and credits are in **Canadian dollars (CAD)**. If you pay in another currency, agree the conversion methodology and credited CAD amount before payment. Third-party provider charges are separate from AMLOK processing rates and the service-credit balance. Your agreement identifies those charges and applicable taxes.
+Prices and credit amounts use CAD with **two decimal places**. The effective unit rate is rounded to two decimals first, then multiplied by the billable quantity. Each charge is rounded to two decimals using decimal half-up rounding. Totals sum the rounded charge amounts.
+
+Negotiated pricing uses Standard, Advanced, or Complex with an agreed rate and workload limits. It does not introduce a fourth tier.
 
 ## Cancellation and unused credits
 
-Request account cancellation in the client portal. Enterprise clients can also use their dedicated account manager. Cancellation initiates workspace deletion and reconciliation of final usage. All workspace data is deleted as part of completed cancellation.
+You can request cancellation at any time in the portal, without a notice period. Enterprise clients can also use their dedicated account manager. Full account closure takes place at the end of the request month.
 
-AMLOK issues an **immediate refund of the entire unused credit balance** when the account closes after final reconciliation, including promotional credits and the unused CAD 200 floor. The refund goes to the bank account saved in the portal, not automatically to the card used for funding. Funds may take **7-10 business days**, depending on your bank. Used credits are non-refundable.
+AMLOK issues an immediate refund of **the entire unused balance**, including promotional credits, at account closure. A saved bank account in the portal is required, even if you funded by card. Bank delivery can take **7-10 business days after issuance**.
 
-See [agreement terms](/pricing/contract-terms), [cancellation and refunds](/pricing/refunds-and-payouts), and [credit reporting](/api-reference/credit-reporting).
+Workspace data is deleted after the request month closes and the necessary final information is generated. See [cancellation and refunds](/pricing/refunds-and-payouts) for the sequence.
+
+## Reporting access
+
+Use [consumption reporting](/api-reference/consumption-reporting) and [credit reporting](/api-reference/credit-reporting) to reconcile usage, balances, and statements. Each API key belongs to one workspace. Payment settings, top-ups, and cancellation are managed in the portal, not through public API commands.

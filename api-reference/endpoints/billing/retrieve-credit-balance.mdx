@@ -6,6 +6,6 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.
+Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.
 
 [Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)

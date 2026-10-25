@@ -15,7 +15,7 @@ Use [webhook endpoint registration](/api-reference/endpoints/webhooks/create-web
 }
 ```
 
-The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
+The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, workspace, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
 
 ## Signature contract
 
@@ -128,7 +128,7 @@ def verify_webhook(raw_body, header, secret, now_seconds=None):
 1. Apply a configured body-size limit and capture the raw bytes. Use the payload limit configured for your environment.
 2. Resolve the expected secret from the registered destination, not from an untrusted body field.
 3. Verify the signature and timestamp, then validate the event against the contract.
-4. Atomically insert the event into a durable inbox with a unique key of institution/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
+4. Atomically insert the event into a durable inbox with a unique key of workspace/environment + event ID. Persist its processing job in the same transaction, or use a transactional outbox.
 5. Return `2xx` after durable acceptance. A duplicate already accepted event can receive `2xx` without repeating its effects.
 6. Process asynchronously. Fetch the authorized resource and apply only a newer resource version.
 

@@ -38,8 +38,11 @@
           "card",
           "bank_account"
         ],
-        "processing_balance_floor": "200.00",
+        "default_auto_top_up_threshold": "200.00",
         "minimum_top_up_threshold": "200.00",
+        "payment_frequency": "every_12_months",
+        "cancellation_notice_days": 0,
+        "closure_timing": "end_of_request_month",
         "minimum_top_up_amount": "500.00",
         "refund_destination": "saved_portal_bank_account",
         "policy_version": "unified-workspace-credits"
@@ -85,9 +88,10 @@
             "workload_limits": {
               "bank_accounts": 2,
               "business_integrations": 5,
-              "records_per_analysis": 75000,
+              "record_limit": 75000,
               "minimum_banking_history_months": 12,
-              "analysis_scope": "Routine reconciliation and standard analysis"
+              "analysis_scope": "Routine reconciliation and standard analysis",
+              "record_counting_basis": "per_underwriting"
             }
           },
           {
@@ -101,9 +105,10 @@
             "workload_limits": {
               "bank_accounts": 4,
               "business_integrations": 10,
-              "records_per_analysis": 250000,
+              "record_limit": 250000,
               "minimum_banking_history_months": 12,
-              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+              "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+              "record_counting_basis": "per_underwriting"
             }
           },
           {
@@ -117,9 +122,10 @@
             "workload_limits": {
               "bank_accounts": 8,
               "business_integrations": 20,
-              "records_per_analysis": 1000000,
+              "record_limit": 1000000,
               "minimum_banking_history_months": 12,
-              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+              "analysis_scope": "Extensive relationships, exceptions, and investigation",
+              "record_counting_basis": "per_underwriting"
             }
           },
           {
@@ -133,9 +139,10 @@
             "workload_limits": {
               "bank_accounts": 2,
               "business_integrations": 5,
-              "records_per_analysis": 75000,
-              "minimum_banking_history_months": 12,
-              "analysis_scope": "Routine reconciliation and standard analysis"
+              "record_limit": 75000,
+              "minimum_banking_history_months": null,
+              "analysis_scope": "Routine reconciliation and standard analysis",
+              "record_counting_basis": "new_records_per_month"
             }
           },
           {
@@ -149,9 +156,10 @@
             "workload_limits": {
               "bank_accounts": 4,
               "business_integrations": 10,
-              "records_per_analysis": 250000,
-              "minimum_banking_history_months": 12,
-              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+              "record_limit": 250000,
+              "minimum_banking_history_months": null,
+              "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+              "record_counting_basis": "new_records_per_month"
             }
           },
           {
@@ -165,9 +173,10 @@
             "workload_limits": {
               "bank_accounts": 8,
               "business_integrations": 20,
-              "records_per_analysis": 1000000,
-              "minimum_banking_history_months": 12,
-              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+              "record_limit": 1000000,
+              "minimum_banking_history_months": null,
+              "analysis_scope": "Extensive relationships, exceptions, and investigation",
+              "record_counting_basis": "new_records_per_month"
             }
           }
         ]
@@ -624,9 +633,7 @@
         "pending_incoming": "500.00",
         "total_posted": "10900.00",
         "total_held": "500.00",
-        "available_for_usage": "10400.00",
-        "processing_floor": "200.00",
-        "spendable_for_processing": "10200.00"
+        "available_for_usage": "10400.00"
       },
       "meta": {
         "request_id": "req_example",

@@ -29,7 +29,7 @@ def extend(g):
     amount = {'type': 'string', 'pattern': r'^(0|[1-9][0-9]*)\.[0-9]{2}$',
               'description': 'Nonnegative CAD amount, exact decimal string in major units.'}
     positive = {**amount, 'pattern': r'^(?:0\.(?:0[1-9]|[1-9][0-9])|[1-9][0-9]*\.[0-9]{2})$'}
-    signed = {**amount, 'pattern': r'^-?(0|[1-9][0-9]*)\.[0-9]{2}$'}
+    signed = {**amount, 'pattern': r'^-?(0|[1-9][0-9]*)\.[0-9]{2}$', 'description': 'Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments.'}
     integer = {'type': 'integer', 'minimum': 0}
     currency = {'type': 'string', 'enum': ['CAD']}
     boolean = {'type': 'boolean'}
@@ -57,7 +57,10 @@ def extend(g):
         'access': enum('reporting_only'),
         'portal_controls': array(enum('payment_methods','automatic_top_ups','account_cancellation')),
         'funding_methods': array(enum('card','bank_account')),
-        'processing_balance_floor': {**amount, 'const': '200.00'},
+        'default_auto_top_up_threshold': {**amount, 'const': '200.00'},
+        'payment_frequency': enum('every_12_months'),
+        'cancellation_notice_days': {'type':'integer','const':0},
+        'closure_timing': enum('end_of_request_month'),
         'minimum_top_up_threshold': {**amount, 'const': '200.00'},
         'minimum_top_up_amount': {**amount, 'const': '500.00'},
         'refund_destination': enum('saved_portal_bank_account'),
@@ -67,14 +70,16 @@ def extend(g):
         renewal_payment_at='2027-10-01T00:00:00Z',credit_type='prepaid_service_credits',
         outflow_policy='product_usage_or_final_cancellation_refund',refund_policy='full_unused_balance_on_final_cancellation',
         access='reporting_only',portal_controls=['payment_methods','automatic_top_ups','account_cancellation'],
-        funding_methods=['card','bank_account'],processing_balance_floor='200.00',minimum_top_up_threshold='200.00',
+        funding_methods=['card','bank_account'],default_auto_top_up_threshold='200.00',minimum_top_up_threshold='200.00',
+        payment_frequency='every_12_months',cancellation_notice_days=0,closure_timing='end_of_request_month',
         minimum_top_up_amount='500.00',refund_destination='saved_portal_bank_account',policy_version='unified-workspace-credits'))
-    rate_props = {'product': enum('insights','signal'),'tier': enum('standard','advanced','complex'),'unit': enum('completed_underwriting','active_account_month'),'base_rate': amount,'discount_percent': {'type':'string','pattern':r'^(?:100|[0-9]{1,2})(?:\.[0-9]{1,2})?$'},'effective_rate': amount}
+    rate_props = {'product': enum('insights','signal'),'tier': enum('standard','advanced','complex'),'unit': enum('completed_underwriting','active_account_month'),'base_rate': amount,'discount_percent': {'type':'string','pattern':r'^(?:100(?:\.0{1,2})?|[0-9]{1,2}(?:\.[0-9]{1,2})?)$'},'effective_rate': amount}
     S['BillingRate'] = obj(rate_props)
     S['BillingWorkloadLimits'] = obj({
         'bank_accounts': integer, 'business_integrations': integer,
-        'records_per_analysis': {'type':'integer','minimum':1},
-        'minimum_banking_history_months': {'type':'integer','minimum':12},
+        'record_limit': {'type':'integer','minimum':1},
+        'record_counting_basis': enum('per_underwriting','new_records_per_month'),
+        'minimum_banking_history_months': nullable({'type':'integer','minimum':12}),
         'analysis_scope': string,
     })
     S['BillingRate']['properties'].update({
@@ -83,15 +88,31 @@ def extend(g):
     })
     S['BillingRate']['required'] += ['pricing_basis','workload_limits']
     tier_limits = {
-        'standard': dict(bank_accounts=2,business_integrations=5,records_per_analysis=75000,minimum_banking_history_months=12,analysis_scope='Routine reconciliation and standard analysis'),
-        'advanced': dict(bank_accounts=4,business_integrations=10,records_per_analysis=250000,minimum_banking_history_months=12,analysis_scope='Multiple entities or channels and deeper reconciliation'),
-        'complex': dict(bank_accounts=8,business_integrations=20,records_per_analysis=1000000,minimum_banking_history_months=12,analysis_scope='Extensive relationships, exceptions, and investigation'),
+        'standard': dict(bank_accounts=2,business_integrations=5,record_limit=75000,minimum_banking_history_months=12,analysis_scope='Routine reconciliation and standard analysis'),
+        'advanced': dict(bank_accounts=4,business_integrations=10,record_limit=250000,minimum_banking_history_months=12,analysis_scope='Multiple entities or channels and deeper reconciliation'),
+        'complex': dict(bank_accounts=8,business_integrations=20,record_limit=1000000,minimum_banking_history_months=12,analysis_scope='Extensive relationships, exceptions, and investigation'),
     }
-    rates = [dict(product=p,tier=t,unit=u,base_rate=f'{r:.2f}',discount_percent='0',effective_rate=f'{r:.2f}',pricing_basis='published',workload_limits=deepcopy(tier_limits[t])) for p,u,values in [('insights','completed_underwriting',[5,15,35]),('signal','active_account_month',[3,5,8])] for t,r in zip(['standard','advanced','complex'],values)]
+    S['BillingRate']['allOf'] = [
+        {'if': {'properties': {'product': {'const':'insights'}}}, 'then': {'properties': {
+            'unit': {'const':'completed_underwriting'},
+            'workload_limits': {'properties': {'record_counting_basis': {'const':'per_underwriting'}, 'minimum_banking_history_months': {'type':'integer','minimum':12}}}}}},
+        {'if': {'properties': {'product': {'const':'signal'}}}, 'then': {'properties': {
+            'unit': {'const':'active_account_month'},
+            'workload_limits': {'properties': {'record_counting_basis': {'const':'new_records_per_month'}, 'minimum_banking_history_months': {'type':'null'}}}}}},
+    ]
+    rates = []
+    for product,unit,values in [('insights','completed_underwriting',[5,15,35]),('signal','active_account_month',[3,5,8])]:
+        for tier,rate in zip(['standard','advanced','complex'],values):
+            limits=deepcopy(tier_limits[tier])
+            limits['record_counting_basis']='per_underwriting' if product=='insights' else 'new_records_per_month'
+            if product=='signal': limits['minimum_banking_history_months']=None
+            rates.append(dict(product=product,tier=tier,unit=unit,base_rate=f'{rate:.2f}',discount_percent='0',effective_rate=f'{rate:.2f}',pricing_basis='published',workload_limits=limits))
+    S['BillingRate']['description']='CAD rates have exactly two decimals. Round the discounted effective unit rate first using decimal half-up rounding; multiply by billable quantity and round each charge to two decimals. Negotiated effective rates already include any discount.'
+
     model('BillingRateCard','billing_rate_card',{'currency':currency,'effective_from':date,'rates':array(ref('BillingRate'))},dict(currency='CAD',effective_from='2026-10-01T00:00:00Z',rates=rates))
     model('BillingUsage','billing_usage',{
         'billing_account_id':string,'product':enum('insights','signal'),'tier':enum('standard','advanced','complex'),
-        'source_resource_id':{**string, 'description':'Underwriting identifier for Insights; stable borrower/business identifier for Signal, never an individual monitor or facility identifier.'},'unit':{**enum('completed_underwriting','active_account_month'), 'description':'Signal counts each active borrower/business once per workspace per month, regardless of checks, monitoring configurations, facilities or data connections. Partial-month and tier-change treatment follows the agreement without duplicate charges for the same active period.'},
+        'source_resource_id':{**string, 'description':'Underwriting identifier for Insights; stable borrower/business identifier for Signal, never an individual monitor or facility identifier.'},'unit':{**enum('completed_underwriting','active_account_month'), 'description':'Signal counts each active borrower/business once per workspace per month, including change-driven reassessment without an additional Insights charge, regardless of checks, monitoring configurations, facilities or data connections. Partial-month and tier-change treatment follows the agreement without duplicate charges for the same active period.'},
         'quantity':{'type':'string','pattern':r'^(0|[1-9][0-9]*)(\.[0-9]+)?$'},
         'unit_rate':amount,'currency':currency,'amount':signed,'entry_type':enum('charge','reversal'),
         'reverses_usage_id':nullable(string),'status':enum('pending','posted','voided'),
@@ -132,11 +153,9 @@ def extend(g):
         'opening_balance':'12000.00','funding':'0.00','usage':'1100.00','refunds':'0.00','adjustments':'0.00','closing_balance':'10900.00',
         'ledger_sequence_from':1,'ledger_sequence_to':3})
     model('BillingCreditBalance','billing_credit_balance',{'billing_account_id':string,'currency':currency,'as_of':date,'ledger_sequence':integer,
-        'pending_incoming':amount,'total_posted':amount,'total_held':amount,'available_for_usage':amount,
-        'processing_floor':{**amount,'const':'200.00'},'spendable_for_processing':amount},
+        'pending_incoming':amount,'total_posted':amount,'total_held':amount,'available_for_usage':amount},
         dict(billing_account_id='billing_account_example',currency='CAD',as_of=now,ledger_sequence=3,
-        pending_incoming='500.00',total_posted='10900.00',total_held='500.00',available_for_usage='10400.00',
-        processing_floor='200.00',spendable_for_processing='10200.00'))
+        pending_incoming='500.00',total_posted='10900.00',total_held='500.00',available_for_usage='10400.00'))
     model('BillingCreditEntry','billing_credit_entry',{'billing_account_id':string,'sequence':integer,'currency':currency,
         'amount':signed,'balance_after':amount,'entry_type':enum('funding','usage','refund','adjustment','reversal'),
         'movement_id':string,'reverses_entry_id':nullable(string),'posted_at':date,'client_reference':nullable(string)},
@@ -165,7 +184,7 @@ def extend(g):
         if is_list: response_example['page']={'has_more':False,'next_cursor':None,'limit':100}
         code='202' if method=='POST' and name=='BillingReport' else ('201' if method=='POST' else '200')
         if code=='202': response_example['meta']=g['meta']('pending')
-        op={'operationId':oid,'summary':title,'description':description+'\n\nRequired scope: '+scope+'. Institution and workspace authorization apply to every read and export.',
+        op={'operationId':oid,'summary':title,'description':description+'\n\nRequired scope: '+scope+'. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.',
             'tags':[group],'parameters':params,'security':[{'BearerAuth':[]}],'x-required-scopes':[scope],'responses':{}}
         if req: op['requestBody']={'required':True,'content':{'application/json':{'schema':ref(req),'example':body}}}
         sample_path=path.replace('{id}',next((x['example'] for x in params if x['in']=='path'),'res_example'))
@@ -205,8 +224,8 @@ def extend(g):
         add('GET',path+'/{id}','Retrieve '+title.rstrip('s'),name,scope,desc)
     def q(key,typ,desc,example=None,required=False,**extra):return (key,typ,desc,required,example,extra)
     window=[q('from','datetime','Inclusive UTC boundary. Must precede to.','2026-10-01T00:00:00Z',True),q('to','datetime','Exclusive UTC boundary.','2026-11-01T00:00:00Z',True)]
-    add('GET','/v1/billing/account','Retrieve billing account','BillingAccount','billing:read','Read the unified workspace billing policy, CAD 200 hard processing floor, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Final cancellation deletes workspace data and immediately refunds the full unused balance, including promotional credits, to the saved portal bank account when the account closes. Used credits are non-refundable.')
-    add('GET','/v1/billing/rate-card','Retrieve billing rate card','BillingRateCard','billing:read','Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. At least 12 months of banking history count inside records_per_analysis. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.')
+    add('GET','/v1/billing/account','Retrieve billing account','BillingAccount','billing:read','Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.')
+    add('GET','/v1/billing/rate-card','Retrieve billing rate card','BillingRateCard','billing:read','Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.')
     reads('/v1/billing/usage','usage records','BillingUsage','billing:read','Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.',window+[q('time_basis','string','Choose event or posting time.','posted_at',enum=['occurred_at','posted_at']),q('product','string','Product filter.',None,enum=['insights','signal']),q('tier','string','Complexity filter.',None,enum=['standard','advanced','complex'])])
     add('GET','/v1/billing/consumption','Retrieve consumption summary','BillingConsumption','billing:read','Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.',
         query=window+[q('time_basis','string','Basis for selecting charges.','posted_at',True,enum=['occurred_at','posted_at']),q('group_by','string','Grouping.','product_tier',True,enum=['product_tier','day','month'])])
@@ -215,16 +234,16 @@ def extend(g):
     add('POST','/v1/billing/reports/{id}/download-link','Create billing report download link','BillingDownload','billing:export','Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.','BillingReportDownloadRequest',{'reason':'Monthly reconciliation.'})
     reads('/v1/billing/statements','billing statements','BillingStatement','billing:read','Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.')
     add('GET','/v1/billing/credits','Retrieve credit balance','BillingCreditBalance','billing:read',
-        'Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.')
+        'Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.')
     add('GET','/v1/billing/credit-ledger','List credit ledger entries','BillingCreditEntry','billing:read',
         'Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.',
         is_list=True,query=[q('sequence_after','integer','Read entries after this exclusive billing account sequence.',None,minimum=0)])
     S['WebhookEvent']['properties']['type']['enum'] += [e[0] for e in REPORTING_EVENTS]
     g['REFINEMENTS'] += [
         'The public API is reporting-only. Client portal controls manage card or bank-account funding, top-up thresholds of at least CAD 200, top-up amounts of at least CAD 500, and cancellation. No public wallet or payment-setting operations exist.',
-        'Cancellation requested in the portal or through an enterprise account manager includes workspace deletion and reconciliation. AMLOK immediately refunds all unused credits, including promotional credits and the processing floor, to the saved portal bank account when the account closes. Bank receipt may take 7-10 business days. Used credits are non-refundable.',
-        'Each workspace has one shared balance with no paid/promotional consumption priority. Reports identify workspace and product usage. New billable processing and holds cannot reduce available credits below CAD 200; pending payments are not spendable.',
-        'Custom pricing retains standard, advanced or complex and publishes negotiated rates and workload limits. Records are limited per underwriting or analysis, including at least 12 months of banking history; the most demanding dimension sets the required tier.',
+        'Cancellation can be requested at any time with no notice, in the portal or through an enterprise account manager. Closure occurs at the end of the request month. Workspace deletion follows month closure and generation of final information. AMLOK immediately refunds all unused credits, including promotional credits, to the saved portal bank account when the account closes. Bank receipt may take 7-10 business days. Used credits are non-refundable.',
+        'Each workspace has one shared balance with no paid/promotional consumption priority. Reports identify workspace and product usage. CAD 200 triggers automatic top-ups if enabled, not a processing floor. New processing is rejected only when available credits cannot cover it; pending payments are not spendable.',
+        'Custom pricing retains standard, advanced or complex and publishes negotiated rates and workload limits. Insights limits cover the complete underwriting snapshot including at least 12 months of banking history. Signal limits cover newly processed records each month. The most demanding dimension sets the required tier.',
     ]
     write('data/reporting-api-index.json',dump(operations))
     write('data/reporting-events.json',dump([{'event':a,'resource':b,'trigger':c} for a,b,c in REPORTING_EVENTS]))

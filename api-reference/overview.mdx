@@ -1,15 +1,15 @@
 ---
 title: "API overview"
-description: "Build institution-scoped integrations with the AMLOK API 1.4.2."
+description: "Build workspace-scoped integrations with the AMLOK API 1.4.2."
 ---
 
 The AMLOK API organizes authorized financial evidence into a common data model and coordinates verification, underwriting, monitoring, servicing, and investigation workflows.
 
-This reference contains **177 operations**, **67 financial-data resource types plus credit and billing reporting resources**, **30 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
+This reference contains **181 operations**, **67 financial-data resource types plus credit and billing reporting resources**, **30 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
 
 <CardGroup cols={2}>
   <Card title="Make your first request" icon="terminal" href="/api-reference/quickstart">Follow a complete connection and data-read flow.</Card>
-  <Card title="Authentication and scopes" icon="key-round" href="/api-reference/authentication">Understand API keys, institution boundaries, and permissions.</Card>
+  <Card title="Authentication and scopes" icon="key-round" href="/api-reference/authentication">Understand API keys, workspace boundaries, and permissions.</Card>
   <Card title="Webhooks" icon="webhook" href="/api-reference/webhooks">Verify signatures, deduplicate deliveries, and process changes.</Card>
   <Card title="OpenAPI and examples" icon="download" href="/api-reference/downloads">Download the specification, Postman collection, and verification code.</Card>
 </CardGroup>
@@ -22,7 +22,7 @@ This reference contains **177 operations**, **67 financial-data resource types p
 4. Start approved workflows and retrieve asynchronous results.
 5. Process signed events and keep your local records in sync.
 
-Financial-data and reporting operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+Financial-data and reporting operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Each key authorizes exactly one workspace. Resources are workspace-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
 
 ## Explore the API
 

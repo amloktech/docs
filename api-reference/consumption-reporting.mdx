@@ -3,7 +3,7 @@ title: "Consumption reporting"
 description: "Reconcile product usage, pricing, credit deductions, statements, and exports."
 ---
 
-Your workspace has one billing account and credit balance across products. Paid and promotional top-ups have no consumption priority. Reports include the authorized workspace identifier and preserve product-specific billing units.
+Your workspace has one billing account and credit balance across products. Paid and promotional top-ups have no consumption priority. Each API key is bound to exactly one workspace. Reports include that workspace identifier and preserve product-specific billing units.
 
 Use consumption reporting to answer three questions: **what was used, what it cost, and how your credit balance changed**.
 
@@ -23,14 +23,14 @@ Each usage record contains the billing account, product, complexity tier, source
 
 | Product | Billable unit | Standard | Advanced | Complex |
 | --- | --- | ---: | ---: | ---: |
-| AMLOK Insights | Completed underwriting | CAD 5 | CAD 15 | CAD 35 |
-| AMLOK Signal | Active account-month | CAD 3 | CAD 5 | CAD 8 |
+| AMLOK Insights | Completed underwriting | CAD 5.00 | CAD 15.00 | CAD 35.00 |
+| AMLOK Signal | Active account-month | CAD 3.00 | CAD 5.00 | CAD 8.00 |
 
-The effective rate card identifies published or negotiated pricing and agreed workload limits. Custom quotes retain `standard`, `advanced`, or `complex`; there is no separate custom tier. Use the actual `unit_rate` and `rate_card_id` on each usage record. The record allowance applies per underwriting or analysis and includes at least 12 months of banking history. The effective rate card reflects agreed discounts. For Signal, count each active borrower/business once per workspace per month, regardless of monitoring configurations, checks, facilities, or data connections. The source identifier is the borrower/business identifier, not an individual monitor ID. Partial-month proration and tier changes follow the signed agreement; fractional quantities must not duplicate the same active period. Reporting does not create a different billing event or add a fee.
+The effective rate card identifies published or negotiated pricing and agreed workload limits. Custom quotes retain `standard`, `advanced`, or `complex`; there is no separate custom tier. Use the actual `unit_rate` and `rate_card_id` on each usage record. Insights uses the total historical snapshot per underwriting, including at least 12 months of bank statements and transactions within the record limit. Signal counts only newly processed records during the month; unchanged baseline records do not count again. The rate card reports `record_limit` and `record_counting_basis` for each product. The effective rate card reflects agreed discounts. For Signal, count each active borrower/business once per workspace per month, regardless of monitoring configurations, checks, facilities, or data connections. The source identifier is the borrower/business identifier, not an individual monitor ID. Signal includes change-driven reassessment and does not trigger another Insights charge. Its monthly usage deduction does not create a monthly funding payment; the monthly minimum is paid for 12 months in advance. Partial-month proration and tier changes follow the signed agreement; fractional quantities must not duplicate the same active period. Reporting does not create a different billing event or add a fee.
 
 `charge amount = billable quantity × effective unit rate`
 
-Calculate with decimal arithmetic and round each billed line to two decimal places using decimal half-up rounding. Sum posted line amounts to obtain totals. The agreed billing policy must use the same rule; do not recompute historic charges using today's rate card.
+Round the effective unit rate to two decimals first using decimal half-up rounding. Calculate with decimal arithmetic and round each billed line to two decimal places using decimal half-up rounding. Sum posted line amounts to obtain totals. The agreed billing policy must use the same rule; do not recompute historic charges using today's rate card.
 
 Usage records are created by the billing process. Client integrations cannot submit arbitrary usage debits. A correction is a new `reversal` linked through `reverses_usage_id`, with a negative amount and its own ledger reference. The original charge remains visible. Cumulative reversals cannot exceed the original charge; a replacement charge is recorded separately.
 
@@ -48,7 +48,7 @@ Every aggregation retains product, tier and unit. `group_by=day` or `month` adds
 
 The [consumption endpoint](/api-reference/endpoints/billing/retrieve-consumption-summary) includes complete cURL, Python, and Node.js requests with the required date window, time basis and grouping.
 
-For a synthetic month with 100 Standard Insights underwritings and 200 Standard Signal account-months, the totals are CAD 500 and CAD 600, or **CAD 1,100**. This consumes CAD 1,100 from your prepaid credits; it is not an extra platform charge.
+For a synthetic month with 100 Standard Insights underwritings and 200 Standard Signal account-months, the totals are CAD 500.00 and CAD 600.00, or **CAD 1,100.00**. This consumes CAD 1,100.00 from your prepaid credits; it is not an extra platform charge.
 
 ## Reconcile your credits
 
@@ -66,16 +66,15 @@ The named debit and credit columns are nonnegative magnitudes. `adjustments` is 
 | Closing posted balance | **10,900.00** |
 | Still held for pending product usage | 500.00 |
 | Available after holds | **10,400.00** |
-| Protected processing floor | 200.00 |
-| Spendable on new processing | **10,200.00** |
+| Available for new processing | **10,400.00** |
 
-A pending incoming top-up of CAD 500 does not change these totals. A hold is not a second debit. AMLOK captures it once when posting the movement, or releases it when the activity is cancelled or definitively fails.
+A pending incoming top-up of CAD 500.00 does not change these totals. A hold is not a second debit. AMLOK captures it once when posting the movement, or releases it when the activity is cancelled or definitively fails.
 
-The public credit API is reporting-only. The client portal separately provides payment-method, top-up-setting, and cancellation controls. Billable processing pauses before it would take available credits below CAD 200. On final agreement cancellation, the entire unused credit balance is refunded after usage reconciliation. That refund is reported separately from product usage. AMLOK resolves pending usage before finalization: if it becomes a CAD 500 product charge, the unused credit balance is CAD 10,400; if released without a charge, it is CAD 10,900.
+The public credit API is reporting-only. The client portal separately provides payment-method, top-up-setting, and cancellation controls. CAD 200.00 is the default automatic top-up trigger. Requests can use credits below it and fail only when available credits cannot cover the operation, without a debit for unprocessed work. On final agreement cancellation, the entire unused credit balance is refunded after usage reconciliation. That refund is reported separately from product usage. AMLOK resolves pending usage before finalization: if it becomes a CAD 500.00 product charge, the unused credit balance is CAD 10,400.00; if released without a charge, it is CAD 10,900.00.
 
 ## Export and finalize
 
-1. Create a report for `usage`, `ledger`, or `statement`, with its window, format and time basis. Reports are scoped to your authenticated institution's billing account.
+1. Create a report for `usage`, `ledger`, or `statement`, with its window, format and time basis. Reports are scoped to the one workspace bound to your API key.
 2. Poll its returned ID until `ready`; `202` only acknowledges the job.
 3. Create a short-lived [download link](/api-reference/endpoints/billing/create-billing-report-download-link).
 4. Validate the file hash, store it under your institution's access policy, and retain the report's `as_of` value.
@@ -84,6 +83,6 @@ JSON exports retain decimal strings. CSV exports escape formula-like cells and c
 
 Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Cancellation confirmation and refund details are provided through the account cancellation process, with dedicated account-manager assistance for enterprise clients.
 
-Cancellation includes workspace deletion. AMLOK issues the full unused-credit refund, including promotional credits and the unused CAD 200 floor, to the bank account saved in the portal immediately at account closure. Used credits are non-refundable. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Keep the cancellation confirmation and refund reference for delivery assistance through support or your enterprise account manager. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
+Cancellation can be requested at any time without notice, with account closure at the end of the request month. Data is deleted after that month closes and necessary final information is generated. AMLOK issues the full unused-credit refund, including promotional credits, to the bank account saved in the portal immediately at account closure. Used credits are non-refundable. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Keep the cancellation confirmation and refund reference for delivery assistance through support or your enterprise account manager. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
 
 See [credit reporting](/api-reference/credit-reporting) and [cancellation and refunds](/pricing/refunds-and-payouts).

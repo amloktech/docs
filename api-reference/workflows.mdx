@@ -13,7 +13,7 @@ Retrieve checks and screening matches. `in_review`, unresolved identity, missing
 
 1. [Create the application](/api-reference/endpoints/lending/create-application) with exact amount and currency.
 2. Connect and synchronize authorized sources, then inspect coverage and freshness.
-3. Use an approved immutable input manifest for [attribute calculations](/api-reference/endpoints/risk/calculate-attributes). Provision manifests through the process configured during onboarding.
+3. [List ready input manifests](/api-reference/endpoints/risk/list-input-manifests) for the subject after synchronization. Use the returned manifest ID for [attribute calculations](/api-reference/endpoints/risk/calculate-attributes), with a calculation window contained in the frozen manifest window. Retrieve the manifest to confirm coverage; missing coverage is not a zero value.
 4. [Start an underwriting run](/api-reference/endpoints/operations/start-workflow-run) with `workflow_type: underwrite`, an approved version, and input resource IDs.
 5. Retrieve the decision and immutable risk snapshot. Distinguish an advisory recommendation from the institution's decision.
 
@@ -25,11 +25,14 @@ The API exposes lender-supplied loans, facilities, guarantees, collateral, and r
 
 ## Monitor an existing exposure
 
-[Create a monitor](/api-reference/endpoints/risk/create-monitor) against an approved baseline snapshot, resource types, attribute keys, cadence, and ruleset version. Consume alerts and retrieve the supporting evidence.
+1. [List ready monitoring baselines](/api-reference/endpoints/risk/list-monitoring-baselines) for the borrower/business. AMLOK prepares these from a completed assessment or the agreed existing-portfolio onboarding process. If none is ready, complete that process before creating a monitor.
+2. [Retrieve the baseline](/api-reference/endpoints/risk/retrieve-monitoring-baseline) and its linked risk snapshot. The response provides the frozen input-manifest ID and approved snapshot ID.
+3. [Create a monitor](/api-reference/endpoints/risk/create-monitor) using the returned `snapshot_id` as `baseline_snapshot_id`, with resource types, attribute keys, cadence, and ruleset version. All linked IDs must belong to the same subject and key-bound workspace.
+4. Consume alerts and retrieve supporting evidence. Baseline reads do not launch or charge an Insights underwriting.
 
 Compare comparable time windows and coverage. A data outage is not an improvement in borrower risk. Refresh cadence depends on source capability and consent; a daily requested cadence is not a source freshness guarantee.
 
-For a material change, create a new underwriting run and preserve the original snapshot. The workbook mentions parent-run context but does not define that request field; the published request schema therefore does not invent `parent_run_id` support.
+For a material change, Signal reassesses risk using existing baseline data and newly processed records. This work is included in Signal and does not launch or charge another Insights underwriting. Preserve the original snapshot and the new evidence for audit. A separately requested full underwriting is a distinct Insights operation.
 
 ## Service and investigate
 

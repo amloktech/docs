@@ -1,0 +1,13 @@
+---
+title: "Retrieve input manifest"
+openapi: "/openapi/amlok-v1.json GET /v1/input-manifests/{id}"
+playground: simple
+---
+
+**Required scope:** risk:read
+
+Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization.
+
+If the list is empty, finish evidence synchronization and the agreed assessment or baseline onboarding process. Do not fabricate an identifier or treat missing baseline data as zero risk.
+
+[Baseline workflow](/api-reference/workflows#monitor-and-investigate) · [Authentication](/api-reference/authentication)

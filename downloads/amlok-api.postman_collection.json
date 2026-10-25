@@ -8415,7 +8415,7 @@
                 "attribute-calculations"
               ]
             },
-            "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes.",
+            "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"keys\": [\n    \"operating_inflows\"\n  ],\n  \"window_start\": \"2026-09-01\",\n  \"window_end\": \"2026-10-01\",\n  \"input_manifest_id\": \"manifest_example\"\n}",
@@ -8455,7 +8455,7 @@
                     "attribute-calculations"
                   ]
                 },
-                "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes.",
+                "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"keys\": [\n    \"operating_inflows\"\n  ],\n  \"window_start\": \"2026-09-01\",\n  \"window_end\": \"2026-10-01\",\n  \"input_manifest_id\": \"manifest_example\"\n}",
@@ -8565,7 +8565,7 @@
                 "monitors"
               ]
             },
-            "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits.",
+            "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"baseline_snapshot_id\": \"rsk_baseline\",\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ],\n  \"attribute_keys\": [\n    \"operating_inflows\"\n  ],\n  \"cadence\": \"daily\",\n  \"ruleset_version\": \"monitor-v1\"\n}",
@@ -8605,7 +8605,7 @@
                     "monitors"
                   ]
                 },
-                "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits.",
+                "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"baseline_snapshot_id\": \"rsk_baseline\",\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ],\n  \"attribute_keys\": [\n    \"operating_inflows\"\n  ],\n  \"cadence\": \"daily\",\n  \"ruleset_version\": \"monitor-v1\"\n}",
@@ -8718,6 +8718,162 @@
                 }
               ],
               "body": "{\n  \"data\": {\n    \"id\": \"mon_example\",\n    \"object\": \"monitor\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 4,\n    \"source_refs\": [],\n    \"data_status\": \"partial\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"client_reference\": \"app-1029\",\n    \"baseline_snapshot_id\": \"rsk_original\",\n    \"resource_types\": [\n      \"bank_transaction\",\n      \"lien\"\n    ],\n    \"attribute_keys\": [\n      \"operating_inflows\"\n    ],\n    \"status\": \"paused\",\n    \"cadence\": \"daily\",\n    \"ruleset_version\": \"monitor-v1\",\n    \"last_evaluated_at\": null,\n    \"next_evaluation_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List input manifests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/input-manifests?subject_id=biz_example&status=ready&limit=100",
+            "description": "Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/input-manifests?subject_id=biz_example&status=ready&limit=100",
+                "description": "Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"workspace_id\": \"wsp_example\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"record_version\": 1,\n      \"status\": \"ready\",\n      \"id\": \"manifest_example\",\n      \"object\": \"input_manifest\",\n      \"window_start\": \"2025-10-01\",\n      \"window_end\": \"2026-10-01\",\n      \"record_count\": 72000,\n      \"source_connection_ids\": [\n        \"cnn_example\"\n      ],\n      \"sha256\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve input manifest",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/input-manifests/manifest_example",
+            "description": "Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/input-manifests/manifest_example",
+                "description": "Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"workspace_id\": \"wsp_example\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 1,\n    \"status\": \"ready\",\n    \"id\": \"manifest_example\",\n    \"object\": \"input_manifest\",\n    \"window_start\": \"2025-10-01\",\n    \"window_end\": \"2026-10-01\",\n    \"record_count\": 72000,\n    \"source_connection_ids\": [\n      \"cnn_example\"\n    ],\n    \"sha256\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List monitoring baselines",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/monitoring-baselines?subject_id=biz_example&status=ready&limit=100",
+            "description": "Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/monitoring-baselines?subject_id=biz_example&status=ready&limit=100",
+                "description": "Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"workspace_id\": \"wsp_example\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"record_version\": 1,\n      \"status\": \"ready\",\n      \"id\": \"baseline_example\",\n      \"object\": \"monitoring_baseline\",\n      \"snapshot_id\": \"rsk_baseline\",\n      \"input_manifest_id\": \"manifest_example\",\n      \"approved_at\": \"2026-10-23T14:00:00Z\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve monitoring baseline",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/monitoring-baselines/baseline_example",
+            "description": "Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/monitoring-baselines/baseline_example",
+                "description": "Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"workspace_id\": \"wsp_example\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 1,\n    \"status\": \"ready\",\n    \"id\": \"baseline_example\",\n    \"object\": \"monitoring_baseline\",\n    \"snapshot_id\": \"rsk_baseline\",\n    \"input_manifest_id\": \"manifest_example\",\n    \"approved_at\": \"2026-10-23T14:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         }
@@ -9566,7 +9722,7 @@
                 "workflow-runs"
               ]
             },
-            "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization.",
+            "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"underwrite-v1\",\n  \"input_resource_ids\": [\n    \"app_example\",\n    \"doc_example\"\n  ],\n  \"application_id\": \"app_example\"\n}",
@@ -9606,7 +9762,7 @@
                     "workflow-runs"
                   ]
                 },
-                "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization.",
+                "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"underwrite-v1\",\n  \"input_resource_ids\": [\n    \"app_example\",\n    \"doc_example\"\n  ],\n  \"application_id\": \"app_example\"\n}",
@@ -10449,7 +10605,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/account",
-            "description": "Read the unified workspace billing policy, CAD 200 hard processing floor, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Final cancellation deletes workspace data and immediately refunds the full unused balance, including promotional credits, to the saved portal bank account when the account closes. Used credits are non-refundable.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10463,7 +10619,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/account",
-                "description": "Read the unified workspace billing policy, CAD 200 hard processing floor, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Final cancellation deletes workspace data and immediately refunds the full unused balance, including promotional credits, to the saved portal bank account when the account closes. Used credits are non-refundable.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10473,7 +10629,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_account_example\",\n    \"object\": \"billing_account\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"minimum_monthly_commitment\": \"1000.00\",\n    \"payment_for_12_months\": \"12000.00\",\n    \"term_start\": \"2026-10-01T00:00:00Z\",\n    \"term_end\": \"2027-10-01T00:00:00Z\",\n    \"renewal_payment_at\": \"2027-10-01T00:00:00Z\",\n    \"credit_type\": \"prepaid_service_credits\",\n    \"outflow_policy\": \"product_usage_or_final_cancellation_refund\",\n    \"refund_policy\": \"full_unused_balance_on_final_cancellation\",\n    \"access\": \"reporting_only\",\n    \"portal_controls\": [\n      \"payment_methods\",\n      \"automatic_top_ups\",\n      \"account_cancellation\"\n    ],\n    \"funding_methods\": [\n      \"card\",\n      \"bank_account\"\n    ],\n    \"processing_balance_floor\": \"200.00\",\n    \"minimum_top_up_threshold\": \"200.00\",\n    \"minimum_top_up_amount\": \"500.00\",\n    \"refund_destination\": \"saved_portal_bank_account\",\n    \"policy_version\": \"unified-workspace-credits\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_account_example\",\n    \"object\": \"billing_account\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"minimum_monthly_commitment\": \"1000.00\",\n    \"payment_for_12_months\": \"12000.00\",\n    \"term_start\": \"2026-10-01T00:00:00Z\",\n    \"term_end\": \"2027-10-01T00:00:00Z\",\n    \"renewal_payment_at\": \"2027-10-01T00:00:00Z\",\n    \"credit_type\": \"prepaid_service_credits\",\n    \"outflow_policy\": \"product_usage_or_final_cancellation_refund\",\n    \"refund_policy\": \"full_unused_balance_on_final_cancellation\",\n    \"access\": \"reporting_only\",\n    \"portal_controls\": [\n      \"payment_methods\",\n      \"automatic_top_ups\",\n      \"account_cancellation\"\n    ],\n    \"funding_methods\": [\n      \"card\",\n      \"bank_account\"\n    ],\n    \"default_auto_top_up_threshold\": \"200.00\",\n    \"minimum_top_up_threshold\": \"200.00\",\n    \"payment_frequency\": \"every_12_months\",\n    \"cancellation_notice_days\": 0,\n    \"closure_timing\": \"end_of_request_month\",\n    \"minimum_top_up_amount\": \"500.00\",\n    \"refund_destination\": \"saved_portal_bank_account\",\n    \"policy_version\": \"unified-workspace-credits\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10488,7 +10644,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/rate-card",
-            "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. At least 12 months of banking history count inside records_per_analysis. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10502,7 +10658,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/rate-card",
-                "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. At least 12 months of banking history count inside records_per_analysis. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10512,7 +10668,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_rate_card_example\",\n    \"object\": \"billing_rate_card\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"effective_from\": \"2026-10-01T00:00:00Z\",\n    \"rates\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"records_per_analysis\": 75000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"advanced\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"15.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"15.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"records_per_analysis\": 250000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"complex\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"35.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"35.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"records_per_analysis\": 1000000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"3.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"3.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"records_per_analysis\": 75000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"advanced\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"records_per_analysis\": 250000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"complex\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"8.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"8.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"records_per_analysis\": 1000000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\"\n        }\n      }\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_rate_card_example\",\n    \"object\": \"billing_rate_card\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"currency\": \"CAD\",\n    \"effective_from\": \"2026-10-01T00:00:00Z\",\n    \"rates\": [\n      {\n        \"product\": \"insights\",\n        \"tier\": \"standard\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"per_underwriting\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"advanced\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"15.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"15.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"per_underwriting\"\n        }\n      },\n      {\n        \"product\": \"insights\",\n        \"tier\": \"complex\",\n        \"unit\": \"completed_underwriting\",\n        \"base_rate\": \"35.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"35.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": 12,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"per_underwriting\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"standard\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"3.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"3.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 2,\n          \"business_integrations\": 5,\n          \"record_limit\": 75000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Routine reconciliation and standard analysis\",\n          \"record_counting_basis\": \"new_records_per_month\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"advanced\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"5.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"5.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 4,\n          \"business_integrations\": 10,\n          \"record_limit\": 250000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Multiple entities or channels and deeper reconciliation\",\n          \"record_counting_basis\": \"new_records_per_month\"\n        }\n      },\n      {\n        \"product\": \"signal\",\n        \"tier\": \"complex\",\n        \"unit\": \"active_account_month\",\n        \"base_rate\": \"8.00\",\n        \"discount_percent\": \"0\",\n        \"effective_rate\": \"8.00\",\n        \"pricing_basis\": \"published\",\n        \"workload_limits\": {\n          \"bank_accounts\": 8,\n          \"business_integrations\": 20,\n          \"record_limit\": 1000000,\n          \"minimum_banking_history_months\": null,\n          \"analysis_scope\": \"Extensive relationships, exceptions, and investigation\",\n          \"record_counting_basis\": \"new_records_per_month\"\n        }\n      }\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10527,7 +10683,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/usage?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&limit=100",
-            "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10541,7 +10697,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/usage?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&limit=100",
-                "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10566,7 +10722,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/usage/billing_usage_example",
-            "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10580,7 +10736,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/usage/billing_usage_example",
-                "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10605,7 +10761,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/consumption?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&group_by=product_tier",
-            "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10619,7 +10775,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/consumption?from=2026-10-01T00%3A00%3A00Z&to=2026-11-01T00%3A00%3A00Z&time_basis=posted_at&group_by=product_tier",
-                "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10652,7 +10808,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/reports",
-            "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+            "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\"\n}",
@@ -10683,7 +10839,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/reports",
-                "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+                "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\"\n}",
@@ -10717,7 +10873,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/reports?limit=100",
-            "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export."
+            "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10731,7 +10887,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/reports?limit=100",
-                "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export."
+                "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10756,7 +10912,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/reports/billing_report_example",
-            "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export."
+            "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10770,7 +10926,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/reports/billing_report_example",
-                "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export."
+                "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10803,7 +10959,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/reports/billing_report_example/download-link",
-            "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+            "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Monthly reconciliation.\"\n}",
@@ -10834,7 +10990,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/reports/billing_report_example/download-link",
-                "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+                "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Monthly reconciliation.\"\n}",
@@ -10868,7 +11024,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/statements?limit=100",
-            "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10882,7 +11038,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/statements?limit=100",
-                "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10907,7 +11063,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/statements/billing_statement_example",
-            "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10921,7 +11077,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/statements/billing_statement_example",
-                "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10946,7 +11102,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/credits",
-            "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10960,7 +11116,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/credits",
-                "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,
@@ -10970,7 +11126,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_credit_balance_example\",\n    \"object\": \"billing_credit_balance\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"pending_incoming\": \"500.00\",\n    \"total_posted\": \"10900.00\",\n    \"total_held\": \"500.00\",\n    \"available_for_usage\": \"10400.00\",\n    \"processing_floor\": \"200.00\",\n    \"spendable_for_processing\": \"10200.00\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_credit_balance_example\",\n    \"object\": \"billing_credit_balance\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"workspace_id\": \"wsp_example\",\n    \"billing_account_id\": \"billing_account_example\",\n    \"currency\": \"CAD\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"pending_incoming\": \"500.00\",\n    \"total_posted\": \"10900.00\",\n    \"total_held\": \"500.00\",\n    \"available_for_usage\": \"10400.00\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10985,7 +11141,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/credit-ledger?limit=100",
-            "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+            "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
           },
           "response": [
             {
@@ -10999,7 +11155,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/credit-ledger?limit=100",
-                "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export."
+                "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export."
               },
               "status": "OK",
               "code": 200,

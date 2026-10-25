@@ -44,7 +44,10 @@ check(account['access']=='reporting_only' and 'enabled_capabilities' not in acco
 check(set(account['portal_controls'])=={'payment_methods','automatic_top_ups','account_cancellation'},'Portal controls missing')
 check(set(account['funding_methods'])=={'card','bank_account'},'Incorrect funding methods')
 check(account['refund_destination']=='saved_portal_bank_account','Refund must use saved bank account')
-check(account['processing_balance_floor']==account['minimum_top_up_threshold']=='200.00','Wrong processing floor or threshold minimum')
+check(account['default_auto_top_up_threshold']==account['minimum_top_up_threshold']=='200.00','Wrong automatic trigger')
+check('processing_balance_floor' not in account,'Processing floor still exposed')
+check(account['payment_frequency']=='every_12_months','Monthly funding payments implied')
+check(account['closure_timing']=='end_of_request_month' and account['cancellation_notice_days']==0,'Cancellation timing mismatch')
 check(account['minimum_top_up_amount']=='500.00','Wrong top-up minimum')
 for policy in ['active_agreement_refunds','withdraw_anytime']:
     check(not valid('BillingAccount',{**account,'refund_policy':policy}),'Wrong policy accepted')
@@ -54,22 +57,31 @@ for obsolete in ['committed_credits','additional_funds','promotional_credits','r
     check(not valid('BillingCreditBalance',{**balance,obsolete:{}}),'Schema accepts obsolete bucket')
 check('withdrawable' not in balance,'Balance advertises immediate cash-out')
 check(Decimal(balance['available_for_usage'])==Decimal(balance['total_posted'])-Decimal(balance['total_held']),'Pending funding counted as available')
-check(Decimal(balance['spendable_for_processing'])==max(Decimal(0),Decimal(balance['available_for_usage'])-Decimal(balance['processing_floor'])),'Processing floor not protected')
-check(not valid('BillingCreditBalance',{**balance,'processing_floor':'199.99'}),'Incorrect processing floor accepted')
+check(not valid('BillingCreditBalance',{**balance,'processing_floor':'200.00'}),'Removed floor accepted')
+check('spendable_for_processing' not in balance,'Duplicate spendable balance remains')
+below={**balance,'total_posted':'180.00','total_held':'0.00','available_for_usage':'180.00'}
+check(valid('BillingCreditBalance',below),'Credits below CAD 200 cannot be represented')
 check(balance['workspace_id']==account['workspace_id']=='wsp_example','Workspace context missing')
 entry=response('/v1/billing/credit-ledger')[0]
 check(not set(entry)&{'bucket','credit_lot_id'},'Ledger still allocates consumption by source bucket')
 check(not valid('BillingCreditEntry',{**entry,'bucket':'promotional_credits'}),'Ledger accepts source-priority allocation')
 rate_card=response('/v1/billing/rate-card')
 for rate in rate_card['rates']:
-    check(rate['workload_limits']['minimum_banking_history_months']==12,'Banking history requirement missing')
-    check(rate['workload_limits']['records_per_analysis']=={'standard':75000,'advanced':250000,'complex':1000000}[rate['tier']],'Published per-analysis limit wrong')
+    check(rate['workload_limits']['minimum_banking_history_months']==(12 if rate['product']=='insights' else None),'Wrong history basis')
+    check(rate['workload_limits']['record_counting_basis']==('per_underwriting' if rate['product']=='insights' else 'new_records_per_month'),'Wrong record-counting basis')
+    check(rate['workload_limits']['record_limit']=={'standard':75000,'advanced':250000,'complex':1000000}[rate['tier']],'Published per-analysis limit wrong')
 negotiated=deepcopy(rate_card['rates'][0]);negotiated.update(pricing_basis='negotiated',effective_rate='4.50',discount_percent='10')
 check(valid('BillingRate',negotiated),'Negotiated rate must retain existing tier')
 check(not valid('BillingRate',{**negotiated,'tier':'custom'}),'Fourth reporting tier accepted')
-custom=deepcopy(rate_card['rates'][2]);custom.update(pricing_basis='negotiated');custom['workload_limits']['records_per_analysis']=2000000
+custom=deepcopy(rate_card['rates'][2]);custom.update(pricing_basis='negotiated');custom['workload_limits']['record_limit']=2000000
 check(valid('BillingRate',custom),'Explicit custom allowance cannot be represented')
 check(not valid('BillingWorkloadLimits',{**custom['workload_limits'],'minimum_banking_history_months':11}),'History shorter than twelve months accepted')
+for bad in ['100.01','100.99','101','-1']:
+    check(not valid('BillingRate',{**negotiated,'discount_percent':bad}),'Discount over 100 or below 0 accepted')
+check(not valid('BillingRate',{**negotiated,'effective_rate':'4.555'}),'Fractional billing cent accepted')
+bad=deepcopy(rate_card['rates'][3]);bad['workload_limits']['record_counting_basis']='per_underwriting'
+check(not valid('BillingRate',bad),'Signal allowed historical counting basis')
+check(valid('BillingCreditEntry',{**entry,'amount':'-5.00'}),'Signed ledger amount invalid')
 statement=response('/v1/billing/statements/{id}')
 closing=sum(Decimal(statement[k]) for k in ['opening_balance','funding','adjustments'])-sum(Decimal(statement[k]) for k in ['usage','refunds'])
 check(closing==Decimal(statement['closing_balance'])==Decimal(balance['total_posted']),'Statement not reconciled')

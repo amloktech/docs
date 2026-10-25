@@ -49,7 +49,7 @@ if errors:
     print('\n'.join(errors));raise SystemExit(f'{len(errors)} invalid examples')
 index=json.loads((root/'data/api-reference-index.json').read_text())
 reporting_index=json.loads((root/'data/reporting-api-index.json').read_text())
-assert counts['operations']==162+len(reporting_index)+2==len(index)
+assert counts['operations']==162+len(reporting_index)+2+len(json.loads((root/'data/baseline-api-index.json').read_text()))==len(index)
 assert len({op['operationId'] for methods in spec['paths'].values() for op in methods.values()})==len(index)
 assert spec['servers'][0]['url']=='https://api.example.com'
 assert spec['info']['version']=='1.4.2'

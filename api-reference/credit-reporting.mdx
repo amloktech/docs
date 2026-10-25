@@ -17,24 +17,22 @@ Each workspace has one unified billing account and credit balance across eligibl
 
 ## One credit balance
 
-Reports identify the authorized `workspace_id` and billing account. Paid funding and commercial promotional top-ups are combined; there are no separate source-based spending balances or consumption priorities. Product and tier identify the reason and rate for a charge, not a separate wallet.
+Each API key is bound to exactly one workspace, institution, and environment. Reports identify the authorized `workspace_id` and billing account. Paid funding and commercial promotional top-ups are combined; there are no separate source-based spending balances or consumption priorities. Product and tier identify the reason and rate for a charge, not a separate wallet.
 
 The credit snapshot reports exact CAD decimal strings:
 
 - `total_posted`: credits remaining after posted additions, deductions, refunds, and corrections.
 - `total_held`: credits reserved for pending processing, not an additional posted debit.
-- `available_for_usage`: posted credits less holds, before protecting the processing floor.
-- `processing_floor`: CAD `200.00`, kept unused while the account is active.
-- `spendable_for_processing`: available credits above that floor.
-- `pending_incoming`: funding still awaiting settlement, excluded from usable credits.
+- `available_for_usage`: posted credits less existing holds; all of this amount can cover new processing.
+- `pending_incoming`: funding awaiting settlement, excluded from available credits.
 
 `available_for_usage = total_posted - total_held`
 
-`spendable_for_processing = max(0, available_for_usage - processing_floor)`
+CAD 200.00 is the default automatic top-up trigger, not a protected balance floor. With auto-pay enabled, a balance below the configured threshold triggers the selected top-up of at least CAD 500.00. With auto-pay off, no collection occurs.
 
-New billable processing or a new reservation must not take available credits below the floor. Capture of an existing hold replaces the reservation with the charge rather than deducting twice. Failed or pending funding can pause processing until sufficient usable credits arrive; reporting remains accessible on an active account.
+In either case, requests can continue below CAD 200.00 while available credits cover them. A new billable operation or reservation that cannot be funded is rejected with `402 insufficient_credits`, without charging for unprocessed work. A captured hold replaces the reservation with the charge, avoiding a double deduction. Read-only reporting remains available on an active account.
 
-For example, CAD 10,900 posted credits and CAD 500 held leave CAD 10,400 available, of which **CAD 10,200** can fund new processing while retaining the CAD 200 floor. The whole unused balance, including the floor and promotional credits, is refundable on final cancellation after pending usage is resolved.
+For example, CAD 10,900.00 posted credits and CAD 500.00 held leave **CAD 10,400.00 available for new processing**. Pending incoming funds do not increase it. At month-end account closure, all unused credits, including promotional top-ups, are refundable after pending usage is resolved.
 
 ## Ledger and product reporting
 
@@ -44,10 +42,10 @@ Statements reconcile opening credits, top-ups, product usage, cancellation refun
 
 ## API access and portal controls
 
-`billing:read` authorizes credit, usage, and statement reads; `billing:export` authorizes report generation and download links. Reads and exports must be restricted to the authorized workspace within the institution. A response's `workspace_id` is context, not authorization, and callers cannot select another workspace by adding an undocumented parameter.
+`billing:read` authorizes credit, usage, and statement reads; `billing:export` authorizes report generation and download links. Reads and exports use the single workspace bound to the API key. A response's `workspace_id` is context, not authorization, and callers cannot select another workspace by adding an undocumented parameter.
 
 Report creation and download links do not change credits. There are no public wallet-management, payment-method, top-up, threshold-setting, cancellation, refund, or transfer endpoints.
 
-In the portal, the minimum automatic top-up threshold is CAD 200 and the minimum customer-funded top-up is CAD 500. Customers can fund by card or bank account and must save a bank account for cancellation refunds. Enterprise clients can also request cancellation through their dedicated account manager.
+In the portal, the minimum automatic top-up threshold is CAD 200.00 and the minimum customer-funded top-up is CAD 500.00. Customers can fund by card or bank account and must save a bank account for cancellation refunds. Enterprise clients can also request cancellation through their dedicated account manager.
 
-Cancellation includes workspace deletion. AMLOK immediately refunds the entire unused credit balance to the saved bank account when the account closes; bank receipt can take **7-10 business days**. Used credits are non-refundable. See [credits and billing](/pricing/credits-and-billing) and [cancellation and refunds](/pricing/refunds-and-payouts).
+Cancellation can be requested at any time without notice. Account closure is at the end of the request month; workspace data is deleted after that month closes and final information is generated. AMLOK immediately refunds the entire unused credit balance to the saved bank account when the account closes; bank receipt can take **7-10 business days**. Used credits are non-refundable. See [credits and billing](/pricing/credits-and-billing) and [cancellation and refunds](/pricing/refunds-and-payouts).

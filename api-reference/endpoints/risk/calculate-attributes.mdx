@@ -6,7 +6,7 @@ playground: simple
 
 **Required scope:** `risk:calculate` · **Execution:** asynchronous.
 
-GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes.
+GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.
 
 Poll `GET /v1/attribute-calculations/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
 

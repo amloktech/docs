@@ -13,7 +13,7 @@ GET /v1/bank-transactions?subject_id=biz_example&posted_from=2026-09-01&posted_t
 
 Read `page.next_cursor` and send it with the same filters on the next request. Finish when `page.has_more` is false and `page.next_cursor` is null. Do not decode a cursor or substitute an upstream provider cursor.
 
-The order is stable by `updated_at`, then `id`. Cursors bind the institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
+Resource collections use stable `updated_at`, then `id` ordering. The credit ledger instead uses ascending `sequence` with its documented `sequence_after` filter. Cursors bind the workspace, institution, filters, and snapshot. A cursor from a different query or environment must be rejected.
 
 ```javascript
 // Node.js, using your institution-issued environment and key.

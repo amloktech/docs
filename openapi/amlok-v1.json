@@ -26161,7 +26161,7 @@
       "post": {
         "operationId": "EP150",
         "summary": "Create monitor",
-        "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits.",
+        "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.",
         "tags": [
           "Risk"
         ],
@@ -29706,7 +29706,7 @@
       "post": {
         "operationId": "EP147",
         "summary": "Start workflow run",
-        "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization.",
+        "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. No external action without scoped institutional authorization. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.",
         "tags": [
           "Operations"
         ],
@@ -29853,6 +29853,9 @@
           },
           "500": {
             "$ref": "#/components/responses/Error500"
+          },
+          "402": {
+            "$ref": "#/components/responses/Error402"
           }
         },
         "requestBody": {
@@ -31975,7 +31978,7 @@
       "post": {
         "operationId": "EP148",
         "summary": "Calculate attributes",
-        "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes.",
+        "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.",
         "tags": [
           "Risk"
         ],
@@ -33515,7 +33518,7 @@
       "get": {
         "operationId": "WA001",
         "summary": "Retrieve billing account",
-        "description": "Read the unified workspace billing policy, CAD 200 hard processing floor, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Final cancellation deletes workspace data and immediately refunds the full unused balance, including promotional credits, to the saved portal bank account when the account closes. Used credits are non-refundable.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -33593,8 +33596,11 @@
                           "card",
                           "bank_account"
                         ],
-                        "processing_balance_floor": "200.00",
+                        "default_auto_top_up_threshold": "200.00",
                         "minimum_top_up_threshold": "200.00",
+                        "payment_frequency": "every_12_months",
+                        "cancellation_notice_days": 0,
+                        "closure_timing": "end_of_request_month",
                         "minimum_top_up_amount": "500.00",
                         "refund_destination": "saved_portal_bank_account",
                         "policy_version": "unified-workspace-credits"
@@ -33664,7 +33670,7 @@
       "get": {
         "operationId": "WA002",
         "summary": "Retrieve billing rate card",
-        "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. At least 12 months of banking history count inside records_per_analysis. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -33735,9 +33741,10 @@
                             "workload_limits": {
                               "bank_accounts": 2,
                               "business_integrations": 5,
-                              "records_per_analysis": 75000,
+                              "record_limit": 75000,
                               "minimum_banking_history_months": 12,
-                              "analysis_scope": "Routine reconciliation and standard analysis"
+                              "analysis_scope": "Routine reconciliation and standard analysis",
+                              "record_counting_basis": "per_underwriting"
                             }
                           },
                           {
@@ -33751,9 +33758,10 @@
                             "workload_limits": {
                               "bank_accounts": 4,
                               "business_integrations": 10,
-                              "records_per_analysis": 250000,
+                              "record_limit": 250000,
                               "minimum_banking_history_months": 12,
-                              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+                              "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+                              "record_counting_basis": "per_underwriting"
                             }
                           },
                           {
@@ -33767,9 +33775,10 @@
                             "workload_limits": {
                               "bank_accounts": 8,
                               "business_integrations": 20,
-                              "records_per_analysis": 1000000,
+                              "record_limit": 1000000,
                               "minimum_banking_history_months": 12,
-                              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+                              "analysis_scope": "Extensive relationships, exceptions, and investigation",
+                              "record_counting_basis": "per_underwriting"
                             }
                           },
                           {
@@ -33783,9 +33792,10 @@
                             "workload_limits": {
                               "bank_accounts": 2,
                               "business_integrations": 5,
-                              "records_per_analysis": 75000,
-                              "minimum_banking_history_months": 12,
-                              "analysis_scope": "Routine reconciliation and standard analysis"
+                              "record_limit": 75000,
+                              "minimum_banking_history_months": null,
+                              "analysis_scope": "Routine reconciliation and standard analysis",
+                              "record_counting_basis": "new_records_per_month"
                             }
                           },
                           {
@@ -33799,9 +33809,10 @@
                             "workload_limits": {
                               "bank_accounts": 4,
                               "business_integrations": 10,
-                              "records_per_analysis": 250000,
-                              "minimum_banking_history_months": 12,
-                              "analysis_scope": "Multiple entities or channels and deeper reconciliation"
+                              "record_limit": 250000,
+                              "minimum_banking_history_months": null,
+                              "analysis_scope": "Multiple entities or channels and deeper reconciliation",
+                              "record_counting_basis": "new_records_per_month"
                             }
                           },
                           {
@@ -33815,9 +33826,10 @@
                             "workload_limits": {
                               "bank_accounts": 8,
                               "business_integrations": 20,
-                              "records_per_analysis": 1000000,
-                              "minimum_banking_history_months": 12,
-                              "analysis_scope": "Extensive relationships, exceptions, and investigation"
+                              "record_limit": 1000000,
+                              "minimum_banking_history_months": null,
+                              "analysis_scope": "Extensive relationships, exceptions, and investigation",
+                              "record_counting_basis": "new_records_per_month"
                             }
                           }
                         ]
@@ -33887,7 +33899,7 @@
       "get": {
         "operationId": "WA003",
         "summary": "List usage records",
-        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34127,7 +34139,7 @@
       "get": {
         "operationId": "WA004",
         "summary": "Retrieve usage record",
-        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34279,7 +34291,7 @@
       "get": {
         "operationId": "WA005",
         "summary": "Retrieve consumption summary",
-        "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34487,7 +34499,7 @@
       "post": {
         "operationId": "WA006",
         "summary": "Create billing report",
-        "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+        "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34647,7 +34659,7 @@
       "get": {
         "operationId": "WA007",
         "summary": "List billing reports",
-        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34817,7 +34829,7 @@
       "get": {
         "operationId": "WA008",
         "summary": "Retrieve billing report",
-        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+        "description": "Read export status, snapshot time and expiry.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -34962,7 +34974,7 @@
       "post": {
         "operationId": "WA009",
         "summary": "Create billing report download link",
-        "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. Institution and workspace authorization apply to every read and export.",
+        "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35122,7 +35134,7 @@
       "get": {
         "operationId": "WA010",
         "summary": "List billing statements",
-        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35297,7 +35309,7 @@
       "get": {
         "operationId": "WA011",
         "summary": "Retrieve billing statement",
-        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35447,7 +35459,7 @@
       "get": {
         "operationId": "WA058",
         "summary": "Retrieve credit balance",
-        "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held; spendable_for_processing equals max(0, available_for_usage minus the CAD 200 processing_floor). New billable processing and reservations cannot cross that floor. The full unused balance, including the floor, is refunded only on final cancellation after reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. Processing may use credits below CAD 200 and is rejected only when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after cancellation reconciliation. This endpoint cannot change credits or portal payment settings.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35511,9 +35523,7 @@
                         "pending_incoming": "500.00",
                         "total_posted": "10900.00",
                         "total_held": "500.00",
-                        "available_for_usage": "10400.00",
-                        "processing_floor": "200.00",
-                        "spendable_for_processing": "10200.00"
+                        "available_for_usage": "10400.00"
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -35580,7 +35590,7 @@
       "get": {
         "operationId": "WA059",
         "summary": "List credit ledger entries",
-        "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. Institution and workspace authorization apply to every read and export.",
+        "description": "Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.\n\nRequired scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
         "tags": [
           "Reporting"
         ],
@@ -35965,6 +35975,608 @@
           }
         }
       }
+    },
+    "/v1/input-manifests": {
+      "get": {
+        "operationId": "BM001",
+        "summary": "List input manifests",
+        "description": "Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization.",
+        "tags": [
+          "Risk"
+        ],
+        "parameters": [
+          {
+            "name": "subject_id",
+            "in": "query",
+            "required": true,
+            "description": "Required authorized borrower/business in the key-bound workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "biz_example"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Lifecycle filter. Use ready for new calculations or monitor creation.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ready",
+                "superseded",
+                "revoked"
+              ]
+            },
+            "example": "ready"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size; default 100, maximum 200.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            },
+            "example": 100
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque cursor bound to filters and snapshot.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "risk:read"
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/input-manifests?subject_id=biz_example&status=ready&limit=100\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/input-manifests?subject_id=biz_example&status=ready&limit=100\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/input-manifests?subject_id=biz_example&status=ready&limit=100\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized baseline metadata. An empty list means no matching baseline is available.",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/InputManifest"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": [
+                        {
+                          "workspace_id": "wsp_example",
+                          "subject_id": "biz_example",
+                          "created_at": "2026-10-23T14:00:00Z",
+                          "updated_at": "2026-10-23T14:00:00Z",
+                          "record_version": 1,
+                          "status": "ready",
+                          "id": "manifest_example",
+                          "object": "input_manifest",
+                          "window_start": "2025-10-01",
+                          "window_end": "2026-10-01",
+                          "record_count": 72000,
+                          "source_connection_ids": [
+                            "cnn_example"
+                          ],
+                          "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                        }
+                      ],
+                      "page": {
+                        "has_more": false,
+                        "next_cursor": null,
+                        "limit": 100
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/v1/input-manifests/{id}": {
+      "get": {
+        "operationId": "BM002",
+        "summary": "Retrieve input manifest",
+        "description": "Read an immutable evidence manifest prepared by AMLOK from synchronized, borrower-permissioned records. window_start is inclusive and window_end exclusive. record_count covers the frozen input set; sha256 identifies its content. Manifest reads do not expose payment controls or create a charge. Use the ready manifest id as input_manifest_id when calculating attributes for the same subject and a window contained within the manifest. Superseded or revoked manifests cannot authorize new calculations. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization.",
+        "tags": [
+          "Risk"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifier in the authorized workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "manifest_example"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "risk:read"
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/input-manifests/manifest_example\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/input-manifests/manifest_example\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/input-manifests/manifest_example\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized baseline metadata. An empty list means no matching baseline is available.",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/InputManifest"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "workspace_id": "wsp_example",
+                        "subject_id": "biz_example",
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "updated_at": "2026-10-23T14:00:00Z",
+                        "record_version": 1,
+                        "status": "ready",
+                        "id": "manifest_example",
+                        "object": "input_manifest",
+                        "window_start": "2025-10-01",
+                        "window_end": "2026-10-01",
+                        "record_count": 72000,
+                        "source_connection_ids": [
+                          "cnn_example"
+                        ],
+                        "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/v1/monitoring-baselines": {
+      "get": {
+        "operationId": "BB001",
+        "summary": "List monitoring baselines",
+        "description": "Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization.",
+        "tags": [
+          "Risk"
+        ],
+        "parameters": [
+          {
+            "name": "subject_id",
+            "in": "query",
+            "required": true,
+            "description": "Required authorized borrower/business in the key-bound workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "biz_example"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Lifecycle filter. Use ready for new calculations or monitor creation.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ready",
+                "superseded",
+                "revoked"
+              ]
+            },
+            "example": "ready"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Page size; default 100, maximum 200.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            },
+            "example": 100
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque cursor bound to filters and snapshot.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "monitoring:read"
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitoring-baselines?subject_id=biz_example&status=ready&limit=100\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/monitoring-baselines?subject_id=biz_example&status=ready&limit=100\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/monitoring-baselines?subject_id=biz_example&status=ready&limit=100\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized baseline metadata. An empty list means no matching baseline is available.",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/MonitoringBaseline"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": [
+                        {
+                          "workspace_id": "wsp_example",
+                          "subject_id": "biz_example",
+                          "created_at": "2026-10-23T14:00:00Z",
+                          "updated_at": "2026-10-23T14:00:00Z",
+                          "record_version": 1,
+                          "status": "ready",
+                          "id": "baseline_example",
+                          "object": "monitoring_baseline",
+                          "snapshot_id": "rsk_baseline",
+                          "input_manifest_id": "manifest_example",
+                          "approved_at": "2026-10-23T14:00:00Z"
+                        }
+                      ],
+                      "page": {
+                        "has_more": false,
+                        "next_cursor": null,
+                        "limit": 100
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
+    },
+    "/v1/monitoring-baselines/{id}": {
+      "get": {
+        "operationId": "BB002",
+        "summary": "Retrieve monitoring baseline",
+        "description": "Read an approved monitoring baseline prepared by AMLOK from a completed assessment or the agreed existing-portfolio onboarding process. Use its snapshot_id, not the baseline record id, as baseline_snapshot_id when creating a monitor. Retrieve that risk snapshot for the baseline evidence and attributes. Only ready baselines for the same subject and workspace can initialize a monitor. This read does not launch or charge an Insights underwriting. Signal change-driven reassessment remains included in Signal. The API key identifies exactly one workspace, institution and environment. All linked resources must belong to that workspace and subject; caller-supplied workspace selectors cannot override authorization.",
+        "tags": [
+          "Risk"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Identifier in the authorized workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "baseline_example"
+          }
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "monitoring:read"
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitoring-baselines/baseline_example\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/monitoring-baselines/baseline_example\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/monitoring-baselines/baseline_example\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized baseline metadata. An empty list means no matching baseline is available.",
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/MonitoringBaseline"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "workspace_id": "wsp_example",
+                        "subject_id": "biz_example",
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "updated_at": "2026-10-23T14:00:00Z",
+                        "record_version": 1,
+                        "status": "ready",
+                        "id": "baseline_example",
+                        "object": "monitoring_baseline",
+                        "snapshot_id": "rsk_baseline",
+                        "input_manifest_id": "manifest_example",
+                        "approved_at": "2026-10-23T14:00:00Z"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -35973,7 +36585,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "API key",
-        "description": "Server-to-server API key scoped to one institution tenant and environment. Do not use in public browser code."
+        "description": "Server-to-server API key bound to exactly one workspace, institution tenant and environment. No caller-supplied workspace override is accepted. Do not use in public browser code."
       }
     },
     "schemas": {
@@ -65319,7 +65931,18 @@
             "description": "Requested credit product."
           },
           "requested_amount": {
-            "$ref": "#/components/schemas/MoneyInput",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MoneyInput"
+              },
+              {
+                "properties": {
+                  "amount": {
+                    "pattern": "^(?:0\\.(?:0[1-9]|[1-9][0-9])|[1-9][0-9]*\\.[0-9]{2})$"
+                  }
+                }
+              }
+            ],
             "description": "Requested credit amount and currency."
           },
           "purpose": {
@@ -65329,6 +65952,7 @@
           },
           "requested_term_months": {
             "type": "integer",
+            "minimum": 1,
             "description": "Requested contractual term in months."
           }
         },
@@ -65937,11 +66561,27 @@
               ]
             }
           },
-          "processing_balance_floor": {
+          "default_auto_top_up_threshold": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
             "description": "Nonnegative CAD amount, exact decimal string in major units.",
             "const": "200.00"
+          },
+          "payment_frequency": {
+            "type": "string",
+            "enum": [
+              "every_12_months"
+            ]
+          },
+          "cancellation_notice_days": {
+            "type": "integer",
+            "const": 0
+          },
+          "closure_timing": {
+            "type": "string",
+            "enum": [
+              "end_of_request_month"
+            ]
           },
           "minimum_top_up_threshold": {
             "type": "string",
@@ -65987,7 +66627,10 @@
           "access",
           "portal_controls",
           "funding_methods",
-          "processing_balance_floor",
+          "default_auto_top_up_threshold",
+          "payment_frequency",
+          "cancellation_notice_days",
+          "closure_timing",
           "minimum_top_up_threshold",
           "minimum_top_up_amount",
           "refund_destination",
@@ -66027,7 +66670,7 @@
           },
           "discount_percent": {
             "type": "string",
-            "pattern": "^(?:100|[0-9]{1,2})(?:\\.[0-9]{1,2})?$"
+            "pattern": "^(?:100(?:\\.0{1,2})?|[0-9]{1,2}(?:\\.[0-9]{1,2})?)$"
           },
           "effective_rate": {
             "type": "string",
@@ -66056,7 +66699,63 @@
           "pricing_basis",
           "workload_limits"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "product": {
+                  "const": "insights"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "unit": {
+                  "const": "completed_underwriting"
+                },
+                "workload_limits": {
+                  "properties": {
+                    "record_counting_basis": {
+                      "const": "per_underwriting"
+                    },
+                    "minimum_banking_history_months": {
+                      "type": "integer",
+                      "minimum": 12
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "product": {
+                  "const": "signal"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "unit": {
+                  "const": "active_account_month"
+                },
+                "workload_limits": {
+                  "properties": {
+                    "record_counting_basis": {
+                      "const": "new_records_per_month"
+                    },
+                    "minimum_banking_history_months": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "description": "CAD rates have exactly two decimals. Round the discounted effective unit rate first using decimal half-up rounding; multiply by billable quantity and round each charge to two decimals. Negotiated effective rates already include any discount."
       },
       "BillingWorkloadLimits": {
         "type": "object",
@@ -66069,13 +66768,27 @@
             "type": "integer",
             "minimum": 0
           },
-          "records_per_analysis": {
+          "record_limit": {
             "type": "integer",
             "minimum": 1
           },
+          "record_counting_basis": {
+            "type": "string",
+            "enum": [
+              "per_underwriting",
+              "new_records_per_month"
+            ]
+          },
           "minimum_banking_history_months": {
-            "type": "integer",
-            "minimum": 12
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 12
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "analysis_scope": {
             "type": "string",
@@ -66085,7 +66798,8 @@
         "required": [
           "bank_accounts",
           "business_integrations",
-          "records_per_analysis",
+          "record_limit",
+          "record_counting_basis",
           "minimum_banking_history_months",
           "analysis_scope"
         ],
@@ -66207,7 +66921,7 @@
               "completed_underwriting",
               "active_account_month"
             ],
-            "description": "Signal counts each active borrower/business once per workspace per month, regardless of checks, monitoring configurations, facilities or data connections. Partial-month and tier-change treatment follows the agreement without duplicate charges for the same active period."
+            "description": "Signal counts each active borrower/business once per workspace per month, including change-driven reassessment without an additional Insights charge, regardless of checks, monitoring configurations, facilities or data connections. Partial-month and tier-change treatment follows the agreement without duplicate charges for the same active period."
           },
           "quantity": {
             "type": "string",
@@ -66227,7 +66941,7 @@
           "amount": {
             "type": "string",
             "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
           },
           "entry_type": {
             "type": "string",
@@ -66367,12 +67081,12 @@
           "adjustment_amount": {
             "type": "string",
             "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
           },
           "net_amount": {
             "type": "string",
             "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
           }
         },
         "required": [
@@ -66462,7 +67176,7 @@
           "total_net_amount": {
             "type": "string",
             "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
           },
           "provisional": {
             "type": "boolean"
@@ -66837,7 +67551,7 @@
           "adjustments": {
             "type": "string",
             "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
           },
           "ledger_sequence_from": {
             "type": "integer",
@@ -66939,17 +67653,6 @@
             "type": "string",
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
             "description": "Nonnegative CAD amount, exact decimal string in major units."
-          },
-          "processing_floor": {
-            "type": "string",
-            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units.",
-            "const": "200.00"
-          },
-          "spendable_for_processing": {
-            "type": "string",
-            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
           }
         },
         "required": [
@@ -66966,9 +67669,7 @@
           "pending_incoming",
           "total_posted",
           "total_held",
-          "available_for_usage",
-          "processing_floor",
-          "spendable_for_processing"
+          "available_for_usage"
         ],
         "additionalProperties": false
       },
@@ -67017,7 +67718,7 @@
           "amount": {
             "type": "string",
             "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "Nonnegative CAD amount, exact decimal string in major units."
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
           },
           "balance_after": {
             "type": "string",
@@ -67180,6 +67881,153 @@
             }
           }
         }
+      },
+      "InputManifest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "superseded",
+              "revoked"
+            ]
+          },
+          "window_start": {
+            "type": "string",
+            "format": "date"
+          },
+          "window_end": {
+            "type": "string",
+            "format": "date"
+          },
+          "record_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "source_connection_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "workspace_id",
+          "subject_id",
+          "created_at",
+          "updated_at",
+          "record_version",
+          "status",
+          "window_start",
+          "window_end",
+          "record_count",
+          "source_connection_ids",
+          "sha256"
+        ]
+      },
+      "MonitoringBaseline": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "superseded",
+              "revoked"
+            ]
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input_manifest_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "approved_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "workspace_id",
+          "subject_id",
+          "created_at",
+          "updated_at",
+          "record_version",
+          "status",
+          "snapshot_id",
+          "input_manifest_id",
+          "approved_at"
+        ]
       }
     },
     "responses": {
@@ -67606,6 +68454,44 @@
                   "error": {
                     "code": "insufficient_evidence",
                     "message": "Required decision or metric prerequisites are missing.",
+                    "retryable": false,
+                    "request_id": "req_example"
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.4.2",
+                    "generated_at": "2026-10-23T14:00:00Z",
+                    "data_status": "complete"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error402": {
+        "description": "Request failed. Inspect error.code and error.retryable.",
+        "headers": {
+          "X-Request-ID": {
+            "description": "AMLOK response correlation identifier.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "req_example"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorEnvelope"
+            },
+            "examples": {
+              "insufficient_credits": {
+                "summary": "insufficient_credits",
+                "value": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Available workspace credits cannot cover this billable operation. No work was started and no usage charge was posted.",
                     "retryable": false,
                     "request_id": "req_example"
                   },

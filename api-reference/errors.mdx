@@ -43,12 +43,19 @@ The example has HTTP `422`. `meta.data_status: complete` describes the error res
 | `source_error` | 502 | Conditional | Inspect job-level details; retry only if the failure is transient. |
 | `source_unavailable` | 503 | Yes | Retry with backoff or retrieve explicit partial results. |
 | `internal_error` | 500 | Conditional | Use request_id for support; keep idempotency key for safe retry. |
+| `insufficient_credits` | 402 | No, until funded | Fund the workspace in the portal, then retry the rejected workflow. Unprocessed work is not charged. |
 
 ## Retry decisions
 
 Honor `error.retryable` and `Retry-After` when provided. A source error or internal error can require investigation; its HTTP class alone does not establish that repeating a command is safe. Preserve the idempotency key for the same POST action.
 
 Do not retry malformed input, invalid credentials, missing permissions, or stale approvals without resolving the cause. Do not broaden subject IDs or permissions in response to an authorization error.
+
+## Insufficient credits
+
+A billable workflow returns `402 insufficient_credits` when available credits cannot cover its cost. CAD 200.00 is an automatic top-up trigger, not a processing floor. Requests may continue below it while funded. Pending payments are excluded from available credits. The rejection occurs before work is accepted, without a usage debit. After credits are available, retry the same intended request with the same idempotency key; a pre-execution insufficient-credit rejection does not reserve the key as an accepted operation.
+
+Read-only reports and baseline retrieval do not require a new usage charge. Signal reassessment is included in Signal, not billed as another Insights underwriting.
 
 ## Partial results versus request errors
 

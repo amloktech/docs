@@ -54,6 +54,7 @@ OPS = [op for op in rows('API Endpoints') if op['Operation ID'] not in REMOVED_O
 PARAMS = rows('API Parameters')
 EVENTS = [event for event in rows('Events') if event['Event key'] != 'deletion.completed']
 ERRORS = rows('Error Codes')
+ERRORS.append({'Code':'insufficient_credits','HTTP status':'402','Meaning':'Available workspace credits cannot cover this billable operation. No work was started and no usage charge was posted.','Retryable':'No'})
 SCHEMAS = {f'Enum_{k}': {'type': 'string', 'enum': v} for k, v in ENUMS.items()}
 EXAMPLES = {}
 REFINEMENTS = [
@@ -70,7 +71,7 @@ REFINEMENTS = [
     'ResponseMeta.data_status describes response completeness; newly accepted asynchronous work uses pending. Creation examples do not fabricate completed results.',
     'Page.next_cursor is explicitly nullable, as required by the pagination rule. Shared optional fields permit null where the normalization rule requires missing-value representation.',
     'Multipart document upload is the documented ingestion route. No unlisted pre-signed-upload endpoint is invented.',
-    'The workbook describes key administration, signing-secret rotation, approval IDs and frozen input manifests but does not define management endpoints for them. Provisioning remains an onboarding dependency.',
+    'The workbook describes key administration, signing-secret rotation, approval IDs but does not define management endpoints for them. These remain onboarding dependencies. Frozen manifests and monitoring baselines have explicit read-only discovery endpoints.',
 ]
 
 def type_schema(t):
@@ -249,7 +250,8 @@ def request_schema(op, resource):
         if key == 'file': s = {'type': 'string', 'format': 'binary'}
         if key == 'verification_type': s = {'type': 'string', 'enum': ['kyc','kyb']}
         if key == 'search_type': s = {'type': 'string', 'enum': ['name','identifier','vin','serial']}
-        if key == 'expected_record_version': s.update(minimum=1)
+        if key in ['expected_record_version','requested_term_months']: s.update(minimum=1)
+        if key == 'requested_amount': s = {'allOf':[ref('MoneyInput'),{'properties':{'amount':{'pattern':r'^(?:0\.(?:0[1-9]|[1-9][0-9])|[1-9][0-9]*\.[0-9]{2})$'}}}]} 
         if key == 'event_types': s['items'] = {'type': 'string', 'enum': [e['Event key'] for e in EVENTS]}
         if key == 'resources' or key == 'resource_types': s['items'] = {'type': 'string', 'enum': list(ENTITIES)}
         s['description'] = desc
@@ -349,7 +351,7 @@ def samples(op, params, request, example_id):
     js += 'const response = await fetch(baseUrl.replace(/\\/$/, "") + "'+path+'", {\n  method: "'+op['Method']+'", headers,\n  redirect: "error", signal: AbortSignal.timeout(30000),\n'+('  body'+('' if is_multipart else ': JSON.stringify('+dump(request)+')')+',\n' if request else '')+'});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());'
     return [{'lang':'Shell','label':'cURL','source':'\n'.join(curl)},{'lang':'Python','source':python},{'lang':'JavaScript','label':'Node.js','source':js}]
 
-SPEC = {'openapi':'3.1.0','info':{'title':'AMLOK API','version':VERSION,'description':'API reference for AMLOK 1.4.2, with example requests and responses. Configure your institution-issued environment URL before making requests.','x-source-workbook':SOURCE_URL},'servers':[{'url':'https://api.example.com','description':'Set the server URL to your institution-issued AMLOK environment URL.'}],'security':[{'BearerAuth':[]}],'paths':{},'components':{'securitySchemes':{'BearerAuth':{'type':'http','scheme':'bearer','bearerFormat':'API key','description':'Server-to-server API key scoped to one institution tenant and environment. Do not use in public browser code.'}},'schemas':SCHEMAS},'tags':[]}
+SPEC = {'openapi':'3.1.0','info':{'title':'AMLOK API','version':VERSION,'description':'API reference for AMLOK 1.4.2, with example requests and responses. Configure your institution-issued environment URL before making requests.','x-source-workbook':SOURCE_URL},'servers':[{'url':'https://api.example.com','description':'Set the server URL to your institution-issued AMLOK environment URL.'}],'security':[{'BearerAuth':[]}],'paths':{},'components':{'securitySchemes':{'BearerAuth':{'type':'http','scheme':'bearer','bearerFormat':'API key','description':'Server-to-server API key bound to exactly one workspace, institution tenant and environment. No caller-supplied workspace override is accepted. Do not use in public browser code.'}},'schemas':SCHEMAS},'tags':[]}
 SCHEMAS['ErrorEnvelope'] = object_schema({'error':ref('Error'),'meta':ref('ResponseMeta')},['error','meta'])
 previous_index_path = ROOT / 'data/api-reference-index.json'
 previous_ops = json.loads(previous_index_path.read_text()) if previous_index_path.exists() else []
@@ -359,6 +361,14 @@ POSTMAN_GROUPS = defaultdict(list)
 
 for op in OPS:
     oid, path, method = op['Operation ID'],op['Path'],op['Method']
+    op = deepcopy(op)
+    if oid == 'EP147':
+        op['Constraints'] += ' Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.'
+    if oid == 'EP148':
+        op['Constraints'] += ' Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.'
+    if oid == 'EP150':
+        op['Constraints'] += ' Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges.'
+
     collection = '/'.join(path.split('/')[:3])
     resource = RESOURCE_BY_PATH.get(collection)
     group = GROUPS.get(resource, 'Platform')
@@ -421,7 +431,7 @@ for op in OPS:
     success_headers={'X-Request-ID':{'description':'AMLOK response correlation identifier.','schema':{'type':'string'},'example':'req_example'}}
     if resource in ['monitor','case'] and not list_response:success_headers['ETag']={'description':'Quoted record version for an If-Match update.','schema':{'type':'string'},'example':'"'+str(data['record_version'])+'"'}
     operation['responses'][success]={'description':op['Purpose']+(' Accepted work is not yet complete.' if op['Execution']=='Asynchronous' else ''),'headers':success_headers,'content':{'application/json':{'schema':response_schema,'examples':{'synthetic':{'summary':'Synthetic '+title.lower(),'value':response_example}}}}}
-    relevant=[e for e in ERRORS if e['HTTP status'] not in ['409','412','422'] or (e['HTTP status']=='409' and method=='POST') or (e['HTTP status']=='412' and (method=='PATCH' or oid in ['EP155','EP157'])) or (e['HTTP status']=='422' and method!='GET')]
+    relevant=[e for e in ERRORS if (e['HTTP status'] != '402' or oid == 'EP147') and (e['HTTP status'] not in ['409','412','422'] or (e['HTTP status']=='409' and method=='POST') or (e['HTTP status']=='412' and (method=='PATCH' or oid in ['EP155','EP157'])) or (e['HTTP status']=='422' and method!='GET'))]
     for e in relevant:
         code=e['HTTP status'];example={'error':{'code':e['Code'],'message':e['Meaning'],'retryable':e['Retryable']=='Yes','request_id':'req_example'},'meta':meta('complete')}
         response=operation['responses'].setdefault(code,{'description':'Request failed. Inspect error.code and error.retryable.','headers':deepcopy(success_headers),'content':{'application/json':{'schema':ref('ErrorEnvelope'),'examples':{}}}})
@@ -457,6 +467,8 @@ from wallet_contract import extend
 REPORTING_OPS = extend(globals())
 from status_contract import extend as extend_status
 STATUS_OPS = extend_status(globals())
+from baseline_contract import extend as extend_baselines
+BASELINE_OPS = extend_baselines(globals())
 active_pages = {op['page'] for op in OP_INDEX}
 for old_op in previous_ops:
     if old_op['page'] not in active_pages:
