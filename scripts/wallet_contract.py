@@ -7,23 +7,24 @@ from copy import deepcopy
 from urllib.parse import urlencode
 import json
 
+# Stable identifiers survive removal of obsolete wallet operations.
+OPERATION_IDS = {'GET /v1/billing/account': 'WA001', 'GET /v1/billing/rate-card': 'WA002', 'GET /v1/billing/usage': 'WA003', 'GET /v1/billing/usage/{id}': 'WA004', 'GET /v1/billing/consumption': 'WA005', 'POST /v1/billing/reports': 'WA006', 'GET /v1/billing/reports': 'WA007', 'GET /v1/billing/reports/{id}': 'WA008', 'POST /v1/billing/reports/{id}/download-link': 'WA009', 'GET /v1/billing/statements': 'WA010', 'GET /v1/billing/statements/{id}': 'WA011', 'POST /v1/wallets': 'WA012', 'GET /v1/wallets': 'WA013', 'GET /v1/wallets/{id}': 'WA014', 'GET /v1/wallets/{id}/balance': 'WA015', 'GET /v1/wallets/{id}/ledger': 'WA016', 'GET /v1/wallets/{id}/credit-lots': 'WA017', 'GET /v1/wallets/{id}/holds': 'WA018', 'POST /v1/wallet-sessions': 'WA019', 'GET /v1/wallet-payment-methods': 'WA020', 'GET /v1/wallet-payment-methods/{id}': 'WA021', 'POST /v1/wallet-payment-methods/{id}/disable': 'WA022', 'POST /v1/wallet-top-ups': 'WA023', 'GET /v1/wallet-top-ups': 'WA024', 'GET /v1/wallet-top-ups/{id}': 'WA025', 'POST /v1/wallet-top-ups/{id}/cancel': 'WA026', 'GET /v1/wallets/{id}/auto-top-up': 'WA027', 'PATCH /v1/wallets/{id}/auto-top-up': 'WA028', 'POST /v1/wallet-quotes': 'WA029', 'GET /v1/wallet-quotes/{id}': 'WA030', 'POST /v1/wallet-transfers': 'WA031', 'GET /v1/wallet-transfers': 'WA032', 'GET /v1/wallet-transfers/{id}': 'WA033', 'POST /v1/wallet-transfers/{id}/cancel': 'WA034', 'POST /v1/wallet-withdrawals': 'WA035', 'GET /v1/wallet-withdrawals': 'WA036', 'GET /v1/wallet-withdrawals/{id}': 'WA037', 'POST /v1/wallet-withdrawals/{id}/cancel': 'WA038', 'POST /v1/wallet-refunds': 'WA039', 'GET /v1/wallet-refunds': 'WA040', 'GET /v1/wallet-refunds/{id}': 'WA041', 'POST /v1/wallet-refunds/{id}/cancel': 'WA042', 'GET /v1/wallet-payouts': 'WA043', 'GET /v1/wallet-payouts/{id}': 'WA044', 'GET /v1/wallet-approvals': 'WA045', 'GET /v1/wallet-approvals/{id}': 'WA046', 'POST /v1/wallet-approvals/{id}/decision': 'WA047', 'POST /v1/agreement-cancellation-quotes': 'WA048', 'POST /v1/agreement-cancellations': 'WA049', 'GET /v1/agreement-cancellations': 'WA050', 'GET /v1/agreement-cancellations/{id}': 'WA051', 'POST /v1/agreement-cancellations/{id}/cancel': 'WA052', 'POST /v1/wallet-closures': 'WA053', 'GET /v1/wallet-closures': 'WA054', 'GET /v1/wallet-closures/{id}': 'WA055', 'POST /v1/wallet-closures/{id}/cancel': 'WA056', 'POST /v1/wallet-refunds/{id}/retry': 'WA057'}
+
 WALLET_EVENTS = [
     ('billing.usage.posted', 'billing_usage', 'A usage charge or compensating adjustment is posted.'),
     ('billing.report.updated', 'billing_report', 'A report is ready, failed, or expired.'),
     ('billing.statement.finalized', 'billing_statement', 'A statement revision is finalized.'),
     ('wallet.balance.updated', 'wallet', 'A posted entry or hold changes a balance.'),
     ('wallet.top_up.updated', 'wallet_top_up', 'A funding attempt changes state.'),
-    ('wallet.transfer.updated', 'wallet_transfer', 'An internal transfer changes state.'),
-    ('wallet.withdrawal.updated', 'wallet_withdrawal', 'A withdrawal changes state.'),
-    ('wallet.refund.updated', 'wallet_refund', 'A refund request changes state.'),
-    ('wallet.payout.updated', 'wallet_payout', 'An outbound settlement changes state.'),
+    ('wallet.refund.updated', 'wallet_refund', 'A final-cancellation refund changes state.'),
+    ('wallet.payout.updated', 'wallet_payout', 'A cancellation-refund payout changes state.'),
     ('wallet.destination.updated', 'wallet_destination', 'Destination verification or availability changes.'),
     ('wallet.approval.updated', 'wallet_approval', 'A required approval is decided or expires.'),
     ('billing.cancellation.updated', 'agreement_cancellation', 'An agreement cancellation changes state.'),
     ('wallet.closure.updated', 'wallet_closure', 'A wallet closure changes state.'),
 ]
 WALLET_ERRORS = {
-    'insufficient_available_balance': (409, 'Available eligible funds do not cover the debit and fees.'),
+    'insufficient_available_balance': (409, 'The reconciled paid balance no longer covers the quoted cancellation refund.'),
     'quote_expired': (409, 'Obtain a new quote before submitting a new movement.'),
     'quote_mismatch': (409, 'The quote does not match the operation, source, destination, or amount.'),
     'duplicate_client_reference': (409, 'This business reference already identifies another intended action.'),
@@ -32,7 +33,10 @@ WALLET_ERRORS = {
     'refund_limit_exceeded': (409, 'The amount exceeds the remaining refundable funding principal.'),
     'closure_balance_remaining': (409, 'Funds, holds, or pending settlements remain unresolved.'),
     'destination_not_verified': (422, 'Use a verified destination owned by the same legal entity.'),
-    'cross_institution_transfer': (422, 'Transfers must remain within the same institution and legal owner.'),
+    'cancellation_not_final': (409, 'The agreement must be effective, finally reconciled, and awaiting its remaining-balance refund.'),
+    'refund_already_in_progress': (409, 'A refund already reserves this balance; retrieve the existing refund.'),
+    'refund_not_retryable': (409, 'Retry only after a definitive failure, cancellation, or return; an unknown payment outcome cannot be retried.'),
+    'refund_balance_changed': (409, 'The final statement or remaining paid balance changed; reconcile and obtain a fresh quote.'),
     'unsupported_wallet_currency': (422, 'The currency or payment route is not enabled.'),
     'approval_actor_conflict': (403, 'An independent authorized approver must decide this request.'),
     'wallet_capability_disabled': (403, 'This wallet capability is not enabled for the institution.'),
@@ -70,16 +74,17 @@ def extend(g):
         'currency': currency, 'agreement_id': string, 'agreement_version': string,
         'minimum_monthly_commitment': amount, 'payment_for_12_months': amount,
         'term_start': date, 'term_end': date, 'renewal_payment_at': date,
-        'committed_credits_withdrawable': boolean, 'transfer_scope': enum('same_institution_same_legal_owner'),
-        'enabled_capabilities': array(enum('funding','transfers','withdrawals','refunds','auto_top_up')),
-        'approval_required_for': array(enum('transfer','withdrawal','refund','cancellation')),
-        'limits': obj({'per_withdrawal': amount,'daily_outbound': amount,'minimum_withdrawal': amount}),
+        'wallet_type': enum('prepaid_service_credits'),
+        'outflow_policy': enum('product_usage_or_final_cancellation_refund'),
+        'refund_policy': enum('full_remaining_paid_balance_on_final_cancellation'),
+        'enabled_capabilities': array(enum('funding','cancellation_refunds','auto_top_up')),
+        'approval_required_for': array(enum('refund_delivery','cancellation')),
         'policy_version': string
     }, dict(currency='CAD',agreement_id='agr_example',agreement_version='3',minimum_monthly_commitment='1000.00',
         payment_for_12_months='12000.00',term_start='2026-10-01T00:00:00Z',term_end='2027-10-01T00:00:00Z',
-        renewal_payment_at='2027-10-01T00:00:00Z',committed_credits_withdrawable=True,
-        transfer_scope='same_institution_same_legal_owner',enabled_capabilities=['funding','transfers','withdrawals','refunds','auto_top_up'],
-        approval_required_for=['withdrawal'],limits={'per_withdrawal':'5000.00','daily_outbound':'10000.00','minimum_withdrawal':'1.00'},policy_version='wallet-policy-example'))
+        renewal_payment_at='2027-10-01T00:00:00Z',wallet_type='prepaid_service_credits',
+        outflow_policy='product_usage_or_final_cancellation_refund',refund_policy='full_remaining_paid_balance_on_final_cancellation',
+        enabled_capabilities=['funding','cancellation_refunds','auto_top_up'],approval_required_for=['refund_delivery'],policy_version='wallet-policy-cancellation-only'))
     rate_props = {'product': enum('insights','signal'),'tier': enum('standard','advanced','complex'),'unit': enum('completed_underwriting','active_account_month'),'base_rate': amount,'discount_percent': {'type':'string','pattern':r'^(?:100|[0-9]{1,2})(?:\.[0-9]{1,2})?$'},'effective_rate': amount}
     S['BillingRate'] = obj(rate_props)
     rates = [dict(product=p,tier=t,unit=u,base_rate=f'{r:.2f}',discount_percent='0',effective_rate=f'{r:.2f}') for p,u,values in [('insights','completed_underwriting',[5,15,35]),('signal','active_account_month',[3,5,8])] for t,r in zip(['standard','advanced','complex'],values)]
@@ -121,40 +126,38 @@ def extend(g):
         dict(url='https://downloads.example.com/authorized-report',expires_at='2026-10-23T14:05:00Z',sha256='a'*64))
     model('BillingStatement','billing_statement',{**period_props,'currency':currency,'status':enum('provisional','final'),
         'revision':{'type':'integer','minimum':1},'supersedes_id':nullable(string),'as_of':date,
-        **{k:amount for k in ['opening_balance','funding','usage','transfers_in','transfers_out','withdrawals','refunds','fees','closing_balance']},
+        **{k:amount for k in ['opening_balance','funding','usage','refunds','closing_balance']},
         'adjustments':signed,'ledger_sequence_from':integer,'ledger_sequence_to':integer},
         {**period_values,'currency':'CAD','status':'provisional','revision':1,'supersedes_id':None,'as_of':now,
-        'opening_balance':'12000.00','funding':'0.00','usage':'1100.00','transfers_in':'0.00','transfers_out':'0.00',
-        'withdrawals':'1000.00','refunds':'0.00','fees':'0.00','adjustments':'0.00','closing_balance':'9900.00',
+        'opening_balance':'12000.00','funding':'0.00','usage':'1100.00','refunds':'0.00','adjustments':'0.00','closing_balance':'10900.00',
         'ledger_sequence_from':1,'ledger_sequence_to':3})
-    model('Wallet','wallet',{'name':string,'currency':currency,'legal_owner_id':string,'status':enum('active','restricted','closing','closed'),
-        'usage_enabled':boolean},dict(name='Operating wallet',currency='CAD',legal_owner_id='institution_example',status='active',usage_enabled=True))
+    model('Wallet','wallet',{'name':string,'currency':currency,'agreement_id':string,'legal_owner_id':string,'status':enum('active','restricted','closing','closed'),
+        'usage_enabled':boolean},dict(name='Operating wallet',currency='CAD',agreement_id='agr_example',legal_owner_id='institution_example',status='active',usage_enabled=True))
     request('CreateWallet',{'name':string,'currency':currency,'usage_enabled':boolean})
     bucket = obj({'posted':amount,'held':amount,'available':amount})
     model('WalletBalance','wallet_balance',{'wallet_id':string,'currency':currency,'as_of':date,'ledger_sequence':integer,
         'committed_credits':bucket,'additional_funds':bucket,'promotional_credits':bucket,'pending_incoming':amount,
-        'total_posted':amount,'total_held':amount,'available_for_usage':amount,'withdrawable':amount},
+        'total_posted':amount,'total_held':amount,'available_for_usage':amount,'remaining_paid_credits':amount},
         dict(wallet_id='wal_example',currency='CAD',as_of=now,ledger_sequence=3,
-        committed_credits={'posted':'9900.00','held':'500.00','available':'9400.00'},
+        committed_credits={'posted':'10900.00','held':'500.00','available':'10400.00'},
         additional_funds={'posted':'0.00','held':'0.00','available':'0.00'},
         promotional_credits={'posted':'0.00','held':'0.00','available':'0.00'},
-        pending_incoming='250.00',total_posted='9900.00',total_held='500.00',available_for_usage='9400.00',withdrawable='9400.00'))
+        pending_incoming='250.00',total_posted='10900.00',total_held='500.00',available_for_usage='10400.00',remaining_paid_credits='10900.00'))
     model('WalletLedgerEntry','wallet_ledger_entry',{'wallet_id':string,'sequence':integer,'currency':currency,
-        'amount':signed,'balance_after':amount,'entry_type':enum('funding','usage','transfer_in','transfer_out','withdrawal','refund','fee','adjustment','reversal'),
+        'amount':signed,'balance_after':amount,'entry_type':enum('funding','usage','refund','adjustment','reversal'),
         'bucket':enum('committed_credits','additional_funds','promotional_credits'),'credit_lot_id':string,
         'movement_id':string,'reverses_entry_id':nullable(string),'posted_at':date,'client_reference':nullable(string)},
-        dict(wallet_id='wal_example',sequence=3,currency='CAD',amount='-1000.00',balance_after='9900.00',entry_type='withdrawal',
-        bucket='committed_credits',credit_lot_id='lot_example',movement_id='wallet_withdrawal_settled',reverses_entry_id=None,posted_at=now,client_reference='withdrawal-1000'))
+        dict(wallet_id='wal_example',sequence=3,currency='CAD',amount='-600.00',balance_after='10900.00',entry_type='usage',
+        bucket='committed_credits',credit_lot_id='lot_example',movement_id='billing_usage_signal',reverses_entry_id=None,posted_at=now,client_reference='signal-october'))
     model('WalletCreditLot','wallet_credit_lot',{'wallet_id':string,'currency':currency,
         'origin_type':enum('minimum_commitment','additional_funding','promotional'),'origin_top_up_id':string,
-        'original_amount':amount,'remaining_amount':amount,'held_amount':amount,'withdrawable_amount':amount,
-        'refundable_to_origin_amount':amount,'restrictions':array(string)},
+        'original_amount':amount,'remaining_amount':amount,'held_amount':amount,
+        'refund_policy':enum('on_final_cancellation','non_cash_promotional'),'restrictions':array(string)},
         dict(wallet_id='wal_example',currency='CAD',origin_type='minimum_commitment',origin_top_up_id='top_up_annual',
-        original_amount='12000.00',remaining_amount='9900.00',held_amount='500.00',withdrawable_amount='9400.00',
-        refundable_to_origin_amount='9400.00',restrictions=[]))
+        original_amount='12000.00',remaining_amount='10900.00',held_amount='500.00',refund_policy='on_final_cancellation',restrictions=[]))
     model('WalletHold','wallet_hold',{'wallet_id':string,'currency':currency,'amount':amount,'movement_id':string,
-        'reason':enum('withdrawal','transfer','refund','usage','dispute','legal'),'status':enum('active','captured','released'),
-        'expires_at':nullable(date)},dict(wallet_id='wal_example',currency='CAD',amount='500.00',movement_id='wallet_withdrawal_example',reason='withdrawal',status='active',expires_at=None))
+        'reason':enum('refund','usage','dispute','legal'),'status':enum('active','captured','released'),
+        'expires_at':nullable(date)},dict(wallet_id='wal_example',currency='CAD',amount='500.00',movement_id='billing_usage_pending',reason='usage',status='active',expires_at=None))
     session_request = {'purpose':enum('funding_method','payout_destination'),'return_url':{'type':'string','format':'uri'}}
     request('CreateWalletSession',session_request)
     model('WalletSession','wallet_session',{'purpose':session_request['purpose'],'url':{'type':'string','format':'uri'},'expires_at':date},
@@ -173,46 +176,44 @@ def extend(g):
     auto_values = dict(enabled=False,threshold='250.00',top_up_amount='1000.00',monthly_cap='5000.00',
         funding_method_id='wallet_payment_method_example',authorization_id='mandate_example',currency='CAD')
     model('WalletAutoTopUp','wallet_auto_top_up',{**auto_props,'wallet_id':string,'spent_this_month':amount}, {**auto_values,'wallet_id':'wal_example','spent_this_month':'0.00'})
-    movement_types = enum('transfer','withdrawal','refund')
-    quote_props = {'kind':movement_types,'source_wallet_id':string,'amount':positive,'currency':currency,
-        'destination_wallet_id':string,'payout_destination_id':string,'origin_top_up_id':string}
-    request('CreateWalletQuote',quote_props,['kind','source_wallet_id','amount','currency'])
-    # Exactly the appropriate destination is allowed, including the original funding for a refund.
-    S['CreateWalletQuote']['oneOf'] = [
-        {'properties':{'kind':{'const':k}},'required':[field],
-         'not':{'anyOf':[{'required':[other]} for other in ['destination_wallet_id','payout_destination_id','origin_top_up_id'] if other!=field]}}
-        for k,field in [('transfer','destination_wallet_id'),('withdrawal','payout_destination_id'),('refund','origin_top_up_id')]]
-    quote_values = dict(kind='withdrawal',source_wallet_id='wal_example',amount='500.00',currency='CAD',payout_destination_id='wallet_payment_method_example')
-    model('WalletQuote','wallet_quote',{'kind':movement_types,'source_wallet_id':string,'destination_reference':string,
-        'amount':amount,'fee_amount':amount,'total_debit':amount,'recipient_amount':amount,'currency':currency,
-        'expires_at':date,'policy_version':string,'source_wallet_version':{'type':'integer','minimum':1},
-        'approval_required':boolean,'holds_funds':{'const':False,'type':'boolean'}},
-        dict(kind='withdrawal',source_wallet_id='wal_example',destination_reference='wallet_payment_method_example',amount='500.00',
-        fee_amount='0.00',total_debit='500.00',recipient_amount='500.00',currency='CAD',expires_at='2026-10-23T14:10:00Z',
-        policy_version='wallet-policy-example',source_wallet_version=1,approval_required=True,holds_funds=False))
+    zero_amount = {**amount, 'const':'0.00'}
+    allocation_props = {'origin_top_up_id':string,'destination_id':string,'amount':amount}
+    S['WalletRefundAllocation'] = obj(allocation_props)
+    allocations = [{'origin_top_up_id':'top_up_annual','destination_id':'wallet_payment_method_example','amount':'10900.00'}]
+    quote_props = {'kind':enum('refund'),'source_wallet_id':string,'cancellation_id':string,'currency':currency,
+        'payout_destination_id':string,'refund_id':string}
+    request('CreateWalletQuote',quote_props,['kind','source_wallet_id','cancellation_id','currency'])
+    S['CreateWalletQuote']['description'] = 'Final-cancellation refund only. Amount and funding allocations are calculated by the server from the final reconciled paid balance. No client-selected partial amount. payout_destination_id is permitted only as a verified same-owner fallback when the original source cannot receive the refund. refund_id is required for a retry quote.'
+    quote_values = dict(kind='refund',source_wallet_id='wal_example',cancellation_id='cancellation_final_example',currency='CAD')
+    model('WalletQuote','wallet_quote',{'kind':enum('refund'),'source_wallet_id':string,'cancellation_id':string,
+        'final_statement_id':string,'final_statement_revision':{'type':'integer','minimum':1},'refund_id':nullable(string),
+        'allocations':array(ref('WalletRefundAllocation')),'amount':amount,'fee_amount':zero_amount,
+        'total_debit':amount,'recipient_amount':amount,'currency':currency,'expires_at':date,'policy_version':string,
+        'source_wallet_version':{'type':'integer','minimum':1},'approval_required':boolean,'holds_funds':{'const':False,'type':'boolean'}},
+        dict(kind='refund',source_wallet_id='wal_example',cancellation_id='cancellation_final_example',final_statement_id='statement_final_example',
+        final_statement_revision=1,refund_id=None,allocations=allocations,amount='10900.00',fee_amount='0.00',total_debit='10900.00',recipient_amount='10900.00',
+        currency='CAD',expires_at='2026-10-23T14:10:00Z',policy_version='wallet-policy-cancellation-only',source_wallet_version=3,approval_required=True,holds_funds=False))
     request('CreateWalletMovement',{'quote_id':string,'client_reference':string})
-    movement_props = {'source_wallet_id':string,'quote_id':string,'client_reference':string,
-        'currency':currency,'amount':amount,'fee_amount':amount,'total_debit':amount,'recipient_amount':amount,
-        'hold_id':nullable(string),'approval_id':nullable(string),'payout_id':nullable(string),'ledger_entry_ids':array(string),
-        'cancellable':boolean,'failure_code':nullable(string)}
-    movement_values = dict(source_wallet_id='wal_example',quote_id='wallet_quote_example',client_reference='withdrawal-1001',
-        currency='CAD',amount='500.00',fee_amount='0.00',total_debit='500.00',recipient_amount='500.00',hold_id='wallet_hold_example',
-        approval_id='wallet_approval_example',payout_id=None,ledger_entry_ids=[],cancellable=True,failure_code=None)
-    for name,kind,statuses,target,target_value in [
-        ('WalletTransfer','wallet_transfer',['requires_approval','pending','completed','failed','cancelled'],'destination_wallet_id','wal_reserve'),
-        ('WalletWithdrawal','wallet_withdrawal',['requires_approval','pending','submitted','paid','failed','cancelled','returned'],'payout_destination_id','wallet_payment_method_example'),
-        ('WalletRefund','wallet_refund',['in_review','requires_approval','approved','submitted','paid','rejected','failed','cancelled','returned'],'origin_top_up_id','top_up_annual')]:
-        model(name,kind,{**movement_props,'status':enum(*statuses),target:string}, {**movement_values,'client_reference':kind+'-1001','status':statuses[0],target:target_value})
-    model('WalletPayout','wallet_payout',{'movement_id':string,'movement_type':enum('withdrawal','refund'),
+    model('WalletRefund','wallet_refund',{'source_wallet_id':string,'cancellation_id':string,'final_statement_id':string,
+        'quote_id':string,'client_reference':string,'currency':currency,'amount':amount,'fee_amount':zero_amount,'total_debit':amount,'recipient_amount':amount,
+        'allocations':array(ref('WalletRefundAllocation')),'paid_amount':amount,'remaining_amount':amount,
+        'hold_id':nullable(string),'approval_id':nullable(string),'payout_ids':array(string),'ledger_entry_ids':array(string),
+        'status':enum('requires_approval','pending','submitted','partially_paid','paid','failed','cancelled','returned'),
+        'cancellable':boolean,'failure_code':nullable(string)},
+        dict(source_wallet_id='wal_example',cancellation_id='cancellation_final_example',final_statement_id='statement_final_example',
+        quote_id='wallet_quote_refund',client_reference='cancellation-refund-1001',currency='CAD',amount='10900.00',fee_amount='0.00',
+        total_debit='10900.00',recipient_amount='10900.00',allocations=allocations,paid_amount='0.00',remaining_amount='10900.00',
+        hold_id='wallet_hold_refund',approval_id='wallet_approval_example',payout_ids=[],ledger_entry_ids=[],status='requires_approval',cancellable=True,failure_code=None))
+    model('WalletPayout','wallet_payout',{'movement_id':string,'movement_type':enum('refund'),'cancellation_id':string,
         'status':enum('pending','submitted','paid','failed','returned'),'currency':currency,'amount':amount,
-        'destination_id':string,'provider_reference':nullable(string),'submitted_at':nullable(date),'paid_at':nullable(date),
+        'destination_id':string,'origin_top_up_id':string,'provider_reference':nullable(string),'submitted_at':nullable(date),'paid_at':nullable(date),
         'returned_at':nullable(date),'return_amount':amount,'failure_code':nullable(string)},
-        dict(movement_id='wallet_withdrawal_example',movement_type='withdrawal',status='pending',currency='CAD',amount='500.00',
-        destination_id='wallet_payment_method_example',provider_reference=None,submitted_at=None,paid_at=None,returned_at=None,return_amount='0.00',failure_code=None))
-    model('WalletApproval','wallet_approval',{'target_type':enum('transfer','withdrawal','refund'),'target_id':string,
+        dict(movement_id='wallet_refund_example',movement_type='refund',cancellation_id='cancellation_final_example',status='pending',currency='CAD',amount='10900.00',
+        destination_id='wallet_payment_method_example',origin_top_up_id='top_up_annual',provider_reference=None,submitted_at=None,paid_at=None,returned_at=None,return_amount='0.00',failure_code=None))
+    model('WalletApproval','wallet_approval',{'target_type':enum('refund'),'target_id':string,
         'target_version':{'type':'integer','minimum':1},'status':enum('pending','approved','rejected','expired','invalidated'),
         'requested_by':string,'decided_by':nullable(string),'expires_at':date,'decision_at':nullable(date)},
-        dict(target_type='withdrawal',target_id='wallet_withdrawal_example',target_version=1,status='pending',
+        dict(target_type='refund',target_id='wallet_refund_example',target_version=1,status='pending',
         requested_by='actor_initiator',decided_by=None,expires_at='2026-10-24T14:00:00Z',decision_at=None))
     request('DecideWalletApproval',{'decision':enum('approve','reject'),'reason':string})
     request('WalletReason',{'reason':string})
@@ -220,30 +221,31 @@ def extend(g):
     request('CreateCancellationQuote',cancellation_props)
     model('AgreementCancellationQuote','agreement_cancellation_quote',{**cancellation_props,'agreement_version':string,'expires_at':date,
         'currency':currency,'unused_credits':amount,'held_amount':amount,'estimated_final_usage':amount,'estimated_remaining_obligation':amount,
-        'estimated_distributable':amount,'obligations_explanation':string,'provisional':{'type':'boolean','const':True}},
+        'estimated_refund':amount,'obligations_explanation':string,'provisional':{'type':'boolean','const':True}},
         dict(agreement_id='agr_example',requested_effective_at='2027-10-01T00:00:00Z',agreement_version='3',
-        expires_at='2026-10-23T14:10:00Z',currency='CAD',unused_credits='9900.00',held_amount='500.00',
-        estimated_final_usage='0.00',estimated_remaining_obligation='0.00',estimated_distributable='9400.00',
-        obligations_explanation='Illustrative end-of-term calculation. Final usage and signed agreement terms control.',provisional=True))
+        expires_at='2026-10-23T14:10:00Z',currency='CAD',unused_credits='10900.00',held_amount='500.00',
+        estimated_final_usage='500.00',estimated_remaining_obligation='0.00',estimated_refund='10400.00',
+        obligations_explanation='Estimated final usage includes the pending usage hold once. Remaining agreement obligations are disclosed separately and do not reduce the unused paid-balance refund.',provisional=True))
     request('CreateAgreementCancellation',{'quote_id':string,'reason':string,'client_reference':string})
     model('AgreementCancellation','agreement_cancellation',{'agreement_id':string,'quote_id':string,'client_reference':string,
-        'status':enum('requested','scheduled','effective','reconciling','completed','rejected','withdrawn'),
+        'status':enum('requested','scheduled','effective','reconciling','refund_pending','completed','rejected','withdrawn'),
         'requested_effective_at':date,'effective_at':nullable(date),'final_statement_id':nullable(string),
+        'reconciled_at':nullable(date),'final_refund_amount':nullable(amount),'refunded_amount':amount,'refund_ids':array(string),
         'remaining_obligation':nullable(amount),'currency':currency,'reason':string},
         dict(agreement_id='agr_example',quote_id='agreement_cancellation_quote_example',client_reference='cancellation-1001',
         status='requested',requested_effective_at='2027-10-01T00:00:00Z',effective_at=None,final_statement_id=None,
-        remaining_obligation=None,currency='CAD',reason='Do not renew this agreement.'))
-    request('CreateWalletClosure',{'wallet_id':string,'reason':string,'client_reference':string})
+        reconciled_at=None,final_refund_amount=None,refunded_amount='0.00',refund_ids=[],remaining_obligation=None,currency='CAD',reason='Do not renew this agreement.'))
+    request('CreateWalletClosure',{'wallet_id':string,'cancellation_id':string,'reason':string,'client_reference':string})
     model('WalletClosure','wallet_closure',{**S['CreateWalletClosure']['properties'],'status':enum('requested','reconciling','blocked','completed','withdrawn'),
         'blocking_reasons':array(string),'final_statement_id':nullable(string),'closed_at':nullable(date)},
-        dict(wallet_id='wal_example',reason='Consolidate wallets.',client_reference='closure-1001',status='requested',
+        dict(wallet_id='wal_example',cancellation_id='cancellation_final_example',reason='Close after final cancellation and refund.',client_reference='closure-1001',status='requested',
         blocking_reasons=['remaining_balance','pending_settlements'],final_statement_id=None,closed_at=None))
 
-    E['WalletQuote']['id']='wallet_quote_withdrawal'
+    E['WalletQuote']['id']='wallet_quote_refund'
     operations = []
     def add(method,path,title,name,scope,description,req=None,body=None,is_list=False,query=None,example_override=None):
         group='Billing' if path.startswith(('/v1/billing/','/v1/agreement-')) else 'Wallets'
-        oid='WA'+str(len(operations)+1).zfill(3)
+        oid=OPERATION_IDS[method+' '+path]
         page='api-reference/endpoints/'+group.lower()+'/'+title.lower().replace(' ','-')
         params=[]
         if '{id}' in path:
@@ -254,7 +256,7 @@ def extend(g):
                        g['parameter']('cursor','query','string','Opaque cursor bound to filters and a stable snapshot.',False,None)]
         if method in ['POST','PATCH']:
             params.append(g['parameter']('Idempotency-Key','header','string','Stable key for this intended action; retain across retries.',True,'idem_wallet_example'))
-        if method=='PATCH' or path.endswith(('/cancel','/decision','/disable')):
+        if method=='PATCH' or path.endswith(('/cancel','/decision','/disable','/retry')):
             params.append(g['parameter']('If-Match','header','string','Quoted current resource version. Stale decisions return 412.',True,'"1"'))
         result=deepcopy(example_override if example_override is not None else E[name])
         response_schema,response_example=g['envelope'](ref(name),result,is_list)
@@ -322,7 +324,7 @@ def extend(g):
     window=[q('from','datetime','Inclusive UTC boundary. Must precede to.','2026-10-01T00:00:00Z',True),q('to','datetime','Exclusive UTC boundary.','2026-11-01T00:00:00Z',True)]
     wallet_filter=[q('wallet_id','string','Restrict to one authorized wallet.','wal_example')]
     reference_filter=[q('client_reference','string','Look up a previous business action before attempting a retry.')]
-    add('GET','/v1/billing/account','Retrieve billing account','BillingAccount','billing:read','Read agreement terms, enabled wallet capabilities, configured limits and approval policy. Example limits are illustrative; use returned limits.')
+    add('GET','/v1/billing/account','Retrieve billing account','BillingAccount','billing:read','Read the minimum monthly commitment, prepaid-service-credit policy, enabled funding capabilities, and cancellation-refund delivery approvals. Funds are consumed by AMLOK products or returned in full after final agreement cancellation; on-demand withdrawals and transfers are not supported.')
     add('GET','/v1/billing/rate-card','Retrieve billing rate card','BillingRateCard','billing:read','Read effective product rates and negotiated discounts. Historical usage retains its own rate-card identifier.')
     reads('/v1/billing/usage','usage records','BillingUsage','billing:read','Read immutable billable events and compensating reversals. No customer endpoint creates usage charges.',window+wallet_filter+[q('time_basis','string','Choose event or posting time.','posted_at',enum=['occurred_at','posted_at']),q('product','string','Product filter.',None,enum=['insights','signal']),q('tier','string','Complexity filter.',None,enum=['standard','advanced','complex'])])
     add('GET','/v1/billing/consumption','Retrieve consumption summary','BillingConsumption','billing:read','Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.',
@@ -331,51 +333,47 @@ def extend(g):
     reads('/v1/billing/reports','billing reports','BillingReport','billing:export','Read export status, snapshot time and expiry.',wallet_filter)
     add('POST','/v1/billing/reports/{id}/download-link','Create billing report download link','BillingDownload','billing:export','Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.','WalletReason',{'reason':'Monthly reconciliation.'})
     reads('/v1/billing/statements','billing statements','BillingStatement','billing:read','Statements reconcile posted ledger movements. Final revisions are immutable; later corrections create a linked revision.',wallet_filter)
-    add('POST','/v1/wallets','Create wallet','Wallet','wallets:write','Create a CAD wallet under the authenticated institution and its onboarded legal owner. The client cannot supply another tenant or owner.','CreateWallet',{'name':'Operating wallet','currency':'CAD','usage_enabled':True})
+    add('POST','/v1/wallets','Create wallet','Wallet','wallets:write','Create a prepaid CAD service-credit wallet under the authenticated institution, onboarded legal owner and active billing agreement. The client cannot supply another tenant, owner or arbitrary agreement. A cancelled agreement cannot create a wallet to resume usage.','CreateWallet',{'name':'Operating wallet','currency':'CAD','usage_enabled':True})
     reads('/v1/wallets','wallets','Wallet','wallets:read','Read wallets owned by the authenticated institution.')
     for suffix,title,name,listing in [('balance','wallet balance','WalletBalance',False),('ledger','wallet ledger entries','WalletLedgerEntry',True),('credit-lots','wallet credit lots','WalletCreditLot',True),('holds','wallet holds','WalletHold',True)]:
         add('GET','/v1/wallets/{id}/'+suffix,('List ' if listing else 'Retrieve ')+title,name,'wallets:read',
-            'Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.',
+            'Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.',
             is_list=listing,query=([q('sequence_after','integer','Read entries after this exclusive wallet sequence.',None,minimum=0)] if suffix=='ledger' else None))
-    add('POST','/v1/wallet-sessions','Create wallet payment session','WalletSession','wallets:funding','Create a hosted funding-method or payout-destination verification session. The return URL must be pre-allowlisted. Never send raw bank credentials or card data to this API. A browser redirect does not prove verification.','CreateWalletSession',{'purpose':'payout_destination','return_url':'https://client.example.com/wallet/return'})
+    add('POST','/v1/wallet-sessions','Create wallet payment session','WalletSession','wallets:funding','Create a hosted funding-method or cancellation-refund destination verification session. The return URL must be pre-allowlisted. Never send raw bank credentials or card data to this API. A browser redirect does not prove verification.','CreateWalletSession',{'purpose':'payout_destination','return_url':'https://client.example.com/wallet/return'})
     reads('/v1/wallet-payment-methods','wallet payment methods','WalletPaymentMethod','wallets:read','Only verified methods with the required capability and the same legal owner can fund or receive wallet funds.')
     disabled={**E['WalletPaymentMethod'],'status':'disabled','record_version':2}
     add('POST','/v1/wallet-payment-methods/{id}/disable','Disable wallet payment method','WalletPaymentMethod','wallets:funding','Disable future use. Reject while an active mandate or pending movement requires the method.','WalletReason',{'reason':'Replace bank account.'},example_override=disabled)
     add('POST','/v1/wallet-top-ups','Create wallet top-up','WalletTopUp','wallets:funding','Initiate a payment using an authorized funding method. Pending incoming funds are unavailable. Credit once on confirmed settlement. Origin, disputes and refund capacity follow the funding lot.','CreateWalletTopUp',topup_req)
     reads('/v1/wallet-top-ups','wallet top-ups','WalletTopUp','wallets:read','Read funding status. A failed or reversed payment is not spendable. Never retry an unknown payment with a new business reference.',wallet_filter+reference_filter)
-    add('POST','/v1/wallet-top-ups/{id}/cancel','Cancel wallet top-up','WalletTopUp','wallets:funding','Cancel only before irreversible processor submission; otherwise reconcile or request a refund after settlement.','WalletReason',{'reason':'Funding no longer needed.'},example_override={**E['WalletTopUp'],'status':'cancelled','record_version':2})
+    add('POST','/v1/wallet-top-ups/{id}/cancel','Cancel wallet top-up','WalletTopUp','wallets:funding','Cancel an unsettled funding attempt only before irreversible processor submission. Once settled, the credits remain for product usage and can only be refunded through final agreement cancellation. A failed or reversed funding payment is reconciled without treating it as a customer withdrawal.','WalletReason',{'reason':'Funding no longer needed.'},example_override={**E['WalletTopUp'],'status':'cancelled','record_version':2})
     add('GET','/v1/wallets/{id}/auto-top-up','Retrieve automatic top-up policy','WalletAutoTopUp','wallets:read','Read the authorized threshold, amount, monthly cap and funding mandate.')
-    add('PATCH','/v1/wallets/{id}/auto-top-up','Update automatic top-up policy','WalletAutoTopUp','wallets:funding','Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. Closure disables automatic funding.','UpdateWalletAutoTopUp',auto_values)
-    add('POST','/v1/wallet-quotes','Create wallet movement quote','WalletQuote','wallets:read','Quote transfer, withdrawal or original-source refund. No balance is reserved. Binds amount, fees, source, destination, currency, policy and expiry; eligibility is rechecked atomically on submission. Same-currency CAD routes only.','CreateWalletQuote',quote_values)
-    add('GET','/v1/wallet-quotes/{id}','Retrieve wallet movement quote','WalletQuote','wallets:read','Read quote terms and expiry. Requote an expired quote; do not change a submitted movement.')
-    for path,title,name,scope,desc in [
-        ('wallet-transfers','wallet transfer','WalletTransfer','wallets:transfer','Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.'),
-        ('wallet-withdrawals','wallet withdrawal','WalletWithdrawal','wallets:withdraw','Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.'),
-        ('wallet-refunds','wallet refund','WalletRefund','wallets:refund','Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.')]:
-        quote_id='wallet_quote_'+path.removeprefix('wallet-').removesuffix('s')
-        E[name]['quote_id']=quote_id
-        body={'quote_id':quote_id,'client_reference':name.replace(' ','-')+'-1001'}
-        add('POST','/v1/'+path,'Create '+title,name,scope,desc,'CreateWalletMovement',body)
-        reads('/v1/'+path,title+'s',name,'wallets:read',desc,reference_filter)
-        add('POST','/v1/'+path+'/{id}/cancel','Cancel '+title,name,scope,'Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.',
-            'WalletReason',{'reason':'Requested by institution.'},example_override={**E[name],'status':'cancelled','hold_id':None,'approval_id':None,'cancellable':False,'record_version':2})
-    reads('/v1/wallet-payouts','wallet payouts','WalletPayout','wallets:read','Track outbound settlement for withdrawals and approved refunds. This namespace is separate from provider payment /v1/payouts. A return restores only the actual returned principal once.')
+    add('PATCH','/v1/wallets/{id}/auto-top-up','Update automatic top-up policy','WalletAutoTopUp','wallets:funding','Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. The confirmed agreement end date disables automatic funding and new usage. Changing funding_method_id and top_up_amount updates future automatic attempts, within the cap and current authorization; it does not modify already submitted payments.','UpdateWalletAutoTopUp',auto_values)
+    add('POST','/v1/wallet-quotes','Create wallet movement quote','WalletQuote','wallets:read','Quote the full remaining paid balance for a final-cancellation refund. Require a cancellation belonging to the same agreement, institution and wallet, status refund_pending, an effective date at or before now, completed reconciliation, a final statement, and resolved usage holds and funding attempts. Otherwise return 409 cancellation_not_final. The server computes the amount and allocations across original funding sources; client amounts and partial cash-outs are rejected. Quotes bind cancellation, final statement revision, wallet version and destinations. No funds are reserved. Recheck every condition atomically on refund submission. For a definitive failed or returned refund, supply refund_id and quote only its still-unpaid balance; unresolved rail outcomes cannot be requoted for retry.','CreateWalletQuote',quote_values)
+    add('GET','/v1/wallet-quotes/{id}','Retrieve wallet movement quote','WalletQuote','wallets:read','Read the final-cancellation refund amount, funding allocations, final statement revision and expiry. A quote does not authorize an active-agreement cash-out.')
+    refund_desc='Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.'
+    add('POST','/v1/wallet-refunds','Create wallet refund','WalletRefund','wallets:refund',refund_desc,'CreateWalletMovement',{'quote_id':'wallet_quote_refund','client_reference':'cancellation-refund-1001'})
+    reads('/v1/wallet-refunds','wallet refunds','WalletRefund','wallets:read',refund_desc,reference_filter)
+    add('POST','/v1/wallet-refunds/{id}/cancel','Cancel wallet refund','WalletRefund','wallets:refund','Stop only a cancellable delivery attempt before rail submission. This does not cancel the agreement cancellation or forgive the remaining refund obligation. Confirm no funds left before releasing reservations. Resolve delivery instructions and retry the same refund; never create a second refund for the same balance.',
+        'WalletReason',{'reason':'Correct refund delivery instructions.'},example_override={**E['WalletRefund'],'status':'cancelled','hold_id':None,'approval_id':None,'cancellable':False,'record_version':2})
+    add('POST','/v1/wallet-refunds/{id}/retry','Retry wallet refund','WalletRefund','wallets:refund','Resume the same final-cancellation refund after a definitive failed, cancelled, or returned delivery. Require If-Match and a fresh quote bound to this refund_id and the reconciled unpaid balance. All earlier payouts must have known outcomes; otherwise return 409 refund_not_retryable. Never resend already-paid principal. A changed destination must be verified and may require renewed delivery approval. A distinct business reference identifies the retry, while the refund obligation and funding lineage remain unchanged.',
+        'CreateWalletMovement',{'quote_id':'wallet_quote_retry','client_reference':'cancellation-refund-retry-1001'},example_override={**E['WalletRefund'],'quote_id':'wallet_quote_retry','record_version':3})
+    reads('/v1/wallet-payouts','wallet payouts','WalletPayout','wallets:read','Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.')
     reads('/v1/wallet-approvals','wallet approvals','WalletApproval','wallets:approve','Read approvals assigned to the authenticated actor; tenant access alone is insufficient.')
-    add('POST','/v1/wallet-approvals/{id}/decision','Decide wallet approval','WalletApproval','wallets:approve','An independent authorized actor approves or rejects the exact movement version. The initiator cannot self-approve. Expired, changed or already decided requests fail. Execution rechecks balance, holds and destination. This is customer authorization, not an override of AMLOK refund eligibility.',
+    add('POST','/v1/wallet-approvals/{id}/decision','Decide wallet approval','WalletApproval','wallets:approve','An independent authorized actor approves or rejects the exact movement version. The initiator cannot self-approve. Expired, changed or already decided requests fail. Execution rechecks balance, holds and destination. This authorizes refund delivery instructions only. Rejecting or expiring an instruction does not forfeit the balance or cancel the refund obligation; no approval can bypass the final-cancellation requirement.',
         'DecideWalletApproval',{'decision':'approve','reason':'Verified payout instruction.'},
         example_override={**E['WalletApproval'],'status':'approved','decided_by':'actor_reviewer','decision_at':now,'record_version':2})
-    add('POST','/v1/agreement-cancellation-quotes','Create agreement cancellation quote','AgreementCancellationQuote','billing:manage','Estimate final usage, pending holds and remaining agreement obligations at the requested effective date. A quote neither cancels services nor pays funds. It is provisional until reconciliation.','CreateCancellationQuote',{'agreement_id':'agr_example','requested_effective_at':'2027-10-01T00:00:00Z'})
-    add('POST','/v1/agreement-cancellations','Create agreement cancellation','AgreementCancellation','billing:manage','Request cancellation using the quoted agreement version and signed notice terms. Confirmation returns the effective date. Refunds and withdrawals require separate money instructions.','CreateAgreementCancellation',{'quote_id':'agreement_cancellation_quote_example','reason':'Do not renew this agreement.','client_reference':'cancellation-1001'})
-    reads('/v1/agreement-cancellations','agreement cancellations','AgreementCancellation','billing:read','Track requested, scheduled, effective and reconciled cancellation, including final statement and remaining obligations.',reference_filter)
+    add('POST','/v1/agreement-cancellation-quotes','Create agreement cancellation quote','AgreementCancellationQuote','billing:manage','Estimate unused paid credits, final usage and the full remaining-balance refund at the requested cancellation date. Pending usage holds are included in estimated final usage once, not deducted twice. Remaining agreement obligations are disclosed separately and do not become wallet deductions. A quote neither cancels services nor pays funds; reconciliation establishes the final amount.','CreateCancellationQuote',{'agreement_id':'agr_example','requested_effective_at':'2027-10-01T00:00:00Z'})
+    add('POST','/v1/agreement-cancellations','Create agreement cancellation','AgreementCancellation','billing:manage','Request final agreement cancellation using the quoted agreement version and signed notice terms. Confirmation establishes the effective date. At that date, stop new usage and automatic top-ups; reconcile all incurred product usage and in-flight funding, then set refund_pending and return the entire remaining paid balance. The cancellation links its final statement, refund amount and refund records. No withdrawal request is needed to establish the refund obligation.','CreateAgreementCancellation',{'quote_id':'agreement_cancellation_quote_example','reason':'Do not renew this agreement.','client_reference':'cancellation-1001'})
+    reads('/v1/agreement-cancellations','agreement cancellations','AgreementCancellation','billing:read','Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.',reference_filter)
     add('POST','/v1/agreement-cancellations/{id}/cancel','Withdraw agreement cancellation','AgreementCancellation','billing:manage','Withdraw a cancellation request before its effective boundary, subject to agreement terms. This does not reverse already stopped services or completed payments.','WalletReason',{'reason':'Continue the agreement.'},example_override={**E['AgreementCancellation'],'status':'withdrawn','record_version':2})
-    add('POST','/v1/wallet-closures','Create wallet closure','WalletClosure','wallets:write','Close a wallet only after its balance, holds, disputes and in-flight settlements are resolved. Disables automatic funding and new debits; settlement and reconciliation remain possible. Does not itself cancel the commercial agreement, move funds or delete records.','CreateWalletClosure',{'wallet_id':'wal_example','reason':'Consolidate wallets.','client_reference':'closure-1001'})
+    add('POST','/v1/wallet-closures','Create wallet closure','WalletClosure','wallets:write','Close only after final agreement cancellation, full remaining paid-balance refund and resolution of holds and in-flight funding. Require the same cancellation_id and legal owner. Zero-cost promotional credits are retired without cash payment. Closure cannot be used as an alternative cash-out path, does not delete audit records, and never re-enables funding or usage. A later payout return reopens refund reconciliation, not service access.','CreateWalletClosure',{'wallet_id':'wal_example','cancellation_id':'cancellation_final_example','reason':'Final cancellation refund completed.','client_reference':'closure-1001'})
     reads('/v1/wallet-closures','wallet closures','WalletClosure','wallets:read','Read closure blockers and final statement. A blocked closure does not forfeit funds.',wallet_filter+reference_filter)
     add('POST','/v1/wallet-closures/{id}/cancel','Withdraw wallet closure','WalletClosure','wallets:write','Withdraw a closure before completion. Does not automatically re-enable an automatic funding mandate.','WalletReason',{'reason':'Keep this wallet.'},example_override={**E['WalletClosure'],'status':'withdrawn','record_version':2})
     S['WebhookEvent']['properties']['type']['enum'] += [e[0] for e in WALLET_EVENTS]
     g['REFINEMENTS'] += [
-        'Wallet extension follows AMLOK-approved withdrawable unused committed credits and same-institution transfers; it is a documentation contract, not an executable wallet backend.',
+        'Wallet policy revised by AMLOK: prepaid funds are consumed only by product usage and refunded in full only after final agreement cancellation. No on-demand withdrawals or wallet transfers. This is a documentation contract, not an executable wallet backend.',
         'Wallet mutations preserve durable business references beyond 24-hour request idempotency; quotes bind movement terms and submission reserves eligible funds atomically.',
-        'CAD is the initial documented wallet settlement currency. No cross-customer, cross-legal-owner or cross-currency transfer is defined.',
+        'CAD is the documented settlement currency. Cancellation refunds are server-calculated from paid principal after final usage, with no wallet fees or deduction of remaining term obligations. Promotional benefits have no cash principal. Payment reversals and corrections are system reconciliation, never client cash-out capabilities.',
         'Money movement enablement depends on institution onboarding, configured payment rails, legal-role and custody disclosures, and approval policy. Examples do not establish a production provider or regulatory status.',
     ]
     write('data/wallet-api-index.json',dump(operations))

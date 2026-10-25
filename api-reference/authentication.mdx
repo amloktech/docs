@@ -29,7 +29,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Billing read access does not authorize funding, transfers, withdrawals or refunds. Wallet approval scopes require an independent authorized actor; they do not override refund eligibility or legal holds.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Billing read access does not authorize funding or final-cancellation refund delivery. Wallet approval scopes require an independent authorized actor and cannot bypass final cancellation, reconciliation, or destination verification. On-demand withdrawals and wallet transfers are not supported.
 
 ## Scope reference
 
@@ -74,10 +74,8 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `risk:read` | 7 | [List attributes](/api-reference/endpoints/risk/list-attributes) |
 | `wallets:approve` | 3 | [List wallet approvals](/api-reference/endpoints/wallets/list-wallet-approvals) |
 | `wallets:funding` | 5 | [Create wallet payment session](/api-reference/endpoints/wallets/create-wallet-payment-session) |
-| `wallets:read` | 23 | [List wallets](/api-reference/endpoints/wallets/list-wallets) |
-| `wallets:refund` | 2 | [Create wallet refund](/api-reference/endpoints/wallets/create-wallet-refund) |
-| `wallets:transfer` | 2 | [Create wallet transfer](/api-reference/endpoints/wallets/create-wallet-transfer) |
-| `wallets:withdraw` | 2 | [Create wallet withdrawal](/api-reference/endpoints/wallets/create-wallet-withdrawal) |
+| `wallets:read` | 19 | [List wallets](/api-reference/endpoints/wallets/list-wallets) |
+| `wallets:refund` | 3 | [Create wallet refund](/api-reference/endpoints/wallets/create-wallet-refund) |
 | `wallets:write` | 3 | [Create wallet](/api-reference/endpoints/wallets/create-wallet) |
 | `webhooks:read` | 1 | [List webhook endpoints](/api-reference/endpoints/webhooks/list-webhook-endpoints) |
 | `webhooks:write` | 2 | [Create webhook endpoint](/api-reference/endpoints/webhooks/create-webhook-endpoint) |

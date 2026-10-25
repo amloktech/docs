@@ -10514,7 +10514,7 @@
               }
             ],
             "url": "{{base_url}}/v1/billing/account",
-            "description": "Read agreement terms, enabled wallet capabilities, configured limits and approval policy. Example limits are illustrative; use returned limits.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Read the minimum monthly commitment, prepaid-service-credit policy, enabled funding capabilities, and cancellation-refund delivery approvals. Funds are consumed by AMLOK products or returned in full after final agreement cancellation; on-demand withdrawals and transfers are not supported.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -10528,7 +10528,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/billing/account",
-                "description": "Read agreement terms, enabled wallet capabilities, configured limits and approval policy. Example limits are illustrative; use returned limits.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Read the minimum monthly commitment, prepaid-service-credit policy, enabled funding capabilities, and cancellation-refund delivery approvals. Funds are consumed by AMLOK products or returned in full after final agreement cancellation; on-demand withdrawals and transfers are not supported.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -10538,7 +10538,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_account_example\",\n    \"object\": \"billing_account\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"minimum_monthly_commitment\": \"1000.00\",\n    \"payment_for_12_months\": \"12000.00\",\n    \"term_start\": \"2026-10-01T00:00:00Z\",\n    \"term_end\": \"2027-10-01T00:00:00Z\",\n    \"renewal_payment_at\": \"2027-10-01T00:00:00Z\",\n    \"committed_credits_withdrawable\": true,\n    \"transfer_scope\": \"same_institution_same_legal_owner\",\n    \"enabled_capabilities\": [\n      \"funding\",\n      \"transfers\",\n      \"withdrawals\",\n      \"refunds\",\n      \"auto_top_up\"\n    ],\n    \"approval_required_for\": [\n      \"withdrawal\"\n    ],\n    \"limits\": {\n      \"per_withdrawal\": \"5000.00\",\n      \"daily_outbound\": \"10000.00\",\n      \"minimum_withdrawal\": \"1.00\"\n    },\n    \"policy_version\": \"wallet-policy-example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_account_example\",\n    \"object\": \"billing_account\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"agreement_version\": \"3\",\n    \"minimum_monthly_commitment\": \"1000.00\",\n    \"payment_for_12_months\": \"12000.00\",\n    \"term_start\": \"2026-10-01T00:00:00Z\",\n    \"term_end\": \"2027-10-01T00:00:00Z\",\n    \"renewal_payment_at\": \"2027-10-01T00:00:00Z\",\n    \"wallet_type\": \"prepaid_service_credits\",\n    \"outflow_policy\": \"product_usage_or_final_cancellation_refund\",\n    \"refund_policy\": \"full_remaining_paid_balance_on_final_cancellation\",\n    \"enabled_capabilities\": [\n      \"funding\",\n      \"cancellation_refunds\",\n      \"auto_top_up\"\n    ],\n    \"approval_required_for\": [\n      \"refund_delivery\"\n    ],\n    \"policy_version\": \"wallet-policy-cancellation-only\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10957,7 +10957,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_statement_example\",\n      \"object\": \"billing_statement\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"from\": \"2026-10-01T00:00:00Z\",\n      \"to\": \"2026-11-01T00:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"currency\": \"CAD\",\n      \"status\": \"provisional\",\n      \"revision\": 1,\n      \"supersedes_id\": null,\n      \"as_of\": \"2026-10-23T14:00:00Z\",\n      \"opening_balance\": \"12000.00\",\n      \"funding\": \"0.00\",\n      \"usage\": \"1100.00\",\n      \"transfers_in\": \"0.00\",\n      \"transfers_out\": \"0.00\",\n      \"withdrawals\": \"1000.00\",\n      \"refunds\": \"0.00\",\n      \"fees\": \"0.00\",\n      \"adjustments\": \"0.00\",\n      \"closing_balance\": \"9900.00\",\n      \"ledger_sequence_from\": 1,\n      \"ledger_sequence_to\": 3\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"billing_statement_example\",\n      \"object\": \"billing_statement\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"from\": \"2026-10-01T00:00:00Z\",\n      \"to\": \"2026-11-01T00:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"currency\": \"CAD\",\n      \"status\": \"provisional\",\n      \"revision\": 1,\n      \"supersedes_id\": null,\n      \"as_of\": \"2026-10-23T14:00:00Z\",\n      \"opening_balance\": \"12000.00\",\n      \"funding\": \"0.00\",\n      \"usage\": \"1100.00\",\n      \"refunds\": \"0.00\",\n      \"adjustments\": \"0.00\",\n      \"closing_balance\": \"10900.00\",\n      \"ledger_sequence_from\": 1,\n      \"ledger_sequence_to\": 3\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -10996,7 +10996,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"billing_statement_example\",\n    \"object\": \"billing_statement\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"currency\": \"CAD\",\n    \"status\": \"provisional\",\n    \"revision\": 1,\n    \"supersedes_id\": null,\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"opening_balance\": \"12000.00\",\n    \"funding\": \"0.00\",\n    \"usage\": \"1100.00\",\n    \"transfers_in\": \"0.00\",\n    \"transfers_out\": \"0.00\",\n    \"withdrawals\": \"1000.00\",\n    \"refunds\": \"0.00\",\n    \"fees\": \"0.00\",\n    \"adjustments\": \"0.00\",\n    \"closing_balance\": \"9900.00\",\n    \"ledger_sequence_from\": 1,\n    \"ledger_sequence_to\": 3\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"billing_statement_example\",\n    \"object\": \"billing_statement\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"from\": \"2026-10-01T00:00:00Z\",\n    \"to\": \"2026-11-01T00:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"currency\": \"CAD\",\n    \"status\": \"provisional\",\n    \"revision\": 1,\n    \"supersedes_id\": null,\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"opening_balance\": \"12000.00\",\n    \"funding\": \"0.00\",\n    \"usage\": \"1100.00\",\n    \"refunds\": \"0.00\",\n    \"adjustments\": \"0.00\",\n    \"closing_balance\": \"10900.00\",\n    \"ledger_sequence_from\": 1,\n    \"ledger_sequence_to\": 3\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11019,7 +11019,7 @@
               }
             ],
             "url": "{{base_url}}/v1/agreement-cancellation-quotes",
-            "description": "Estimate final usage, pending holds and remaining agreement obligations at the requested effective date. A quote neither cancels services nor pays funds. It is provisional until reconciliation.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Estimate unused paid credits, final usage and the full remaining-balance refund at the requested cancellation date. Pending usage holds are included in estimated final usage once, not deducted twice. Remaining agreement obligations are disclosed separately and do not become wallet deductions. A quote neither cancels services nor pays funds; reconciliation establishes the final amount.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"agreement_id\": \"agr_example\",\n  \"requested_effective_at\": \"2027-10-01T00:00:00Z\"\n}",
@@ -11050,7 +11050,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/agreement-cancellation-quotes",
-                "description": "Estimate final usage, pending holds and remaining agreement obligations at the requested effective date. A quote neither cancels services nor pays funds. It is provisional until reconciliation.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Estimate unused paid credits, final usage and the full remaining-balance refund at the requested cancellation date. Pending usage holds are included in estimated final usage once, not deducted twice. Remaining agreement obligations are disclosed separately and do not become wallet deductions. A quote neither cancels services nor pays funds; reconciliation establishes the final amount.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"agreement_id\": \"agr_example\",\n  \"requested_effective_at\": \"2027-10-01T00:00:00Z\"\n}",
@@ -11069,7 +11069,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_quote_example\",\n    \"object\": \"agreement_cancellation_quote\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"agreement_version\": \"3\",\n    \"expires_at\": \"2026-10-23T14:10:00Z\",\n    \"currency\": \"CAD\",\n    \"unused_credits\": \"9900.00\",\n    \"held_amount\": \"500.00\",\n    \"estimated_final_usage\": \"0.00\",\n    \"estimated_remaining_obligation\": \"0.00\",\n    \"estimated_distributable\": \"9400.00\",\n    \"obligations_explanation\": \"Illustrative end-of-term calculation. Final usage and signed agreement terms control.\",\n    \"provisional\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_quote_example\",\n    \"object\": \"agreement_cancellation_quote\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"agreement_version\": \"3\",\n    \"expires_at\": \"2026-10-23T14:10:00Z\",\n    \"currency\": \"CAD\",\n    \"unused_credits\": \"10900.00\",\n    \"held_amount\": \"500.00\",\n    \"estimated_final_usage\": \"500.00\",\n    \"estimated_remaining_obligation\": \"0.00\",\n    \"estimated_refund\": \"10400.00\",\n    \"obligations_explanation\": \"Estimated final usage includes the pending usage hold once. Remaining agreement obligations are disclosed separately and do not reduce the unused paid-balance refund.\",\n    \"provisional\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11092,7 +11092,7 @@
               }
             ],
             "url": "{{base_url}}/v1/agreement-cancellations",
-            "description": "Request cancellation using the quoted agreement version and signed notice terms. Confirmation returns the effective date. Refunds and withdrawals require separate money instructions.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Request final agreement cancellation using the quoted agreement version and signed notice terms. Confirmation establishes the effective date. At that date, stop new usage and automatic top-ups; reconcile all incurred product usage and in-flight funding, then set refund_pending and return the entire remaining paid balance. The cancellation links its final statement, refund amount and refund records. No withdrawal request is needed to establish the refund obligation.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"quote_id\": \"agreement_cancellation_quote_example\",\n  \"reason\": \"Do not renew this agreement.\",\n  \"client_reference\": \"cancellation-1001\"\n}",
@@ -11123,7 +11123,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/agreement-cancellations",
-                "description": "Request cancellation using the quoted agreement version and signed notice terms. Confirmation returns the effective date. Refunds and withdrawals require separate money instructions.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Request final agreement cancellation using the quoted agreement version and signed notice terms. Confirmation establishes the effective date. At that date, stop new usage and automatic top-ups; reconcile all incurred product usage and in-flight funding, then set refund_pending and return the entire remaining paid balance. The cancellation links its final statement, refund amount and refund records. No withdrawal request is needed to establish the refund obligation.\n\nRequired scope: billing:manage. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"quote_id\": \"agreement_cancellation_quote_example\",\n  \"reason\": \"Do not renew this agreement.\",\n  \"client_reference\": \"cancellation-1001\"\n}",
@@ -11142,7 +11142,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_example\",\n    \"object\": \"agreement_cancellation\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"quote_id\": \"agreement_cancellation_quote_example\",\n    \"client_reference\": \"cancellation-1001\",\n    \"status\": \"requested\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"effective_at\": null,\n    \"final_statement_id\": null,\n    \"remaining_obligation\": null,\n    \"currency\": \"CAD\",\n    \"reason\": \"Do not renew this agreement.\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_example\",\n    \"object\": \"agreement_cancellation\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"quote_id\": \"agreement_cancellation_quote_example\",\n    \"client_reference\": \"cancellation-1001\",\n    \"status\": \"requested\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"effective_at\": null,\n    \"final_statement_id\": null,\n    \"reconciled_at\": null,\n    \"final_refund_amount\": null,\n    \"refunded_amount\": \"0.00\",\n    \"refund_ids\": [],\n    \"remaining_obligation\": null,\n    \"currency\": \"CAD\",\n    \"reason\": \"Do not renew this agreement.\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         },
@@ -11157,7 +11157,7 @@
               }
             ],
             "url": "{{base_url}}/v1/agreement-cancellations?limit=100",
-            "description": "Track requested, scheduled, effective and reconciled cancellation, including final statement and remaining obligations.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -11171,7 +11171,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/agreement-cancellations?limit=100",
-                "description": "Track requested, scheduled, effective and reconciled cancellation, including final statement and remaining obligations.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -11181,7 +11181,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"agreement_cancellation_example\",\n      \"object\": \"agreement_cancellation\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"agreement_id\": \"agr_example\",\n      \"quote_id\": \"agreement_cancellation_quote_example\",\n      \"client_reference\": \"cancellation-1001\",\n      \"status\": \"requested\",\n      \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n      \"effective_at\": null,\n      \"final_statement_id\": null,\n      \"remaining_obligation\": null,\n      \"currency\": \"CAD\",\n      \"reason\": \"Do not renew this agreement.\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"agreement_cancellation_example\",\n      \"object\": \"agreement_cancellation\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"agreement_id\": \"agr_example\",\n      \"quote_id\": \"agreement_cancellation_quote_example\",\n      \"client_reference\": \"cancellation-1001\",\n      \"status\": \"requested\",\n      \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n      \"effective_at\": null,\n      \"final_statement_id\": null,\n      \"reconciled_at\": null,\n      \"final_refund_amount\": null,\n      \"refunded_amount\": \"0.00\",\n      \"refund_ids\": [],\n      \"remaining_obligation\": null,\n      \"currency\": \"CAD\",\n      \"reason\": \"Do not renew this agreement.\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11196,7 +11196,7 @@
               }
             ],
             "url": "{{base_url}}/v1/agreement-cancellations/agreement_cancellation_example",
-            "description": "Track requested, scheduled, effective and reconciled cancellation, including final statement and remaining obligations.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -11210,7 +11210,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/agreement-cancellations/agreement_cancellation_example",
-                "description": "Track requested, scheduled, effective and reconciled cancellation, including final statement and remaining obligations.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Track cancellation through requested, scheduled, effective, reconciling, refund_pending and completed. refund_pending requires a final statement and reconciled_at; completed requires every remaining paid balance returned, including late settled funding and returned payouts, or a zero final balance. Remaining term obligations are separately disclosed and are not deducted from the wallet refund.\n\nRequired scope: billing:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -11220,7 +11220,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_example\",\n    \"object\": \"agreement_cancellation\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"quote_id\": \"agreement_cancellation_quote_example\",\n    \"client_reference\": \"cancellation-1001\",\n    \"status\": \"requested\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"effective_at\": null,\n    \"final_statement_id\": null,\n    \"remaining_obligation\": null,\n    \"currency\": \"CAD\",\n    \"reason\": \"Do not renew this agreement.\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_example\",\n    \"object\": \"agreement_cancellation\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"quote_id\": \"agreement_cancellation_quote_example\",\n    \"client_reference\": \"cancellation-1001\",\n    \"status\": \"requested\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"effective_at\": null,\n    \"final_statement_id\": null,\n    \"reconciled_at\": null,\n    \"final_refund_amount\": null,\n    \"refunded_amount\": \"0.00\",\n    \"refund_ids\": [],\n    \"remaining_obligation\": null,\n    \"currency\": \"CAD\",\n    \"reason\": \"Do not renew this agreement.\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11301,7 +11301,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_example\",\n    \"object\": \"agreement_cancellation\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"quote_id\": \"agreement_cancellation_quote_example\",\n    \"client_reference\": \"cancellation-1001\",\n    \"status\": \"withdrawn\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"effective_at\": null,\n    \"final_statement_id\": null,\n    \"remaining_obligation\": null,\n    \"currency\": \"CAD\",\n    \"reason\": \"Do not renew this agreement.\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"agreement_cancellation_example\",\n    \"object\": \"agreement_cancellation\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"agreement_id\": \"agr_example\",\n    \"quote_id\": \"agreement_cancellation_quote_example\",\n    \"client_reference\": \"cancellation-1001\",\n    \"status\": \"withdrawn\",\n    \"requested_effective_at\": \"2027-10-01T00:00:00Z\",\n    \"effective_at\": null,\n    \"final_statement_id\": null,\n    \"reconciled_at\": null,\n    \"final_refund_amount\": null,\n    \"refunded_amount\": \"0.00\",\n    \"refund_ids\": [],\n    \"remaining_obligation\": null,\n    \"currency\": \"CAD\",\n    \"reason\": \"Do not renew this agreement.\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         }
@@ -11329,7 +11329,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallets",
-            "description": "Create a CAD wallet under the authenticated institution and its onboarded legal owner. The client cannot supply another tenant or owner.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Create a prepaid CAD service-credit wallet under the authenticated institution, onboarded legal owner and active billing agreement. The client cannot supply another tenant, owner or arbitrary agreement. A cancelled agreement cannot create a wallet to resume usage.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Operating wallet\",\n  \"currency\": \"CAD\",\n  \"usage_enabled\": true\n}",
@@ -11360,7 +11360,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallets",
-                "description": "Create a CAD wallet under the authenticated institution and its onboarded legal owner. The client cannot supply another tenant or owner.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Create a prepaid CAD service-credit wallet under the authenticated institution, onboarded legal owner and active billing agreement. The client cannot supply another tenant, owner or arbitrary agreement. A cancelled agreement cannot create a wallet to resume usage.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"name\": \"Operating wallet\",\n  \"currency\": \"CAD\",\n  \"usage_enabled\": true\n}",
@@ -11379,7 +11379,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_example\",\n    \"object\": \"wallet\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"name\": \"Operating wallet\",\n    \"currency\": \"CAD\",\n    \"legal_owner_id\": \"institution_example\",\n    \"status\": \"active\",\n    \"usage_enabled\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_example\",\n    \"object\": \"wallet\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"name\": \"Operating wallet\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"legal_owner_id\": \"institution_example\",\n    \"status\": \"active\",\n    \"usage_enabled\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11418,7 +11418,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_example\",\n      \"object\": \"wallet\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"name\": \"Operating wallet\",\n      \"currency\": \"CAD\",\n      \"legal_owner_id\": \"institution_example\",\n      \"status\": \"active\",\n      \"usage_enabled\": true\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_example\",\n      \"object\": \"wallet\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"name\": \"Operating wallet\",\n      \"currency\": \"CAD\",\n      \"agreement_id\": \"agr_example\",\n      \"legal_owner_id\": \"institution_example\",\n      \"status\": \"active\",\n      \"usage_enabled\": true\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11457,7 +11457,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_example\",\n    \"object\": \"wallet\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"name\": \"Operating wallet\",\n    \"currency\": \"CAD\",\n    \"legal_owner_id\": \"institution_example\",\n    \"status\": \"active\",\n    \"usage_enabled\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_example\",\n    \"object\": \"wallet\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"name\": \"Operating wallet\",\n    \"currency\": \"CAD\",\n    \"agreement_id\": \"agr_example\",\n    \"legal_owner_id\": \"institution_example\",\n    \"status\": \"active\",\n    \"usage_enabled\": true\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11472,7 +11472,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallets/wal_example/balance",
-            "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -11486,7 +11486,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallets/wal_example/balance",
-                "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -11496,7 +11496,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_balance_example\",\n    \"object\": \"wallet_balance\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"currency\": \"CAD\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"committed_credits\": {\n      \"posted\": \"9900.00\",\n      \"held\": \"500.00\",\n      \"available\": \"9400.00\"\n    },\n    \"additional_funds\": {\n      \"posted\": \"0.00\",\n      \"held\": \"0.00\",\n      \"available\": \"0.00\"\n    },\n    \"promotional_credits\": {\n      \"posted\": \"0.00\",\n      \"held\": \"0.00\",\n      \"available\": \"0.00\"\n    },\n    \"pending_incoming\": \"250.00\",\n    \"total_posted\": \"9900.00\",\n    \"total_held\": \"500.00\",\n    \"available_for_usage\": \"9400.00\",\n    \"withdrawable\": \"9400.00\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_balance_example\",\n    \"object\": \"wallet_balance\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"currency\": \"CAD\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"ledger_sequence\": 3,\n    \"committed_credits\": {\n      \"posted\": \"10900.00\",\n      \"held\": \"500.00\",\n      \"available\": \"10400.00\"\n    },\n    \"additional_funds\": {\n      \"posted\": \"0.00\",\n      \"held\": \"0.00\",\n      \"available\": \"0.00\"\n    },\n    \"promotional_credits\": {\n      \"posted\": \"0.00\",\n      \"held\": \"0.00\",\n      \"available\": \"0.00\"\n    },\n    \"pending_incoming\": \"250.00\",\n    \"total_posted\": \"10900.00\",\n    \"total_held\": \"500.00\",\n    \"available_for_usage\": \"10400.00\",\n    \"remaining_paid_credits\": \"10900.00\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11511,7 +11511,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallets/wal_example/ledger?limit=100",
-            "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -11525,7 +11525,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallets/wal_example/ledger?limit=100",
-                "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -11535,7 +11535,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_ledger_entry_example\",\n      \"object\": \"wallet_ledger_entry\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"sequence\": 3,\n      \"currency\": \"CAD\",\n      \"amount\": \"-1000.00\",\n      \"balance_after\": \"9900.00\",\n      \"entry_type\": \"withdrawal\",\n      \"bucket\": \"committed_credits\",\n      \"credit_lot_id\": \"lot_example\",\n      \"movement_id\": \"wallet_withdrawal_settled\",\n      \"reverses_entry_id\": null,\n      \"posted_at\": \"2026-10-23T14:00:00Z\",\n      \"client_reference\": \"withdrawal-1000\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_ledger_entry_example\",\n      \"object\": \"wallet_ledger_entry\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"sequence\": 3,\n      \"currency\": \"CAD\",\n      \"amount\": \"-600.00\",\n      \"balance_after\": \"10900.00\",\n      \"entry_type\": \"usage\",\n      \"bucket\": \"committed_credits\",\n      \"credit_lot_id\": \"lot_example\",\n      \"movement_id\": \"billing_usage_signal\",\n      \"reverses_entry_id\": null,\n      \"posted_at\": \"2026-10-23T14:00:00Z\",\n      \"client_reference\": \"signal-october\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11550,7 +11550,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallets/wal_example/credit-lots?limit=100",
-            "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -11564,7 +11564,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallets/wal_example/credit-lots?limit=100",
-                "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -11574,7 +11574,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_credit_lot_example\",\n      \"object\": \"wallet_credit_lot\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"currency\": \"CAD\",\n      \"origin_type\": \"minimum_commitment\",\n      \"origin_top_up_id\": \"top_up_annual\",\n      \"original_amount\": \"12000.00\",\n      \"remaining_amount\": \"9900.00\",\n      \"held_amount\": \"500.00\",\n      \"withdrawable_amount\": \"9400.00\",\n      \"refundable_to_origin_amount\": \"9400.00\",\n      \"restrictions\": []\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_credit_lot_example\",\n      \"object\": \"wallet_credit_lot\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"currency\": \"CAD\",\n      \"origin_type\": \"minimum_commitment\",\n      \"origin_top_up_id\": \"top_up_annual\",\n      \"original_amount\": \"12000.00\",\n      \"remaining_amount\": \"10900.00\",\n      \"held_amount\": \"500.00\",\n      \"refund_policy\": \"on_final_cancellation\",\n      \"restrictions\": []\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11589,7 +11589,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallets/wal_example/holds?limit=100",
-            "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -11603,7 +11603,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallets/wal_example/holds?limit=100",
-                "description": "Read a consistent wallet snapshot. Pending funding is excluded from available funds. Committed credits are withdrawable after settlement and release of holds; promotional credits are not. Ledger entries and credit-lot lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Read a consistent wallet snapshot. Pending funding is excluded from usable credits. Paid credits fund AMLOK products and are refundable only after final agreement cancellation and reconciliation. remaining_paid_credits includes paid principal held for unresolved activity; it is not an on-demand withdrawal balance. Ledger and funding lineage are immutable.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -11613,7 +11613,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_hold_example\",\n      \"object\": \"wallet_hold\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"movement_id\": \"wallet_withdrawal_example\",\n      \"reason\": \"withdrawal\",\n      \"status\": \"active\",\n      \"expires_at\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_hold_example\",\n      \"object\": \"wallet_hold\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"movement_id\": \"billing_usage_pending\",\n      \"reason\": \"usage\",\n      \"status\": \"active\",\n      \"expires_at\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -11636,7 +11636,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-sessions",
-            "description": "Create a hosted funding-method or payout-destination verification session. The return URL must be pre-allowlisted. Never send raw bank credentials or card data to this API. A browser redirect does not prove verification.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Create a hosted funding-method or cancellation-refund destination verification session. The return URL must be pre-allowlisted. Never send raw bank credentials or card data to this API. A browser redirect does not prove verification.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"purpose\": \"payout_destination\",\n  \"return_url\": \"https://client.example.com/wallet/return\"\n}",
@@ -11667,7 +11667,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-sessions",
-                "description": "Create a hosted funding-method or payout-destination verification session. The return URL must be pre-allowlisted. Never send raw bank credentials or card data to this API. A browser redirect does not prove verification.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Create a hosted funding-method or cancellation-refund destination verification session. The return URL must be pre-allowlisted. Never send raw bank credentials or card data to this API. A browser redirect does not prove verification.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"purpose\": \"payout_destination\",\n  \"return_url\": \"https://client.example.com/wallet/return\"\n}",
@@ -12023,7 +12023,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-top-ups/res_example/cancel",
-            "description": "Cancel only before irreversible processor submission; otherwise reconcile or request a refund after settlement.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Cancel an unsettled funding attempt only before irreversible processor submission. Once settled, the credits remain for product usage and can only be refunded through final agreement cancellation. A failed or reversed funding payment is reconciled without treating it as a customer withdrawal.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Funding no longer needed.\"\n}",
@@ -12058,7 +12058,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-top-ups/res_example/cancel",
-                "description": "Cancel only before irreversible processor submission; otherwise reconcile or request a refund after settlement.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Cancel an unsettled funding attempt only before irreversible processor submission. Once settled, the credits remain for product usage and can only be refunded through final agreement cancellation. A failed or reversed funding payment is reconciled without treating it as a customer withdrawal.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Funding no longer needed.\"\n}",
@@ -12143,7 +12143,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallets/wal_example/auto-top-up",
-            "description": "Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. Closure disables automatic funding.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. The confirmed agreement end date disables automatic funding and new usage. Changing funding_method_id and top_up_amount updates future automatic attempts, within the cap and current authorization; it does not modify already submitted payments.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"enabled\": false,\n  \"threshold\": \"250.00\",\n  \"top_up_amount\": \"1000.00\",\n  \"monthly_cap\": \"5000.00\",\n  \"funding_method_id\": \"wallet_payment_method_example\",\n  \"authorization_id\": \"mandate_example\",\n  \"currency\": \"CAD\"\n}",
@@ -12178,7 +12178,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallets/wal_example/auto-top-up",
-                "description": "Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. Closure disables automatic funding.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Replace the policy with a current ETag and an institution-approved authorization. Amount cannot exceed cap. One pending automatic attempt per wallet; failed attempts do not loop indefinitely. The confirmed agreement end date disables automatic funding and new usage. Changing funding_method_id and top_up_amount updates future automatic attempts, within the cap and current authorization; it does not modify already submitted payments.\n\nRequired scope: wallets:funding. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"enabled\": false,\n  \"threshold\": \"250.00\",\n  \"top_up_amount\": \"1000.00\",\n  \"monthly_cap\": \"5000.00\",\n  \"funding_method_id\": \"wallet_payment_method_example\",\n  \"authorization_id\": \"mandate_example\",\n  \"currency\": \"CAD\"\n}",
@@ -12220,10 +12220,10 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-quotes",
-            "description": "Quote transfer, withdrawal or original-source refund. No balance is reserved. Binds amount, fees, source, destination, currency, policy and expiry; eligibility is rechecked atomically on submission. Same-currency CAD routes only.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Quote the full remaining paid balance for a final-cancellation refund. Require a cancellation belonging to the same agreement, institution and wallet, status refund_pending, an effective date at or before now, completed reconciliation, a final statement, and resolved usage holds and funding attempts. Otherwise return 409 cancellation_not_final. The server computes the amount and allocations across original funding sources; client amounts and partial cash-outs are rejected. Quotes bind cancellation, final statement revision, wallet version and destinations. No funds are reserved. Recheck every condition atomically on refund submission. For a definitive failed or returned refund, supply refund_id and quote only its still-unpaid balance; unresolved rail outcomes cannot be requoted for retry.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"kind\": \"withdrawal\",\n  \"source_wallet_id\": \"wal_example\",\n  \"amount\": \"500.00\",\n  \"currency\": \"CAD\",\n  \"payout_destination_id\": \"wallet_payment_method_example\"\n}",
+              "raw": "{\n  \"kind\": \"refund\",\n  \"source_wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"currency\": \"CAD\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -12251,10 +12251,10 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-quotes",
-                "description": "Quote transfer, withdrawal or original-source refund. No balance is reserved. Binds amount, fees, source, destination, currency, policy and expiry; eligibility is rechecked atomically on submission. Same-currency CAD routes only.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Quote the full remaining paid balance for a final-cancellation refund. Require a cancellation belonging to the same agreement, institution and wallet, status refund_pending, an effective date at or before now, completed reconciliation, a final statement, and resolved usage holds and funding attempts. Otherwise return 409 cancellation_not_final. The server computes the amount and allocations across original funding sources; client amounts and partial cash-outs are rejected. Quotes bind cancellation, final statement revision, wallet version and destinations. No funds are reserved. Recheck every condition atomically on refund submission. For a definitive failed or returned refund, supply refund_id and quote only its still-unpaid balance; unresolved rail outcomes cannot be requoted for retry.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"kind\": \"withdrawal\",\n  \"source_wallet_id\": \"wal_example\",\n  \"amount\": \"500.00\",\n  \"currency\": \"CAD\",\n  \"payout_destination_id\": \"wallet_payment_method_example\"\n}",
+                  "raw": "{\n  \"kind\": \"refund\",\n  \"source_wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"currency\": \"CAD\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -12270,7 +12270,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_quote_withdrawal\",\n    \"object\": \"wallet_quote\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"kind\": \"withdrawal\",\n    \"source_wallet_id\": \"wal_example\",\n    \"destination_reference\": \"wallet_payment_method_example\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"currency\": \"CAD\",\n    \"expires_at\": \"2026-10-23T14:10:00Z\",\n    \"policy_version\": \"wallet-policy-example\",\n    \"source_wallet_version\": 1,\n    \"approval_required\": true,\n    \"holds_funds\": false\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_quote_refund\",\n    \"object\": \"wallet_quote\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"kind\": \"refund\",\n    \"source_wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"final_statement_id\": \"statement_final_example\",\n    \"final_statement_revision\": 1,\n    \"refund_id\": null,\n    \"allocations\": [\n      {\n        \"origin_top_up_id\": \"top_up_annual\",\n        \"destination_id\": \"wallet_payment_method_example\",\n        \"amount\": \"10900.00\"\n      }\n    ],\n    \"amount\": \"10900.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"10900.00\",\n    \"recipient_amount\": \"10900.00\",\n    \"currency\": \"CAD\",\n    \"expires_at\": \"2026-10-23T14:10:00Z\",\n    \"policy_version\": \"wallet-policy-cancellation-only\",\n    \"source_wallet_version\": 3,\n    \"approval_required\": true,\n    \"holds_funds\": false\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -12284,8 +12284,8 @@
                 "value": "application/json"
               }
             ],
-            "url": "{{base_url}}/v1/wallet-quotes/wallet_quote_withdrawal",
-            "description": "Read quote terms and expiry. Requote an expired quote; do not change a submitted movement.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "url": "{{base_url}}/v1/wallet-quotes/wallet_quote_refund",
+            "description": "Read the final-cancellation refund amount, funding allocations, final statement revision and expiry. A quote does not authorize an active-agreement cash-out.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -12298,8 +12298,8 @@
                     "value": "application/json"
                   }
                 ],
-                "url": "{{base_url}}/v1/wallet-quotes/wallet_quote_withdrawal",
-                "description": "Read quote terms and expiry. Requote an expired quote; do not change a submitted movement.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "url": "{{base_url}}/v1/wallet-quotes/wallet_quote_refund",
+                "description": "Read the final-cancellation refund amount, funding allocations, final statement revision and expiry. A quote does not authorize an active-agreement cash-out.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -12309,471 +12309,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_quote_withdrawal\",\n    \"object\": \"wallet_quote\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"kind\": \"withdrawal\",\n    \"source_wallet_id\": \"wal_example\",\n    \"destination_reference\": \"wallet_payment_method_example\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"currency\": \"CAD\",\n    \"expires_at\": \"2026-10-23T14:10:00Z\",\n    \"policy_version\": \"wallet-policy-example\",\n    \"source_wallet_version\": 1,\n    \"approval_required\": true,\n    \"holds_funds\": false\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Create wallet transfer",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Idempotency-Key",
-                "value": "{{idempotency_key}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-transfers",
-            "description": "Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.\n\nRequired scope: wallets:transfer. Tenant and legal-owner checks apply on every read and write.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"quote_id\": \"wallet_quote_transfer\",\n  \"client_reference\": \"WalletTransfer-1001\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "name": "Synthetic 202",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Idempotency-Key",
-                    "value": "{{idempotency_key}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-transfers",
-                "description": "Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.\n\nRequired scope: wallets:transfer. Tenant and legal-owner checks apply on every read and write.",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"quote_id\": \"wallet_quote_transfer\",\n  \"client_reference\": \"WalletTransfer-1001\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Accepted",
-              "code": 202,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_transfer_example\",\n    \"object\": \"wallet_transfer\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_transfer\",\n    \"client_reference\": \"wallet_transfer-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": \"wallet_hold_example\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": true,\n    \"failure_code\": null,\n    \"status\": \"requires_approval\",\n    \"destination_wallet_id\": \"wal_reserve\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "List wallet transfers",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-transfers?limit=100",
-            "description": "Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-          },
-          "response": [
-            {
-              "name": "Synthetic 200",
-              "originalRequest": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-transfers?limit=100",
-                "description": "Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_transfer_example\",\n      \"object\": \"wallet_transfer\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"source_wallet_id\": \"wal_example\",\n      \"quote_id\": \"wallet_quote_transfer\",\n      \"client_reference\": \"wallet_transfer-1001\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"fee_amount\": \"0.00\",\n      \"total_debit\": \"500.00\",\n      \"recipient_amount\": \"500.00\",\n      \"hold_id\": \"wallet_hold_example\",\n      \"approval_id\": \"wallet_approval_example\",\n      \"payout_id\": null,\n      \"ledger_entry_ids\": [],\n      \"cancellable\": true,\n      \"failure_code\": null,\n      \"status\": \"requires_approval\",\n      \"destination_wallet_id\": \"wal_reserve\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Retrieve wallet transfer",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-transfers/wallet_transfer_example",
-            "description": "Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-          },
-          "response": [
-            {
-              "name": "Synthetic 200",
-              "originalRequest": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-transfers/wallet_transfer_example",
-                "description": "Move available funds between distinct wallets of the same institution AND legal owner, in CAD. Debit and credit are atomic and preserve origin, commitment classification and refund restrictions. No transfer to another customer.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_transfer_example\",\n    \"object\": \"wallet_transfer\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_transfer\",\n    \"client_reference\": \"wallet_transfer-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": \"wallet_hold_example\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": true,\n    \"failure_code\": null,\n    \"status\": \"requires_approval\",\n    \"destination_wallet_id\": \"wal_reserve\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Cancel wallet transfer",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Idempotency-Key",
-                "value": "{{idempotency_key}}"
-              },
-              {
-                "key": "If-Match",
-                "value": "\"1\""
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-transfers/res_example/cancel",
-            "description": "Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.\n\nRequired scope: wallets:transfer. Tenant and legal-owner checks apply on every read and write.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"Requested by institution.\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "name": "Synthetic 202",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Idempotency-Key",
-                    "value": "{{idempotency_key}}"
-                  },
-                  {
-                    "key": "If-Match",
-                    "value": "\"1\""
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-transfers/res_example/cancel",
-                "description": "Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.\n\nRequired scope: wallets:transfer. Tenant and legal-owner checks apply on every read and write.",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"reason\": \"Requested by institution.\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Accepted",
-              "code": 202,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_transfer_example\",\n    \"object\": \"wallet_transfer\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_transfer\",\n    \"client_reference\": \"wallet_transfer-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": null,\n    \"approval_id\": null,\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": false,\n    \"failure_code\": null,\n    \"status\": \"cancelled\",\n    \"destination_wallet_id\": \"wal_reserve\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Create wallet withdrawal",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Idempotency-Key",
-                "value": "{{idempotency_key}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-withdrawals",
-            "description": "Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.\n\nRequired scope: wallets:withdraw. Tenant and legal-owner checks apply on every read and write.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"quote_id\": \"wallet_quote_withdrawal\",\n  \"client_reference\": \"WalletWithdrawal-1001\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "name": "Synthetic 202",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Idempotency-Key",
-                    "value": "{{idempotency_key}}"
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-withdrawals",
-                "description": "Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.\n\nRequired scope: wallets:withdraw. Tenant and legal-owner checks apply on every read and write.",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"quote_id\": \"wallet_quote_withdrawal\",\n  \"client_reference\": \"WalletWithdrawal-1001\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Accepted",
-              "code": 202,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_withdrawal_example\",\n    \"object\": \"wallet_withdrawal\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_withdrawal\",\n    \"client_reference\": \"wallet_withdrawal-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": \"wallet_hold_example\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": true,\n    \"failure_code\": null,\n    \"status\": \"requires_approval\",\n    \"payout_destination_id\": \"wallet_payment_method_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "List wallet withdrawals",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-withdrawals?limit=100",
-            "description": "Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-          },
-          "response": [
-            {
-              "name": "Synthetic 200",
-              "originalRequest": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-withdrawals?limit=100",
-                "description": "Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_withdrawal_example\",\n      \"object\": \"wallet_withdrawal\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"source_wallet_id\": \"wal_example\",\n      \"quote_id\": \"wallet_quote_withdrawal\",\n      \"client_reference\": \"wallet_withdrawal-1001\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"fee_amount\": \"0.00\",\n      \"total_debit\": \"500.00\",\n      \"recipient_amount\": \"500.00\",\n      \"hold_id\": \"wallet_hold_example\",\n      \"approval_id\": \"wallet_approval_example\",\n      \"payout_id\": null,\n      \"ledger_entry_ids\": [],\n      \"cancellable\": true,\n      \"failure_code\": null,\n      \"status\": \"requires_approval\",\n      \"payout_destination_id\": \"wallet_payment_method_example\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Retrieve wallet withdrawal",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-withdrawals/wallet_withdrawal_example",
-            "description": "Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-          },
-          "response": [
-            {
-              "name": "Synthetic 200",
-              "originalRequest": {
-                "method": "GET",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-withdrawals/wallet_withdrawal_example",
-                "description": "Withdraw unused settled committed credits or additional funds to a verified same-owner bank destination. Reserve principal plus disclosed fees. This does not cancel the agreement or waive remaining obligations.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_withdrawal_example\",\n    \"object\": \"wallet_withdrawal\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_withdrawal\",\n    \"client_reference\": \"wallet_withdrawal-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": \"wallet_hold_example\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": true,\n    \"failure_code\": null,\n    \"status\": \"requires_approval\",\n    \"payout_destination_id\": \"wallet_payment_method_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
-            }
-          ]
-        },
-        {
-          "name": "Cancel wallet withdrawal",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              },
-              {
-                "key": "Idempotency-Key",
-                "value": "{{idempotency_key}}"
-              },
-              {
-                "key": "If-Match",
-                "value": "\"1\""
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "url": "{{base_url}}/v1/wallet-withdrawals/res_example/cancel",
-            "description": "Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.\n\nRequired scope: wallets:withdraw. Tenant and legal-owner checks apply on every read and write.",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"reason\": \"Requested by institution.\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "name": "Synthetic 202",
-              "originalRequest": {
-                "method": "POST",
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  },
-                  {
-                    "key": "Idempotency-Key",
-                    "value": "{{idempotency_key}}"
-                  },
-                  {
-                    "key": "If-Match",
-                    "value": "\"1\""
-                  },
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "url": "{{base_url}}/v1/wallet-withdrawals/res_example/cancel",
-                "description": "Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.\n\nRequired scope: wallets:withdraw. Tenant and legal-owner checks apply on every read and write.",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"reason\": \"Requested by institution.\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Accepted",
-              "code": 202,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_withdrawal_example\",\n    \"object\": \"wallet_withdrawal\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_withdrawal\",\n    \"client_reference\": \"wallet_withdrawal-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": null,\n    \"approval_id\": null,\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": false,\n    \"failure_code\": null,\n    \"status\": \"cancelled\",\n    \"payout_destination_id\": \"wallet_payment_method_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_quote_refund\",\n    \"object\": \"wallet_quote\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"kind\": \"refund\",\n    \"source_wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"final_statement_id\": \"statement_final_example\",\n    \"final_statement_revision\": 1,\n    \"refund_id\": null,\n    \"allocations\": [\n      {\n        \"origin_top_up_id\": \"top_up_annual\",\n        \"destination_id\": \"wallet_payment_method_example\",\n        \"amount\": \"10900.00\"\n      }\n    ],\n    \"amount\": \"10900.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"10900.00\",\n    \"recipient_amount\": \"10900.00\",\n    \"currency\": \"CAD\",\n    \"expires_at\": \"2026-10-23T14:10:00Z\",\n    \"policy_version\": \"wallet-policy-cancellation-only\",\n    \"source_wallet_version\": 3,\n    \"approval_required\": true,\n    \"holds_funds\": false\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -12796,10 +12332,10 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-refunds",
-            "description": "Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"quote_id\": \"wallet_quote_refund\",\n  \"client_reference\": \"WalletRefund-1001\"\n}",
+              "raw": "{\n  \"quote_id\": \"wallet_quote_refund\",\n  \"client_reference\": \"cancellation-refund-1001\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -12827,10 +12363,10 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-refunds",
-                "description": "Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"quote_id\": \"wallet_quote_refund\",\n  \"client_reference\": \"WalletRefund-1001\"\n}",
+                  "raw": "{\n  \"quote_id\": \"wallet_quote_refund\",\n  \"client_reference\": \"cancellation-refund-1001\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -12846,7 +12382,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_refund\",\n    \"client_reference\": \"wallet_refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": \"wallet_hold_example\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": true,\n    \"failure_code\": null,\n    \"status\": \"in_review\",\n    \"origin_top_up_id\": \"top_up_annual\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"final_statement_id\": \"statement_final_example\",\n    \"quote_id\": \"wallet_quote_refund\",\n    \"client_reference\": \"cancellation-refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"10900.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"10900.00\",\n    \"recipient_amount\": \"10900.00\",\n    \"allocations\": [\n      {\n        \"origin_top_up_id\": \"top_up_annual\",\n        \"destination_id\": \"wallet_payment_method_example\",\n        \"amount\": \"10900.00\"\n      }\n    ],\n    \"paid_amount\": \"0.00\",\n    \"remaining_amount\": \"10900.00\",\n    \"hold_id\": \"wallet_hold_refund\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_ids\": [],\n    \"ledger_entry_ids\": [],\n    \"status\": \"requires_approval\",\n    \"cancellable\": true,\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         },
@@ -12861,7 +12397,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-refunds?limit=100",
-            "description": "Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -12875,7 +12411,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-refunds?limit=100",
-                "description": "Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -12885,7 +12421,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_refund_example\",\n      \"object\": \"wallet_refund\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"source_wallet_id\": \"wal_example\",\n      \"quote_id\": \"wallet_quote_refund\",\n      \"client_reference\": \"wallet_refund-1001\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"fee_amount\": \"0.00\",\n      \"total_debit\": \"500.00\",\n      \"recipient_amount\": \"500.00\",\n      \"hold_id\": \"wallet_hold_example\",\n      \"approval_id\": \"wallet_approval_example\",\n      \"payout_id\": null,\n      \"ledger_entry_ids\": [],\n      \"cancellable\": true,\n      \"failure_code\": null,\n      \"status\": \"in_review\",\n      \"origin_top_up_id\": \"top_up_annual\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_refund_example\",\n      \"object\": \"wallet_refund\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"source_wallet_id\": \"wal_example\",\n      \"cancellation_id\": \"cancellation_final_example\",\n      \"final_statement_id\": \"statement_final_example\",\n      \"quote_id\": \"wallet_quote_refund\",\n      \"client_reference\": \"cancellation-refund-1001\",\n      \"currency\": \"CAD\",\n      \"amount\": \"10900.00\",\n      \"fee_amount\": \"0.00\",\n      \"total_debit\": \"10900.00\",\n      \"recipient_amount\": \"10900.00\",\n      \"allocations\": [\n        {\n          \"origin_top_up_id\": \"top_up_annual\",\n          \"destination_id\": \"wallet_payment_method_example\",\n          \"amount\": \"10900.00\"\n        }\n      ],\n      \"paid_amount\": \"0.00\",\n      \"remaining_amount\": \"10900.00\",\n      \"hold_id\": \"wallet_hold_refund\",\n      \"approval_id\": \"wallet_approval_example\",\n      \"payout_ids\": [],\n      \"ledger_entry_ids\": [],\n      \"status\": \"requires_approval\",\n      \"cancellable\": true,\n      \"failure_code\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -12900,7 +12436,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-refunds/wallet_refund_example",
-            "description": "Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -12914,7 +12450,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-refunds/wallet_refund_example",
-                "description": "Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -12924,7 +12460,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_refund\",\n    \"client_reference\": \"wallet_refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": \"wallet_hold_example\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": true,\n    \"failure_code\": null,\n    \"status\": \"in_review\",\n    \"origin_top_up_id\": \"top_up_annual\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"final_statement_id\": \"statement_final_example\",\n    \"quote_id\": \"wallet_quote_refund\",\n    \"client_reference\": \"cancellation-refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"10900.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"10900.00\",\n    \"recipient_amount\": \"10900.00\",\n    \"allocations\": [\n      {\n        \"origin_top_up_id\": \"top_up_annual\",\n        \"destination_id\": \"wallet_payment_method_example\",\n        \"amount\": \"10900.00\"\n      }\n    ],\n    \"paid_amount\": \"0.00\",\n    \"remaining_amount\": \"10900.00\",\n    \"hold_id\": \"wallet_hold_refund\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_ids\": [],\n    \"ledger_entry_ids\": [],\n    \"status\": \"requires_approval\",\n    \"cancellable\": true,\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -12951,10 +12487,10 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-refunds/res_example/cancel",
-            "description": "Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Stop only a cancellable delivery attempt before rail submission. This does not cancel the agreement cancellation or forgive the remaining refund obligation. Confirm no funds left before releasing reservations. Resolve delivery instructions and retry the same refund; never create a second refund for the same balance.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"reason\": \"Requested by institution.\"\n}",
+              "raw": "{\n  \"reason\": \"Correct refund delivery instructions.\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -12986,10 +12522,10 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-refunds/res_example/cancel",
-                "description": "Only cancellable=true movements may be cancelled. Internal transfers cannot be cancelled after atomic posting; refunds and withdrawals cannot be cancelled after rail submission. A cancellation race returns 409; never create a reversing transfer blindly.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Stop only a cancellable delivery attempt before rail submission. This does not cancel the agreement cancellation or forgive the remaining refund obligation. Confirm no funds left before releasing reservations. Resolve delivery instructions and retry the same refund; never create a second refund for the same balance.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"reason\": \"Requested by institution.\"\n}",
+                  "raw": "{\n  \"reason\": \"Correct refund delivery instructions.\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -13005,7 +12541,88 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"quote_id\": \"wallet_quote_refund\",\n    \"client_reference\": \"wallet_refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"500.00\",\n    \"recipient_amount\": \"500.00\",\n    \"hold_id\": null,\n    \"approval_id\": null,\n    \"payout_id\": null,\n    \"ledger_entry_ids\": [],\n    \"cancellable\": false,\n    \"failure_code\": null,\n    \"status\": \"cancelled\",\n    \"origin_top_up_id\": \"top_up_annual\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"final_statement_id\": \"statement_final_example\",\n    \"quote_id\": \"wallet_quote_refund\",\n    \"client_reference\": \"cancellation-refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"10900.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"10900.00\",\n    \"recipient_amount\": \"10900.00\",\n    \"allocations\": [\n      {\n        \"origin_top_up_id\": \"top_up_annual\",\n        \"destination_id\": \"wallet_payment_method_example\",\n        \"amount\": \"10900.00\"\n      }\n    ],\n    \"paid_amount\": \"0.00\",\n    \"remaining_amount\": \"10900.00\",\n    \"hold_id\": null,\n    \"approval_id\": null,\n    \"payout_ids\": [],\n    \"ledger_entry_ids\": [],\n    \"status\": \"cancelled\",\n    \"cancellable\": false,\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retry wallet refund",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotency_key}}"
+              },
+              {
+                "key": "If-Match",
+                "value": "\"1\""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/v1/wallet-refunds/wallet_refund_example/retry",
+            "description": "Resume the same final-cancellation refund after a definitive failed, cancelled, or returned delivery. Require If-Match and a fresh quote bound to this refund_id and the reconciled unpaid balance. All earlier payouts must have known outcomes; otherwise return 409 refund_not_retryable. Never resend already-paid principal. A changed destination must be verified and may require renewed delivery approval. A distinct business reference identifies the retry, while the refund obligation and funding lineage remain unchanged.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quote_id\": \"wallet_quote_retry\",\n  \"client_reference\": \"cancellation-refund-retry-1001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Synthetic 202",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{idempotency_key}}"
+                  },
+                  {
+                    "key": "If-Match",
+                    "value": "\"1\""
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": "{{base_url}}/v1/wallet-refunds/wallet_refund_example/retry",
+                "description": "Resume the same final-cancellation refund after a definitive failed, cancelled, or returned delivery. Require If-Match and a fresh quote bound to this refund_id and the reconciled unpaid balance. All earlier payouts must have known outcomes; otherwise return 409 refund_not_retryable. Never resend already-paid principal. A changed destination must be verified and may require renewed delivery approval. A distinct business reference identifies the retry, while the refund obligation and funding lineage remain unchanged.\n\nRequired scope: wallets:refund. Tenant and legal-owner checks apply on every read and write.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"quote_id\": \"wallet_quote_retry\",\n  \"client_reference\": \"cancellation-refund-retry-1001\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_refund_example\",\n    \"object\": \"wallet_refund\",\n    \"record_version\": 3,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"source_wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"final_statement_id\": \"statement_final_example\",\n    \"quote_id\": \"wallet_quote_retry\",\n    \"client_reference\": \"cancellation-refund-1001\",\n    \"currency\": \"CAD\",\n    \"amount\": \"10900.00\",\n    \"fee_amount\": \"0.00\",\n    \"total_debit\": \"10900.00\",\n    \"recipient_amount\": \"10900.00\",\n    \"allocations\": [\n      {\n        \"origin_top_up_id\": \"top_up_annual\",\n        \"destination_id\": \"wallet_payment_method_example\",\n        \"amount\": \"10900.00\"\n      }\n    ],\n    \"paid_amount\": \"0.00\",\n    \"remaining_amount\": \"10900.00\",\n    \"hold_id\": \"wallet_hold_refund\",\n    \"approval_id\": \"wallet_approval_example\",\n    \"payout_ids\": [],\n    \"ledger_entry_ids\": [],\n    \"status\": \"requires_approval\",\n    \"cancellable\": true,\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         },
@@ -13020,7 +12637,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-payouts?limit=100",
-            "description": "Track outbound settlement for withdrawals and approved refunds. This namespace is separate from provider payment /v1/payouts. A return restores only the actual returned principal once.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -13034,7 +12651,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-payouts?limit=100",
-                "description": "Track outbound settlement for withdrawals and approved refunds. This namespace is separate from provider payment /v1/payouts. A return restores only the actual returned principal once.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -13044,7 +12661,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_payout_example\",\n      \"object\": \"wallet_payout\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"movement_id\": \"wallet_withdrawal_example\",\n      \"movement_type\": \"withdrawal\",\n      \"status\": \"pending\",\n      \"currency\": \"CAD\",\n      \"amount\": \"500.00\",\n      \"destination_id\": \"wallet_payment_method_example\",\n      \"provider_reference\": null,\n      \"submitted_at\": null,\n      \"paid_at\": null,\n      \"returned_at\": null,\n      \"return_amount\": \"0.00\",\n      \"failure_code\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_payout_example\",\n      \"object\": \"wallet_payout\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"movement_id\": \"wallet_refund_example\",\n      \"movement_type\": \"refund\",\n      \"cancellation_id\": \"cancellation_final_example\",\n      \"status\": \"pending\",\n      \"currency\": \"CAD\",\n      \"amount\": \"10900.00\",\n      \"destination_id\": \"wallet_payment_method_example\",\n      \"origin_top_up_id\": \"top_up_annual\",\n      \"provider_reference\": null,\n      \"submitted_at\": null,\n      \"paid_at\": null,\n      \"returned_at\": null,\n      \"return_amount\": \"0.00\",\n      \"failure_code\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13059,7 +12676,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-payouts/wallet_payout_example",
-            "description": "Track outbound settlement for withdrawals and approved refunds. This namespace is separate from provider payment /v1/payouts. A return restores only the actual returned principal once.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+            "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
           },
           "response": [
             {
@@ -13073,7 +12690,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-payouts/wallet_payout_example",
-                "description": "Track outbound settlement for withdrawals and approved refunds. This namespace is separate from provider payment /v1/payouts. A return restores only the actual returned principal once.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
+                "description": "Track delivery of final-cancellation refunds only, including allocations to original funding sources or an approved verified same-owner fallback. This namespace is separate from provider payment /v1/payouts. A return restores the returned principal once to the closed or closing wallet, remains owed under the same cancellation, and cannot fund new services.\n\nRequired scope: wallets:read. Tenant and legal-owner checks apply on every read and write."
               },
               "status": "OK",
               "code": 200,
@@ -13083,7 +12700,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_payout_example\",\n    \"object\": \"wallet_payout\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"movement_id\": \"wallet_withdrawal_example\",\n    \"movement_type\": \"withdrawal\",\n    \"status\": \"pending\",\n    \"currency\": \"CAD\",\n    \"amount\": \"500.00\",\n    \"destination_id\": \"wallet_payment_method_example\",\n    \"provider_reference\": null,\n    \"submitted_at\": null,\n    \"paid_at\": null,\n    \"returned_at\": null,\n    \"return_amount\": \"0.00\",\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_payout_example\",\n    \"object\": \"wallet_payout\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"movement_id\": \"wallet_refund_example\",\n    \"movement_type\": \"refund\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"status\": \"pending\",\n    \"currency\": \"CAD\",\n    \"amount\": \"10900.00\",\n    \"destination_id\": \"wallet_payment_method_example\",\n    \"origin_top_up_id\": \"top_up_annual\",\n    \"provider_reference\": null,\n    \"submitted_at\": null,\n    \"paid_at\": null,\n    \"returned_at\": null,\n    \"return_amount\": \"0.00\",\n    \"failure_code\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13122,7 +12739,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_approval_example\",\n      \"object\": \"wallet_approval\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"target_type\": \"withdrawal\",\n      \"target_id\": \"wallet_withdrawal_example\",\n      \"target_version\": 1,\n      \"status\": \"pending\",\n      \"requested_by\": \"actor_initiator\",\n      \"decided_by\": null,\n      \"expires_at\": \"2026-10-24T14:00:00Z\",\n      \"decision_at\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_approval_example\",\n      \"object\": \"wallet_approval\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"target_type\": \"refund\",\n      \"target_id\": \"wallet_refund_example\",\n      \"target_version\": 1,\n      \"status\": \"pending\",\n      \"requested_by\": \"actor_initiator\",\n      \"decided_by\": null,\n      \"expires_at\": \"2026-10-24T14:00:00Z\",\n      \"decision_at\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13161,7 +12778,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_approval_example\",\n    \"object\": \"wallet_approval\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"target_type\": \"withdrawal\",\n    \"target_id\": \"wallet_withdrawal_example\",\n    \"target_version\": 1,\n    \"status\": \"pending\",\n    \"requested_by\": \"actor_initiator\",\n    \"decided_by\": null,\n    \"expires_at\": \"2026-10-24T14:00:00Z\",\n    \"decision_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_approval_example\",\n    \"object\": \"wallet_approval\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"target_type\": \"refund\",\n    \"target_id\": \"wallet_refund_example\",\n    \"target_version\": 1,\n    \"status\": \"pending\",\n    \"requested_by\": \"actor_initiator\",\n    \"decided_by\": null,\n    \"expires_at\": \"2026-10-24T14:00:00Z\",\n    \"decision_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13188,7 +12805,7 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-approvals/res_example/decision",
-            "description": "An independent authorized actor approves or rejects the exact movement version. The initiator cannot self-approve. Expired, changed or already decided requests fail. Execution rechecks balance, holds and destination. This is customer authorization, not an override of AMLOK refund eligibility.\n\nRequired scope: wallets:approve. Tenant and legal-owner checks apply on every read and write.",
+            "description": "An independent authorized actor approves or rejects the exact movement version. The initiator cannot self-approve. Expired, changed or already decided requests fail. Execution rechecks balance, holds and destination. This authorizes refund delivery instructions only. Rejecting or expiring an instruction does not forfeit the balance or cancel the refund obligation; no approval can bypass the final-cancellation requirement.\n\nRequired scope: wallets:approve. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"decision\": \"approve\",\n  \"reason\": \"Verified payout instruction.\"\n}",
@@ -13223,7 +12840,7 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-approvals/res_example/decision",
-                "description": "An independent authorized actor approves or rejects the exact movement version. The initiator cannot self-approve. Expired, changed or already decided requests fail. Execution rechecks balance, holds and destination. This is customer authorization, not an override of AMLOK refund eligibility.\n\nRequired scope: wallets:approve. Tenant and legal-owner checks apply on every read and write.",
+                "description": "An independent authorized actor approves or rejects the exact movement version. The initiator cannot self-approve. Expired, changed or already decided requests fail. Execution rechecks balance, holds and destination. This authorizes refund delivery instructions only. Rejecting or expiring an instruction does not forfeit the balance or cancel the refund obligation; no approval can bypass the final-cancellation requirement.\n\nRequired scope: wallets:approve. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"decision\": \"approve\",\n  \"reason\": \"Verified payout instruction.\"\n}",
@@ -13242,7 +12859,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_approval_example\",\n    \"object\": \"wallet_approval\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"target_type\": \"withdrawal\",\n    \"target_id\": \"wallet_withdrawal_example\",\n    \"target_version\": 1,\n    \"status\": \"approved\",\n    \"requested_by\": \"actor_initiator\",\n    \"decided_by\": \"actor_reviewer\",\n    \"expires_at\": \"2026-10-24T14:00:00Z\",\n    \"decision_at\": \"2026-10-23T14:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_approval_example\",\n    \"object\": \"wallet_approval\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"target_type\": \"refund\",\n    \"target_id\": \"wallet_refund_example\",\n    \"target_version\": 1,\n    \"status\": \"approved\",\n    \"requested_by\": \"actor_initiator\",\n    \"decided_by\": \"actor_reviewer\",\n    \"expires_at\": \"2026-10-24T14:00:00Z\",\n    \"decision_at\": \"2026-10-23T14:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13265,10 +12882,10 @@
               }
             ],
             "url": "{{base_url}}/v1/wallet-closures",
-            "description": "Close a wallet only after its balance, holds, disputes and in-flight settlements are resolved. Disables automatic funding and new debits; settlement and reconciliation remain possible. Does not itself cancel the commercial agreement, move funds or delete records.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
+            "description": "Close only after final agreement cancellation, full remaining paid-balance refund and resolution of holds and in-flight funding. Require the same cancellation_id and legal owner. Zero-cost promotional credits are retired without cash payment. Closure cannot be used as an alternative cash-out path, does not delete audit records, and never re-enables funding or usage. A later payout return reopens refund reconciliation, not service access.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"wallet_id\": \"wal_example\",\n  \"reason\": \"Consolidate wallets.\",\n  \"client_reference\": \"closure-1001\"\n}",
+              "raw": "{\n  \"wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"reason\": \"Final cancellation refund completed.\",\n  \"client_reference\": \"closure-1001\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -13296,10 +12913,10 @@
                   }
                 ],
                 "url": "{{base_url}}/v1/wallet-closures",
-                "description": "Close a wallet only after its balance, holds, disputes and in-flight settlements are resolved. Disables automatic funding and new debits; settlement and reconciliation remain possible. Does not itself cancel the commercial agreement, move funds or delete records.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
+                "description": "Close only after final agreement cancellation, full remaining paid-balance refund and resolution of holds and in-flight funding. Require the same cancellation_id and legal owner. Zero-cost promotional credits are retired without cash payment. Closure cannot be used as an alternative cash-out path, does not delete audit records, and never re-enables funding or usage. A later payout return reopens refund reconciliation, not service access.\n\nRequired scope: wallets:write. Tenant and legal-owner checks apply on every read and write.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"wallet_id\": \"wal_example\",\n  \"reason\": \"Consolidate wallets.\",\n  \"client_reference\": \"closure-1001\"\n}",
+                  "raw": "{\n  \"wallet_id\": \"wal_example\",\n  \"cancellation_id\": \"cancellation_final_example\",\n  \"reason\": \"Final cancellation refund completed.\",\n  \"client_reference\": \"closure-1001\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -13315,7 +12932,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_closure_example\",\n    \"object\": \"wallet_closure\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"reason\": \"Consolidate wallets.\",\n    \"client_reference\": \"closure-1001\",\n    \"status\": \"requested\",\n    \"blocking_reasons\": [\n      \"remaining_balance\",\n      \"pending_settlements\"\n    ],\n    \"final_statement_id\": null,\n    \"closed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_closure_example\",\n    \"object\": \"wallet_closure\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"reason\": \"Close after final cancellation and refund.\",\n    \"client_reference\": \"closure-1001\",\n    \"status\": \"requested\",\n    \"blocking_reasons\": [\n      \"remaining_balance\",\n      \"pending_settlements\"\n    ],\n    \"final_statement_id\": null,\n    \"closed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         },
@@ -13354,7 +12971,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_closure_example\",\n      \"object\": \"wallet_closure\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"reason\": \"Consolidate wallets.\",\n      \"client_reference\": \"closure-1001\",\n      \"status\": \"requested\",\n      \"blocking_reasons\": [\n        \"remaining_balance\",\n        \"pending_settlements\"\n      ],\n      \"final_statement_id\": null,\n      \"closed_at\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wallet_closure_example\",\n      \"object\": \"wallet_closure\",\n      \"record_version\": 1,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"wallet_id\": \"wal_example\",\n      \"cancellation_id\": \"cancellation_final_example\",\n      \"reason\": \"Close after final cancellation and refund.\",\n      \"client_reference\": \"closure-1001\",\n      \"status\": \"requested\",\n      \"blocking_reasons\": [\n        \"remaining_balance\",\n        \"pending_settlements\"\n      ],\n      \"final_statement_id\": null,\n      \"closed_at\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13393,7 +13010,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_closure_example\",\n    \"object\": \"wallet_closure\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"reason\": \"Consolidate wallets.\",\n    \"client_reference\": \"closure-1001\",\n    \"status\": \"requested\",\n    \"blocking_reasons\": [\n      \"remaining_balance\",\n      \"pending_settlements\"\n    ],\n    \"final_statement_id\": null,\n    \"closed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_closure_example\",\n    \"object\": \"wallet_closure\",\n    \"record_version\": 1,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"reason\": \"Close after final cancellation and refund.\",\n    \"client_reference\": \"closure-1001\",\n    \"status\": \"requested\",\n    \"blocking_reasons\": [\n      \"remaining_balance\",\n      \"pending_settlements\"\n    ],\n    \"final_statement_id\": null,\n    \"closed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         },
@@ -13474,7 +13091,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wallet_closure_example\",\n    \"object\": \"wallet_closure\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"reason\": \"Consolidate wallets.\",\n    \"client_reference\": \"closure-1001\",\n    \"status\": \"withdrawn\",\n    \"blocking_reasons\": [\n      \"remaining_balance\",\n      \"pending_settlements\"\n    ],\n    \"final_statement_id\": null,\n    \"closed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wallet_closure_example\",\n    \"object\": \"wallet_closure\",\n    \"record_version\": 2,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"wallet_id\": \"wal_example\",\n    \"cancellation_id\": \"cancellation_final_example\",\n    \"reason\": \"Close after final cancellation and refund.\",\n    \"client_reference\": \"closure-1001\",\n    \"status\": \"withdrawn\",\n    \"blocking_reasons\": [\n      \"remaining_balance\",\n      \"pending_settlements\"\n    ],\n    \"final_statement_id\": null,\n    \"closed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         }

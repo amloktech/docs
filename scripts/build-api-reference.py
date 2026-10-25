@@ -449,7 +449,13 @@ for op in OPS:
     OP_INDEX.append({'id':oid,'method':method,'path':path,'title':title,'scope':op['Scope'],'group':group,'page':page,'resource':resource,'request':request,'response':response_example,'success':success})
 
 from wallet_contract import extend
+previous_wallet_index_path = ROOT / 'data/wallet-api-index.json'
+previous_wallet_ops = json.loads(previous_wallet_index_path.read_text()) if previous_wallet_index_path.exists() else []
 WALLET_OPS = extend(globals())
+active_wallet_pages = {op['page'] for op in WALLET_OPS}
+for old_op in previous_wallet_ops:
+    if old_op['page'] not in active_wallet_pages:
+        (ROOT / (old_op['page'] + '.mdx')).unlink(missing_ok=True)
 
 SPEC['tags']=[{'name':g,'description':g+' operations.'} for g in NAV_GROUPS]
 SPEC['webhooks']={'resourceEvent':{'post':{'summary':'AMLOK resource event','description':'Signed at-least-once delivery. Verify the exact raw body before parsing.','security':[],'parameters':[parameter('X-AMLOK-Signature','header','string','HMAC-SHA256 of timestamp + period + raw body. Tolerance: 300 seconds.',True,'t=1792764000,v1=<hex_digest>')],'requestBody':{'required':True,'content':{'application/json':{'schema':ref('WebhookEvent'),'example':EXAMPLES['WebhookEvent']}}},'responses':{'200':{'description':'Acknowledged after durable acceptance.'}}}}}
@@ -475,8 +481,7 @@ for section in endpoint_groups:
         for op in WALLET_OPS:
             if op['group'] != 'Wallets': continue
             path = op['path']
-            category = ('Transfers' if path.startswith('/v1/wallet-transfers') else
-                        'Withdrawals and payouts' if path.startswith(('/v1/wallet-withdrawals','/v1/wallet-payouts')) else
+            category = ('Refund payouts' if path.startswith('/v1/wallet-payouts') else
                         'Refunds' if path.startswith('/v1/wallet-refunds') else
                         'Approvals' if path.startswith('/v1/wallet-approvals') else
                         'Closure' if path.startswith('/v1/wallet-closures') else

@@ -1,0 +1,13 @@
+---
+title: "Retry wallet refund"
+openapi: "/openapi/amlok-v1.json POST /v1/wallet-refunds/{id}/retry"
+playground: simple
+---
+
+**Required scope:** `wallets:refund`
+
+Resume the same final-cancellation refund after a definitive failed, cancelled, or returned delivery. Require If-Match and a fresh quote bound to this refund_id and the reconciled unpaid balance. All earlier payouts must have known outcomes; otherwise return 409 refund_not_retryable. Never resend already-paid principal. A changed destination must be verified and may require renewed delivery approval. A distinct business reference identifies the retry, while the refund obligation and funding lineage remain unchanged.
+
+[Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)
+
+Use an idempotency key for every mutation. Money commands also require a durable, institution-scoped business reference. A successful submission is not confirmation of settlement.

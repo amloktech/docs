@@ -8734,24 +8734,18 @@
         "term_start": "2026-10-01T00:00:00Z",
         "term_end": "2027-10-01T00:00:00Z",
         "renewal_payment_at": "2027-10-01T00:00:00Z",
-        "committed_credits_withdrawable": true,
-        "transfer_scope": "same_institution_same_legal_owner",
+        "wallet_type": "prepaid_service_credits",
+        "outflow_policy": "product_usage_or_final_cancellation_refund",
+        "refund_policy": "full_remaining_paid_balance_on_final_cancellation",
         "enabled_capabilities": [
           "funding",
-          "transfers",
-          "withdrawals",
-          "refunds",
+          "cancellation_refunds",
           "auto_top_up"
         ],
         "approval_required_for": [
-          "withdrawal"
+          "refund_delivery"
         ],
-        "limits": {
-          "per_withdrawal": "5000.00",
-          "daily_outbound": "10000.00",
-          "minimum_withdrawal": "1.00"
-        },
-        "policy_version": "wallet-policy-example"
+        "policy_version": "wallet-policy-cancellation-only"
       },
       "meta": {
         "request_id": "req_example",
@@ -9186,13 +9180,9 @@
           "opening_balance": "12000.00",
           "funding": "0.00",
           "usage": "1100.00",
-          "transfers_in": "0.00",
-          "transfers_out": "0.00",
-          "withdrawals": "1000.00",
           "refunds": "0.00",
-          "fees": "0.00",
           "adjustments": "0.00",
-          "closing_balance": "9900.00",
+          "closing_balance": "10900.00",
           "ledger_sequence_from": 1,
           "ledger_sequence_to": 3
         }
@@ -9239,13 +9229,9 @@
         "opening_balance": "12000.00",
         "funding": "0.00",
         "usage": "1100.00",
-        "transfers_in": "0.00",
-        "transfers_out": "0.00",
-        "withdrawals": "1000.00",
         "refunds": "0.00",
-        "fees": "0.00",
         "adjustments": "0.00",
-        "closing_balance": "9900.00",
+        "closing_balance": "10900.00",
         "ledger_sequence_from": 1,
         "ledger_sequence_to": 3
       },
@@ -9281,6 +9267,7 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "name": "Operating wallet",
         "currency": "CAD",
+        "agreement_id": "agr_example",
         "legal_owner_id": "institution_example",
         "status": "active",
         "usage_enabled": true
@@ -9314,6 +9301,7 @@
           "updated_at": "2026-10-23T14:00:00Z",
           "name": "Operating wallet",
           "currency": "CAD",
+          "agreement_id": "agr_example",
           "legal_owner_id": "institution_example",
           "status": "active",
           "usage_enabled": true
@@ -9352,6 +9340,7 @@
         "updated_at": "2026-10-23T14:00:00Z",
         "name": "Operating wallet",
         "currency": "CAD",
+        "agreement_id": "agr_example",
         "legal_owner_id": "institution_example",
         "status": "active",
         "usage_enabled": true
@@ -9387,9 +9376,9 @@
         "as_of": "2026-10-23T14:00:00Z",
         "ledger_sequence": 3,
         "committed_credits": {
-          "posted": "9900.00",
+          "posted": "10900.00",
           "held": "500.00",
-          "available": "9400.00"
+          "available": "10400.00"
         },
         "additional_funds": {
           "posted": "0.00",
@@ -9402,10 +9391,10 @@
           "available": "0.00"
         },
         "pending_incoming": "250.00",
-        "total_posted": "9900.00",
+        "total_posted": "10900.00",
         "total_held": "500.00",
-        "available_for_usage": "9400.00",
-        "withdrawable": "9400.00"
+        "available_for_usage": "10400.00",
+        "remaining_paid_credits": "10900.00"
       },
       "meta": {
         "request_id": "req_example",
@@ -9437,15 +9426,15 @@
           "wallet_id": "wal_example",
           "sequence": 3,
           "currency": "CAD",
-          "amount": "-1000.00",
-          "balance_after": "9900.00",
-          "entry_type": "withdrawal",
+          "amount": "-600.00",
+          "balance_after": "10900.00",
+          "entry_type": "usage",
           "bucket": "committed_credits",
           "credit_lot_id": "lot_example",
-          "movement_id": "wallet_withdrawal_settled",
+          "movement_id": "billing_usage_signal",
           "reverses_entry_id": null,
           "posted_at": "2026-10-23T14:00:00Z",
-          "client_reference": "withdrawal-1000"
+          "client_reference": "signal-october"
         }
       ],
       "page": {
@@ -9485,10 +9474,9 @@
           "origin_type": "minimum_commitment",
           "origin_top_up_id": "top_up_annual",
           "original_amount": "12000.00",
-          "remaining_amount": "9900.00",
+          "remaining_amount": "10900.00",
           "held_amount": "500.00",
-          "withdrawable_amount": "9400.00",
-          "refundable_to_origin_amount": "9400.00",
+          "refund_policy": "on_final_cancellation",
           "restrictions": []
         }
       ],
@@ -9527,8 +9515,8 @@
           "wallet_id": "wal_example",
           "currency": "CAD",
           "amount": "500.00",
-          "movement_id": "wallet_withdrawal_example",
-          "reason": "withdrawal",
+          "movement_id": "billing_usage_pending",
+          "reason": "usage",
           "status": "active",
           "expires_at": null
         }
@@ -9947,30 +9935,39 @@
     "page": "api-reference/endpoints/wallets/create-wallet-movement-quote",
     "resource": "wallet_quote",
     "request": {
-      "kind": "withdrawal",
+      "kind": "refund",
       "source_wallet_id": "wal_example",
-      "amount": "500.00",
-      "currency": "CAD",
-      "payout_destination_id": "wallet_payment_method_example"
+      "cancellation_id": "cancellation_final_example",
+      "currency": "CAD"
     },
     "response": {
       "data": {
-        "id": "wallet_quote_withdrawal",
+        "id": "wallet_quote_refund",
         "object": "wallet_quote",
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "kind": "withdrawal",
+        "kind": "refund",
         "source_wallet_id": "wal_example",
-        "destination_reference": "wallet_payment_method_example",
-        "amount": "500.00",
+        "cancellation_id": "cancellation_final_example",
+        "final_statement_id": "statement_final_example",
+        "final_statement_revision": 1,
+        "refund_id": null,
+        "allocations": [
+          {
+            "origin_top_up_id": "top_up_annual",
+            "destination_id": "wallet_payment_method_example",
+            "amount": "10900.00"
+          }
+        ],
+        "amount": "10900.00",
         "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
+        "total_debit": "10900.00",
+        "recipient_amount": "10900.00",
         "currency": "CAD",
         "expires_at": "2026-10-23T14:10:00Z",
-        "policy_version": "wallet-policy-example",
-        "source_wallet_version": 1,
+        "policy_version": "wallet-policy-cancellation-only",
+        "source_wallet_version": 3,
         "approval_required": true,
         "holds_funds": false
       },
@@ -9995,22 +9992,32 @@
     "request": null,
     "response": {
       "data": {
-        "id": "wallet_quote_withdrawal",
+        "id": "wallet_quote_refund",
         "object": "wallet_quote",
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "kind": "withdrawal",
+        "kind": "refund",
         "source_wallet_id": "wal_example",
-        "destination_reference": "wallet_payment_method_example",
-        "amount": "500.00",
+        "cancellation_id": "cancellation_final_example",
+        "final_statement_id": "statement_final_example",
+        "final_statement_revision": 1,
+        "refund_id": null,
+        "allocations": [
+          {
+            "origin_top_up_id": "top_up_annual",
+            "destination_id": "wallet_payment_method_example",
+            "amount": "10900.00"
+          }
+        ],
+        "amount": "10900.00",
         "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
+        "total_debit": "10900.00",
+        "recipient_amount": "10900.00",
         "currency": "CAD",
         "expires_at": "2026-10-23T14:10:00Z",
-        "policy_version": "wallet-policy-example",
-        "source_wallet_version": 1,
+        "policy_version": "wallet-policy-cancellation-only",
+        "source_wallet_version": 3,
         "approval_required": true,
         "holds_funds": false
       },
@@ -10024,374 +10031,6 @@
     "success": "200"
   },
   {
-    "id": "WA031",
-    "method": "POST",
-    "path": "/v1/wallet-transfers",
-    "title": "Create wallet transfer",
-    "scope": "wallets:transfer",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-transfer",
-    "resource": "wallet_transfer",
-    "request": {
-      "quote_id": "wallet_quote_transfer",
-      "client_reference": "WalletTransfer-1001"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_transfer_example",
-        "object": "wallet_transfer",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "quote_id": "wallet_quote_transfer",
-        "client_reference": "wallet_transfer-1001",
-        "currency": "CAD",
-        "amount": "500.00",
-        "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": "wallet_hold_example",
-        "approval_id": "wallet_approval_example",
-        "payout_id": null,
-        "ledger_entry_ids": [],
-        "cancellable": true,
-        "failure_code": null,
-        "status": "requires_approval",
-        "destination_wallet_id": "wal_reserve"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA032",
-    "method": "GET",
-    "path": "/v1/wallet-transfers",
-    "title": "List wallet transfers",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-transfers",
-    "resource": "wallet_transfer",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_transfer_example",
-          "object": "wallet_transfer",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "source_wallet_id": "wal_example",
-          "quote_id": "wallet_quote_transfer",
-          "client_reference": "wallet_transfer-1001",
-          "currency": "CAD",
-          "amount": "500.00",
-          "fee_amount": "0.00",
-          "total_debit": "500.00",
-          "recipient_amount": "500.00",
-          "hold_id": "wallet_hold_example",
-          "approval_id": "wallet_approval_example",
-          "payout_id": null,
-          "ledger_entry_ids": [],
-          "cancellable": true,
-          "failure_code": null,
-          "status": "requires_approval",
-          "destination_wallet_id": "wal_reserve"
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA033",
-    "method": "GET",
-    "path": "/v1/wallet-transfers/{id}",
-    "title": "Retrieve wallet transfer",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-transfer",
-    "resource": "wallet_transfer",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_transfer_example",
-        "object": "wallet_transfer",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "quote_id": "wallet_quote_transfer",
-        "client_reference": "wallet_transfer-1001",
-        "currency": "CAD",
-        "amount": "500.00",
-        "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": "wallet_hold_example",
-        "approval_id": "wallet_approval_example",
-        "payout_id": null,
-        "ledger_entry_ids": [],
-        "cancellable": true,
-        "failure_code": null,
-        "status": "requires_approval",
-        "destination_wallet_id": "wal_reserve"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA034",
-    "method": "POST",
-    "path": "/v1/wallet-transfers/{id}/cancel",
-    "title": "Cancel wallet transfer",
-    "scope": "wallets:transfer",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/cancel-wallet-transfer",
-    "resource": "wallet_transfer",
-    "request": {
-      "reason": "Requested by institution."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_transfer_example",
-        "object": "wallet_transfer",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "quote_id": "wallet_quote_transfer",
-        "client_reference": "wallet_transfer-1001",
-        "currency": "CAD",
-        "amount": "500.00",
-        "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": null,
-        "approval_id": null,
-        "payout_id": null,
-        "ledger_entry_ids": [],
-        "cancellable": false,
-        "failure_code": null,
-        "status": "cancelled",
-        "destination_wallet_id": "wal_reserve"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA035",
-    "method": "POST",
-    "path": "/v1/wallet-withdrawals",
-    "title": "Create wallet withdrawal",
-    "scope": "wallets:withdraw",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-withdrawal",
-    "resource": "wallet_withdrawal",
-    "request": {
-      "quote_id": "wallet_quote_withdrawal",
-      "client_reference": "WalletWithdrawal-1001"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_withdrawal_example",
-        "object": "wallet_withdrawal",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "quote_id": "wallet_quote_withdrawal",
-        "client_reference": "wallet_withdrawal-1001",
-        "currency": "CAD",
-        "amount": "500.00",
-        "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": "wallet_hold_example",
-        "approval_id": "wallet_approval_example",
-        "payout_id": null,
-        "ledger_entry_ids": [],
-        "cancellable": true,
-        "failure_code": null,
-        "status": "requires_approval",
-        "payout_destination_id": "wallet_payment_method_example"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA036",
-    "method": "GET",
-    "path": "/v1/wallet-withdrawals",
-    "title": "List wallet withdrawals",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-withdrawals",
-    "resource": "wallet_withdrawal",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_withdrawal_example",
-          "object": "wallet_withdrawal",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "source_wallet_id": "wal_example",
-          "quote_id": "wallet_quote_withdrawal",
-          "client_reference": "wallet_withdrawal-1001",
-          "currency": "CAD",
-          "amount": "500.00",
-          "fee_amount": "0.00",
-          "total_debit": "500.00",
-          "recipient_amount": "500.00",
-          "hold_id": "wallet_hold_example",
-          "approval_id": "wallet_approval_example",
-          "payout_id": null,
-          "ledger_entry_ids": [],
-          "cancellable": true,
-          "failure_code": null,
-          "status": "requires_approval",
-          "payout_destination_id": "wallet_payment_method_example"
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA037",
-    "method": "GET",
-    "path": "/v1/wallet-withdrawals/{id}",
-    "title": "Retrieve wallet withdrawal",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-withdrawal",
-    "resource": "wallet_withdrawal",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_withdrawal_example",
-        "object": "wallet_withdrawal",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "quote_id": "wallet_quote_withdrawal",
-        "client_reference": "wallet_withdrawal-1001",
-        "currency": "CAD",
-        "amount": "500.00",
-        "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": "wallet_hold_example",
-        "approval_id": "wallet_approval_example",
-        "payout_id": null,
-        "ledger_entry_ids": [],
-        "cancellable": true,
-        "failure_code": null,
-        "status": "requires_approval",
-        "payout_destination_id": "wallet_payment_method_example"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA038",
-    "method": "POST",
-    "path": "/v1/wallet-withdrawals/{id}/cancel",
-    "title": "Cancel wallet withdrawal",
-    "scope": "wallets:withdraw",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/cancel-wallet-withdrawal",
-    "resource": "wallet_withdrawal",
-    "request": {
-      "reason": "Requested by institution."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_withdrawal_example",
-        "object": "wallet_withdrawal",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "quote_id": "wallet_quote_withdrawal",
-        "client_reference": "wallet_withdrawal-1001",
-        "currency": "CAD",
-        "amount": "500.00",
-        "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": null,
-        "approval_id": null,
-        "payout_id": null,
-        "ledger_entry_ids": [],
-        "cancellable": false,
-        "failure_code": null,
-        "status": "cancelled",
-        "payout_destination_id": "wallet_payment_method_example"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
     "id": "WA039",
     "method": "POST",
     "path": "/v1/wallet-refunds",
@@ -10402,7 +10041,7 @@
     "resource": "wallet_refund",
     "request": {
       "quote_id": "wallet_quote_refund",
-      "client_reference": "WalletRefund-1001"
+      "client_reference": "cancellation-refund-1001"
     },
     "response": {
       "data": {
@@ -10412,21 +10051,31 @@
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
         "source_wallet_id": "wal_example",
+        "cancellation_id": "cancellation_final_example",
+        "final_statement_id": "statement_final_example",
         "quote_id": "wallet_quote_refund",
-        "client_reference": "wallet_refund-1001",
+        "client_reference": "cancellation-refund-1001",
         "currency": "CAD",
-        "amount": "500.00",
+        "amount": "10900.00",
         "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": "wallet_hold_example",
+        "total_debit": "10900.00",
+        "recipient_amount": "10900.00",
+        "allocations": [
+          {
+            "origin_top_up_id": "top_up_annual",
+            "destination_id": "wallet_payment_method_example",
+            "amount": "10900.00"
+          }
+        ],
+        "paid_amount": "0.00",
+        "remaining_amount": "10900.00",
+        "hold_id": "wallet_hold_refund",
         "approval_id": "wallet_approval_example",
-        "payout_id": null,
+        "payout_ids": [],
         "ledger_entry_ids": [],
+        "status": "requires_approval",
         "cancellable": true,
-        "failure_code": null,
-        "status": "in_review",
-        "origin_top_up_id": "top_up_annual"
+        "failure_code": null
       },
       "meta": {
         "request_id": "req_example",
@@ -10456,21 +10105,31 @@
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
           "source_wallet_id": "wal_example",
+          "cancellation_id": "cancellation_final_example",
+          "final_statement_id": "statement_final_example",
           "quote_id": "wallet_quote_refund",
-          "client_reference": "wallet_refund-1001",
+          "client_reference": "cancellation-refund-1001",
           "currency": "CAD",
-          "amount": "500.00",
+          "amount": "10900.00",
           "fee_amount": "0.00",
-          "total_debit": "500.00",
-          "recipient_amount": "500.00",
-          "hold_id": "wallet_hold_example",
+          "total_debit": "10900.00",
+          "recipient_amount": "10900.00",
+          "allocations": [
+            {
+              "origin_top_up_id": "top_up_annual",
+              "destination_id": "wallet_payment_method_example",
+              "amount": "10900.00"
+            }
+          ],
+          "paid_amount": "0.00",
+          "remaining_amount": "10900.00",
+          "hold_id": "wallet_hold_refund",
           "approval_id": "wallet_approval_example",
-          "payout_id": null,
+          "payout_ids": [],
           "ledger_entry_ids": [],
+          "status": "requires_approval",
           "cancellable": true,
-          "failure_code": null,
-          "status": "in_review",
-          "origin_top_up_id": "top_up_annual"
+          "failure_code": null
         }
       ],
       "page": {
@@ -10505,21 +10164,31 @@
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
         "source_wallet_id": "wal_example",
+        "cancellation_id": "cancellation_final_example",
+        "final_statement_id": "statement_final_example",
         "quote_id": "wallet_quote_refund",
-        "client_reference": "wallet_refund-1001",
+        "client_reference": "cancellation-refund-1001",
         "currency": "CAD",
-        "amount": "500.00",
+        "amount": "10900.00",
         "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
-        "hold_id": "wallet_hold_example",
+        "total_debit": "10900.00",
+        "recipient_amount": "10900.00",
+        "allocations": [
+          {
+            "origin_top_up_id": "top_up_annual",
+            "destination_id": "wallet_payment_method_example",
+            "amount": "10900.00"
+          }
+        ],
+        "paid_amount": "0.00",
+        "remaining_amount": "10900.00",
+        "hold_id": "wallet_hold_refund",
         "approval_id": "wallet_approval_example",
-        "payout_id": null,
+        "payout_ids": [],
         "ledger_entry_ids": [],
+        "status": "requires_approval",
         "cancellable": true,
-        "failure_code": null,
-        "status": "in_review",
-        "origin_top_up_id": "top_up_annual"
+        "failure_code": null
       },
       "meta": {
         "request_id": "req_example",
@@ -10540,7 +10209,7 @@
     "page": "api-reference/endpoints/wallets/cancel-wallet-refund",
     "resource": "wallet_refund",
     "request": {
-      "reason": "Requested by institution."
+      "reason": "Correct refund delivery instructions."
     },
     "response": {
       "data": {
@@ -10550,21 +10219,87 @@
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
         "source_wallet_id": "wal_example",
+        "cancellation_id": "cancellation_final_example",
+        "final_statement_id": "statement_final_example",
         "quote_id": "wallet_quote_refund",
-        "client_reference": "wallet_refund-1001",
+        "client_reference": "cancellation-refund-1001",
         "currency": "CAD",
-        "amount": "500.00",
+        "amount": "10900.00",
         "fee_amount": "0.00",
-        "total_debit": "500.00",
-        "recipient_amount": "500.00",
+        "total_debit": "10900.00",
+        "recipient_amount": "10900.00",
+        "allocations": [
+          {
+            "origin_top_up_id": "top_up_annual",
+            "destination_id": "wallet_payment_method_example",
+            "amount": "10900.00"
+          }
+        ],
+        "paid_amount": "0.00",
+        "remaining_amount": "10900.00",
         "hold_id": null,
         "approval_id": null,
-        "payout_id": null,
+        "payout_ids": [],
         "ledger_entry_ids": [],
-        "cancellable": false,
-        "failure_code": null,
         "status": "cancelled",
-        "origin_top_up_id": "top_up_annual"
+        "cancellable": false,
+        "failure_code": null
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "pending"
+      }
+    },
+    "success": "202"
+  },
+  {
+    "id": "WA057",
+    "method": "POST",
+    "path": "/v1/wallet-refunds/{id}/retry",
+    "title": "Retry wallet refund",
+    "scope": "wallets:refund",
+    "group": "Wallets",
+    "page": "api-reference/endpoints/wallets/retry-wallet-refund",
+    "resource": "wallet_refund",
+    "request": {
+      "quote_id": "wallet_quote_retry",
+      "client_reference": "cancellation-refund-retry-1001"
+    },
+    "response": {
+      "data": {
+        "id": "wallet_refund_example",
+        "object": "wallet_refund",
+        "record_version": 3,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "source_wallet_id": "wal_example",
+        "cancellation_id": "cancellation_final_example",
+        "final_statement_id": "statement_final_example",
+        "quote_id": "wallet_quote_retry",
+        "client_reference": "cancellation-refund-1001",
+        "currency": "CAD",
+        "amount": "10900.00",
+        "fee_amount": "0.00",
+        "total_debit": "10900.00",
+        "recipient_amount": "10900.00",
+        "allocations": [
+          {
+            "origin_top_up_id": "top_up_annual",
+            "destination_id": "wallet_payment_method_example",
+            "amount": "10900.00"
+          }
+        ],
+        "paid_amount": "0.00",
+        "remaining_amount": "10900.00",
+        "hold_id": "wallet_hold_refund",
+        "approval_id": "wallet_approval_example",
+        "payout_ids": [],
+        "ledger_entry_ids": [],
+        "status": "requires_approval",
+        "cancellable": true,
+        "failure_code": null
       },
       "meta": {
         "request_id": "req_example",
@@ -10593,12 +10328,14 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
-          "movement_id": "wallet_withdrawal_example",
-          "movement_type": "withdrawal",
+          "movement_id": "wallet_refund_example",
+          "movement_type": "refund",
+          "cancellation_id": "cancellation_final_example",
           "status": "pending",
           "currency": "CAD",
-          "amount": "500.00",
+          "amount": "10900.00",
           "destination_id": "wallet_payment_method_example",
+          "origin_top_up_id": "top_up_annual",
           "provider_reference": null,
           "submitted_at": null,
           "paid_at": null,
@@ -10638,12 +10375,14 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "movement_id": "wallet_withdrawal_example",
-        "movement_type": "withdrawal",
+        "movement_id": "wallet_refund_example",
+        "movement_type": "refund",
+        "cancellation_id": "cancellation_final_example",
         "status": "pending",
         "currency": "CAD",
-        "amount": "500.00",
+        "amount": "10900.00",
         "destination_id": "wallet_payment_method_example",
+        "origin_top_up_id": "top_up_annual",
         "provider_reference": null,
         "submitted_at": null,
         "paid_at": null,
@@ -10678,8 +10417,8 @@
           "record_version": 1,
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
-          "target_type": "withdrawal",
-          "target_id": "wallet_withdrawal_example",
+          "target_type": "refund",
+          "target_id": "wallet_refund_example",
           "target_version": 1,
           "status": "pending",
           "requested_by": "actor_initiator",
@@ -10719,8 +10458,8 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "target_type": "withdrawal",
-        "target_id": "wallet_withdrawal_example",
+        "target_type": "refund",
+        "target_id": "wallet_refund_example",
         "target_version": 1,
         "status": "pending",
         "requested_by": "actor_initiator",
@@ -10757,8 +10496,8 @@
         "record_version": 2,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "target_type": "withdrawal",
-        "target_id": "wallet_withdrawal_example",
+        "target_type": "refund",
+        "target_id": "wallet_refund_example",
         "target_version": 1,
         "status": "approved",
         "requested_by": "actor_initiator",
@@ -10800,12 +10539,12 @@
         "agreement_version": "3",
         "expires_at": "2026-10-23T14:10:00Z",
         "currency": "CAD",
-        "unused_credits": "9900.00",
+        "unused_credits": "10900.00",
         "held_amount": "500.00",
-        "estimated_final_usage": "0.00",
+        "estimated_final_usage": "500.00",
         "estimated_remaining_obligation": "0.00",
-        "estimated_distributable": "9400.00",
-        "obligations_explanation": "Illustrative end-of-term calculation. Final usage and signed agreement terms control.",
+        "estimated_refund": "10400.00",
+        "obligations_explanation": "Estimated final usage includes the pending usage hold once. Remaining agreement obligations are disclosed separately and do not reduce the unused paid-balance refund.",
         "provisional": true
       },
       "meta": {
@@ -10845,6 +10584,10 @@
         "requested_effective_at": "2027-10-01T00:00:00Z",
         "effective_at": null,
         "final_statement_id": null,
+        "reconciled_at": null,
+        "final_refund_amount": null,
+        "refunded_amount": "0.00",
+        "refund_ids": [],
         "remaining_obligation": null,
         "currency": "CAD",
         "reason": "Do not renew this agreement."
@@ -10883,6 +10626,10 @@
           "requested_effective_at": "2027-10-01T00:00:00Z",
           "effective_at": null,
           "final_statement_id": null,
+          "reconciled_at": null,
+          "final_refund_amount": null,
+          "refunded_amount": "0.00",
+          "refund_ids": [],
           "remaining_obligation": null,
           "currency": "CAD",
           "reason": "Do not renew this agreement."
@@ -10926,6 +10673,10 @@
         "requested_effective_at": "2027-10-01T00:00:00Z",
         "effective_at": null,
         "final_statement_id": null,
+        "reconciled_at": null,
+        "final_refund_amount": null,
+        "refunded_amount": "0.00",
+        "refund_ids": [],
         "remaining_obligation": null,
         "currency": "CAD",
         "reason": "Do not renew this agreement."
@@ -10965,6 +10716,10 @@
         "requested_effective_at": "2027-10-01T00:00:00Z",
         "effective_at": null,
         "final_statement_id": null,
+        "reconciled_at": null,
+        "final_refund_amount": null,
+        "refunded_amount": "0.00",
+        "refund_ids": [],
         "remaining_obligation": null,
         "currency": "CAD",
         "reason": "Do not renew this agreement."
@@ -10989,7 +10744,8 @@
     "resource": "wallet_closure",
     "request": {
       "wallet_id": "wal_example",
-      "reason": "Consolidate wallets.",
+      "cancellation_id": "cancellation_final_example",
+      "reason": "Final cancellation refund completed.",
       "client_reference": "closure-1001"
     },
     "response": {
@@ -11000,7 +10756,8 @@
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
         "wallet_id": "wal_example",
-        "reason": "Consolidate wallets.",
+        "cancellation_id": "cancellation_final_example",
+        "reason": "Close after final cancellation and refund.",
         "client_reference": "closure-1001",
         "status": "requested",
         "blocking_reasons": [
@@ -11038,7 +10795,8 @@
           "created_at": "2026-10-23T14:00:00Z",
           "updated_at": "2026-10-23T14:00:00Z",
           "wallet_id": "wal_example",
-          "reason": "Consolidate wallets.",
+          "cancellation_id": "cancellation_final_example",
+          "reason": "Close after final cancellation and refund.",
           "client_reference": "closure-1001",
           "status": "requested",
           "blocking_reasons": [
@@ -11081,7 +10839,8 @@
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
         "wallet_id": "wal_example",
-        "reason": "Consolidate wallets.",
+        "cancellation_id": "cancellation_final_example",
+        "reason": "Close after final cancellation and refund.",
         "client_reference": "closure-1001",
         "status": "requested",
         "blocking_reasons": [
@@ -11120,7 +10879,8 @@
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
         "wallet_id": "wal_example",
-        "reason": "Consolidate wallets.",
+        "cancellation_id": "cancellation_final_example",
+        "reason": "Close after final cancellation and refund.",
         "client_reference": "closure-1001",
         "status": "withdrawn",
         "blocking_reasons": [

@@ -6,6 +6,6 @@ playground: simple
 
 **Required scope:** `wallets:read`
 
-Request an agreement-based refund to the original funding method. Requested amounts cannot exceed remaining funding principal after usage, withdrawals, prior refunds, transfers and holds. Refund approval is distinct from the independent customer approval workflow.
+Return the full reconciled remaining paid balance only after final agreement cancellation. Require a valid cancellation-refund quote; recheck its cancellation state, effective date, statement revision, wallet version, verified same-owner destinations and settled funding. Reserve the complete unpaid balance atomically, with no wallet deduction for refund fees. One refund obligation exists per cancellation and wallet, across all funding sources; a duplicate request returns the existing refund or 409 refund_already_in_progress. No caller-selected partial amount, discretionary eligibility rejection, active-agreement refund, withdrawal or transfer is supported. Delivery approval validates instructions and cannot waive the obligation to refund. AMLOK owes the remaining balance on final cancellation even if the client does not call this endpoint.
 
 [Wallet lifecycle](/api-reference/wallets) · [Consumption reporting](/api-reference/consumption-reporting) · [Refunds and payouts](/pricing/refunds-and-payouts)

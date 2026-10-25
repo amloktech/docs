@@ -180,7 +180,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Billing read access does not authorize funding, transfers, withdrawals or refunds. Wallet approval scopes require an independent authorized actor; they do not override refund eligibility or legal holds.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Billing read access does not authorize funding or final-cancellation refund delivery. Wallet approval scopes require an independent authorized actor and cannot bypass final cancellation, reconciliation, or destination verification. On-demand withdrawals and wallet transfers are not supported.
 
 ## Scope reference
 
@@ -740,7 +740,7 @@ Missing inputs produce explicit unavailability. Do not replace an unavailable DS
 
 ## Observe funding
 
-The API exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. [Wallet transfers](/api-reference/wallets) move institution-owned wallet balances. They do not disburse borrower loans or execute lien filings; those actions remain in the institution's authorized systems.
+The API exposes lender-supplied loans, facilities, guarantees, collateral, and repayment schedules. [AMLOK wallets](/api-reference/wallets) hold prepaid service credits for AMLOK product usage, with remaining paid balances refunded only on final agreement cancellation. They do not transfer funds between wallets, disburse borrower loans, or execute lien filings; borrower funding and filings remain in the institution's authorized systems.
 
 ## Monitor an existing exposure
 

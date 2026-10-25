@@ -64,7 +64,7 @@ Provide sanitized request IDs through your agreed support channel. Your agreemen
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `insufficient_available_balance` | 409 | Available eligible funds do not cover the debit and fees. |
+| `insufficient_available_balance` | 409 | The reconciled paid balance no longer covers the quoted cancellation refund. |
 | `quote_expired` | 409 | Obtain a new quote before submitting a new movement. |
 | `quote_mismatch` | 409 | The quote does not match the operation, source, destination, or amount. |
 | `duplicate_client_reference` | 409 | This business reference already identifies another intended action. |
@@ -73,7 +73,10 @@ Provide sanitized request IDs through your agreed support channel. Your agreemen
 | `refund_limit_exceeded` | 409 | The amount exceeds the remaining refundable funding principal. |
 | `closure_balance_remaining` | 409 | Funds, holds, or pending settlements remain unresolved. |
 | `destination_not_verified` | 422 | Use a verified destination owned by the same legal entity. |
-| `cross_institution_transfer` | 422 | Transfers must remain within the same institution and legal owner. |
+| `cancellation_not_final` | 409 | The agreement must be effective, finally reconciled, and awaiting its remaining-balance refund. |
+| `refund_already_in_progress` | 409 | A refund already reserves this balance; retrieve the existing refund. |
+| `refund_not_retryable` | 409 | Retry only after a definitive failure, cancellation, or return; an unknown payment outcome cannot be retried. |
+| `refund_balance_changed` | 409 | The final statement or remaining paid balance changed; reconcile and obtain a fresh quote. |
 | `unsupported_wallet_currency` | 422 | The currency or payment route is not enabled. |
 | `approval_actor_conflict` | 403 | An independent authorized approver must decide this request. |
 | `wallet_capability_disabled` | 403 | This wallet capability is not enabled for the institution. |

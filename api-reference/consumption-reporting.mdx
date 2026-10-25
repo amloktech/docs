@@ -51,23 +51,22 @@ For a synthetic month with 100 Standard Insights underwritings and 200 Standard 
 
 Wallet statements use posted time and signed ledger entries:
 
-`closing = opening + funding + transfers in - transfers out - usage - withdrawals - refunds - fees + adjustments`
+`closing = opening + funding - usage - final-cancellation refunds + adjustments`
 
-The named debit and credit columns are nonnegative magnitudes. `adjustments` is signed and includes compensating credits. Usage reversals reconcile through ledger adjustments; they are not counted a second time as negative usage in this statement formula.
+The named debit and credit columns are nonnegative magnitudes. `adjustments` is signed and contains system reconciliation corrections, not customer-controlled withdrawals or fees. Usage reversals reconcile through ledger adjustments; they are not counted a second time as negative usage in this statement formula.
 
 | Synthetic period movement | CAD |
 | --- | ---: |
 | Opening balance | 12,000.00 |
 | Posted Insights usage | -500.00 |
 | Posted Signal usage | -600.00 |
-| Settled withdrawal | -1,000.00 |
-| Closing posted balance | **9,900.00** |
-| Still held for a separate pending withdrawal | 500.00 |
-| Available balance | **9,400.00** |
+| Closing posted balance | **10,900.00** |
+| Still held for pending product usage | 500.00 |
+| Available for product usage | **10,400.00** |
 
 A pending incoming top-up of CAD 250 does not change these totals. A hold is not a second debit. Capture it once when posting the movement; release it only when cancelled or definitively failed without moving funds.
 
-Internal transfers net to zero across the institution's wallets, except for quoted fees. They are not consumption revenue. A withdrawal or refund also does not count as product usage.
+Wallet transfers and on-demand withdrawals are not supported. On final agreement cancellation, the full remaining paid balance is refunded after usage reconciliation. That refund is reported separately from product usage. Resolve the pending usage hold before finalization: if it becomes a CAD 500 product charge, the remaining paid balance is CAD 10,400; if released without a charge, it is CAD 10,900.
 
 ## Export and finalize
 

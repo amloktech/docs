@@ -1,136 +1,109 @@
 ---
 title: "Wallet lifecycle"
-description: "Fund wallets, reconcile balances, transfer internally, withdraw unused credits, and close safely."
+description: "Fund prepaid service credits, reconcile product usage, and refund the remaining balance on final agreement cancellation."
 ---
 
-Use the wallet API to manage your institution's prepaid balance and money movements. **Unused settled minimum-commitment credits can be withdrawn.** Internal transfers are limited to wallets of the **same customer institution and the same legal owner**.
+The wallet is a **prepaid AMLOK service-credit wallet**. Paid funds are consumed by AMLOK products or returned as a full remaining-balance refund after final agreement cancellation. There are no on-demand withdrawal or wallet-transfer operations.
 
-Read [billing account capabilities](/api-reference/endpoints/billing/retrieve-billing-account) before initiating a movement. Enablement, payment routes, limits, independent approvals, and funding authorization are configured during onboarding. The wallet routes described here use **CAD**; they do not perform cross-currency conversion.
+The [billing account](/api-reference/endpoints/billing/retrieve-billing-account) exposes `outflow_policy: product_usage_or_final_cancellation_refund` and `refund_policy: full_remaining_paid_balance_on_final_cancellation`.
 
-## What the balances mean
+## Balances and funding
 
-| Field | Meaning |
+| Balance | Meaning |
 | --- | --- |
-| Committed credits | Unspent funds from your minimum monthly commitment paid annually. Settled, unheld amounts are eligible for usage, internal transfer, or withdrawal. |
-| Additional funds | Other settled purchased credits or cash top-ups. Available amounts can fund usage, transfers, or withdrawals. |
-| Promotional credits | Non-cash benefits, usable only for eligible services. They cannot be withdrawn or refunded as cash. |
-| Pending incoming | Funding that has not settled. It is excluded from the posted and available balances. |
-| Held | Posted funds reserved for usage, a movement, a dispute, or a legal restriction. The same funds cannot be spent twice. |
-| Available for usage | Eligible posted credits and additional funds, less holds. Product restrictions still apply. |
-| Withdrawable | Eligible settled committed credits and additional funds, less holds and restrictions. Promotional credits are excluded. |
+| Committed credits | Unused credits funded by the minimum monthly commitment paid annually. |
+| Additional funds | Other purchased credits and settled top-ups, with the same usage and cancellation-refund policy. |
+| Promotional credits | Non-cash benefits for eligible products. They have no paid principal to refund. |
+| Pending incoming | Payments that have not settled. They are excluded from posted and usable balances. |
+| Held | Credits reserved for unresolved usage or an existing cancellation refund. A hold is not a second debit. |
+| Available for usage | Posted credits less holds, usable only while services remain active. |
+| Remaining paid credits | Paid principal still in the wallet, including unresolved paid-credit holds. This is not an amount available for withdrawal. |
 
-Read the [balance](/api-reference/endpoints/wallets/retrieve-wallet-balance), [credit lots](/api-reference/endpoints/wallets/list-wallet-credit-lots), and [holds](/api-reference/endpoints/wallets/list-wallet-holds) together when reconciling restrictions. `as_of` and `ledger_sequence` identify the snapshot.
+Read the wallet's `agreement_id`, status, balance, credit lots, and ledger together. A cancelled agreement cannot create another wallet to resume service access.
 
-For each bucket: `available = posted - held`. Pending funding is not added to either side. Holds reserve funds without changing the posted balance; capturing a hold posts the debit and releases the reservation atomically.
+1. Create a [hosted payment session](/api-reference/endpoints/wallets/create-wallet-payment-session) to authorize a funding method. Never send raw bank credentials or card data to this API.
+2. Retrieve the verified payment method and submit a [top-up](/api-reference/endpoints/wallets/create-wallet-top-up) with a durable `client_reference` and idempotency key.
+3. Treat `pending` and `requires_action` as unsettled. A redirect or successful HTTP response does not prove payment.
+4. Use credits only after confirmed settlement. Funding lineage remains available for reconciliation and the eventual cancellation refund.
 
-Withdrawals reduce the balance available for future services. **They do not cancel the agreement, reduce its minimum monthly commitment, waive the remaining term, or automatically fund future usage.** Do not count a withdrawn amount again as usable credit.
+Cancelling an unsubmitted top-up stops the payment attempt. It does not allow a refund of credits that have already settled while the agreement is active.
 
-## Fund and authorize
+## Automatic top-ups and payment methods
 
-1. Create a [hosted payment session](/api-reference/endpoints/wallets/create-wallet-payment-session) to authorize a funding method or verify a payout destination.
-2. Retrieve the [payment method](/api-reference/endpoints/wallets/retrieve-wallet-payment-method) until its status is `verified` and its capabilities include the intended action.
-3. Create a [top-up](/api-reference/endpoints/wallets/create-wallet-top-up) with a unique `client_reference` and stable idempotency key.
-4. Treat `pending` and `requires_action` as unsettled. A redirect or successful HTTP response is not proof of payment.
-5. Credit the wallet only after the top-up is `settled`, with its ledger references available for reconciliation.
+Read or update the [automatic top-up policy](/api-reference/endpoints/wallets/update-automatic-top-up-policy) to change `funding_method_id`, `top_up_amount`, threshold, and monthly cap under the current authorization. Use `If-Match` to avoid overwriting a concurrent change.
 
-Do not send raw card numbers, bank credentials, or online banking passwords to these endpoints. Hosted sessions tokenize the approved method. A destination must belong to the same onboarded legal owner; third-party recipients and another customer's wallet are not supported.
+Changes apply to future attempts. They do not rewrite submitted payments or remove funds from the wallet. Only one automatic attempt may be pending per wallet; failed payments do not trigger an unlimited retry loop. Automatic funding and new usage stop at the confirmed cancellation date.
 
-Funding fees, mandates, supported routes and failure handling must be agreed before payment. The initial CAD top-up contract credits the declared principal; any separate fee must be disclosed outside that principal. A failed funding attempt must not increase the available balance.
+## Final cancellation
 
-### Automatic top-ups
+1. [Quote cancellation](/api-reference/endpoints/billing/create-agreement-cancellation-quote) for the requested effective date. The estimate shows final usage, expected remaining paid credits, and separate agreement obligations.
+2. [Request cancellation](/api-reference/endpoints/billing/create-agreement-cancellation) using the current quote. Notice requirements determine the confirmed effective date.
+3. At that date, stop new usage and automatic funding. Resolve incurred usage, holds, disputes, and pending funding without treating a hold as a second charge.
+4. The cancellation enters `refund_pending` after final reconciliation, with `reconciled_at`, `final_statement_id`, and `final_refund_amount` populated.
+5. AMLOK returns the full remaining paid balance. The cancellation links its refund records and tracks `refunded_amount`. The obligation exists even if the customer does not submit a separate API refund request.
+6. Mark cancellation `completed` only after the entire remaining paid balance has been returned, or reconciliation confirms that no paid balance remains. A later funding settlement or returned payout reopens refund reconciliation without restoring service access.
 
-[Update the policy](/api-reference/endpoints/wallets/update-automatic-top-up-policy) using its current ETag and an existing funding authorization. Define the threshold, amount, monthly cap and method. The amount cannot exceed the cap.
+Pending usage in a cancellation estimate is counted once. Remaining agreement obligations are disclosed separately; they are not deducted from the unused paid-balance refund. Promotional benefits have no refundable cash principal.
 
-Only one automatic attempt can be pending for a wallet. Pending attempts count against the cap before another attempt can start. A failed attempt must not cause an unlimited retry loop. Disabling the policy stops new attempts; it does not recall a payment already submitted to the rail.
+## Quote and submit the cancellation refund
 
-## Quote, reserve, approve, execute
-
-Create a [movement quote](/api-reference/endpoints/wallets/create-wallet-movement-quote) for one of these actions:
-
-| Kind | Required destination | Next request |
-| --- | --- | --- |
-| `transfer` | `destination_wallet_id` | [Create transfer](/api-reference/endpoints/wallets/create-wallet-transfer) |
-| `withdrawal` | `payout_destination_id` | [Create withdrawal](/api-reference/endpoints/wallets/create-wallet-withdrawal) |
-| `refund` | `origin_top_up_id` | [Create refund request](/api-reference/endpoints/wallets/create-wallet-refund) |
-
-The quote binds the source, destination, amount, currency, fees, policy version, wallet version and expiry. It does not hold funds. Submission rechecks those terms and reserves eligible funds atomically. Expired or mismatched quotes fail without a debit.
-
-In this CAD contract, `total_debit = amount + fee_amount` and `recipient_amount = amount`. All movement fees are disclosed before submission. The source must cover the full debit. Quotes cannot silently add a conversion or change the destination.
+A [wallet refund quote](/api-reference/endpoints/wallets/create-wallet-movement-quote) requires the same institution, legal owner, wallet, and cancelled agreement. The cancellation must be effective, finally reconciled, and in `refund_pending`. An active, merely requested, or scheduled cancellation returns `409 cancellation_not_final`.
 
 ```json
 {
-  "kind": "withdrawal",
+  "kind": "refund",
   "source_wallet_id": "wal_example",
-  "amount": "500.00",
-  "currency": "CAD",
-  "payout_destination_id": "wallet_payment_method_example"
+  "cancellation_id": "cancellation_final_example",
+  "currency": "CAD"
 }
 ```
 
-Submit the returned quote ID to the withdrawal route:
+The server calculates the full remaining paid balance and allocations to original funding sources. The request does not accept a client-selected `amount`, partial refund, or transfer destination. A verified same-owner `payout_destination_id` may be supplied only when an original source cannot receive the refund.
+
+The quote binds the cancellation, final statement revision, wallet version, amount, and destinations. It does not reserve funds. Submit its ID to [create the wallet refund](/api-reference/endpoints/wallets/create-wallet-refund):
 
 ```json
 {
-  "quote_id": "wallet_quote_withdrawal",
-  "client_reference": "treasury-withdrawal-1001"
+  "quote_id": "wallet_quote_refund",
+  "client_reference": "cancellation-refund-1001"
 }
 ```
 
-When required, an independent authorized actor decides the generated [approval](/api-reference/endpoints/wallets/decide-wallet-approval). Approval is tied to the exact movement version. It does not bypass a legal hold, balance check, destination verification, or AMLOK's refund decision.
+Submission rechecks eligibility and reserves the full unpaid amount atomically. There is one refund obligation per cancellation and wallet, including all original funding sources. Duplicate business requests return the existing refund or `409 refund_already_in_progress`; a new idempotency key cannot create a second entitlement.
 
-An internal transfer posts the debit and corresponding credit atomically under one movement ID. It preserves funding origin, commitment classification, refund capacity, and promotional restrictions. There is no partial transfer, cross-customer transfer, or borrower disbursement through these routes.
+The refund has no wallet fee deduction: `amount`, `total_debit`, and `recipient_amount` match. Allocations sum to that amount. `paid_amount` and `remaining_amount` track delivery across any multiple payouts.
 
-## Read payment states correctly
+## Delivery, failures, and retries
 
-| State | Meaning and client behavior |
+| Refund status | Meaning |
 | --- | --- |
-| `requires_approval` / `in_review` | Waiting for authorization or a refund decision. No completed payment is implied. |
-| `pending` / `approved` | Accepted and awaiting execution. Funds may be reserved; inspect the hold. |
-| `submitted` | Sent to the payment rail. Do not assume it can be recalled. |
-| `completed` | An internal transfer posted on both wallets. |
-| `paid` | Outbound settlement confirmed by the configured rail. Recipient-bank availability can differ. |
-| `failed` | Release a hold only after confirming no funds left, or reconcile an actual return. |
-| `cancelled` | Cancelled before execution. Any associated reservation is released. |
-| `returned` | Credit only the actual returned amount once and link the compensating entry. |
+| `requires_approval` | Payment instructions need the configured independent approval. The refund remains owed. |
+| `pending` | Delivery is authorized and waiting for submission. |
+| `submitted` | The payment route is processing the refund. Do not start a duplicate payment. |
+| `partially_paid` | Some allocations have been delivered; the remainder is still owed. |
+| `paid` | All allocations have been delivered. |
+| `failed` / `returned` | Delivery failed definitively or funds were returned. Reconcile the unpaid amount before retrying. |
+| `cancelled` | A delivery attempt was stopped before submission. This does not cancel the refund obligation. |
 
-`cancellable` describes the current state. A racing cancellation can still return `409 movement_not_cancellable`. A timeout or unknown rail outcome is not a failed payment: retain the reservation and reconcile the existing movement before any retry.
+Read [wallet payouts](/api-reference/endpoints/wallets/list-wallet-payouts) for individual payment references. These are cancellation-refund payments; `/v1/payouts` separately describes payment-provider data.
 
-Read [wallet payouts](/api-reference/endpoints/wallets/list-wallet-payouts) for settlement references. This namespace is distinct from `/v1/payouts`, which describes payment-provider data.
+To [retry a refund](/api-reference/endpoints/wallets/retry-wallet-refund), first confirm every previous payout outcome. Request a fresh quote with the same cancellation and `refund_id`; its amount is the reconciled unpaid balance. Submit the quote with `If-Match`, a new business reference for the retry, and an idempotency key that stays stable across retries of that command. Never resend principal already paid.
 
-## Safe retries and approvals
+A timeout or unknown bank outcome is not a definitive failure and returns `409 refund_not_retryable` if a retry is attempted. A changed destination requires verification and any configured approval. Returned funds are credited once to the closing wallet and remain owed under the same cancellation; they are not usable for new products.
 
-- Use exact decimal strings, never binary floating-point arithmetic, for money.
-- Use `Idempotency-Key` on every mutation. Reuse it for retries of the same intended request.
-- Money commands require a durable `client_reference`, unique within institution, environment and operation. It remains associated with the original movement beyond the 24-hour idempotency-key window. A changed payload with an existing reference fails.
-- After a timeout, retrieve by ID or filter the collection by `client_reference`. Do not create a fresh reference to retry an uncertain payment.
-- Use `If-Match` for policy changes, approval decisions, and cancellation. Fetch the current resource after a `412`; do not blindly overwrite a concurrent action.
-- An approval expires or becomes invalid if the approved payload changes. The initiator cannot approve their own action.
-- Keep billing read, export, wallet read, funding, transfer, withdrawal, refund, and approval scopes separate.
+## Authorization and reconciliation
 
-The immutable ledger is the accounting record. Correct an error with a linked compensating entry; do not edit or delete the original charge. Returned funding or a dispute can restrict a wallet and create an amount owed; it must not fabricate available funds. Preserve the original movement and return references.
+- Institution and legal-owner checks apply to every linked resource, including cancellation, statement, funding origin, refund, and destination.
+- Keep billing read, export, wallet read, funding, refund delivery, and approval scopes separate.
+- Independent delivery approval is tied to the exact refund version. It cannot authorize an active-agreement cash-out or reject the obligation to refund the remaining balance.
+- Use a durable `client_reference` beyond request-idempotency retention. Look up the existing resource after a timeout.
+- Use `If-Match` for policy changes, approvals, cancellations, and refund retries. Retrieve the current version after a `412`.
+- Ledger corrections and payment reversals are system reconciliation entries, not customer-controlled cash-out operations.
 
-## Events and reconciliation
+Consume [wallet and billing events](/api-reference/event-catalog) at least once and potentially out of order. Deduplicate by event ID, compare versions, and retrieve the current resource. Reconcile usage and statements through [consumption reporting](/api-reference/consumption-reporting).
 
-Subscribe to wallet, movement, payout, approval, and billing events in the [event catalog](/api-reference/event-catalog). Delivery is at least once and can be out of order. Deduplicate by event ID, compare resource versions, and retrieve the current resource.
+## Close the wallet
 
-Use wallet ledger sequences to catch up after a missed event. List cursors preserve the initial snapshot and filters. Use [statements and usage exports](/api-reference/consumption-reporting) for period-end reconciliation.
+[Wallet closure](/api-reference/endpoints/wallets/create-wallet-closure) requires the final cancellation ID, completed refunds, and resolved funding and holds. Closure cannot trigger a refund for an active agreement. Retained billing and audit records remain available under the applicable retention policy.
 
-## Cancel an agreement or close a wallet
-
-Agreement cancellation, wallet closure, refunds, and withdrawals are separate actions.
-
-1. [Quote an agreement cancellation](/api-reference/endpoints/billing/create-agreement-cancellation-quote) using the requested effective date.
-2. [Request cancellation](/api-reference/endpoints/billing/create-agreement-cancellation) under the signed notice terms. Wait for confirmation of the effective date.
-3. At that boundary, stop new billable monitoring and workflows according to the agreement. Reconcile already incurred usage and in-flight payments.
-4. Request any permitted withdrawal or agreement-based refund separately. Never automatically pay the same balance through both paths.
-5. [Request wallet closure](/api-reference/endpoints/wallets/create-wallet-closure) after resolving balances, holds, mandates and disputes.
-
-Closing a wallet does not cancel the commercial agreement or delete retained audit records. If you only close a secondary wallet, move its remaining eligible balance to another wallet owned by your institution first. Closure disables new funding and usage; already submitted settlement and corrective entries remain traceable.
-
-See [refunds, withdrawals and cancellation](/pricing/refunds-and-payouts) and [agreement terms](/pricing/contract-terms).
-
-## Money movement onboarding
-
-Before enabling these capabilities, document the payment provider and legal roles, custody arrangement, applicable safeguarding and registration requirements, supported payment routes, authorization and verification controls, limits, settlement expectations, fees, returns and dispute contacts. Obtain disclosures applicable to your institution and jurisdiction. A wallet balance or API endpoint does not itself establish a bank deposit, deposit insurance, or AMLOK's registration status.
-
-For Canadian payment-service arrangements, applicability depends on the activities and legal roles. The [Bank of Canada's retail-payments framework](https://www.bankofcanada.ca/regulatory-oversight/retail-payments/supervisory-framework/) describes safeguarding and operational-risk requirements for in-scope providers. [FINTRAC](https://fintrac-canafe.canada.ca/msb-esm/msb-eng) describes the separate assessment for money services businesses. US arrangements require assessment of applicable federal and state requirements before enablement.
+See [refunds and payouts](/pricing/refunds-and-payouts) and [agreement terms](/pricing/contract-terms).
