@@ -60,25 +60,15 @@ Record the AMLOK `request_id`, operation, timestamp, environment, HTTP status, e
 
 Provide sanitized request IDs through your agreed support channel. Your agreement defines support channels and response commitments.
 
-## Billing and wallet errors
+## Reporting and wallet errors
 
 | Code | HTTP | Meaning |
 | --- | --- | --- |
-| `insufficient_available_balance` | 409 | The reconciled paid balance no longer covers the quoted cancellation refund. |
-| `quote_expired` | 409 | Obtain a new quote before submitting a new movement. |
-| `quote_mismatch` | 409 | The quote does not match the operation, source, destination, or amount. |
-| `duplicate_client_reference` | 409 | This business reference already identifies another intended action. |
-| `movement_not_cancellable` | 409 | The movement passed its cancellation boundary. |
-| `wallet_restricted` | 409 | The wallet is restricted or closing for this operation. |
-| `refund_limit_exceeded` | 409 | The amount exceeds the remaining refundable funding principal. |
-| `closure_balance_remaining` | 409 | Final usage, funding, holds, or refund instructions remain unresolved. A reconciled balance reserved for the cancellation refund does not block closure. |
-| `destination_not_verified` | 422 | Use a verified destination owned by the same legal entity. |
-| `cancellation_not_final` | 409 | The agreement must be effective, finally reconciled, and awaiting its remaining-balance refund. |
-| `refund_already_in_progress` | 409 | A refund already reserves this balance; retrieve the existing refund. |
-| `refund_not_retryable` | 409 | Retry only after a definitive failure, cancellation, or return; an unknown payment outcome cannot be retried. |
-| `refund_balance_changed` | 409 | The final statement or remaining paid balance changed; reconcile and obtain a fresh quote. |
-| `unsupported_wallet_currency` | 422 | The currency or payment route is not enabled. |
-| `approval_actor_conflict` | 403 | An independent authorized approver must decide this request. |
-| `wallet_capability_disabled` | 403 | This wallet capability is not enabled for the institution. |
+| `duplicate_client_reference` | 409 | This business reference already identifies another intended funding action. |
+| `wallet_restricted` | 409 | This wallet is restricted or closed for funding. |
+| `funding_method_not_verified` | 422 | Use a verified funding method authorized by the same legal entity. |
+| `unsupported_wallet_currency` | 422 | The funding currency or payment route is not enabled. |
+| `wallet_capability_disabled` | 403 | This funding capability is not enabled for the institution. |
+| `funding_method_in_use` | 409 | An active automatic top-up policy or pending payment still uses this method. |
 
-For an unknown payment outcome, retrieve the original movement before retrying. See [wallet lifecycle](/api-reference/wallets).
+For an unknown payment outcome, retrieve the original top-up before retrying. See [wallet lifecycle](/api-reference/wallets).

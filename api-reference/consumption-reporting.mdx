@@ -77,8 +77,8 @@ Wallet transfers and on-demand withdrawals are not supported. On final agreement
 
 JSON exports retain decimal strings. CSV exports escape formula-like cells and contain no API keys or payment credentials. Expired exports require a new report request; they must not redirect silently to a newer snapshot.
 
-Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Read the cancellation record alongside the final statement for remaining obligations and unresolved balances.
+Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Your account manager provides cancellation confirmation and final refund details separately from the reporting API.
 
-AMLOK issues the full remaining paid-balance refund immediately after account closure. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Reconcile the refund's `issued_at` with each payout's `submitted_at`, `paid_at`, and any return; do not treat closure or issuance as proof of bank receipt.
+AMLOK issues the full remaining paid-balance refund immediately after account closure. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Use the confirmation and payment reference provided by your account manager to follow delivery. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
 
 See [wallet lifecycle](/api-reference/wallets) and [refunds and payouts](/pricing/refunds-and-payouts).

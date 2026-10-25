@@ -1,4 +1,5 @@
 [
+  "Privacy retention is managed through platform configuration. Removed customer deletion-request operations EP161 and EP162; final workspace deletion removes all workspace data. The original workbook snapshot remains unchanged.",
   "Lien-search search_type is normalized to name, identifier, vin or serial. The identifier field is required for non-name searches.",
   "The partial account-balance example supplies required date_basis as unknown because source observation timing is not available.",
   "Response-only helper objects (jobs, download links, webhook destinations and replay receipts) use the common data/meta envelope; ChangePage already contains its envelope.",
@@ -12,9 +13,9 @@
   "Page.next_cursor is explicitly nullable, as required by the pagination rule. Shared optional fields permit null where the normalization rule requires missing-value representation.",
   "Multipart document upload is the documented ingestion route. No unlisted pre-signed-upload endpoint is invented.",
   "The workbook describes key administration, signing-secret rotation, approval IDs and frozen input manifests but does not define management endpoints for them. Provisioning remains an onboarding dependency.",
-  "Wallet policy revised by AMLOK: prepaid funds are consumed only by product usage and refunded in full only after final agreement cancellation. No on-demand withdrawals or wallet transfers. This is a documentation contract, not an executable wallet backend.",
+  "The customer API exposes reporting, wallet reads and funding only. Account managers handle agreements, final cancellation, closure and the resulting refund. No customer refund, payout, transfer, wallet-approval or closure endpoints are published. This contract does not implement a backend.",
   "AMLOK issues the full remaining paid-balance refund immediately after account closure. Bank receipt may take 7-10 business days, depending on the bank. Reconcile usage and funding and verify refund instructions before closure; an outstanding cancellation refund does not keep the account open.",
-  "Wallet mutations preserve durable business references beyond 24-hour request idempotency; quotes bind movement terms and submission reserves eligible funds atomically.",
+  "Funding mutations preserve durable business references beyond request-idempotency retention. Pending top-ups do not become usable credits before settlement.",
   "CAD is the documented settlement currency. Cancellation refunds are server-calculated from paid principal after final usage, with no wallet fees or deduction of remaining term obligations. Promotional benefits have no cash principal. Payment reversals and corrections are system reconciliation, never client cash-out capabilities.",
-  "Money movement enablement depends on institution onboarding, configured payment rails, legal-role and custody disclosures, and approval policy. Examples do not establish a production provider or regulatory status."
+  "Funding uses payment methods authorized during onboarding. Cancellation refunds are administered by AMLOK, with confirmation through the account manager. Examples do not establish a production provider or regulatory status."
 ]

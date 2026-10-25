@@ -7,9 +7,11 @@ ROOT=Path(__file__).resolve().parent.parent
 SOURCE=json.loads((ROOT/'data/api-contract-source.json').read_text())
 INDEX=json.loads((ROOT/'data/api-reference-index.json').read_text())
 OPS={r['id']:r for r in INDEX}
+EVENT_ROWS=[r for r in SOURCE['Events']['values'][1:] if r[0] != 'deletion.completed']
+EVENT_COUNT=len(EVENT_ROWS)+len(WALLET_EVENTS)
 
 def write(name,title,description,body):
-    body=body.replace('164 operations', str(len(INDEX))+' operations').replace('28 event types',str(28+len(WALLET_EVENTS))+' event types')
+    body=body.replace('164 operations', str(len(INDEX))+' operations').replace('28 event types',str(EVENT_COUNT)+' event types')
     for oid,op in OPS.items():body=body.replace('@@'+oid+'@@','/'+op['page'])
     text='---\ntitle: '+json.dumps(title)+'\ndescription: '+json.dumps(description)+'\n---\n\n'+body.strip()+'\n'
     (ROOT/'api-reference'/f'{name}.mdx').write_text(text.replace('0.1.0-draft','1.4.2').replace('\u2014','-').replace('\u2013','-'))
@@ -34,7 +36,7 @@ This reference contains **164 operations**, **67 financial-data resource types p
 4. Start approved workflows and retrieve asynchronous results.
 5. Process signed events and keep your local records in sync.
 
-The authentication mechanism is a server-side bearer API key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+Financial-data, reporting, and wallet operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
 
 ## Explore the API
 
@@ -46,8 +48,9 @@ The authentication mechanism is a server-side bearer API key. Resources are tena
 | Payments, commerce, accounting, inventory | Browse the endpoint groups in the sidebar and the [data dictionary](/data-model/field-dictionary). |
 | Lending and assessment | [Create an application](@@EP146@@), [run a workflow](@@EP147@@), [calculate attributes](@@EP148@@) |
 | Monitoring and operations | [Create a monitor](@@EP150@@), [open a case](@@EP152@@), [create a task](@@EP154@@) |
-| Billing and wallet operations | [Wallet lifecycle](/api-reference/wallets), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
-| Delivery and privacy | [Register a webhook](@@EP158@@), [read changes](@@EP164@@), [request deletion](@@EP161@@) |
+| Reporting and wallets | [Wallet lifecycle](/api-reference/wallets), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
+| Delivery | [Register a webhook](@@EP158@@), [read changes](@@EP164@@) |
+| Service availability | [Healthcheck](@@ST001@@), [service status](@@ST002@@) |
 
 ## Version and availability
 
@@ -150,13 +153,13 @@ Next, implement [pagination](/api-reference/pagination), [safe retries](/api-ref
 ''')
 
 scope_rows=[]
-for scope in sorted({op['scope'] for op in INDEX}):
+for scope in sorted({op['scope'] for op in INDEX if op['scope']}):
     ops=[op for op in INDEX if op['scope']==scope]
     scope_rows.append('| `'+scope+'` | '+str(len(ops))+' | ['+ops[0]['title']+'](/'+ops[0]['page']+') |')
 write('authentication','Authentication and authorization','Use institution-scoped bearer keys and explicit resource permissions.', '''
 ## Bearer API keys
 
-The API uses server-to-server API keys bound to one institution tenant and one environment.
+Financial-data, reporting, and wallet operations use server-to-server API keys bound to one institution tenant and one environment. [Healthcheck](@@ST001@@) and [service status](@@ST002@@) are public read-only exceptions and require no API key.
 
 ```http
 Authorization: Bearer <AMLOK_API_KEY>
@@ -180,7 +183,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Billing read access does not authorize funding or final-cancellation refund delivery. Wallet approval scopes require an independent authorized actor and cannot bypass final cancellation, reconciliation, or destination verification. On-demand withdrawals and wallet transfers are not supported.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Reporting read access does not authorize wallet funding. Agreement changes, cancellation, closure and the resulting refund are handled by your account manager. The customer API has no refund, payout, transfer, wallet-approval or cancellation operations.
 
 ## Scope reference
 
@@ -244,7 +247,7 @@ Onboarding must provide the production and sandbox origins, enabled scopes and p
 write('response-format','Responses and data conventions','Interpret envelopes, exact amounts, missing values, coverage, and record versions.', '''
 ## Envelopes
 
-The API uses a consistent envelope. Single responses contain `data` and `meta`. Collection responses also contain `page`. Errors contain `error` and `meta`.
+Financial-data, reporting, and wallet operations use a consistent envelope. Single responses contain `data` and `meta`. Collection responses also contain `page`. Errors contain `error` and `meta`. The public healthcheck and service-status endpoints use their lightweight status schemas without a `data` / `meta` wrapper; see their individual response definitions.
 
 ```json
 {
@@ -495,7 +498,6 @@ A successful HTTP response can indicate acceptance rather than completed work. T
 | [Run workflow](@@EP147@@) | 202, workflow run | `GET /v1/workflow-runs/{id}`; workflow events |
 | [Calculate attributes](@@EP148@@) | 202, calculation job | `GET /v1/attribute-calculations/{id}`; `attributes.calculated` |
 | [Send communication](@@EP157@@) | 202, communication | `GET /v1/communications/{id}`; delivery-state events |
-| [Request deletion](@@EP161@@) | 202, deletion job | `GET /v1/deletion-requests/{id}`; `deletion.completed` |
 
 The event replay command returns a queued replay receipt. Monitor redelivery through your webhook receiver and the delivery controls configured during onboarding.
 
@@ -585,9 +587,9 @@ The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 
 Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.
 ''')
 
-event_table='\n'.join('| `'+r[0]+'` | `'+r[1]+'` | '+r[2]+' | '+r[3]+' |' for r in SOURCE['Events']['values'][1:])
+event_table='\n'.join('| `'+r[0]+'` | `'+r[1]+'` | '+r[2]+' | '+r[3]+' |' for r in EVENT_ROWS)
 event_table+='\n'+'\n'.join('| `'+event+'` | `'+resource+'` | '+trigger+' | Resource ID, version and status; retrieve full details. |' for event,resource,trigger in WALLET_EVENTS)
-write('event-catalog','Event catalog','Subscribe to '+str(28+len(WALLET_EVENTS))+' lifecycle events.', '''
+write('event-catalog','Event catalog','Subscribe to '+str(EVENT_COUNT)+' lifecycle events.', '''
 Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
 
 ```json
@@ -653,7 +655,7 @@ Use the expiry and storage domain returned by your environment. Upload documents
 
 ## Retention and deletion
 
-Consent revocation and connection disconnection stop future collection. They are not equivalent to evidence deletion. Use [deletion requests](@@EP161@@) and inspect legal holds and provider propagation. A successful request does not promise immediate removal from every upstream system.
+Retention is managed by authorized users through workspace configuration in the AMLOK platform and in accordance with applicable compliance frameworks. Consent revocation or connection disconnection stops future collection; it does not itself delete stored evidence. When workspace deletion is completed, all associated workspace data is deleted. This API does not expose deletion-request endpoints. See [privacy and data handling](/security/privacy).
 ''')
 
 write('versioning','Versioning and compatibility','Track API paths, schema versions, record versions, and policy revisions separately.', '''
@@ -716,7 +718,7 @@ Register only institution-controlled HTTPS destinations. Deployment must validat
 
 ## Retention and incident handling
 
-Use the deletion workflow to track requested scope, legal holds, and upstream propagation. Do not interpret `202` as an immediate deletion guarantee.
+Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Workspace deletion is managed in the platform, not through a public deletion-request API. Account cancellation is coordinated separately through your account manager.
 
 Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. Record these settings during [integration onboarding](/api-reference/onboarding).
 ''')
@@ -794,7 +796,7 @@ The webhook helpers link to the maintained source files for this reference. Save
 5. Replace synthetic resource IDs and configure the current `record_etag` before a PATCH.
 6. Select a local file before trying the multipart upload request.
 
-Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes represent approved communication dispatch or deletion requests.
+Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes send approved communications or initiate wallet top-ups.
 
 ## Language examples
 
@@ -817,7 +819,7 @@ Use this checklist to configure an integration with **AMLOK API 1.4.2**. Your AM
 | Area | Configuration |
 | --- | --- |
 | Environments | Production and sandbox origins, institution tenant, test-data policy, and network controls. |
-| Wallet enablement | Payment rails, supported routes, funding authorization, legal owner, custody and safeguarding disclosures, applicable registrations, verification, limits, approval policy, settlement and exception handling. Read enabled capabilities from the billing account before initiating money movements. |
+| Wallet funding | Authorized funding methods, top-up limits, automatic top-up settings, funding verification, settlement, and failure handling. Account-manager processes handle cancellation and the final refund. |
 | API keys | Issuance, expiry, rotation, revocation, scopes, and administrator access. |
 | Provider capabilities | Enabled products, resources, markets, account permissions, and field coverage. |
 | Limits | Request quotas, burst and concurrency budgets, job limits, and upload limits. |
@@ -846,4 +848,4 @@ print('Wrote 19 API guides')
 
 # Keep wallet failures discoverable in the shared error guide.
 error_path=ROOT/"api-reference/errors.mdx"
-error_path.write_text(error_path.read_text()+"\n## Billing and wallet errors\n\n| Code | HTTP | Meaning |\n| --- | --- | --- |\n"+"\n".join("| `"+code+"` | "+str(status)+" | "+meaning+" |" for code,(status,meaning) in WALLET_ERRORS.items())+"\n\nFor an unknown payment outcome, retrieve the original movement before retrying. See [wallet lifecycle](/api-reference/wallets).\n")
+error_path.write_text(error_path.read_text()+"\n## Reporting and wallet errors\n\n| Code | HTTP | Meaning |\n| --- | --- | --- |\n"+"\n".join("| `"+code+"` | "+str(status)+" | "+meaning+" |" for code,(status,meaning) in WALLET_ERRORS.items())+"\n\nFor an unknown payment outcome, retrieve the original top-up before retrying. See [wallet lifecycle](/api-reference/wallets).\n")

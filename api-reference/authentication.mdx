@@ -5,7 +5,7 @@ description: "Use institution-scoped bearer keys and explicit resource permissio
 
 ## Bearer API keys
 
-The API uses server-to-server API keys bound to one institution tenant and one environment.
+Financial-data, reporting, and wallet operations use server-to-server API keys bound to one institution tenant and one environment. [Healthcheck](/api-reference/endpoints/platform/healthcheck) and [service status](/api-reference/endpoints/platform/service-status) are public read-only exceptions and require no API key.
 
 ```http
 Authorization: Bearer <AMLOK_API_KEY>
@@ -29,7 +29,7 @@ Manage key issuance, expiry, revocation, and rotation through the administration
 
 A caller-supplied `tenant_id` is not authentication. The API derives tenant context from the key. `subject_id`, related document IDs, evidence manifests, and webhook destinations must all be checked within that tenant.
 
-Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Billing read access does not authorize funding or final-cancellation refund delivery. Wallet approval scopes require an independent authorized actor and cannot bypass final cancellation, reconciliation, or destination verification. On-demand withdrawals and wallet transfers are not supported.
+Read access does not authorize borrower communications, funding, filings, or changes to credit limits. The communication send route requires its own scope and an approval bound to the exact action and version. Reporting read access does not authorize wallet funding. Agreement changes, cancellation, closure and the resulting refund are handled by your account manager. The customer API has no refund, payout, transfer, wallet-approval or cancellation operations.
 
 ## Scope reference
 
@@ -41,8 +41,7 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `audit:read` | 2 | [List audit events](/api-reference/endpoints/operations/list-audit-events) |
 | `banking:read` | 10 | [List bank accounts](/api-reference/endpoints/banking/list-bank-accounts) |
 | `billing:export` | 4 | [Create billing report](/api-reference/endpoints/billing/create-billing-report) |
-| `billing:manage` | 3 | [Create agreement cancellation quote](/api-reference/endpoints/billing/create-agreement-cancellation-quote) |
-| `billing:read` | 9 | [Retrieve billing account](/api-reference/endpoints/billing/retrieve-billing-account) |
+| `billing:read` | 7 | [Retrieve billing account](/api-reference/endpoints/billing/retrieve-billing-account) |
 | `commerce:read` | 8 | [List counterparties](/api-reference/endpoints/commerce/list-counterparties) |
 | `communications:read` | 2 | [List communications](/api-reference/endpoints/operations/list-communications) |
 | `communications:send` | 1 | [Send approved communication](/api-reference/endpoints/operations/send-approved-communication) |
@@ -68,15 +67,10 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `operations:write` | 3 | [Create case](/api-reference/endpoints/operations/create-case) |
 | `payments:read` | 12 | [List merchant accounts](/api-reference/endpoints/payments/list-merchant-accounts) |
 | `platform:read` | 3 | [List reconciliation links](/api-reference/endpoints/platform/list-reconciliation-links) |
-| `privacy:read` | 1 | [Retrieve deletion request](/api-reference/endpoints/privacy/retrieve-deletion-request) |
-| `privacy:write` | 1 | [Create deletion request](/api-reference/endpoints/privacy/create-deletion-request) |
 | `risk:calculate` | 1 | [Calculate attributes](/api-reference/endpoints/risk/calculate-attributes) |
 | `risk:read` | 7 | [List attributes](/api-reference/endpoints/risk/list-attributes) |
-| `wallets:approve` | 3 | [List wallet approvals](/api-reference/endpoints/wallets/list-wallet-approvals) |
-| `wallets:funding` | 5 | [Create wallet payment session](/api-reference/endpoints/wallets/create-wallet-payment-session) |
-| `wallets:read` | 19 | [List wallets](/api-reference/endpoints/wallets/list-wallets) |
-| `wallets:refund` | 3 | [Create wallet refund](/api-reference/endpoints/wallets/create-wallet-refund) |
-| `wallets:write` | 3 | [Create wallet](/api-reference/endpoints/wallets/create-wallet) |
+| `wallets:funding` | 4 | [Create wallet payment session](/api-reference/endpoints/wallets/create-wallet-payment-session) |
+| `wallets:read` | 11 | [List wallets](/api-reference/endpoints/wallets/list-wallets) |
 | `webhooks:read` | 1 | [List webhook endpoints](/api-reference/endpoints/webhooks/list-webhook-endpoints) |
 | `webhooks:write` | 2 | [Create webhook endpoint](/api-reference/endpoints/webhooks/create-webhook-endpoint) |
 | `workflows:execute` | 1 | [Start workflow run](/api-reference/endpoints/operations/start-workflow-run) |

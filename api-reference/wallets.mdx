@@ -1,116 +1,70 @@
 ---
-title: "Wallet lifecycle"
-description: "Fund prepaid service credits, reconcile product usage, and refund the remaining balance on final agreement cancellation."
+title: "Wallet funding and balances"
+description: "Read prepaid credits, reconcile usage, and manage funding and automatic top-ups."
 ---
 
-The wallet is a **prepaid AMLOK service-credit wallet**. Paid funds are consumed by AMLOK products or returned as a full remaining-balance refund after final agreement cancellation. There are no on-demand withdrawal or wallet-transfer operations.
+The AMLOK wallet holds prepaid service credits used by AMLOK products. The customer API supports **balance and ledger reads, funding-method setup, top-ups, and automatic top-up settings**. [Reporting](/api-reference/consumption-reporting) explains usage, rates, statements, and exports.
 
-The [billing account](/api-reference/endpoints/billing/retrieve-billing-account) exposes `outflow_policy: product_usage_or_final_cancellation_refund` and `refund_policy: full_remaining_paid_balance_on_final_cancellation`.
+Agreement changes, cancellation, account closure, and the resulting refund are handled by your account manager. There are no customer API operations for transfers, withdrawals, refund requests, payouts, wallet approvals, or account closure.
 
-## Balances and funding
+## Read balances and activity
+
+Wallets are provisioned for your institution through the platform. [List wallets](/api-reference/endpoints/wallets/list-wallets) or retrieve a known wallet, then read its balance and ledger.
 
 | Balance | Meaning |
 | --- | --- |
-| Committed credits | Unused credits funded by the minimum monthly commitment paid annually. |
-| Additional funds | Other purchased credits and settled top-ups, with the same usage and cancellation-refund policy. |
-| Promotional credits | Non-cash benefits for eligible products. They have no paid principal to refund. |
-| Pending incoming | Payments that have not settled. They are excluded from posted and usable balances. |
-| Held | Credits reserved for unresolved usage or an existing cancellation refund. A hold is not a second debit. |
+| Committed credits | Unused paid credits funded by your monthly minimum commitment, paid annually. |
+| Additional funds | Settled top-ups, available for eligible product usage. |
+| Promotional credits | Non-cash benefits, including applicable SLA service credits. No paid principal is refundable from this bucket. |
+| Pending incoming | Funding that has not settled and is not yet available for usage. |
+| Held | Credits reserved for unresolved activity. A hold is not a second debit. |
 | Available for usage | Posted credits less holds, usable only while services remain active. |
-| Remaining paid credits | Paid principal still in the wallet, including unresolved paid-credit holds. This is not an amount available for withdrawal. |
+| Remaining paid credits | Paid principal remaining in the wallet, including unresolved paid-credit holds. This is not a withdrawable balance. |
 
-Read the wallet's `agreement_id`, status, balance, credit lots, and ledger together. A cancelled agreement cannot create another wallet to resume service access.
+Credit lots link balances to their funding origin. Ledger entries record usage, funding, system corrections, and any final-cancellation refund administered by AMLOK. Customer integrations cannot post arbitrary usage charges or ledger adjustments.
 
-1. Create a [hosted payment session](/api-reference/endpoints/wallets/create-wallet-payment-session) to authorize a funding method. Never send raw bank credentials or card data to this API.
-2. Retrieve the verified payment method and submit a [top-up](/api-reference/endpoints/wallets/create-wallet-top-up) with a durable `client_reference` and idempotency key.
-3. Treat `pending` and `requires_action` as unsettled. A redirect or successful HTTP response does not prove payment.
-4. Use credits only after confirmed settlement. Funding lineage remains available for reconciliation and the eventual cancellation refund.
+## Set up a funding method
 
-Cancelling an unsubmitted top-up stops the payment attempt. It does not allow a refund of credits that have already settled while the agreement is active.
+1. Create a [hosted funding session](/api-reference/endpoints/wallets/create-wallet-payment-session) with `purpose: funding_method` and your allowlisted return URL.
+2. Complete authorization in the hosted flow. Never send raw bank credentials or card data to the AMLOK API.
+3. Retrieve the funding method and verify that it is authorized for the same legal entity, has `funding` capability, and is in `verified` status. A browser return alone does not prove verification.
 
-## Automatic top-ups and payment methods
+These methods fund wallet top-ups. They are not customer-managed payout destinations. A method cannot be disabled while a pending payment or active automatic top-up policy still requires it; update the policy and resolve pending payments first.
 
-Read or update the [automatic top-up policy](/api-reference/endpoints/wallets/update-automatic-top-up-policy) to change `funding_method_id`, `top_up_amount`, threshold, and monthly cap under the current authorization. Use `If-Match` to avoid overwriting a concurrent change.
+## Purchase credits
 
-Changes apply to future attempts. They do not rewrite submitted payments or remove funds from the wallet. Only one automatic attempt may be pending per wallet; failed payments do not trigger an unlimited retry loop. Automatic funding and new usage stop at the confirmed cancellation date.
-
-## Final cancellation
-
-1. [Quote cancellation](/api-reference/endpoints/billing/create-agreement-cancellation-quote) for the requested effective date. The estimate shows final usage, expected remaining paid credits, and separate agreement obligations.
-2. [Request cancellation](/api-reference/endpoints/billing/create-agreement-cancellation) using the current quote. Notice requirements determine the confirmed effective date.
-3. At that date, stop new usage and automatic funding. Resolve incurred usage, holds, disputes, and pending funding without treating a hold as a second charge.
-4. Complete final reconciliation and verify and approve refund instructions before account closure. Populate `reconciled_at`, `final_statement_id`, and `final_refund_amount`, and reserve the full remaining paid balance for its refund.
-5. Close the account and **immediately issue the full remaining paid-balance refund**. Record `account_closed_at` on the cancellation and refund, and `issued_at` on the refund. This happens automatically without a separate customer API refund request.
-6. The cancellation remains `refund_pending` during bank processing. Funds may take **7-10 business days** to reach the bank account, depending on the bank. Track `refunded_amount` and the linked payouts; the account remains closed.
-7. Mark cancellation `completed` only after the entire remaining paid balance has been delivered, or reconciliation confirms that no paid balance remains. This status completes financial reconciliation; it does not delay account closure. A later funding settlement or returned payout reopens refund reconciliation without restoring service access.
-
-Pending usage in a cancellation estimate is counted once. Remaining agreement obligations are disclosed separately; they are not deducted from the unused paid-balance refund. Promotional benefits have no refundable cash principal.
-
-## Prepare the cancellation refund
-
-A [wallet refund quote](/api-reference/endpoints/wallets/create-wallet-movement-quote) requires the same institution, legal owner, wallet, and cancelled agreement. The cancellation must be effective, finally reconciled, and in `reconciling` or `refund_pending`. Preparing the quote and payment instructions before closure does not issue a refund early. An active, merely requested, or scheduled cancellation returns `409 cancellation_not_final`.
+Send a [top-up](/api-reference/endpoints/wallets/create-wallet-top-up) using the verified funding method, exact CAD amount, a durable `client_reference`, and a stable `Idempotency-Key`.
 
 ```json
 {
-  "kind": "refund",
-  "source_wallet_id": "wal_example",
-  "cancellation_id": "cancellation_final_example",
-  "currency": "CAD"
+  "wallet_id": "wal_example",
+  "funding_method_id": "wallet_payment_method_example",
+  "amount": "1000.00",
+  "currency": "CAD",
+  "client_reference": "top-up-1001"
 }
 ```
 
-The server calculates the full remaining paid balance and allocations to original funding sources. The request does not accept a client-selected `amount`, partial refund, or transfer destination. A verified same-owner `payout_destination_id` may be supplied only when an original source cannot receive the refund.
+A `202` response accepts the payment instruction; it does not confirm settlement. Retrieve the existing top-up or consume `wallet.top_up.updated`. Only settled funding becomes usable credit. A failed or reversed payment is reconciled against its original funding reference.
 
-The quote binds the cancellation, final statement revision, wallet version, amount, and destinations. It does not reserve funds. Submit its ID to [create the wallet refund](/api-reference/endpoints/wallets/create-wallet-refund):
+After a timeout, look up the original payment by `client_reference` before trying again. Do not start a new payment with a different reference while its outcome is unknown. Funding is rejected after account closure.
 
-```json
-{
-  "quote_id": "wallet_quote_refund",
-  "client_reference": "cancellation-refund-1001"
-}
-```
+## Automatic top-ups
 
-Submission rechecks eligibility and reserves the full unpaid amount atomically. There is one refund obligation per cancellation and wallet, including all original funding sources. Duplicate business requests return the existing refund or `409 refund_already_in_progress`; a new idempotency key cannot create a second entitlement.
+Read or update the [automatic top-up policy](/api-reference/endpoints/wallets/update-automatic-top-up-policy) to change the payment method, top-up amount, trigger balance, and monthly cap under the current funding authorization. Include `If-Match` and an idempotency key when updating the policy.
 
-Complete any delivery approval before account closure. The refund can be prepared in `requires_approval` or `pending` with null `account_closed_at` and `issued_at`. AMLOK closes the account and immediately issues the refund, populating both timestamps. The cancellation workflow performs these steps even if the customer does not call the preparation endpoint.
+Changes apply to future attempts. They do not modify already submitted payments. Only one automatic attempt can be pending per wallet, and failures do not trigger an unlimited retry loop. The top-up amount cannot exceed the monthly cap. Automatic funding stops when the agreement ends.
 
-The refund has no wallet fee deduction: `amount`, `total_debit`, and `recipient_amount` match. Allocations sum to that amount. `paid_amount` and `remaining_amount` track delivery across any multiple payouts.
+Automatic top-ups purchase credits. They do not enable automatic withdrawals, payouts, or transfers.
 
-## Delivery, failures, and retries
+## Permissions and recovery
 
-| Refund status | Meaning |
-| --- | --- |
-| `requires_approval` | Payment instructions need independent approval before closure or a corrected delivery attempt. The refund remains owed. |
-| `pending` | Prepared for immediate issuance after closure, or awaiting submission of a corrected delivery attempt. |
-| `submitted` | The refund has been issued and the payment route is processing it. Bank receipt may take 7-10 business days, depending on the bank. Do not start a duplicate payment. |
-| `partially_paid` | Some allocations have been delivered; the remainder is still owed. |
-| `paid` | All allocations have been delivered. |
-| `failed` / `returned` | Delivery failed definitively or funds were returned. Reconcile the unpaid amount before retrying. |
-| `cancelled` | A delivery attempt was stopped before submission. This does not cancel the refund obligation. |
+`wallets:read` permits authorized reads. `wallets:funding` permits funding-method and top-up actions. Tenant, legal-owner, funding authorization, and capability checks still apply. Reporting access does not authorize funding.
 
-Read [wallet payouts](/api-reference/endpoints/wallets/list-wallet-payouts) for individual payment references. These are cancellation-refund payments; `/v1/payouts` separately describes payment-provider data.
+Use stable business references beyond request-idempotency retention. Read the current record after `412` before retrying a policy update. Deduplicate events and retrieve the current resource because notifications may arrive more than once or out of order.
 
-`issued_at` records the original refund issuance immediately after account closure. A payout's `submitted_at` records its individual payment attempt; `paid_at` records confirmed delivery. Issuance is not bank receipt, and HTTP acceptance alone does not prove either event.
+## Cancellation and remaining credits
 
-To [retry a refund](/api-reference/endpoints/wallets/retry-wallet-refund), first confirm every previous payout outcome. Request a fresh quote with the same cancellation and `refund_id`; its amount is the reconciled unpaid balance. Submit the quote with `If-Match`, a new business reference for the retry, and an idempotency key that stays stable across retries of that command. Never resend principal already paid.
+Contact your account manager for final cancellation. AMLOK reconciles final usage and pending funding, verifies refund instructions, closes the account, and **immediately issues the full remaining paid-balance refund**. Funds may take **7-10 business days** to reach the bank account, depending on the bank.
 
-A timeout or unknown bank outcome is not a definitive failure and returns `409 refund_not_retryable` if a retry is attempted. A changed destination requires verification and any configured approval. Retries preserve the original `issued_at` and record a new payout attempt. Returned funds are credited once to the closed wallet and remain owed under the same cancellation; they are not usable for new products.
-
-## Authorization and reconciliation
-
-- Institution and legal-owner checks apply to every linked resource, including cancellation, statement, funding origin, refund, and destination.
-- Keep billing read, export, wallet read, funding, refund delivery, and approval scopes separate.
-- Independent delivery approval is tied to the exact refund version. It cannot authorize an active-agreement cash-out or reject the obligation to refund the remaining balance.
-- Use a durable `client_reference` beyond request-idempotency retention. Look up the existing resource after a timeout.
-- Use `If-Match` for policy changes, approvals, cancellations, and refund retries. Retrieve the current version after a `412`.
-- Ledger corrections and payment reversals are system reconciliation entries, not customer-controlled cash-out operations.
-
-Consume [wallet and billing events](/api-reference/event-catalog) at least once and potentially out of order. Deduplicate by event ID, compare versions, and retrieve the current resource. Reconcile usage and statements through [consumption reporting](/api-reference/consumption-reporting).
-
-## Close the wallet
-
-[Wallet closure](/api-reference/endpoints/wallets/create-wallet-closure) requires the final cancellation ID, reconciled final usage and funding, resolved usage holds, and verified and approved refund instructions. The remaining paid balance is reserved for its cancellation refund. That balance and bank processing do not block closure.
-
-AMLOK closes the account and immediately issues the full remaining paid-balance refund. The closure record exposes `closed_at` and `refund_ids`; a `completed` closure can have a refund still awaiting bank delivery. The closed wallet permits refund delivery and reconciliation while funding and product usage remain disabled. Closure cannot trigger a refund for an active agreement. Retained billing and audit records remain available under the applicable retention policy.
-
-See [refunds and payouts](/pricing/refunds-and-payouts) and [agreement terms](/pricing/contract-terms).
+This is an account-management process; no customer API refund or payout request is needed or supported. Your account manager provides the refund reference and delivery updates. The wallet cannot be withdrawn while the agreement is active. See [refunds and payouts](/pricing/refunds-and-payouts) and [account management](/support/account-management).

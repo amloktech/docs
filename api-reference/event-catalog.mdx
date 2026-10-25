@@ -1,6 +1,6 @@
 ---
 title: "Event catalog"
-description: "Subscribe to 39 lifecycle events."
+description: "Subscribe to 32 lifecycle events."
 ---
 
 Every event uses the same envelope. The event ID is the deduplication key within the institution and environment. `resource_version` identifies the version that triggered the event.
@@ -49,18 +49,11 @@ The example indicates that a verification result is ready for review. It is not 
 | `workflow.completed` | `workflow_run` | Run completes or returns a defined partial result. | status; output_resource_ids |
 | `workflow.failed` | `workflow_run` | Run stops with a recorded failure. | status; safe error code |
 | `resource.deleted` | `common` | A source deletion or approved redaction is recorded. | resource_id; deleted_at |
-| `deletion.completed` | `deletion_job` | Retention-aware deletion job reaches a terminal state. | status; held scopes; provider propagation status |
 | `billing.usage.posted` | `billing_usage` | A usage charge or compensating adjustment is posted. | Resource ID, version and status; retrieve full details. |
 | `billing.report.updated` | `billing_report` | A report is ready, failed, or expired. | Resource ID, version and status; retrieve full details. |
 | `billing.statement.finalized` | `billing_statement` | A statement revision is finalized. | Resource ID, version and status; retrieve full details. |
 | `wallet.balance.updated` | `wallet` | A posted entry or hold changes a balance. | Resource ID, version and status; retrieve full details. |
 | `wallet.top_up.updated` | `wallet_top_up` | A funding attempt changes state. | Resource ID, version and status; retrieve full details. |
-| `wallet.refund.updated` | `wallet_refund` | A final-cancellation refund changes state. | Resource ID, version and status; retrieve full details. |
-| `wallet.payout.updated` | `wallet_payout` | A cancellation-refund payout changes state. | Resource ID, version and status; retrieve full details. |
-| `wallet.destination.updated` | `wallet_destination` | Destination verification or availability changes. | Resource ID, version and status; retrieve full details. |
-| `wallet.approval.updated` | `wallet_approval` | A required approval is decided or expires. | Resource ID, version and status; retrieve full details. |
-| `billing.cancellation.updated` | `agreement_cancellation` | An agreement cancellation changes state. | Resource ID, version and status; retrieve full details. |
-| `wallet.closure.updated` | `wallet_closure` | A wallet closure changes state. | Resource ID, version and status; retrieve full details. |
 
 The details column summarizes each event. The OpenAPI reference defines the shared envelope and event keys. Retrieve the referenced resource for its complete current representation.
 

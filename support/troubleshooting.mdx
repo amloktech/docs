@@ -1,0 +1,27 @@
+---
+title: "Troubleshooting"
+description: "Checks for common API, integration, monitoring, reporting, and funding issues."
+---
+
+Before opening a ticket, note the time, affected workspace and environment, and the last successful operation. Keep request and job references for [support](/support/create-ticket).
+
+| Symptom | Check | Next step |
+| --- | --- | --- |
+| API requests fail | Inspect the HTTP status and error code; check the healthcheck and service status. | For `401`, correct the credential or environment. For `403`, check scope and entitlement. For `429`, respect `Retry-After`. |
+| A connection needs attention | Check consent, provider permissions, reauthorization status, and the last successful synchronization. | Reauthorize through the supported flow when required; do not repeatedly reconnect to bypass provider limits. |
+| Data appears old | Compare source observation time, last synchronization, and the provider's supported refresh behavior. | Review [data refresh](/integrations/data-refresh) and identify the affected resource. |
+| Insights has not completed | Read the job or workflow state, missing inputs, and required actions. | Distinguish queued work, partial evidence, and failed processing before retrying. |
+| Signal has no new alert | Check enrolled monitoring scope, cadence, consent, data freshness, and configured rules. | No alert alone does not prove a refresh occurred or that risk is unchanged. |
+| A webhook is missing | Check destination availability, signature verification, deduplication, and delivery references. | Follow [webhook guidance](/api-reference/webhooks) and reconcile through authorized resource reads. |
+| A report does not reconcile | Compare the same wallet, time basis, date window, and snapshot; include reversals and pending activity correctly. | Use [consumption reporting](/api-reference/consumption-reporting) and send the statement references. |
+| A top-up is pending | Retrieve the existing top-up by ID or business reference and verify the funding method. | A timeout does not prove payment failure. Do not submit a new payment until the existing outcome is known. |
+
+## Availability checks
+
+[Healthcheck](/api-reference/endpoints/platform/healthcheck) reports API readiness. [Service status](/api-reference/endpoints/platform/service-status) reports individual service availability. Neither substitutes for checking your job, connection, report, or payment state.
+
+If a status response is stale, unknown, or unreachable, do not assume the service is healthy. Use bounded retries with backoff and include the observed time in your support request.
+
+## Safe diagnostics
+
+Share redacted logs, request IDs, and a minimal reproduction. Never include API keys, webhook signing secrets, raw bank credentials, or unnecessary borrower records. Ask support for an approved secure channel if detailed evidence is required.

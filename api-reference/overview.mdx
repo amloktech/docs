@@ -5,7 +5,7 @@ description: "Build institution-scoped integrations with the AMLOK API 1.4.2."
 
 The AMLOK API organizes authorized financial evidence into a common data model and coordinates verification, underwriting, monitoring, servicing, and investigation workflows.
 
-This reference contains **213 operations**, **67 financial-data resource types plus billing and wallet resources**, **39 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
+This reference contains **190 operations**, **67 financial-data resource types plus billing and wallet resources**, **32 event types**, and schema-checked example payloads. Endpoint pages include cURL, Python, and Node.js request examples, response bodies, required scopes, and error definitions.
 
 <CardGroup cols={2}>
   <Card title="Make your first request" icon="terminal" href="/api-reference/quickstart">Follow a complete connection and data-read flow.</Card>
@@ -22,7 +22,7 @@ This reference contains **213 operations**, **67 financial-data resource types p
 4. Start approved workflows and retrieve asynchronous results.
 5. Process signed events and keep your local records in sync.
 
-The authentication mechanism is a server-side bearer API key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
+Financial-data, reporting, and wallet operations use a server-side bearer API key. The healthcheck and service-status endpoints are public and require no key. Resources are tenant-scoped; a resource ID alone never grants access. Source capabilities, consent, scopes, and field entitlements all constrain the returned data.
 
 ## Explore the API
 
@@ -34,8 +34,9 @@ The authentication mechanism is a server-side bearer API key. Resources are tena
 | Payments, commerce, accounting, inventory | Browse the endpoint groups in the sidebar and the [data dictionary](/data-model/field-dictionary). |
 | Lending and assessment | [Create an application](/api-reference/endpoints/lending/create-application), [run a workflow](/api-reference/endpoints/operations/start-workflow-run), [calculate attributes](/api-reference/endpoints/risk/calculate-attributes) |
 | Monitoring and operations | [Create a monitor](/api-reference/endpoints/risk/create-monitor), [open a case](/api-reference/endpoints/operations/create-case), [create a task](/api-reference/endpoints/operations/create-task) |
-| Billing and wallet operations | [Wallet lifecycle](/api-reference/wallets), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
-| Delivery and privacy | [Register a webhook](/api-reference/endpoints/webhooks/create-webhook-endpoint), [read changes](/api-reference/endpoints/platform/read-change-feed), [request deletion](/api-reference/endpoints/privacy/create-deletion-request) |
+| Reporting and wallets | [Wallet lifecycle](/api-reference/wallets), [consumption reporting](/api-reference/consumption-reporting), [refunds and payouts](/pricing/refunds-and-payouts) |
+| Delivery | [Register a webhook](/api-reference/endpoints/webhooks/create-webhook-endpoint), [read changes](/api-reference/endpoints/platform/read-change-feed) |
+| Service availability | [Healthcheck](/api-reference/endpoints/platform/healthcheck), [service status](/api-reference/endpoints/platform/service-status) |
 
 ## Version and availability
 

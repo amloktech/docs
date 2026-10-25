@@ -1,0 +1,69 @@
+---
+title: "Service level agreement"
+description: "AMLOK's standard availability commitment, support response targets, and service-credit process."
+---
+
+This page describes AMLOK's standard SLA for paid production services. It applies when included in your service agreement. A signed agreement with different terms takes precedence. Your account manager can confirm the services and coverage included in your agreement.
+
+## Availability commitment
+
+The monthly availability target is **99.9%** for covered AMLOK production services: API access, Insights processing, Signal monitoring, reporting, and webhook delivery. Coverage applies to the AMLOK-controlled service, not a guarantee of upstream provider availability or completion of every individual analysis within a fixed time.
+
+Availability is measured separately for each covered service over each calendar month in UTC:
+
+`Monthly availability = 100 × (eligible service minutes - unavailable minutes) / eligible service minutes`
+
+Eligible service minutes are the minutes the service is in scope for your agreement during the month, excluding the periods below. A minute is unavailable when an AMLOK-controlled failure prevents the service's core function for the affected workspace, supported by monitoring or verified incident evidence. Overlapping incidents count once. If there are no eligible service minutes, no availability percentage is calculated.
+
+The [healthcheck](/api-reference/endpoints/platform/healthcheck) and [service status](/api-reference/endpoints/platform/service-status) endpoints help with incident detection. A successful healthcheck alone does not prove that an asynchronous workflow, data refresh, or individual webhook has completed.
+
+## Support response targets
+
+| Priority | Business impact | Initial human response | Coverage |
+| --- | --- | --- | --- |
+| P1 - Critical | Production unavailable or a critical workflow blocked with no reasonable workaround. | Within 1 hour | 24/7 |
+| P2 - High | Major degradation or a key function impaired; operations can continue with a workaround. | Within 4 business hours | Business hours |
+| P3 - Normal | Limited functional issue or integration defect without broad production impact. | Within 1 business day | Business hours |
+| P4 - Low | General guidance, documentation, feature request, or routine account question. | Within 2 business days | Business hours |
+
+Business hours are **Monday to Friday, 9:00 a.m. to 5:00 p.m. Eastern Time**, excluding Canadian federal statutory holidays. One business day is eight covered hours. The response clock starts when the request reaches [support@amlok.tech](mailto:support@amlok.tech); for P2-P4, only covered business time counts.
+
+A human response acknowledges the reported impact and provides an investigation step or requests necessary information. Automatic email replies do not satisfy this target. These are initial-response targets, not guaranteed resolution times. AMLOK communicates restoration estimates when there is enough evidence to make them useful.
+
+For P1 incidents, keep an authorized technical contact available while recovery is in progress. If the impact changes, AMLOK and your contact reassess the priority. See [severity and escalation](/support/severity-and-escalation) for updates and escalation.
+
+## Maintenance and exclusions
+
+AMLOK aims to provide at least **48 hours' notice** for planned maintenance that affects covered services. Emergency maintenance may require shorter notice; AMLOK communicates the impact and progress as soon as practical.
+
+The availability calculation excludes only the directly affected period attributable to:
+
+- Announced planned maintenance or necessary emergency maintenance.
+- Customer configuration, credentials, infrastructure, unauthorized use, or requests outside the agreed limits.
+- External banks, data providers, or networks outside AMLOK's control. An AMLOK failure handling an otherwise available provider is not excluded simply because a provider is involved.
+- Customer-requested suspension, or suspension permitted by the agreement.
+- Sandbox, preview, or experimental features unless expressly covered in the agreement.
+- Events outside reasonable control as defined in the agreement.
+
+Expected asynchronous processing, missing borrower permission, and provider refresh schedules are not themselves service outages. Material AMLOK service failures remain assessable under the core-function definition above.
+
+## Availability service credits
+
+If a covered service misses the monthly availability commitment, you may request a credit against **the AMLOK usage charges for that affected service during the affected month**.
+
+| Monthly availability | Credit on eligible affected-service usage charges |
+| --- | ---: |
+| 99.9% or above | No credit |
+| Below 99.9% and at least 99.0% | 10% |
+| Below 99.0% and at least 95.0% | 25% |
+| Below 95.0% | 50% |
+
+For example, eligible Insights charges of CAD 1,000 and measured availability of 99.5% produce a **CAD 100 service credit**. The credit is calculated from consumed service charges, not the annual prepayment or the wallet's unused balance. Taxes and third-party charges are excluded. The same charges cannot earn duplicate credits; the maximum is 50% of eligible charges for each affected service in that month. No usage charges means no monetary credit under this formula.
+
+Approved SLA credits are added to the wallet as **non-cash service credits** for future eligible usage. They are not additional paid principal and are not refundable. This does not reduce the full remaining **paid** balance returned after final cancellation. Initial-response target misses can be escalated but do not themselves generate availability credits unless your agreement says otherwise.
+
+## Request a service credit
+
+Report the incident promptly and submit a credit request to [support@amlok.tech](mailto:support@amlok.tech?subject=AMLOK%20SLA%20service%20credit%20request) **within 30 calendar days after the end of the affected month**. Include your workspace, affected service, incident references, UTC time windows, and redacted evidence. AMLOK reconciles the report with service records and confirms the calculation and outcome.
+
+Contractual remedies and legal rights follow your signed agreement. The SLA credit process is separate from [cancellation refunds](/pricing/refunds-and-payouts).

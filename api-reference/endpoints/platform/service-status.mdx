@@ -1,0 +1,13 @@
+---
+title: "Service status"
+openapi: "/openapi/amlok-v1.json GET /v1/service-status"
+playground: simple
+---
+
+**Authentication:** public; no API key required.
+
+Public unauthenticated summary of AMLOK service availability. A successful HTTP 200 means the status report was retrieved; inspect the overall and per-service status to understand availability. unknown means a current state cannot be confirmed and must not be treated as operational. updated_at identifies the observation time; do not treat stale or unreachable status as healthy. Provider-specific freshness and account connection errors are separate from AMLOK service availability. This response contains no internal infrastructure identifiers or customer data.
+
+Use your institution-issued `AMLOK_API_BASE_URL`. Responses use the lightweight status schema shown here, without the financial-data `data` / `meta` envelope. An unavailable status is not a valid zero-risk result.
+
+Use bounded polling with backoff and respect `Retry-After` on `429`. Contact [support](/support/create-ticket) with the observation time and affected workflow when an issue persists. See the [SLA](/support/sla) for availability measurement.

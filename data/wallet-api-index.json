@@ -5,7 +5,7 @@
     "path": "/v1/billing/account",
     "title": "Retrieve billing account",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/retrieve-billing-account",
     "resource": "billing_account",
     "request": null,
@@ -29,13 +29,9 @@
         "refund_policy": "full_remaining_paid_balance_on_final_cancellation",
         "enabled_capabilities": [
           "funding",
-          "cancellation_refunds",
           "auto_top_up"
         ],
-        "approval_required_for": [
-          "refund_delivery"
-        ],
-        "policy_version": "wallet-policy-cancellation-only"
+        "policy_version": "wallet-policy-account-manager-cancellation"
       },
       "meta": {
         "request_id": "req_example",
@@ -52,7 +48,7 @@
     "path": "/v1/billing/rate-card",
     "title": "Retrieve billing rate card",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/retrieve-billing-rate-card",
     "resource": "billing_rate_card",
     "request": null,
@@ -131,7 +127,7 @@
     "path": "/v1/billing/usage",
     "title": "List usage records",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/list-usage-records",
     "resource": "billing_usage",
     "request": null,
@@ -183,7 +179,7 @@
     "path": "/v1/billing/usage/{id}",
     "title": "Retrieve usage record",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/retrieve-usage-record",
     "resource": "billing_usage",
     "request": null,
@@ -228,7 +224,7 @@
     "path": "/v1/billing/consumption",
     "title": "Retrieve consumption summary",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/retrieve-consumption-summary",
     "resource": "billing_consumption",
     "request": null,
@@ -287,7 +283,7 @@
     "path": "/v1/billing/reports",
     "title": "Create billing report",
     "scope": "billing:export",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/create-billing-report",
     "resource": "billing_report",
     "request": {
@@ -332,7 +328,7 @@
     "path": "/v1/billing/reports",
     "title": "List billing reports",
     "scope": "billing:export",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/list-billing-reports",
     "resource": "billing_report",
     "request": null,
@@ -377,7 +373,7 @@
     "path": "/v1/billing/reports/{id}",
     "title": "Retrieve billing report",
     "scope": "billing:export",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/retrieve-billing-report",
     "resource": "billing_report",
     "request": null,
@@ -415,7 +411,7 @@
     "path": "/v1/billing/reports/{id}/download-link",
     "title": "Create billing report download link",
     "scope": "billing:export",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/create-billing-report-download-link",
     "resource": "billing_download",
     "request": {
@@ -447,7 +443,7 @@
     "path": "/v1/billing/statements",
     "title": "List billing statements",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/list-billing-statements",
     "resource": "billing_statement",
     "request": null,
@@ -497,7 +493,7 @@
     "path": "/v1/billing/statements/{id}",
     "title": "Retrieve billing statement",
     "scope": "billing:read",
-    "group": "Billing",
+    "group": "Reporting",
     "page": "api-reference/endpoints/billing/retrieve-billing-statement",
     "resource": "billing_statement",
     "request": null,
@@ -533,43 +529,6 @@
       }
     },
     "success": "200"
-  },
-  {
-    "id": "WA012",
-    "method": "POST",
-    "path": "/v1/wallets",
-    "title": "Create wallet",
-    "scope": "wallets:write",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet",
-    "resource": "wallet",
-    "request": {
-      "name": "Operating wallet",
-      "currency": "CAD",
-      "usage_enabled": true
-    },
-    "response": {
-      "data": {
-        "id": "wallet_example",
-        "object": "wallet",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "name": "Operating wallet",
-        "currency": "CAD",
-        "agreement_id": "agr_example",
-        "legal_owner_id": "institution_example",
-        "status": "active",
-        "usage_enabled": true
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "201"
   },
   {
     "id": "WA013",
@@ -835,7 +794,7 @@
     "page": "api-reference/endpoints/wallets/create-wallet-payment-session",
     "resource": "wallet_session",
     "request": {
-      "purpose": "payout_destination",
+      "purpose": "funding_method",
       "return_url": "https://client.example.com/wallet/return"
     },
     "response": {
@@ -845,7 +804,7 @@
         "record_version": 1,
         "created_at": "2026-10-23T14:00:00Z",
         "updated_at": "2026-10-23T14:00:00Z",
-        "purpose": "payout_destination",
+        "purpose": "funding_method",
         "url": "https://payments.example.com/hosted-session",
         "expires_at": "2026-10-23T14:15:00Z"
       },
@@ -881,8 +840,7 @@
           "masked_label": "Business bank account ending 1234",
           "currency": "CAD",
           "capabilities": [
-            "funding",
-            "payout"
+            "funding"
           ]
         }
       ],
@@ -922,8 +880,7 @@
         "masked_label": "Business bank account ending 1234",
         "currency": "CAD",
         "capabilities": [
-          "funding",
-          "payout"
+          "funding"
         ]
       },
       "meta": {
@@ -959,8 +916,7 @@
         "masked_label": "Business bank account ending 1234",
         "currency": "CAD",
         "capabilities": [
-          "funding",
-          "payout"
+          "funding"
         ]
       },
       "meta": {
@@ -1097,45 +1053,6 @@
     "success": "200"
   },
   {
-    "id": "WA026",
-    "method": "POST",
-    "path": "/v1/wallet-top-ups/{id}/cancel",
-    "title": "Cancel wallet top-up",
-    "scope": "wallets:funding",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/cancel-wallet-top-up",
-    "resource": "wallet_top_up",
-    "request": {
-      "reason": "Funding no longer needed."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_top_up_example",
-        "object": "wallet_top_up",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
-        "funding_method_id": "wallet_payment_method_example",
-        "amount": "250.00",
-        "currency": "CAD",
-        "client_reference": "top-up-1001",
-        "status": "cancelled",
-        "action_url": null,
-        "settled_at": null,
-        "ledger_entry_ids": [],
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
     "id": "WA027",
     "method": "GET",
     "path": "/v1/wallets/{id}/auto-top-up",
@@ -1214,993 +1131,5 @@
       }
     },
     "success": "200"
-  },
-  {
-    "id": "WA029",
-    "method": "POST",
-    "path": "/v1/wallet-quotes",
-    "title": "Create wallet movement quote",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-movement-quote",
-    "resource": "wallet_quote",
-    "request": {
-      "kind": "refund",
-      "source_wallet_id": "wal_example",
-      "cancellation_id": "cancellation_final_example",
-      "currency": "CAD"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_quote_refund",
-        "object": "wallet_quote",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "kind": "refund",
-        "source_wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "final_statement_id": "statement_final_example",
-        "final_statement_revision": 1,
-        "refund_id": null,
-        "allocations": [
-          {
-            "origin_top_up_id": "top_up_annual",
-            "destination_id": "wallet_payment_method_example",
-            "amount": "10900.00"
-          }
-        ],
-        "amount": "10900.00",
-        "fee_amount": "0.00",
-        "total_debit": "10900.00",
-        "recipient_amount": "10900.00",
-        "currency": "CAD",
-        "expires_at": "2026-10-23T14:10:00Z",
-        "policy_version": "wallet-policy-cancellation-only",
-        "source_wallet_version": 3,
-        "approval_required": true,
-        "holds_funds": false
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "201"
-  },
-  {
-    "id": "WA030",
-    "method": "GET",
-    "path": "/v1/wallet-quotes/{id}",
-    "title": "Retrieve wallet movement quote",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-movement-quote",
-    "resource": "wallet_quote",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_quote_refund",
-        "object": "wallet_quote",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "kind": "refund",
-        "source_wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "final_statement_id": "statement_final_example",
-        "final_statement_revision": 1,
-        "refund_id": null,
-        "allocations": [
-          {
-            "origin_top_up_id": "top_up_annual",
-            "destination_id": "wallet_payment_method_example",
-            "amount": "10900.00"
-          }
-        ],
-        "amount": "10900.00",
-        "fee_amount": "0.00",
-        "total_debit": "10900.00",
-        "recipient_amount": "10900.00",
-        "currency": "CAD",
-        "expires_at": "2026-10-23T14:10:00Z",
-        "policy_version": "wallet-policy-cancellation-only",
-        "source_wallet_version": 3,
-        "approval_required": true,
-        "holds_funds": false
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA039",
-    "method": "POST",
-    "path": "/v1/wallet-refunds",
-    "title": "Create wallet refund",
-    "scope": "wallets:refund",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-refund",
-    "resource": "wallet_refund",
-    "request": {
-      "quote_id": "wallet_quote_refund",
-      "client_reference": "cancellation-refund-1001"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_refund_example",
-        "object": "wallet_refund",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "final_statement_id": "statement_final_example",
-        "quote_id": "wallet_quote_refund",
-        "client_reference": "cancellation-refund-1001",
-        "currency": "CAD",
-        "amount": "10900.00",
-        "fee_amount": "0.00",
-        "total_debit": "10900.00",
-        "recipient_amount": "10900.00",
-        "allocations": [
-          {
-            "origin_top_up_id": "top_up_annual",
-            "destination_id": "wallet_payment_method_example",
-            "amount": "10900.00"
-          }
-        ],
-        "paid_amount": "0.00",
-        "remaining_amount": "10900.00",
-        "hold_id": "wallet_hold_refund",
-        "approval_id": "wallet_approval_example",
-        "payout_ids": [],
-        "ledger_entry_ids": [],
-        "status": "requires_approval",
-        "account_closed_at": null,
-        "issued_at": null,
-        "cancellable": true,
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA040",
-    "method": "GET",
-    "path": "/v1/wallet-refunds",
-    "title": "List wallet refunds",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-refunds",
-    "resource": "wallet_refund",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_refund_example",
-          "object": "wallet_refund",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "source_wallet_id": "wal_example",
-          "cancellation_id": "cancellation_final_example",
-          "final_statement_id": "statement_final_example",
-          "quote_id": "wallet_quote_refund",
-          "client_reference": "cancellation-refund-1001",
-          "currency": "CAD",
-          "amount": "10900.00",
-          "fee_amount": "0.00",
-          "total_debit": "10900.00",
-          "recipient_amount": "10900.00",
-          "allocations": [
-            {
-              "origin_top_up_id": "top_up_annual",
-              "destination_id": "wallet_payment_method_example",
-              "amount": "10900.00"
-            }
-          ],
-          "paid_amount": "0.00",
-          "remaining_amount": "10900.00",
-          "hold_id": "wallet_hold_refund",
-          "approval_id": "wallet_approval_example",
-          "payout_ids": [],
-          "ledger_entry_ids": [],
-          "status": "requires_approval",
-          "account_closed_at": null,
-          "issued_at": null,
-          "cancellable": true,
-          "failure_code": null
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA041",
-    "method": "GET",
-    "path": "/v1/wallet-refunds/{id}",
-    "title": "Retrieve wallet refund",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-refund",
-    "resource": "wallet_refund",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_refund_example",
-        "object": "wallet_refund",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "final_statement_id": "statement_final_example",
-        "quote_id": "wallet_quote_refund",
-        "client_reference": "cancellation-refund-1001",
-        "currency": "CAD",
-        "amount": "10900.00",
-        "fee_amount": "0.00",
-        "total_debit": "10900.00",
-        "recipient_amount": "10900.00",
-        "allocations": [
-          {
-            "origin_top_up_id": "top_up_annual",
-            "destination_id": "wallet_payment_method_example",
-            "amount": "10900.00"
-          }
-        ],
-        "paid_amount": "0.00",
-        "remaining_amount": "10900.00",
-        "hold_id": "wallet_hold_refund",
-        "approval_id": "wallet_approval_example",
-        "payout_ids": [],
-        "ledger_entry_ids": [],
-        "status": "requires_approval",
-        "account_closed_at": null,
-        "issued_at": null,
-        "cancellable": true,
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA042",
-    "method": "POST",
-    "path": "/v1/wallet-refunds/{id}/cancel",
-    "title": "Cancel wallet refund",
-    "scope": "wallets:refund",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/cancel-wallet-refund",
-    "resource": "wallet_refund",
-    "request": {
-      "reason": "Correct refund delivery instructions."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_refund_example",
-        "object": "wallet_refund",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "final_statement_id": "statement_final_example",
-        "quote_id": "wallet_quote_refund",
-        "client_reference": "cancellation-refund-1001",
-        "currency": "CAD",
-        "amount": "10900.00",
-        "fee_amount": "0.00",
-        "total_debit": "10900.00",
-        "recipient_amount": "10900.00",
-        "allocations": [
-          {
-            "origin_top_up_id": "top_up_annual",
-            "destination_id": "wallet_payment_method_example",
-            "amount": "10900.00"
-          }
-        ],
-        "paid_amount": "0.00",
-        "remaining_amount": "10900.00",
-        "hold_id": null,
-        "approval_id": null,
-        "payout_ids": [],
-        "ledger_entry_ids": [],
-        "status": "cancelled",
-        "account_closed_at": null,
-        "issued_at": null,
-        "cancellable": false,
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA057",
-    "method": "POST",
-    "path": "/v1/wallet-refunds/{id}/retry",
-    "title": "Retry wallet refund",
-    "scope": "wallets:refund",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retry-wallet-refund",
-    "resource": "wallet_refund",
-    "request": {
-      "quote_id": "wallet_quote_retry",
-      "client_reference": "cancellation-refund-retry-1001"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_refund_example",
-        "object": "wallet_refund",
-        "record_version": 3,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "source_wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "final_statement_id": "statement_final_example",
-        "quote_id": "wallet_quote_retry",
-        "client_reference": "cancellation-refund-1001",
-        "currency": "CAD",
-        "amount": "10900.00",
-        "fee_amount": "0.00",
-        "total_debit": "10900.00",
-        "recipient_amount": "10900.00",
-        "allocations": [
-          {
-            "origin_top_up_id": "top_up_annual",
-            "destination_id": "wallet_payment_method_example",
-            "amount": "10900.00"
-          }
-        ],
-        "paid_amount": "0.00",
-        "remaining_amount": "10900.00",
-        "hold_id": "wallet_hold_refund",
-        "approval_id": "wallet_approval_example",
-        "payout_ids": [],
-        "ledger_entry_ids": [],
-        "status": "requires_approval",
-        "account_closed_at": null,
-        "issued_at": null,
-        "cancellable": true,
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA043",
-    "method": "GET",
-    "path": "/v1/wallet-payouts",
-    "title": "List wallet payouts",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-payouts",
-    "resource": "wallet_payout",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_payout_example",
-          "object": "wallet_payout",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "movement_id": "wallet_refund_example",
-          "movement_type": "refund",
-          "cancellation_id": "cancellation_final_example",
-          "status": "pending",
-          "currency": "CAD",
-          "amount": "10900.00",
-          "destination_id": "wallet_payment_method_example",
-          "origin_top_up_id": "top_up_annual",
-          "provider_reference": null,
-          "submitted_at": null,
-          "paid_at": null,
-          "returned_at": null,
-          "return_amount": "0.00",
-          "failure_code": null
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA044",
-    "method": "GET",
-    "path": "/v1/wallet-payouts/{id}",
-    "title": "Retrieve wallet payout",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-payout",
-    "resource": "wallet_payout",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_payout_example",
-        "object": "wallet_payout",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "movement_id": "wallet_refund_example",
-        "movement_type": "refund",
-        "cancellation_id": "cancellation_final_example",
-        "status": "pending",
-        "currency": "CAD",
-        "amount": "10900.00",
-        "destination_id": "wallet_payment_method_example",
-        "origin_top_up_id": "top_up_annual",
-        "provider_reference": null,
-        "submitted_at": null,
-        "paid_at": null,
-        "returned_at": null,
-        "return_amount": "0.00",
-        "failure_code": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA045",
-    "method": "GET",
-    "path": "/v1/wallet-approvals",
-    "title": "List wallet approvals",
-    "scope": "wallets:approve",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-approvals",
-    "resource": "wallet_approval",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_approval_example",
-          "object": "wallet_approval",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "target_type": "refund",
-          "target_id": "wallet_refund_example",
-          "target_version": 1,
-          "status": "pending",
-          "requested_by": "actor_initiator",
-          "decided_by": null,
-          "expires_at": "2026-10-24T14:00:00Z",
-          "decision_at": null
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA046",
-    "method": "GET",
-    "path": "/v1/wallet-approvals/{id}",
-    "title": "Retrieve wallet approval",
-    "scope": "wallets:approve",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-approval",
-    "resource": "wallet_approval",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_approval_example",
-        "object": "wallet_approval",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "target_type": "refund",
-        "target_id": "wallet_refund_example",
-        "target_version": 1,
-        "status": "pending",
-        "requested_by": "actor_initiator",
-        "decided_by": null,
-        "expires_at": "2026-10-24T14:00:00Z",
-        "decision_at": null
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA047",
-    "method": "POST",
-    "path": "/v1/wallet-approvals/{id}/decision",
-    "title": "Decide wallet approval",
-    "scope": "wallets:approve",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/decide-wallet-approval",
-    "resource": "wallet_approval",
-    "request": {
-      "decision": "approve",
-      "reason": "Verified payout instruction."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_approval_example",
-        "object": "wallet_approval",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "target_type": "refund",
-        "target_id": "wallet_refund_example",
-        "target_version": 1,
-        "status": "approved",
-        "requested_by": "actor_initiator",
-        "decided_by": "actor_reviewer",
-        "expires_at": "2026-10-24T14:00:00Z",
-        "decision_at": "2026-10-23T14:00:00Z"
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "201"
-  },
-  {
-    "id": "WA048",
-    "method": "POST",
-    "path": "/v1/agreement-cancellation-quotes",
-    "title": "Create agreement cancellation quote",
-    "scope": "billing:manage",
-    "group": "Billing",
-    "page": "api-reference/endpoints/billing/create-agreement-cancellation-quote",
-    "resource": "agreement_cancellation_quote",
-    "request": {
-      "agreement_id": "agr_example",
-      "requested_effective_at": "2027-10-01T00:00:00Z"
-    },
-    "response": {
-      "data": {
-        "id": "agreement_cancellation_quote_example",
-        "object": "agreement_cancellation_quote",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "agreement_id": "agr_example",
-        "requested_effective_at": "2027-10-01T00:00:00Z",
-        "agreement_version": "3",
-        "expires_at": "2026-10-23T14:10:00Z",
-        "currency": "CAD",
-        "unused_credits": "10900.00",
-        "held_amount": "500.00",
-        "estimated_final_usage": "500.00",
-        "estimated_remaining_obligation": "0.00",
-        "estimated_refund": "10400.00",
-        "obligations_explanation": "Estimated final usage includes the pending usage hold once. Remaining agreement obligations are disclosed separately and do not reduce the unused paid-balance refund.",
-        "provisional": true
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "201"
-  },
-  {
-    "id": "WA049",
-    "method": "POST",
-    "path": "/v1/agreement-cancellations",
-    "title": "Create agreement cancellation",
-    "scope": "billing:manage",
-    "group": "Billing",
-    "page": "api-reference/endpoints/billing/create-agreement-cancellation",
-    "resource": "agreement_cancellation",
-    "request": {
-      "quote_id": "agreement_cancellation_quote_example",
-      "reason": "Do not renew this agreement.",
-      "client_reference": "cancellation-1001"
-    },
-    "response": {
-      "data": {
-        "id": "agreement_cancellation_example",
-        "object": "agreement_cancellation",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "agreement_id": "agr_example",
-        "quote_id": "agreement_cancellation_quote_example",
-        "client_reference": "cancellation-1001",
-        "status": "requested",
-        "requested_effective_at": "2027-10-01T00:00:00Z",
-        "effective_at": null,
-        "final_statement_id": null,
-        "reconciled_at": null,
-        "account_closed_at": null,
-        "final_refund_amount": null,
-        "refunded_amount": "0.00",
-        "refund_ids": [],
-        "remaining_obligation": null,
-        "currency": "CAD",
-        "reason": "Do not renew this agreement."
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA050",
-    "method": "GET",
-    "path": "/v1/agreement-cancellations",
-    "title": "List agreement cancellations",
-    "scope": "billing:read",
-    "group": "Billing",
-    "page": "api-reference/endpoints/billing/list-agreement-cancellations",
-    "resource": "agreement_cancellation",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "agreement_cancellation_example",
-          "object": "agreement_cancellation",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "agreement_id": "agr_example",
-          "quote_id": "agreement_cancellation_quote_example",
-          "client_reference": "cancellation-1001",
-          "status": "requested",
-          "requested_effective_at": "2027-10-01T00:00:00Z",
-          "effective_at": null,
-          "final_statement_id": null,
-          "reconciled_at": null,
-          "account_closed_at": null,
-          "final_refund_amount": null,
-          "refunded_amount": "0.00",
-          "refund_ids": [],
-          "remaining_obligation": null,
-          "currency": "CAD",
-          "reason": "Do not renew this agreement."
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA051",
-    "method": "GET",
-    "path": "/v1/agreement-cancellations/{id}",
-    "title": "Retrieve agreement cancellation",
-    "scope": "billing:read",
-    "group": "Billing",
-    "page": "api-reference/endpoints/billing/retrieve-agreement-cancellation",
-    "resource": "agreement_cancellation",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "agreement_cancellation_example",
-        "object": "agreement_cancellation",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "agreement_id": "agr_example",
-        "quote_id": "agreement_cancellation_quote_example",
-        "client_reference": "cancellation-1001",
-        "status": "requested",
-        "requested_effective_at": "2027-10-01T00:00:00Z",
-        "effective_at": null,
-        "final_statement_id": null,
-        "reconciled_at": null,
-        "account_closed_at": null,
-        "final_refund_amount": null,
-        "refunded_amount": "0.00",
-        "refund_ids": [],
-        "remaining_obligation": null,
-        "currency": "CAD",
-        "reason": "Do not renew this agreement."
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA052",
-    "method": "POST",
-    "path": "/v1/agreement-cancellations/{id}/cancel",
-    "title": "Withdraw agreement cancellation",
-    "scope": "billing:manage",
-    "group": "Billing",
-    "page": "api-reference/endpoints/billing/withdraw-agreement-cancellation",
-    "resource": "agreement_cancellation",
-    "request": {
-      "reason": "Continue the agreement."
-    },
-    "response": {
-      "data": {
-        "id": "agreement_cancellation_example",
-        "object": "agreement_cancellation",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "agreement_id": "agr_example",
-        "quote_id": "agreement_cancellation_quote_example",
-        "client_reference": "cancellation-1001",
-        "status": "withdrawn",
-        "requested_effective_at": "2027-10-01T00:00:00Z",
-        "effective_at": null,
-        "final_statement_id": null,
-        "reconciled_at": null,
-        "account_closed_at": null,
-        "final_refund_amount": null,
-        "refunded_amount": "0.00",
-        "refund_ids": [],
-        "remaining_obligation": null,
-        "currency": "CAD",
-        "reason": "Do not renew this agreement."
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA053",
-    "method": "POST",
-    "path": "/v1/wallet-closures",
-    "title": "Create wallet closure",
-    "scope": "wallets:write",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/create-wallet-closure",
-    "resource": "wallet_closure",
-    "request": {
-      "wallet_id": "wal_example",
-      "cancellation_id": "cancellation_final_example",
-      "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
-      "client_reference": "closure-1001"
-    },
-    "response": {
-      "data": {
-        "id": "wallet_closure_example",
-        "object": "wallet_closure",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
-        "client_reference": "closure-1001",
-        "status": "requested",
-        "blocking_reasons": [
-          "pending_reconciliation"
-        ],
-        "final_statement_id": null,
-        "closed_at": null,
-        "refund_ids": []
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
-  },
-  {
-    "id": "WA054",
-    "method": "GET",
-    "path": "/v1/wallet-closures",
-    "title": "List wallet closures",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/list-wallet-closures",
-    "resource": "wallet_closure",
-    "request": null,
-    "response": {
-      "data": [
-        {
-          "id": "wallet_closure_example",
-          "object": "wallet_closure",
-          "record_version": 1,
-          "created_at": "2026-10-23T14:00:00Z",
-          "updated_at": "2026-10-23T14:00:00Z",
-          "wallet_id": "wal_example",
-          "cancellation_id": "cancellation_final_example",
-          "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
-          "client_reference": "closure-1001",
-          "status": "requested",
-          "blocking_reasons": [
-            "pending_reconciliation"
-          ],
-          "final_statement_id": null,
-          "closed_at": null,
-          "refund_ids": []
-        }
-      ],
-      "page": {
-        "has_more": false,
-        "next_cursor": null,
-        "limit": 100
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA055",
-    "method": "GET",
-    "path": "/v1/wallet-closures/{id}",
-    "title": "Retrieve wallet closure",
-    "scope": "wallets:read",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/retrieve-wallet-closure",
-    "resource": "wallet_closure",
-    "request": null,
-    "response": {
-      "data": {
-        "id": "wallet_closure_example",
-        "object": "wallet_closure",
-        "record_version": 1,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
-        "client_reference": "closure-1001",
-        "status": "requested",
-        "blocking_reasons": [
-          "pending_reconciliation"
-        ],
-        "final_statement_id": null,
-        "closed_at": null,
-        "refund_ids": []
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "complete"
-      }
-    },
-    "success": "200"
-  },
-  {
-    "id": "WA056",
-    "method": "POST",
-    "path": "/v1/wallet-closures/{id}/cancel",
-    "title": "Withdraw wallet closure",
-    "scope": "wallets:write",
-    "group": "Wallets",
-    "page": "api-reference/endpoints/wallets/withdraw-wallet-closure",
-    "resource": "wallet_closure",
-    "request": {
-      "reason": "Correct closure instructions before account closure."
-    },
-    "response": {
-      "data": {
-        "id": "wallet_closure_example",
-        "object": "wallet_closure",
-        "record_version": 2,
-        "created_at": "2026-10-23T14:00:00Z",
-        "updated_at": "2026-10-23T14:00:00Z",
-        "wallet_id": "wal_example",
-        "cancellation_id": "cancellation_final_example",
-        "reason": "Close on final cancellation and immediately issue the remaining-balance refund.",
-        "client_reference": "closure-1001",
-        "status": "withdrawn",
-        "blocking_reasons": [
-          "pending_reconciliation"
-        ],
-        "final_statement_id": null,
-        "closed_at": null,
-        "refund_ids": []
-      },
-      "meta": {
-        "request_id": "req_example",
-        "schema_version": "1.4.2",
-        "generated_at": "2026-10-23T14:00:00Z",
-        "data_status": "pending"
-      }
-    },
-    "success": "202"
   }
 ]

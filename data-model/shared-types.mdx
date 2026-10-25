@@ -1,6 +1,6 @@
 ---
 title: "Shared Types"
-description: "134 reusable nested fields for addresses, money, provenance, and other shared structures."
+description: "Reusable nested fields for addresses, money, provenance, and other shared structures."
 ---
 
 ## Address
@@ -233,16 +233,6 @@ description: "134 reusable nested fields for addresses, money, provenance, and o
 | `endpoint_id` | `id`<br />Required | Authorized destination. | `whk_example` |
 | `status` | `string`<br />Required | queued, delivered or failed. | `queued` |
 
-## DeletionJob
-
-| Field | Type / presence | Definition | Example |
-| --- | --- | --- | --- |
-| `id` | `id`<br />Required | Deletion request identifier. | `del_example` |
-| `subject_id` | `id`<br />Required | Subject whose records are being processed. | `biz_example` |
-| `status` | `enum:sync_status`<br />Required | Processing state, with partial for retained/blocked scopes. | `queued` |
-| `held_scopes[]` | `array<string>`<br />Required | Scopes retained by legal hold or policy. | `[]` |
-| `provider_propagation_status` | `string`<br />Required | pending, completed, partial or not\_supported. | `pending` |
-| `errors[]` | `array<Error>`<br />Required | Failures requiring attention. | `[]` |
 
 ## ProviderCapability
 

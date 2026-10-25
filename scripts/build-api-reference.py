@@ -49,13 +49,15 @@ SHARED = defaultdict(list)
 for r in rows('Shared Types'): SHARED[r['Type']].append(r)
 ENUMS = defaultdict(list)
 for r in rows('Enumerations'): ENUMS[r['Enum']].append(r['Allowed value'])
-OPS = rows('API Endpoints')
+REMOVED_OPERATION_IDS = {'EP161', 'EP162'}
+OPS = [op for op in rows('API Endpoints') if op['Operation ID'] not in REMOVED_OPERATION_IDS]
 PARAMS = rows('API Parameters')
-EVENTS = rows('Events')
+EVENTS = [event for event in rows('Events') if event['Event key'] != 'deletion.completed']
 ERRORS = rows('Error Codes')
 SCHEMAS = {f'Enum_{k}': {'type': 'string', 'enum': v} for k, v in ENUMS.items()}
 EXAMPLES = {}
 REFINEMENTS = [
+    'Privacy retention is managed through platform configuration. Removed customer deletion-request operations EP161 and EP162; final workspace deletion removes all workspace data. The original workbook snapshot remains unchanged.',
     'Lien-search search_type is normalized to name, identifier, vin or serial. The identifier field is required for non-name searches.',
     'The partial account-balance example supplies required date_basis as unknown because source observation timing is not available.',
     'Response-only helper objects (jobs, download links, webhook destinations and replay receipts) use the common data/meta envelope; ChangePage already contains its envelope.',
@@ -103,6 +105,7 @@ def example_value(t, raw=None, key='', optional=False):
     return {'integer': 1, 'boolean': False, 'datetime': NOW, 'date': '2026-10-01', 'decimal': '100.00', 'JSON': {}}.get(t, 'res_example' if t == 'id' else key + '_example')
 
 for name, definitions in SHARED.items():
+    if name == 'DeletionJob': continue
     props, required, example = {}, [], {}
     for r in definitions:
         key = r['Field'].replace('[]', '')
@@ -348,6 +351,8 @@ def samples(op, params, request, example_id):
 
 SPEC = {'openapi':'3.1.0','info':{'title':'AMLOK API','version':VERSION,'description':'API reference for AMLOK 1.4.2, with example requests and responses. Configure your institution-issued environment URL before making requests.','x-source-workbook':SOURCE_URL},'servers':[{'url':'https://api.example.com','description':'Set the server URL to your institution-issued AMLOK environment URL.'}],'security':[{'BearerAuth':[]}],'paths':{},'components':{'securitySchemes':{'BearerAuth':{'type':'http','scheme':'bearer','bearerFormat':'API key','description':'Server-to-server API key scoped to one institution tenant and environment. Do not use in public browser code.'}},'schemas':SCHEMAS},'tags':[]}
 SCHEMAS['ErrorEnvelope'] = object_schema({'error':ref('Error'),'meta':ref('ResponseMeta')},['error','meta'])
+previous_index_path = ROOT / 'data/api-reference-index.json'
+previous_ops = json.loads(previous_index_path.read_text()) if previous_index_path.exists() else []
 OP_INDEX = []
 NAV_GROUPS = defaultdict(list)
 POSTMAN_GROUPS = defaultdict(list)
@@ -449,12 +454,12 @@ for op in OPS:
     OP_INDEX.append({'id':oid,'method':method,'path':path,'title':title,'scope':op['Scope'],'group':group,'page':page,'resource':resource,'request':request,'response':response_example,'success':success})
 
 from wallet_contract import extend
-previous_wallet_index_path = ROOT / 'data/wallet-api-index.json'
-previous_wallet_ops = json.loads(previous_wallet_index_path.read_text()) if previous_wallet_index_path.exists() else []
 WALLET_OPS = extend(globals())
-active_wallet_pages = {op['page'] for op in WALLET_OPS}
-for old_op in previous_wallet_ops:
-    if old_op['page'] not in active_wallet_pages:
+from status_contract import extend as extend_status
+STATUS_OPS = extend_status(globals())
+active_pages = {op['page'] for op in OP_INDEX}
+for old_op in previous_ops:
+    if old_op['page'] not in active_pages:
         (ROOT / (old_op['page'] + '.mdx')).unlink(missing_ok=True)
 
 SPEC['tags']=[{'name':g,'description':g+' operations.'} for g in NAV_GROUPS]
@@ -467,34 +472,15 @@ write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
 GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
-ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-right-arrow-left', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Billing and wallets', 'wallet', ['wallets', 'consumption-reporting']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting and wallets', 'wallet', ['wallets', 'consumption-reporting']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+ENDPOINT_ICONS = {'Platform':'server','Identity':'fingerprint','Banking':'landmark','Payments':'credit-card','Commerce':'shopping-cart','Accounting':'calculator','Inventory':'boxes','Lending':'hand-coins','Liens':'file-lock','Risk':'chart-no-axes-combined','Operations':'workflow','Webhooks':'webhook','Reporting':'chart-column','Wallets':'wallet'}
 api_tab['groups'] = [
     {'group': 'Get started', 'pages': ['api-reference/' + p for p in GUIDES[:4]]},
-    {'group': 'Endpoints', 'pages': [{'group': g, 'expanded': False, 'pages': pages} for g, pages in NAV_GROUPS.items()]},
+    {'group': 'Endpoints', 'pages': [{'group': g, 'icon': ENDPOINT_ICONS[g], 'expanded': False, 'pages': pages} for g, pages in NAV_GROUPS.items()]},
     {'group': 'Essentials', 'pages': [{'group': name, 'icon': icon, 'expanded': False, 'pages': ['api-reference/' + p for p in pages]} for name, icon, pages in ESSENTIAL_GROUPS]},
 ]
-# Keep wallet endpoints navigable as the operation count grows.
-endpoint_groups = api_tab['groups'][1]['pages']
-for section in endpoint_groups:
-    if section['group'] == 'Wallets':
-        sections = defaultdict(list)
-        for op in WALLET_OPS:
-            if op['group'] != 'Wallets': continue
-            path = op['path']
-            category = ('Refund payouts' if path.startswith('/v1/wallet-payouts') else
-                        'Refunds' if path.startswith('/v1/wallet-refunds') else
-                        'Approvals' if path.startswith('/v1/wallet-approvals') else
-                        'Closure' if path.startswith('/v1/wallet-closures') else
-                        'Quotes' if path.startswith('/v1/wallet-quotes') else
-                        'Funding and destinations' if path.startswith(('/v1/wallet-sessions','/v1/wallet-payment-methods','/v1/wallet-top-ups')) or path.endswith('/auto-top-up') else
-                        'Balances and ledger')
-            sections[category].append(op['page'])
-        section['pages'] = [{'group':name,'expanded':False,'pages':pages} for name,pages in sections.items()]
-    elif section['group'] == 'Billing':
-        section['pages'] = [
-            {'group':'Usage and reporting','expanded':False,'pages':[op['page'] for op in WALLET_OPS if op['path'].startswith('/v1/billing/')]},
-            {'group':'Agreement cancellation','expanded':False,'pages':[op['page'] for op in WALLET_OPS if op['path'].startswith('/v1/agreement-')]},
-        ]
+# Reporting and wallet endpoints remain directly under their main category.
+# Account-manager actions and platform retention settings are not public API groups.
 config['api']={'playground':{'display':'simple'},'examples':{'languages':['curl','python','javascript']}}
 write('docs.json',dump(config))
 print(dump({'operations':len(OP_INDEX),'resources':len(ENTITIES),'schemas':len(SCHEMAS),'events':len(SCHEMAS['WebhookEvent']['properties']['type']['enum']),'guides':len(GUIDES),'sourceFields':sum(map(len,FIELDS.values()))}))

@@ -1,0 +1,13 @@
+---
+title: "Healthcheck"
+openapi: "/openapi/amlok-v1.json GET /v1/healthcheck"
+playground: simple
+---
+
+**Authentication:** public; no API key required.
+
+Public unauthenticated readiness check for the AMLOK API. HTTP 200 with status ok means the API can accept requests; HTTP 503 with status unavailable means it cannot. No borrower or tenant data is exposed. This is a point-in-time check, not confirmation that a job completed, an integration is current, or every product is operational.
+
+Use your institution-issued `AMLOK_API_BASE_URL`. Responses use the lightweight status schema shown here, without the financial-data `data` / `meta` envelope. An unavailable status is not a valid zero-risk result.
+
+Use bounded polling with backoff and respect `Retry-After` on `429`. Contact [support](/support/create-ticket) with the observation time and affected workflow when an issue persists. See the [SLA](/support/sla) for availability measurement.

@@ -1,4 +1,4 @@
-"""Validate the cancellation-only wallet API contract, without executing payments."""
+"""Validate customer funding/reporting boundaries without executing payments."""
 from copy import deepcopy
 from decimal import Decimal
 from pathlib import Path
@@ -21,34 +21,29 @@ def valid(name,value):
 def response(path,method='GET'):
     return ops[(path,method)]['response']['data']
 
-check(len(index)==49,'Expected 49 billing and wallet operations')
+check(len(index)==26,'Expected 26 reporting and funding operations')
+removed_prefixes=('/v1/wallet-withdrawals','/v1/wallet-transfers','/v1/wallet-refunds','/v1/wallet-payouts','/v1/wallet-approvals','/v1/wallet-quotes','/v1/wallet-closures','/v1/agreement-','/v1/deletion-requests')
 for path in spec['paths']:
-    check(not path.startswith(('/v1/wallet-withdrawals','/v1/wallet-transfers')),'Cash-out endpoint remains')
-for removed in ['WalletTransfer','WalletWithdrawal']:
-    check(removed not in spec['components']['schemas'],'Obsolete movement schema remains')
-for event in ['wallet.withdrawal.updated','wallet.transfer.updated']:
-    check(event not in spec['components']['schemas']['WebhookEvent']['properties']['type']['enum'],'Obsolete wallet event remains')
-
-quote={'kind':'refund','source_wallet_id':'wal_example','cancellation_id':'cancellation_final_example','currency':'CAD'}
-check(valid('CreateWalletQuote',quote),'Cancellation quote rejected')
-for missing in ['kind','source_wallet_id','cancellation_id','currency']:
-    bad=deepcopy(quote);bad.pop(missing)
-    check(not valid('CreateWalletQuote',bad),'Quote accepts missing '+missing)
-for field,value in [('amount','1.00'),('currency','USD'),('kind','withdrawal'),('kind','transfer'),('destination_wallet_id','other'),('origin_top_up_id','arbitrary'),('status','refund_pending'),('tenant_id','other')]:
-    check(not valid('CreateWalletQuote',{**quote,field:value}),'Quote permits arbitrary '+field)
-check(valid('CreateWalletQuote',{**quote,'refund_id':'refund_example'}),'Retry quote rejected')
+    check(not path.startswith(removed_prefixes),'Unsupported customer endpoint remains: '+path)
+check('post' not in spec['paths']['/v1/wallets'],'Customer wallet creation remains')
+for removed in ['WalletTransfer','WalletWithdrawal','WalletRefund','WalletPayout','WalletApproval','WalletQuote','WalletClosure','AgreementCancellation','AgreementCancellationQuote','DeletionJob','CreateWallet']:
+    check(removed not in spec['components']['schemas'],'Obsolete schema remains: '+removed)
+for event in ['wallet.refund.updated','wallet.payout.updated','wallet.approval.updated','wallet.closure.updated','billing.cancellation.updated','deletion.completed']:
+    check(event not in spec['components']['schemas']['WebhookEvent']['properties']['type']['enum'],'Obsolete event remains')
+session={'purpose':'funding_method','return_url':'https://client.example.com/wallet/return'}
+check(valid('CreateWalletSession',session),'Funding setup rejected')
+check(not valid('CreateWalletSession',{**session,'purpose':'payout_destination'}),'Session enables payout destination')
+method=response('/v1/wallet-payment-methods/{id}')
+check(not valid('WalletPaymentMethod',{**method,'capabilities':['payout']}),'Payout capability remains')
 top_up=ops[('/v1/wallet-top-ups','POST')]['request']
 for value in ['0.00','-1.00','1.001','1e3','NaN',500,0.5,'']:
     check(not valid('CreateWalletTopUp',{**top_up,'amount':value}),'Invalid top-up amount accepted')
 for value in ['0.01','500.00','1000000.00']:
     check(valid('CreateWalletTopUp',{**top_up,'amount':value}),'Valid positive top-up rejected')
-for field in ['balance','legal_owner_id','tenant_id','agreement_id']:
-    check(not valid('CreateWallet',{'name':'Example','currency':'CAD','usage_enabled':True,field:'injected'}),'Client can supply '+field)
-
 account=response('/v1/billing/account')
 check(account['outflow_policy']=='product_usage_or_final_cancellation_refund','Wrong wallet policy')
 check(account['refund_policy']=='full_remaining_paid_balance_on_final_cancellation','Wrong refund policy')
-check(not set(account['enabled_capabilities']) & {'withdrawals','transfers'},'Cash-out capability remains')
+check(not set(account['enabled_capabilities']) & {'withdrawals','transfers','cancellation_refunds'},'Cash-out capability remains')
 for policy in ['active_agreement_refunds','withdraw_anytime']:
     check(not valid('BillingAccount',{**account,'refund_policy':policy}),'Wrong policy accepted')
 balance=response('/v1/wallets/{id}/balance')
@@ -69,52 +64,33 @@ usage=response('/v1/billing/usage/{id}')
 check(Decimal(usage['quantity'])*Decimal(usage['unit_rate'])==Decimal(usage['amount']),'Usage math')
 check(usage['quantity']=='1','Underwriting example must be one billable unit')
 
-q=response('/v1/wallet-quotes','POST');refund=response('/v1/wallet-refunds','POST')
-for name,value in [('WalletQuote',q),('WalletRefund',refund)]:
-    check(Decimal(value['fee_amount'])==0,'Refund fee reduces paid balance')
-    check(value['amount']==value['recipient_amount']==value['total_debit'],'Full principal not returned')
-    check(sum(Decimal(x['amount']) for x in value['allocations'])==Decimal(value['amount']),'Funding allocations do not sum')
-    check(not valid(name,{**value,'fee_amount':'1.00'}),'Nonzero wallet refund fee accepted')
-    check(value['cancellation_id'] and value['final_statement_id'],'Refund lacks final cancellation evidence')
-check(q['holds_funds'] is False,'Quote reserves funds')
-check(Decimal(refund['amount'])==Decimal(refund['paid_amount'])+Decimal(refund['remaining_amount']),'Refund obligation not reconciled')
-quote_op=spec['paths']['/v1/wallet-quotes']['post']
-create_refund=spec['paths']['/v1/wallet-refunds']['post']
-check('cancellation_not_final' in quote_op['responses']['409']['content']['application/json']['examples'],'Missing cancellation gate error')
-check('recheck' in create_refund['description'].lower() and 'atomically' in create_refund['description'],'Refund submission must recheck and reserve')
-retry=spec['paths']['/v1/wallet-refunds/{id}/retry']['post']
-check('refund_not_retryable' in retry['responses']['409']['content']['application/json']['examples'],'Missing unknown-outcome retry protection')
-closure=ops[('/v1/wallet-closures','POST')]['request'];bad=deepcopy(closure);bad.pop('cancellation_id')
-check(not valid('CreateWalletClosure',bad),'Closure bypasses cancellation linkage')
-prepared=response('/v1/wallet-refunds','POST')
-check(prepared['issued_at'] is None and prepared['account_closed_at'] is None,'Preparation fabricates account closure or refund issuance')
-issued={**prepared,'status':'submitted','account_closed_at':'2026-10-23T14:00:00Z','issued_at':'2026-10-23T14:00:00Z','cancellable':False,'approval_id':None}
-check(valid('WalletRefund',issued),'Issued refund awaiting bank receipt rejected')
-check(issued['paid_amount']=='0.00' and issued['remaining_amount']==issued['amount'],'Issuance falsely implies bank receipt')
-for field in ['account_closed_at','issued_at']:
-    check(not valid('WalletRefund',{**issued,field:None}),'Submitted refund omits '+field)
-check(not valid('WalletRefund',{**prepared,'issued_at':'2026-10-23T14:00:00Z'}),'Refund issued before account closure')
-closed={**response('/v1/wallet-closures','POST'),'status':'completed','blocking_reasons':[],
-    'final_statement_id':issued['final_statement_id'],'closed_at':issued['account_closed_at'],'refund_ids':[issued['id']]}
-check(valid('WalletClosure',closed),'Closure wrongly requires bank settlement')
-for field,value in [('closed_at',None),('final_statement_id',None),('blocking_reasons',['pending_reconciliation'])]:
-    check(not valid('WalletClosure',{**closed,field:value}),'Completed closure accepts unresolved '+field)
-check('immediately after account closure' in create_refund['description'],'Missing immediate refund issuance policy')
-check('7-10 business days' in create_refund['description'],'Missing bank delivery expectation')
-cancellation=response('/v1/agreement-cancellations','POST')
-check(cancellation['final_refund_amount'] is None and cancellation['reconciled_at'] is None and cancellation['account_closed_at'] is None and cancellation['status']=='requested','Request fabricates final reconciliation or closure')
-estimate=response('/v1/agreement-cancellation-quotes','POST')
-check(Decimal(estimate['estimated_refund'])==Decimal(estimate['unused_credits'])-Decimal(estimate['estimated_final_usage']),'Cancellation estimate double-deducts hold')
-for resource in ['wallet-top-ups','wallet-refunds']:
-    op=ops[('/v1/'+resource,'POST')]
-    check(op['success']=='202','Payment request must be asynchronous')
-    check(op['response']['data']['status'] not in ['settled','completed','paid'],'Creation fabricates settlement')
-    check(op['request'].get('client_reference'),'Missing durable business reference')
-    check(any(p['name']=='client_reference' for p in spec['paths']['/v1/'+resource]['get']['parameters']),'Missing recovery lookup')
+topup_op=ops[('/v1/wallet-top-ups','POST')]
+check(topup_op['success']=='202','Funding must be asynchronous')
+check(topup_op['response']['data']['status']=='pending','Creation fabricates settlement')
+check(topup_op['request'].get('client_reference'),'Missing durable business reference')
+check(any(p['name']=='client_reference' for p in spec['paths']['/v1/wallet-top-ups']['get']['parameters']),'Missing funding recovery lookup')
+for path in ['/v1/healthcheck','/v1/service-status']:
+    op=spec['paths'][path]['get']
+    check(op['security']==[] and op['x-required-scopes']==[],'Availability check requires customer credentials')
+    for sample in op['x-codeSamples']:
+        check('AMLOK_API_KEY' not in sample['source'] and 'Authorization' not in sample['source'],'Public sample sends credentials')
+check('503' in spec['paths']['/v1/healthcheck']['get']['responses'],'Healthcheck cannot report unavailability')
+check(valid('Healthcheck',{'status':'unavailable','timestamp':'2026-10-25T12:00:00Z'}),'Unhealthy response rejected')
+check(not valid('Healthcheck',{'status':'ok','timestamp':'2026-10-25T12:00:00Z','database_password':'secret'}),'Healthcheck exposes private infrastructure data')
+status=spec['paths']['/v1/service-status']['get']['responses']['200']['content']['application/json']['examples']['synthetic']['value']
+unknown=deepcopy(status);unknown['status']='unknown';unknown['services'][0]['status']='unknown'
+check(valid('ServiceStatus',unknown),'Unknown service state cannot be represented')
+config=json.loads((ROOT/'docs.json').read_text())
+api=next(t for t in config['navigation']['tabs'] if t['tab']=='API Reference')
+groups=next(g for g in api['groups'] if g['group']=='Endpoints')['pages']
+check(all(g.get('icon') for g in groups),'Endpoint category missing icon')
+reporting=next(g for g in groups if g['group']=='Reporting')
+check(all(isinstance(p,str) for p in reporting['pages']),'Reporting contains redundant nested groups')
+check(not any(g['group'] in ['Billing','Privacy'] for g in groups),'Retired endpoint group remains')
 for op in index:
     operation=spec['paths'][op['path']][op['method'].lower()]
     check(operation['operationId']==OPERATION_IDS[op['method']+' '+op['path']],'Existing operation identity changed')
-    check(not set(operation['x-required-scopes']) & {'wallets:withdraw','wallets:transfer'},'Unsupported scopes remain')
+    check(not set(operation['x-required-scopes']) & {'wallets:withdraw','wallets:transfer','wallets:refund','wallets:approve','wallets:write','billing:manage','privacy:delete'},'Unsupported scopes remain')
     if op['method'] in ['POST','PATCH']:
         check(any(p['name']=='Idempotency-Key' and p['required'] for p in operation['parameters']),'Missing idempotency')
         for sample in operation['x-codeSamples']:check('Idempotency-Key' in sample['source'],'Sample omits idempotency')
