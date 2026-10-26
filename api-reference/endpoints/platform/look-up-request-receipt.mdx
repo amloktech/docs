@@ -1,0 +1,11 @@
+---
+title: "Look up request receipt"
+openapi: "/openapi/amlok-v1.json GET /v1/request-receipts/lookup"
+playground: simple
+---
+
+**Required scope:** `platform:read`
+
+Find an accepted POST after losing its response, including after the 24-hour full-response replay window. Supply the original Idempotency-Key header, operation_id and exact resolved target_path (no origin or query). The same workspace, environment and original operation scopes are required; key rotation does not break lookup. Receipts are created atomically before acknowledging an accepted command and retained until workspace deletion, including after a linked resource expires. resource_unavailable retains its identity but does not authorize rerunning it. Store a non-reversible key digest, not the raw key. A 404 is not proof that an in-flight request never arrived; within 24 hours retry the same key, afterward contact support with the caller correlation ID before any new submission. This endpoint neither executes nor replays work. resource_path identifies an authorized relative GET route and requires its read scope. For a short-lived document or report link, it identifies the document or report parent, never the signed URL. An expired link can be intentionally regenerated with a new key without paid processing. Webhook replay receipts identify the original webhook event; match delivery replay_request_id to receipt.request_id. A lost create-webhook response cannot reveal its one-time secret through lookup; rotate it in the portal.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

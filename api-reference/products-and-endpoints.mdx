@@ -37,7 +37,7 @@ Verification, lien-search and calculation requests require `processing_context`.
 {"product":"signal","monitoring_period_id":"monitoring_period_example"}
 ```
 
-The context must belong to the same workspace and subject. Insights must be an unfinished authorized underwriting; Signal must have an active paid period. The stage must be permitted by the agreed workflow and fit its workload limits. A context is not permission to run arbitrary additional analysis. AMLOK deduplicates equivalent stage work already requested by the orchestrator. Unrelated, finished, cancelled, unpaid or unentitled contexts are rejected with `409 invalid_state`.
+The context must belong to the same workspace and primary subject. Person KYC may use an active `subject_association_id` linking the verified person to the parent business; see [related-person verification](/api-reference/related-person-verification). Other stage types remain same-subject. Insights must be an unfinished authorized underwriting; Signal must have an active paid period. The stage must be permitted by the agreed workflow and fit its workload limits. A context is not permission to run arbitrary additional analysis. AMLOK deduplicates equivalent stage work already requested by the orchestrator. Unrelated, finished, cancelled, unpaid or unentitled contexts are rejected with `409 invalid_state`.
 
 These endpoints support integration steps within the complete product. They do not offer independently purchased verification, search, calculation or investigation services.
 

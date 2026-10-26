@@ -14,7 +14,7 @@ Accept: application/json
 
 Use HTTPS. Keep credentials in your secret manager and load them on the server. Never put keys in a query string, browser bundle, analytics event, error report, or shared Postman export.
 
-Manage key issuance, expiry, revocation, and rotation through the administration process agreed during onboarding. Authenticate requests with your institution-issued API key.
+Your account manager provides client portal access information and environment details. Authorized administrators create API keys in the client portal, choosing the workspace, environment and permitted scopes. Manage expiry, revocation and rotation there. Authenticate server-side requests with your portal-created API key.
 
 ## Authorization has several layers
 
@@ -44,14 +44,14 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `billing:read` | 18 | [Retrieve current billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot) |
 | `commerce:read` | 8 | [List counterparties](/api-reference/endpoints/commerce/list-counterparties) |
 | `connections:read` | 5 | [List connections](/api-reference/endpoints/platform/list-connections) |
-| `connections:write` | 3 | [Create connection](/api-reference/endpoints/platform/create-connection) |
+| `connections:write` | 4 | [Create connection](/api-reference/endpoints/platform/create-connection) |
 | `consent:read` | 2 | [List consents](/api-reference/endpoints/platform/list-consents) |
 | `consent:write` | 2 | [Create consent](/api-reference/endpoints/platform/create-consent) |
 | `documents:read` | 3 | [List documents](/api-reference/endpoints/identity/list-documents) |
 | `documents:write` | 1 | [Upload document](/api-reference/endpoints/identity/upload-document) |
-| `identity:read` | 12 | [List businesses](/api-reference/endpoints/identity/list-businesses) |
+| `identity:read` | 14 | [List businesses](/api-reference/endpoints/identity/list-businesses) |
 | `identity:verify` | 1 | [Start verification](/api-reference/endpoints/identity/start-verification) |
-| `identity:write` | 2 | [Create business](/api-reference/endpoints/identity/create-business) |
+| `identity:write` | 3 | [Create business](/api-reference/endpoints/identity/create-business) |
 | `inventory:read` | 16 | [List products](/api-reference/endpoints/inventory/list-products) |
 | `lending:read` | 18 | [List applications](/api-reference/endpoints/lending/list-applications) |
 | `lending:write` | 1 | [Create application](/api-reference/endpoints/lending/create-application) |
@@ -61,12 +61,12 @@ Scopes are API permissions. They are not OAuth claims or evidence that a provide
 | `monitoring:write` | 2 | [Create monitor](/api-reference/endpoints/risk/create-monitor) |
 | `operations:read` | 2 | [List requirements](/api-reference/endpoints/operations/list-requirements) |
 | `payments:read` | 12 | [List merchant accounts](/api-reference/endpoints/payments/list-merchant-accounts) |
-| `platform:read` | 4 | [List reconciliation links](/api-reference/endpoints/platform/list-reconciliation-links) |
+| `platform:read` | 7 | [List reconciliation links](/api-reference/endpoints/platform/list-reconciliation-links) |
 | `risk:calculate` | 1 | [Calculate attributes](/api-reference/endpoints/risk/calculate-attributes) |
-| `risk:read` | 10 | [List attributes](/api-reference/endpoints/risk/list-attributes) |
-| `webhooks:read` | 1 | [List webhook endpoints](/api-reference/endpoints/webhooks/list-webhook-endpoints) |
+| `risk:read` | 11 | [List attributes](/api-reference/endpoints/risk/list-attributes) |
+| `webhooks:read` | 4 | [List webhook endpoints](/api-reference/endpoints/webhooks/list-webhook-endpoints) |
 | `webhooks:write` | 2 | [Create webhook endpoint](/api-reference/endpoints/webhooks/create-webhook-endpoint) |
-| `workflows:execute` | 1 | [Start workflow run](/api-reference/endpoints/operations/start-workflow-run) |
+| `workflows:execute` | 2 | [Start workflow run](/api-reference/endpoints/operations/start-workflow-run) |
 | `workflows:read` | 2 | [List workflow runs](/api-reference/endpoints/operations/list-workflow-runs) |
 
 ## Authentication failures

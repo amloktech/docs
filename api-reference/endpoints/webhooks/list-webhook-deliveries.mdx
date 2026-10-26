@@ -1,0 +1,11 @@
+---
+title: "List webhook deliveries"
+openapi: "/openapi/amlok-v1.json GET /v1/webhook-deliveries"
+playground: simple
+---
+
+**Required scope:** `webhooks:read`
+
+Read one row per delivery attempt in ascending attempt time and ID order. Cursor freezes filters and upper boundary. Filter by endpoint_id or event_id to diagnose missed events, retries and replays. No receiver response body, authentication header or signing secret is retained in this public report. Queued attempts have null attempted_at. Final automatic failure is exhausted. Retention follows webhook event retention; earlier requested time returns 410 event_history_expired. Endpoint disablement cancels queued attempts without deleting retained events.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

@@ -1,0 +1,30 @@
+---
+title: "Operate and recover webhooks"
+description: "Find missing events, inspect failed deliveries and rotate destinations safely."
+---
+
+## Reconcile missed events
+
+1. Read `GET /v1/configuration` for `webhooks.retained_from` and retention.
+2. [List webhook events](/api-reference/endpoints/webhooks/list-webhook-events) for an inclusive `created_from` and exclusive `created_to` interval. Events remain discoverable even if delivery never succeeded. Page with the returned cursor; the first page freezes its upper boundary.
+3. [List webhook deliveries](/api-reference/endpoints/webhooks/list-webhook-deliveries) using `endpoint_id` or `event_id`. Each attempt reports status, safe failure code, HTTP status and the next scheduled attempt.
+4. Fix your receiver. Replay the retained event to an enabled destination subscribed to its type. Observe the new attempt and acknowledge only after durable acceptance.
+
+Replay preserves the original event ID and uses a fresh signature timestamp. Your consumer must deduplicate it. Delivery reports omit receiver bodies and credentials. Resource permissions still apply to event discovery and replay.
+
+If your requested interval predates retained history, the API returns `410 event_history_expired`. It does not silently claim there were no events. Reconcile current state through [checkpoints and changes](/api-reference/synchronization). That restores current state, not the exact delivery history of expired events; use your own retained event audit for that history.
+
+## Portal controls
+
+Authorized administrators use the client portal to update a destination's registered HTTPS URL and subscriptions, enable or disable it, and rotate signing secrets. The account manager supplies portal access information and required administrator permissions. Disabling immediately prevents new attempts and cancels queued attempts; retained events remain available for later reconciliation. Re-enabling does not automatically replay the disabled interval. List and replay the needed retained events explicitly.
+
+URL changes are validated before activation and audited. Confirm your new receiver is ready before changing a destination. Pending deliveries use the currently enabled registered destination; preserve its signing-secret configuration during cutover. Register separate destinations if simultaneous delivery is required.
+
+## Rotate a signing secret
+
+1. Generate a replacement through the portal and store it in your server's secret manager. The portal displays it once; never add it to documentation or logs.
+2. The portal shows the overlap expiry; its duration comes from `webhooks.rotation_overlap_seconds`. During overlap, each delivery carries a `v1` signature for both current secrets.
+3. Deploy the replacement secret to your receiver and verify a signed sandbox event or retained-event replay. The downloadable verifiers accept any matching `v1` signature.
+4. Confirm migration before the announced cutoff. At cutoff, the old secret stops signing; only the new secret remains. Coordinate another rotation through the portal if migration fails.
+
+Signing-secret rotation is separate from API-key rotation. Never expose a signing secret in event-list, delivery-list or endpoint-list responses.

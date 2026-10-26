@@ -1,0 +1,43 @@
+---
+title: "Test complete product journeys"
+description: "Run Insights and Signal scenarios with provisioned synthetic data and test credits."
+---
+
+Your account manager provides the sandbox URL, client portal access and a synthetic fixture pack. Create a sandbox API key in the portal. Choose or reset the desired sandbox scenario there before a fresh run. Resetting discards only sandbox fixtures and test credits. No real funding, provider account or production data is required.
+
+The runnable journeys need `platform:read`, `risk:read`, `billing:read`, `workflows:execute`, `workflows:read`, `monitoring:write`, and `monitoring:read`. Grant additional scopes only when running the connection, evidence or verification scenarios; each endpoint identifies its required scope. Keys remain restricted to one sandbox workspace.
+
+Read [List sandbox scenarios](/api-reference/endpoints/platform/list-sandbox-scenarios) to obtain actual IDs provisioned for your workspace. These fixtures include authorized source evidence, applications and approved configuration. Insights success includes two bank accounts, five business systems and at least 12 months of banking history within Standard limits. The initial source-connect flow is covered by the [quickstart](/api-reference/quickstart).
+
+## Runnable journeys
+
+Download the [Python journey runner](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-journey.py). It uses the Python standard library, rejects redirects and refuses a production configuration. Set `AMLOK_API_BASE_URL` and `AMLOK_API_KEY` locally, then run:
+
+```bash
+python3 run-sandbox-journey.py insights --state insights-state.json
+python3 run-sandbox-journey.py signal --state signal-state.json
+```
+
+The state file stores resource IDs, intended bodies and stable action keys, never your API key. Protect it as workspace metadata. Reuse the same file after interruption; a fresh file represents a new test action. Reset the fixture in the portal before repeating a completely fresh journey. Run each state file in only one process at a time.
+
+The runner checks configuration and fixture IDs, polls readiness, submits the product request, follows returned IDs, and checks evidence and usage. Insights verifies one completed run and its single usage record. Signal verifies activation, a subsequent snapshot and alert, one charge in its shared monitoring period, and no additional Insights charge for that fixture. A timeout preserves state for reconciliation and does not cancel processing. The runner stops on blocking conditions instead of silently creating replacement work.
+
+Also download the [Postman product journeys](/downloads/amlok-journeys.postman_collection.json). Run one folder at a time with the Collection Runner after setting its protected local environment. Scripts save returned IDs and poll with a bounded attempt count. Standard collection requests remain available for manual debugging. Postman keys are generated once per intended action and retained across a rerun; clear the journey variables only when starting a deliberate new test after a fixture reset.
+
+## Acceptance scenarios
+
+| Scenario ID | Exercise | Expected result |
+| --- | --- | --- |
+| `insights_success` | Complete underwriting and reconcile its output. | One Standard Insights charge; completed snapshot, manifest and usage agree. |
+| `signal_success` | Activate monitoring; observe the scheduled synthetic change. | Full Signal charge on activation; reassessment and alert without another Insights charge. |
+| `insufficient_credits` | Submit work without enough test credits, fund through the sandbox portal and retry. | Initial `402` has no run or debit; funded retry uses the same intended key. |
+| `authorization_expired` | Renew the seeded connection and complete hosted authorization. | Same connection ID, restored authorization and explicit sync coverage. |
+| `rejected_evidence` | Read a rejected requirement and upload the supplied valid replacement. | Structured rejection reason; accepted replacement resumes the same run. |
+| `workload_limit` | Submit an oversized workload. | `422 workload_limit_exceeded`, no automatic upgrade or debit. |
+| `retryable_failure` | Read the structured failure and retry the same run. | Attempt increments once; successful completion produces only one Insights charge. |
+| `owner_kyc` | Run person KYC using its active business association and unfinished parent. | Person result stays in the business product with no extra charge. |
+| `duplicate_delivery` | Receive duplicates and replay the same event. | One application-side effect; delivery attempts remain observable. |
+
+For cancellation and month-boundary tests, use the sandbox portal's scenario controls. Cancellation immediately stops processing, deductions and upcoming top-ups. Month advance tests the full Signal charge once per borrower/business/workspace/month. Simulated funds and time cannot affect production. Use the portal fixture pack's valid replacement document and hosted authorization flow; do not fabricate evidence or provider credentials.
+
+Scenario `expected_http_status`, `expected_state` and `instructions` describe each fixture's expected result. General endpoint saved responses show schema shapes and are not those full datasets. A successful local contract test is not evidence that a live sandbox run completed; retain actual run IDs and results from your provisioned environment for acceptance.

@@ -1,0 +1,32 @@
+---
+title: "Connection authorization and recovery"
+description: "Connect and renew provider access while preserving the original connection."
+---
+
+## Start an authorized connection
+
+1. Read `GET /v1/providers`. Choose a product from that provider's `products[].id`; its `resources`, `consent_scopes` and `purposes` describe what it authorizes. A resource such as `bank_transaction` is not a product ID.
+2. Record the borrower's valid consent. Create an unpredictable browser-session `state` with at least 32 characters. Store it server-side with the intended business and registered HTTPS return URL.
+3. [Create the connection](/api-reference/endpoints/platform/create-connection) with that consent, product IDs, `redirect_uri` and `state`. Save its ID before opening `action.url`.
+4. On return, validate `state`, its session binding and the expected `connection_id`, and consume that state once. Return parameters are `connection_id`, `state`, and `result` (`completed`, `cancelled`, or `failed`); a failed return also has a sanitized `error_code`.
+5. Retrieve the connection from your server. A browser return does not prove authorization succeeded. Wait for `active` or inspect `error_code`; `connection.updated` can notify your server independently.
+
+Never put API keys, source records or provider tokens in the browser return URL. Register return URLs through the client portal; the account manager provides portal access information.
+
+## Renew access
+
+For a `reauth_required` connection, or an expired/abandoned authorization action on a pending connection, call [Renew connection authorization](/api-reference/endpoints/platform/renew-connection-authorization):
+
+```json
+{
+  "consent_id": "con_current",
+  "redirect_uri": "https://client.example.com/connected",
+  "state": "replace-with-cryptographically-random-session-state"
+}
+```
+
+Use `POST /v1/connections/{id}/authorization` with the existing connection ID. Obtain and record fresh borrower consent first when the previous consent is expired or revoked. The replacement consent must cover the same subject, products and purposes. AMLOK updates the connection's consent reference only after successful authorization.
+
+The connection ID, previously retrieved records and synchronization lineage remain stable. A replacement action invalidates the previous unused action. An identical idempotent retry returns the same action and original expiry. To replace an expired link intentionally, use a new key and fresh state. After the connection is active, synchronize and inspect actual coverage; authorization alone does not fill a data gap.
+
+`revoked` or `disconnected` connections cannot be reopened. Obtain new consent and create a new connection; preserve the old records as evidence under the configured retention policy. Do not merge account identities or deduplicate cross-connection data using names alone.

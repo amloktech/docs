@@ -1,0 +1,39 @@
+---
+title: "Recover interrupted requests"
+description: "Find accepted work after a timeout without starting duplicate processing."
+---
+
+## Persist the intended action
+
+Before sending a POST, persist its idempotency key, OpenAPI `operationId`, exact resolved target path, intended body and your correlation ID. Never store API credentials with that record. For example, an underwriting uses `EP147` and `/v1/workflow-runs`; a synchronization uses `EP140` and `/v1/connections/cnn_123/sync`.
+
+Within 24 hours, retry the identical request and key after a timeout. An accepted command and its durable receipt are recorded atomically. Full response replay lasts 24 hours; the minimal receipt lasts until workspace deletion. An unchanged retry after the replay window returns `409 idempotency_result_expired` without executing again. Changed payloads or targets return `409 idempotency_conflict`.
+
+## Find the original resource
+
+```bash
+curl --get --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/request-receipts/lookup" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
+  --header "Idempotency-Key: your-original-key" \
+  --data-urlencode "operation_id=EP147" \
+  --data-urlencode "target_path=/v1/workflow-runs"
+```
+
+The response identifies `resource_id`, `resource_type`, `resource_path`, `original_http_status`, `request_id` and receipt status. Retrieve the authorized relative `resource_path` with its read scope and continue polling or reconciliation. Receipt status is a record of command execution, not a replacement for the authoritative resource's current status. Lookup requires `platform:read` plus the original operation's scopes in the same workspace and environment; rotating the API key does not lose access to its receipts.
+
+For a short-lived document/report download, the receipt points to its durable document/report parent. Generate a fresh link with a new key when the old link expires; this does not rerun paid processing. A webhook replay receipt points to the original event; match its `request_id` against delivery `replay_request_id`. A lost webhook-creation response does not make its one-time signing secret readable through lookup; rotate it through the portal.
+
+If the resource has expired, `resource_unavailable` preserves its identity. It does not authorize a new billable request. A `404` may reflect an in-flight or never-accepted command, so it does not prove the operation never ran. Within the replay window, retry the original request; after that window, ask support to reconcile your saved key and caller correlation ID before generating a new key.
+
+Pre-execution validation and insufficient-credit rejection create no accepted receipt. Correct the rejected request as directed; a known `402` can be retried with its original key after funding. Do not infer rejection from a timeout.
+
+## Recover a failed workflow
+
+`WorkflowRun.failure` is non-null for `failed` runs. It contains `code`, `message`, `retryable`, `recovery_action`, `retry_after_seconds`, `occurred_at` and `request_id`.
+
+- `retry_same_run`: after the specified delay, call [Retry failed workflow](/api-reference/endpoints/operations/retry-failed-workflow). Save a new key for this retry action. The same run ID and evidence remain; `attempt` increments once and there is still only one eventual Insights charge.
+- `correct_evidence`: inspect requirements and correct the rejected evidence through its authorized upload flow. If the run is already terminal and non-retryable, contact support to resolve it; do not start replacement billable work automatically.
+- `contact_support`: provide the run and request IDs. Do not retry a non-retryable failure.
+
+Retry rejects completed, cancelled or already-running work and rechecks product authorization, consent and limits. `waiting_for_credits` and `waiting_for_data` resume through funding and accepted evidence; they do not use the retry endpoint. Requirement `rejection` includes a machine-readable code, safe message, rejected document IDs and review time.

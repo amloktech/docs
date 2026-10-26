@@ -1,0 +1,11 @@
+---
+title: "List webhook events"
+openapi: "/openapi/amlok-v1.json GET /v1/webhook-events"
+playground: simple
+---
+
+**Required scope:** `webhooks:read`
+
+Discover generated events even when none reached your receiver. Filter by creation time and type; order by (created_at, id), ascending. First page freezes the upper boundary; cursor retains it. Retention and retained_from are provided by configuration. A requested interval earlier than retained_from returns 410 event_history_expired, never a misleading empty success. Reconcile current state using checkpoints and the change feed after expiry. Event availability still requires the key's underlying resource read scopes. Polling events is read-only and does not redeliver them.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

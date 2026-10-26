@@ -1,0 +1,712 @@
+[
+  {
+    "id": "IR001",
+    "method": "POST",
+    "path": "/v1/connections/{id}/authorization",
+    "title": "Renew connection authorization",
+    "scope": "connections:write",
+    "group": "Platform",
+    "page": "api-reference/endpoints/platform/renew-connection-authorization",
+    "resource": "connection",
+    "request": {
+      "consent_id": "con_example",
+      "redirect_uri": "https://client.example.com/connected",
+      "state": "synthetic-random-state-at-least-32-characters"
+    },
+    "response": {
+      "data": {
+        "id": "connection_example",
+        "object": "connection",
+        "subject_id": "biz_example",
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "record_version": 1,
+        "source_refs": [],
+        "data_status": "partial",
+        "missing_fields": [],
+        "schema_version": "1.4.2",
+        "client_reference": "app-1029",
+        "provider_id": "BANK-02",
+        "provider_tenant_id": "item_example",
+        "status": "active",
+        "institution_id": "ins_example",
+        "institution_name": "Example Bank",
+        "country": "CA",
+        "products": [
+          "transactions",
+          "balance"
+        ],
+        "scopes": [
+          "banking:read"
+        ],
+        "consent_id": "con_01JAMLOK",
+        "last_successful_sync_at": null,
+        "next_refresh_at": null,
+        "history_available_from": "2025-10-22",
+        "reauth_required_at": null,
+        "error_code": "reauth_required",
+        "sync_cursor": "cur_example"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      },
+      "action": {
+        "type": "redirect",
+        "url": "https://authorize.example.com/session/synthetic",
+        "expires_at": "2026-10-23T14:15:00Z"
+      }
+    },
+    "success": "201"
+  },
+  {
+    "id": "IR002",
+    "method": "POST",
+    "path": "/v1/subject-associations",
+    "title": "Create subject association",
+    "scope": "identity:write",
+    "group": "Identity",
+    "page": "api-reference/endpoints/identity/create-subject-association",
+    "resource": "subject_association",
+    "request": {
+      "business_id": "biz_example",
+      "person_id": "per_example",
+      "role": "beneficial_owner",
+      "evidence_document_ids": [
+        "doc_example"
+      ]
+    },
+    "response": {
+      "data": {
+        "id": "assoc_example",
+        "object": "subject_association",
+        "business_id": "biz_example",
+        "person_id": "per_example",
+        "role": "beneficial_owner",
+        "status": "pending",
+        "evidence_document_ids": [
+          "doc_example"
+        ],
+        "relationship_id": null,
+        "reason_code": null,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "record_version": 1
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "201"
+  },
+  {
+    "id": "IR003",
+    "method": "GET",
+    "path": "/v1/subject-associations",
+    "title": "List subject associations",
+    "scope": "identity:read",
+    "group": "Identity",
+    "page": "api-reference/endpoints/identity/list-subject-associations",
+    "resource": "subject_association",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "assoc_example",
+          "object": "subject_association",
+          "business_id": "biz_example",
+          "person_id": "per_example",
+          "role": "beneficial_owner",
+          "status": "active",
+          "evidence_document_ids": [
+            "doc_example"
+          ],
+          "relationship_id": null,
+          "reason_code": null,
+          "created_at": "2026-10-23T14:00:00Z",
+          "updated_at": "2026-10-23T14:00:00Z",
+          "record_version": 2
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR004",
+    "method": "GET",
+    "path": "/v1/subject-associations/{id}",
+    "title": "Retrieve subject association",
+    "scope": "identity:read",
+    "group": "Identity",
+    "page": "api-reference/endpoints/identity/retrieve-subject-association",
+    "resource": "subject_association",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "assoc_example",
+        "object": "subject_association",
+        "business_id": "biz_example",
+        "person_id": "per_example",
+        "role": "beneficial_owner",
+        "status": "active",
+        "evidence_document_ids": [
+          "doc_example"
+        ],
+        "relationship_id": null,
+        "reason_code": null,
+        "created_at": "2026-10-23T14:00:00Z",
+        "updated_at": "2026-10-23T14:00:00Z",
+        "record_version": 2
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR005",
+    "method": "POST",
+    "path": "/v1/workflow-runs/{id}/retry",
+    "title": "Retry failed workflow",
+    "scope": "workflows:execute",
+    "group": "Operations",
+    "page": "api-reference/endpoints/operations/retry-failed-workflow",
+    "resource": "workflow_run",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "wfr_example",
+        "object": "workflow_run",
+        "subject_id": "biz_example",
+        "created_at": "2026-10-22T13:00:00Z",
+        "updated_at": "2026-10-22T14:00:00Z",
+        "record_version": 1,
+        "source_refs": [],
+        "data_status": "pending",
+        "missing_fields": [],
+        "schema_version": "1.4.2",
+        "workflow_type": "underwrite",
+        "workflow_version": "underwrite-v1",
+        "status": "queued",
+        "input_resource_ids": [
+          "app_example",
+          "doc_example"
+        ],
+        "output_resource_ids": [],
+        "product": "insights",
+        "input_manifest_id": "manifest_example",
+        "initial_input_manifest_id": "manifest_example",
+        "workload_id": "workload_example",
+        "billing_usage_id": null,
+        "monitoring_period_id": null,
+        "blocked_reason": null,
+        "stop_reason": null,
+        "failure": null,
+        "attempt": 2,
+        "completed_at": null
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "202"
+  },
+  {
+    "id": "IR006",
+    "method": "GET",
+    "path": "/v1/request-receipts/lookup",
+    "title": "Look up request receipt",
+    "scope": "platform:read",
+    "group": "Platform",
+    "page": "api-reference/endpoints/platform/look-up-request-receipt",
+    "resource": "request_receipt",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "rcpt_example",
+        "object": "request_receipt",
+        "operation_id": "EP147",
+        "target_path": "/v1/workflow-runs",
+        "request_id": "req_example",
+        "status": "accepted",
+        "resource_type": "workflow_run",
+        "resource_id": "wfr_example",
+        "resource_path": "/v1/workflow-runs/wfr_example",
+        "original_http_status": 202,
+        "accepted_at": "2026-10-23T14:00:00Z",
+        "replay_expires_at": "2026-10-24T14:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR007",
+    "method": "GET",
+    "path": "/v1/configuration",
+    "title": "Retrieve environment configuration",
+    "scope": "platform:read",
+    "group": "Platform",
+    "page": "api-reference/endpoints/platform/retrieve-environment-configuration",
+    "resource": "environment_configuration",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "config_example",
+        "object": "environment_configuration",
+        "workspace_id": "wsp_example",
+        "environment": "sandbox",
+        "revision": "cfg_example",
+        "effective_at": "2026-10-23T14:00:00Z",
+        "workflow_versions": [
+          {
+            "id": "underwrite-v1",
+            "workflow_type": "underwrite",
+            "products": [
+              "insights"
+            ],
+            "verification_types": []
+          },
+          {
+            "id": "kyc-ca-v1",
+            "workflow_type": "verify",
+            "products": [
+              "insights",
+              "signal"
+            ],
+            "verification_types": [
+              "kyc"
+            ]
+          },
+          {
+            "id": "kyb-ca-v1",
+            "workflow_type": "verify",
+            "products": [
+              "insights",
+              "signal"
+            ],
+            "verification_types": [
+              "kyb"
+            ]
+          }
+        ],
+        "rulesets": [
+          {
+            "id": "monitoring-v1",
+            "attribute_keys": [
+              "cash_flow.net_monthly"
+            ],
+            "resource_types": [
+              "bank_transaction"
+            ]
+          }
+        ],
+        "cadences": [
+          {
+            "id": "daily",
+            "description": "Daily AMLOK evaluation subject to actual provider freshness and permission."
+          }
+        ],
+        "limits": {
+          "requests_per_minute": 120,
+          "burst_requests": 20,
+          "concurrent_jobs": 5,
+          "upload_bytes": 10485760,
+          "document_pages": 100,
+          "mime_types": [
+            "application/pdf"
+          ]
+        },
+        "webhooks": {
+          "event_retention_seconds": 2592000,
+          "delivery_timeout_seconds": 10,
+          "rotation_overlap_seconds": 86400,
+          "retained_from": "2026-09-23T14:00:00Z"
+        },
+        "idempotency_replay_seconds": 86400
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR008",
+    "method": "GET",
+    "path": "/v1/subjects/{id}/readiness",
+    "title": "Retrieve subject readiness",
+    "scope": "risk:read",
+    "group": "Risk",
+    "page": "api-reference/endpoints/risk/retrieve-subject-readiness",
+    "resource": null,
+    "request": null,
+    "response": {
+      "data": {
+        "subject_id": "biz_example",
+        "product": "insights",
+        "status": "ready",
+        "checks": [
+          {
+            "code": "bank_history_12_months",
+            "status": "passed",
+            "message": "At least 12 months of permitted banking evidence included."
+          }
+        ],
+        "input_manifest_id": "manifest_example",
+        "baseline_snapshot_id": null,
+        "next_action": "start_underwriting",
+        "retry_after_seconds": null,
+        "updated_at": "2026-10-23T14:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR009",
+    "method": "GET",
+    "path": "/v1/webhook-events",
+    "title": "List webhook events",
+    "scope": "webhooks:read",
+    "group": "Webhooks",
+    "page": "api-reference/endpoints/webhooks/list-webhook-events",
+    "resource": null,
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "evt_example",
+          "type": "verification.completed",
+          "created_at": "2026-10-23T14:00:00Z",
+          "schema_version": "1.4.2",
+          "resource_type": "verification",
+          "resource_id": "ver_example",
+          "resource_version": 2,
+          "data": {
+            "status": "in_review"
+          }
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR010",
+    "method": "GET",
+    "path": "/v1/webhook-events/{id}",
+    "title": "Retrieve webhook event",
+    "scope": "webhooks:read",
+    "group": "Webhooks",
+    "page": "api-reference/endpoints/webhooks/retrieve-webhook-event",
+    "resource": null,
+    "request": null,
+    "response": {
+      "data": {
+        "id": "evt_example",
+        "type": "verification.completed",
+        "created_at": "2026-10-23T14:00:00Z",
+        "schema_version": "1.4.2",
+        "resource_type": "verification",
+        "resource_id": "ver_example",
+        "resource_version": 2,
+        "data": {
+          "status": "in_review"
+        }
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR011",
+    "method": "GET",
+    "path": "/v1/webhook-deliveries",
+    "title": "List webhook deliveries",
+    "scope": "webhooks:read",
+    "group": "Webhooks",
+    "page": "api-reference/endpoints/webhooks/list-webhook-deliveries",
+    "resource": "webhook_delivery",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "delivery_example",
+          "object": "webhook_delivery",
+          "endpoint_id": "whe_example",
+          "event_id": "evt_example",
+          "attempt": 1,
+          "status": "failed",
+          "created_at": "2026-10-23T14:00:00Z",
+          "attempted_at": "2026-10-23T14:00:00Z",
+          "next_attempt_at": "2026-10-23T14:01:00Z",
+          "http_status": 503,
+          "failure_code": "http_error",
+          "replay_request_id": null
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "IR012",
+    "method": "GET",
+    "path": "/v1/sandbox/scenarios",
+    "title": "List sandbox scenarios",
+    "scope": "platform:read",
+    "group": "Platform",
+    "page": "api-reference/endpoints/platform/list-sandbox-scenarios",
+    "resource": "sandbox_scenario",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "insights_success",
+          "object": "sandbox_scenario",
+          "name": "Completed full underwriting",
+          "subject_id": "biz_sandbox_insights_success",
+          "application_id": "app_sandbox_insights_success",
+          "input_manifest_id": "manifest_sandbox_insights_success",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_insights_success",
+          "person_id": "per_sandbox_insights_success",
+          "association_id": "assoc_sandbox_insights_success",
+          "document_id": "doc_sandbox_insights_success",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 202,
+          "expected_state": "completed",
+          "instructions": "Run the Insights journey. Includes two bank accounts, five business systems and at least twelve months of synthetic banking history. Expect one Standard Insights charge."
+        },
+        {
+          "id": "signal_success",
+          "object": "sandbox_scenario",
+          "name": "Monitoring and reassessment",
+          "subject_id": "biz_sandbox_signal_success",
+          "application_id": "app_sandbox_signal_success",
+          "input_manifest_id": "manifest_sandbox_signal_success",
+          "baseline_snapshot_id": "rsk_sandbox_signal_success",
+          "connection_id": "cnn_sandbox_signal_success",
+          "person_id": "per_sandbox_signal_success",
+          "association_id": "assoc_sandbox_signal_success",
+          "document_id": "doc_sandbox_signal_success",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 201,
+          "expected_state": "active",
+          "instructions": "Run the Signal journey. A pre-approved existing-portfolio baseline and scheduled synthetic source update produce reassessment and an alert. Expect one Standard Signal charge and no Insights charge."
+        },
+        {
+          "id": "insufficient_credits",
+          "object": "sandbox_scenario",
+          "name": "Insufficient available credits",
+          "subject_id": "biz_sandbox_insufficient_credits",
+          "application_id": "app_sandbox_insufficient_credits",
+          "input_manifest_id": "manifest_sandbox_insufficient_credits",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_insufficient_credits",
+          "person_id": "per_sandbox_insufficient_credits",
+          "association_id": "assoc_sandbox_insufficient_credits",
+          "document_id": "doc_sandbox_insufficient_credits",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 402,
+          "expected_state": "insufficient_credits",
+          "instructions": "Submit the Insights request; expect no accepted run or debit. Use portal sandbox funding to restore test credits, then retry the identical key."
+        },
+        {
+          "id": "authorization_expired",
+          "object": "sandbox_scenario",
+          "name": "Expired connection authorization",
+          "subject_id": "biz_sandbox_authorization_expired",
+          "application_id": "app_sandbox_authorization_expired",
+          "input_manifest_id": "manifest_sandbox_authorization_expired",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_authorization_expired",
+          "person_id": "per_sandbox_authorization_expired",
+          "association_id": "assoc_sandbox_authorization_expired",
+          "document_id": "doc_sandbox_authorization_expired",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 201,
+          "expected_state": "reauth_required",
+          "instructions": "Renew the supplied connection authorization; complete the sandbox hosted flow. Retrieve the same connection ID as active and then sync."
+        },
+        {
+          "id": "rejected_evidence",
+          "object": "sandbox_scenario",
+          "name": "Rejected evidence",
+          "subject_id": "biz_sandbox_rejected_evidence",
+          "application_id": "app_sandbox_rejected_evidence",
+          "input_manifest_id": "manifest_sandbox_rejected_evidence",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_rejected_evidence",
+          "person_id": "per_sandbox_rejected_evidence",
+          "association_id": "assoc_sandbox_rejected_evidence",
+          "document_id": "doc_sandbox_rejected_evidence",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 202,
+          "expected_state": "waiting_for_data",
+          "instructions": "Start underwriting; the sandbox evidence validator rejects the seeded document and returns a rejected requirement with a reason. Upload its replacement from the portal-provided fixture pack using requirement_id; the same run resumes."
+        },
+        {
+          "id": "workload_limit",
+          "object": "sandbox_scenario",
+          "name": "Known workload limit exceeded",
+          "subject_id": "biz_sandbox_workload_limit",
+          "application_id": "app_sandbox_workload_limit",
+          "input_manifest_id": "manifest_sandbox_workload_limit",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_workload_limit",
+          "person_id": "per_sandbox_workload_limit",
+          "association_id": "assoc_sandbox_workload_limit",
+          "document_id": "doc_sandbox_workload_limit",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 422,
+          "expected_state": "workload_limit_exceeded",
+          "instructions": "Submit the Insights request with over-limit evidence; expect no debit and no automatic tier change."
+        },
+        {
+          "id": "retryable_failure",
+          "object": "sandbox_scenario",
+          "name": "Retryable processing failure",
+          "subject_id": "biz_sandbox_retryable_failure",
+          "application_id": "app_sandbox_retryable_failure",
+          "input_manifest_id": "manifest_sandbox_retryable_failure",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_retryable_failure",
+          "person_id": "per_sandbox_retryable_failure",
+          "association_id": "assoc_sandbox_retryable_failure",
+          "document_id": "doc_sandbox_retryable_failure",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 202,
+          "expected_state": "failed",
+          "instructions": "Start the run and poll until failure.retryable is true. Retry that same run; its second attempt completes with one total Insights charge."
+        },
+        {
+          "id": "owner_kyc",
+          "object": "sandbox_scenario",
+          "name": "Related owner verification",
+          "subject_id": "biz_sandbox_owner_kyc",
+          "application_id": "app_sandbox_owner_kyc",
+          "input_manifest_id": "manifest_sandbox_owner_kyc",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_owner_kyc",
+          "person_id": "per_sandbox_owner_kyc",
+          "association_id": "assoc_sandbox_owner_kyc",
+          "document_id": "doc_sandbox_owner_kyc",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 201,
+          "expected_state": "approved",
+          "instructions": "Use an unfinished waiting-for-data business run from the fixture pack and its active association to request person KYC. The included check has no separate charge."
+        },
+        {
+          "id": "duplicate_delivery",
+          "object": "sandbox_scenario",
+          "name": "Duplicate webhook delivery",
+          "subject_id": "biz_sandbox_duplicate_delivery",
+          "application_id": "app_sandbox_duplicate_delivery",
+          "input_manifest_id": "manifest_sandbox_duplicate_delivery",
+          "baseline_snapshot_id": null,
+          "connection_id": "cnn_sandbox_duplicate_delivery",
+          "person_id": "per_sandbox_duplicate_delivery",
+          "association_id": "assoc_sandbox_duplicate_delivery",
+          "document_id": "doc_sandbox_duplicate_delivery",
+          "workflow_version": "underwrite-v1",
+          "ruleset_version": "monitoring-v1",
+          "cadence": "daily",
+          "expected_http_status": 201,
+          "expected_state": "delivered",
+          "instructions": "Register a sandbox receiver; its seeded event is delivered twice with one event ID and fresh signatures. Reconcile attempts and replay using that ID; your consumer must apply the event once."
+        }
+      ],
+      "page": {
+        "has_more": false,
+        "next_cursor": null,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  }
+]

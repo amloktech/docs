@@ -55,11 +55,12 @@ Use [provider capability discovery](/api-reference/endpoints/platform/list-provi
   "provider_id": "BANK-02",
   "products": ["transactions"],
   "consent_id": "con_example",
-  "redirect_uri": "https://client.example.com/connected"
+  "redirect_uri": "https://client.example.com/connected",
+  "state": "replace-with-random-session-state-at-least-32-characters"
 }
 ```
 
-Save `data.id` as `cnn_example`. Direct the authorized user through the short-lived `action.url`. The registered `redirect_uri` is a browser return location, not a webhook destination. Retrieve the connection or consume `connection.updated` before attempting a sync. [Connection endpoint](/api-reference/endpoints/platform/create-connection).
+Generate and include a cryptographically random `state` of at least 32 characters in this request, bound to the initiating browser session. Save `data.id` as `cnn_example`. Direct the authorized user through the short-lived `action.url`. The registered `redirect_uri` is a browser return location, not a webhook destination. Retrieve the connection or consume `connection.updated` before attempting a sync. [Connection endpoint](/api-reference/endpoints/platform/create-connection).
 
 ## 5. Synchronize and wait for completion
 
@@ -90,4 +91,4 @@ curl --get --fail-with-body --max-time 30 \
 
 Follow `page.next_cursor` until `page.has_more` is false. Keep the same filters for subsequent pages. Amounts are exact decimal strings; for bank transactions, `direction` carries the movement direction.
 
-Next, implement [pagination](/api-reference/pagination), [safe retries](/api-reference/idempotency), and [webhook verification](/api-reference/webhooks).
+Continue with the [complete product journeys](/api-reference/sandbox-journeys) and [connection recovery](/api-reference/connection-recovery). Next, implement [pagination](/api-reference/pagination), [safe retries](/api-reference/idempotency), and [webhook verification](/api-reference/webhooks).

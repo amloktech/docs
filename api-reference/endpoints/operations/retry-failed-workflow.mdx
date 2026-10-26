@@ -1,0 +1,11 @@
+---
+title: "Retry failed workflow"
+openapi: "/openapi/amlok-v1.json POST /v1/workflow-runs/{id}/retry"
+playground: simple
+---
+
+**Required scope:** `workflows:execute`
+
+Retry an existing failed run only when failure.retryable is true and recovery_action is retry_same_run. Retain run identity, application, product context, evidence and the one eventual charge. Increment attempt once per accepted retry and append an audit event; replaying this idempotency key cannot increment it again. Revalidate active consent, parent context, association and workload. Respect retry_after_seconds. Non-retryable, completed, cancelled or already-running runs return 409 invalid_state; concurrent retries can start only one attempt. Unfunded accepted work uses waiting_for_credits, not a replacement run. For non-retryable invalid evidence, correct requirements or contact support as failure.recovery_action directs; do not invent a replacement billable operation. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

@@ -1,0 +1,31 @@
+---
+title: "Verify business owners and related people"
+description: "Include person KYC within the existing business underwriting or monitoring product."
+---
+
+The business remains the primary subject for its Insights underwriting or Signal monitoring period. An owner, director, guarantor or authorized signatory can have a person-level KYC check within that same product.
+
+1. Create or retrieve the business and person in the same workspace. Obtain the required authorization and upload supporting evidence.
+2. [Create a subject association](/api-reference/endpoints/identity/create-subject-association) using `business_id`, `person_id`, `role` and `evidence_document_ids`.
+3. Poll the association until `active`. AMLOK validates permitted use and evidence; a record can remain `pending` for platform review or become `rejected` with a `reason_code`. Contact your account manager for unresolved review. A declared association is not a verified legal ownership determination.
+4. Start or retrieve the unfinished business underwriting, or use its active paid Signal period. A full underwriting can wait for required KYC evidence; it does not require the owner check to be completed before the parent run exists.
+5. Request person KYC with the active association in its processing context:
+
+```json
+{
+  "subject_id": "per_owner",
+  "verification_type": "kyc",
+  "workflow_version": "kyc-ca-v1",
+  "processing_context": {
+    "product": "insights",
+    "workflow_run_id": "wfr_business",
+    "subject_association_id": "assoc_owner"
+  }
+}
+```
+
+Select the actual approved verification version from [environment configuration](/api-reference/configuration). For Signal, replace `workflow_run_id` with `monitoring_period_id` and set `product` to `signal`.
+
+The association's person must match the verification subject and its business must match the parent subject. AMLOK validates current authorization on every attempt and records `subject_association_version` on the verification. Inactive or mismatched associations are rejected. Revocation stops unfinished related-person work without changing already completed audit evidence.
+
+The association exception applies only to person verification. Other processing stages remain tied to their parent subject. All associated evidence and processing count toward that parent's agreed workload. The person check does not create a separate Insights charge or Signal account-month. Associations do not grant unrestricted access to the person's other data. Corrections, review and revocation are managed through the client portal; canonical verified relationships remain read-only evidence.

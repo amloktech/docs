@@ -138,8 +138,8 @@ Do not mark an event complete before its effects are durably committed. A worker
 
 Delivery is at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
 
-The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. Terminal failures require delivery review and reconciliation.
+The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. Terminal failures require [delivery review and reconciliation](/api-reference/webhook-operations). List retained events to discover missing IDs and delivery attempts to inspect failures.
 
-[Replay](/api-reference/endpoints/webhooks/replay-webhook-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Secret rotation overlap, replay retention, delivery timeouts, and administrative controls are configured during onboarding.
+[Replay](/api-reference/endpoints/webhooks/replay-webhook-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Read configured overlap, retention and delivery timeouts from `GET /v1/configuration`. Authorized administrators manage URLs, subscriptions, enablement and secret rotation in the client portal; follow the [webhook operations procedure](/api-reference/webhook-operations).
 
 Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.

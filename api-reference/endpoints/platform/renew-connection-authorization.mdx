@@ -1,0 +1,11 @@
+---
+title: "Renew connection authorization"
+openapi: "/openapi/amlok-v1.json POST /v1/connections/{id}/authorization"
+playground: simple
+---
+
+**Required scope:** `connections:write`
+
+Create a fresh short-lived authorization action on the existing pending, active or reauth_required connection. Preserve its ID, records and synchronization lineage. The consent must authorize the same subject, provider products and purposes. Validate redirect_uri against portal registration. Bind state to this connection and action; echo it on return. A new action invalidates any older unused action. An identical idempotent retry returns the same action, including its original expiry; use a new key when intentionally replacing an expired action. Reauthorization does not backfill data until a successful sync. Revoked or disconnected connections cannot be reopened; obtain new consent and create a new connection. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

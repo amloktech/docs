@@ -306,7 +306,7 @@
       "post": {
         "operationId": "EP139",
         "summary": "Create connection",
-        "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Renew an expired link or reauthorization-required connection through POST /v1/connections/{id}/authorization. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Platform"
         ],
@@ -344,16 +344,16 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/connections\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\"\n}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/connections\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/connections\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'subject_id': 'biz_example',\n 'provider_id': 'BANK-02',\n 'products': ['transactions'],\n 'consent_id': 'con_example',\n 'redirect_uri': 'https://client.example.com/connected'},\n)\nresponse.raise_for_status()\nprint(response.json())"
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/connections\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'subject_id': 'biz_example',\n 'provider_id': 'BANK-02',\n 'products': ['transactions'],\n 'consent_id': 'con_example',\n 'redirect_uri': 'https://client.example.com/connected',\n 'state': 'synthetic-random-state-at-least-32-characters'},\n)\nresponse.raise_for_status()\nprint(response.json())"
           },
           {
             "lang": "JavaScript",
             "label": "Node.js",
-            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/connections\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/connections\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
           }
         ],
         "responses": {
@@ -490,7 +490,8 @@
                   "transactions"
                 ],
                 "consent_id": "con_example",
-                "redirect_uri": "https://client.example.com/connected"
+                "redirect_uri": "https://client.example.com/connected",
+                "state": "synthetic-random-state-at-least-32-characters"
               }
             }
           }
@@ -992,7 +993,7 @@
       "post": {
         "operationId": "EP137",
         "summary": "Create consent",
-        "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Platform"
         ],
@@ -2170,7 +2171,7 @@
       "post": {
         "operationId": "EP135",
         "summary": "Create business",
-        "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Identity"
         ],
@@ -2873,7 +2874,7 @@
       "post": {
         "operationId": "EP136",
         "summary": "Create person",
-        "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Identity"
         ],
@@ -3943,7 +3944,8 @@
                             "product": "insights",
                             "workflow_run_id": "wfr_example"
                           },
-                          "workflow_version": "kyb-ca-v1"
+                          "workflow_version": "kyb-ca-v1",
+                          "subject_association_version": null
                         }
                       ],
                       "page": {
@@ -4024,7 +4026,7 @@
       "post": {
         "operationId": "EP142",
         "summary": "Start verification",
-        "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+        "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Person KYC within a business assessment requires processing_context.subject_association_id. Its person_id must match the verification subject; its business_id must match the parent subject. Store the association ID and validated record version on the verification for audit. Pending, rejected, revoked, mismatched or cross-workspace associations cannot authorize a stage. Revocation stops unfinished related-person work. Do not create a second product merely to verify its owner. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Identity"
         ],
@@ -4126,7 +4128,8 @@
                         "processing_context": {
                           "product": "insights",
                           "workflow_run_id": "wfr_example"
-                        }
+                        },
+                        "subject_association_version": null
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -4334,7 +4337,8 @@
                           "product": "insights",
                           "workflow_run_id": "wfr_example"
                         },
-                        "workflow_version": "kyb-ca-v1"
+                        "workflow_version": "kyb-ca-v1",
+                        "subject_association_version": null
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -5685,7 +5689,7 @@
       "post": {
         "operationId": "EP144",
         "summary": "Upload document",
-        "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Identity"
         ],
@@ -23070,7 +23074,7 @@
       "post": {
         "operationId": "EP146",
         "summary": "Create application",
-        "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Lending"
         ],
@@ -27883,7 +27887,7 @@
       "post": {
         "operationId": "EP143",
         "summary": "Start lien search",
-        "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+        "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Liens"
         ],
@@ -30604,7 +30608,7 @@
       "post": {
         "operationId": "EP150",
         "summary": "Create monitor",
-        "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges. Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately.",
+        "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges. Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Risk"
         ],
@@ -31897,7 +31901,9 @@
                           "billing_usage_id": null,
                           "monitoring_period_id": null,
                           "blocked_reason": null,
-                          "stop_reason": null
+                          "stop_reason": null,
+                          "failure": null,
+                          "attempt": 1
                         }
                       ],
                       "page": {
@@ -31978,7 +31984,7 @@
       "post": {
         "operationId": "EP147",
         "summary": "Start workflow run",
-        "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. AMLOK returns evidence and assessment results. The institution performs all borrower outreach and intervention in its own systems. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge. A root underwrite request is a full Insights underwriting and requires application_id and input_manifest_id. Other workflow types require processing_context and are included stages. Signal reassessment is a Signal child run, never a separately billed root underwrite. Workload checks reject known over-limit inputs with 422 workload_limit_exceeded. If discovery reveals more records later, pause as blocked_by_limit before processing beyond the limit. No automatic tier upgrade occurs. Available credits are checked at acceptance and again atomically with output publication and the one usage debit at successful completion. No credits are reserved. If funds were spent by concurrent work, keep the run waiting_for_credits and withhold its final output; resume without duplicate processing when funded. Cancelled runs never publish or charge. Each evidence manifest is immutable. While an unfinished run waits for required evidence, accepted evidence can create a successor manifest; retain initial_input_manifest_id, update input_manifest_id and record_version, and emit an audit event identifying both manifests. The final snapshot and usage link to the final manifest. This continuation keeps the same run and single charge.",
+        "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. AMLOK returns evidence and assessment results. The institution performs all borrower outreach and intervention in its own systems. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge. A root underwrite request is a full Insights underwriting and requires application_id and input_manifest_id. Other workflow types require processing_context and are included stages. Signal reassessment is a Signal child run, never a separately billed root underwrite. Workload checks reject known over-limit inputs with 422 workload_limit_exceeded. If discovery reveals more records later, pause as blocked_by_limit before processing beyond the limit. No automatic tier upgrade occurs. Available credits are checked at acceptance and again atomically with output publication and the one usage debit at successful completion. No credits are reserved. If funds were spent by concurrent work, keep the run waiting_for_credits and withhold its final output; resume without duplicate processing when funded. Cancelled runs never publish or charge. Each evidence manifest is immutable. While an unfinished run waits for required evidence, accepted evidence can create a successor manifest; retain initial_input_manifest_id, update input_manifest_id and record_version, and emit an audit event identifying both manifests. The final snapshot and usage link to the final manifest. This continuation keeps the same run and single charge. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Operations"
         ],
@@ -32088,7 +32094,9 @@
                         "billing_usage_id": null,
                         "monitoring_period_id": null,
                         "blocked_reason": null,
-                        "stop_reason": null
+                        "stop_reason": null,
+                        "failure": null,
+                        "attempt": 1
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -32304,7 +32312,9 @@
                         "billing_usage_id": null,
                         "monitoring_period_id": null,
                         "blocked_reason": null,
-                        "stop_reason": null
+                        "stop_reason": null,
+                        "failure": null,
+                        "attempt": 1
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -32327,6 +32337,55 @@
                         "data_status": "pending",
                         "missing_fields": [],
                         "schema_version": "1.4.2"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "partial"
+                      }
+                    }
+                  },
+                  "retryable_failure": {
+                    "summary": "Retryable failed attempt on the same run",
+                    "value": {
+                      "data": {
+                        "id": "wfr_example",
+                        "object": "workflow_run",
+                        "subject_id": "biz_example",
+                        "created_at": "2026-10-22T13:00:00Z",
+                        "updated_at": "2026-10-22T14:00:00Z",
+                        "record_version": 1,
+                        "source_refs": [],
+                        "data_status": "pending",
+                        "missing_fields": [],
+                        "schema_version": "1.4.2",
+                        "workflow_type": "underwrite",
+                        "workflow_version": "underwrite-v1",
+                        "status": "failed",
+                        "input_resource_ids": [
+                          "app_example",
+                          "doc_example"
+                        ],
+                        "output_resource_ids": [],
+                        "product": "insights",
+                        "input_manifest_id": "manifest_example",
+                        "initial_input_manifest_id": "manifest_example",
+                        "workload_id": "workload_example",
+                        "billing_usage_id": null,
+                        "monitoring_period_id": null,
+                        "blocked_reason": null,
+                        "stop_reason": null,
+                        "failure": {
+                          "code": "processing_timeout",
+                          "message": "The processing attempt timed out.",
+                          "retryable": true,
+                          "recovery_action": "retry_same_run",
+                          "retry_after_seconds": 30,
+                          "occurred_at": "2026-10-23T14:00:00Z",
+                          "request_id": "req_example"
+                        },
+                        "attempt": 1
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -32565,7 +32624,8 @@
                           "due_on": "2026-10-25",
                           "document_ids": [],
                           "reviewer_id": null,
-                          "waiver_reason": null
+                          "waiver_reason": null,
+                          "rejection": null
                         }
                       ],
                       "page": {
@@ -32779,7 +32839,8 @@
                         "due_on": "2026-10-25",
                         "document_ids": [],
                         "reviewer_id": null,
-                        "waiver_reason": null
+                        "waiver_reason": null,
+                        "rejection": null
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -32802,6 +32863,46 @@
                         "data_status": "partial",
                         "missing_fields": [],
                         "schema_version": "1.4.2"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "partial"
+                      }
+                    }
+                  },
+                  "rejected_evidence": {
+                    "summary": "Evidence rejected with a corrective action",
+                    "value": {
+                      "data": {
+                        "id": "requirement_example",
+                        "object": "requirement",
+                        "subject_id": "biz_example",
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "updated_at": "2026-10-23T14:00:00Z",
+                        "record_version": 1,
+                        "source_refs": [],
+                        "data_status": "partial",
+                        "missing_fields": [],
+                        "schema_version": "1.4.2",
+                        "client_reference": "app-1029",
+                        "workflow_run_id": "wfr_example",
+                        "requirement_type": "bank_statement",
+                        "description": "Most recent three complete bank statements",
+                        "status": "rejected",
+                        "due_on": "2026-10-25",
+                        "document_ids": [],
+                        "reviewer_id": null,
+                        "waiver_reason": null,
+                        "rejection": {
+                          "code": "unreadable",
+                          "message": "Upload a legible replacement document.",
+                          "document_ids": [
+                            "doc_example"
+                          ],
+                          "reviewed_at": "2026-10-23T14:00:00Z"
+                        }
                       },
                       "meta": {
                         "request_id": "req_example",
@@ -33806,7 +33907,7 @@
       "post": {
         "operationId": "EP138",
         "summary": "Revoke consent",
-        "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Platform"
         ],
@@ -33991,7 +34092,7 @@
       "post": {
         "operationId": "EP140",
         "summary": "Start connection sync",
-        "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Platform"
         ],
@@ -34182,7 +34283,7 @@
       "post": {
         "operationId": "EP141",
         "summary": "Disconnect connection",
-        "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Platform"
         ],
@@ -34373,7 +34474,7 @@
       "post": {
         "operationId": "EP145",
         "summary": "Create document download link",
-        "description": "Issue a short-lived evidence-download URL.\n\nRequired scope: `documents:read`. Signed link is scoped and expires; no permanent public storage URL.",
+        "description": "Issue a short-lived evidence-download URL.\n\nRequired scope: `documents:read`. Signed link is scoped and expires; no permanent public storage URL. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Identity"
         ],
@@ -34537,7 +34638,7 @@
       "post": {
         "operationId": "EP148",
         "summary": "Calculate attributes",
-        "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+        "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Risk"
         ],
@@ -34851,7 +34952,7 @@
       "post": {
         "operationId": "EP158",
         "summary": "Create webhook endpoint",
-        "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Webhooks"
         ],
@@ -35174,7 +35275,7 @@
       "post": {
         "operationId": "EP160",
         "summary": "Replay webhook event",
-        "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+        "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt. Discover missing event IDs through GET /v1/webhook-events and inspect attempts through GET /v1/webhook-deliveries. Replay requires a retained event, original resource permission and an enabled endpoint subscribed to its type. Expired events return 410 event_history_expired; a disabled endpoint returns 409 invalid_state. Portal administrators manage destination URLs, subscriptions, enable/disable and signing-secret rotation. During the configured rotation overlap each delivery has v1 signatures for both old and new secrets; verifiers accept any matching v1. After the announced cutoff only the new secret signs deliveries.",
         "tags": [
           "Webhooks"
         ],
@@ -35536,7 +35637,22 @@
                             "CA"
                           ],
                           "status": "enabled",
-                          "limitations": []
+                          "limitations": [],
+                          "products": [
+                            {
+                              "id": "transactions",
+                              "resources": [
+                                "bank_account",
+                                "bank_transaction"
+                              ],
+                              "consent_scopes": [
+                                "banking:read"
+                              ],
+                              "purposes": [
+                                "credit_assessment"
+                              ]
+                            }
+                          ]
                         }
                       ],
                       "page": {
@@ -37857,7 +37973,7 @@
       "post": {
         "operationId": "WA006",
         "summary": "Create billing report",
-        "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
+        "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Reporting"
         ],
@@ -38371,7 +38487,7 @@
       "post": {
         "operationId": "WA009",
         "summary": "Create billing report download link",
-        "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
+        "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Reporting"
         ],
@@ -41544,7 +41660,7 @@
       "post": {
         "operationId": "EN006",
         "summary": "Create synchronization checkpoint",
-        "description": "Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active.",
+        "description": "Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
         "tags": [
           "Platform"
         ],
@@ -41676,6 +41792,2100 @@
             "lang": "JavaScript",
             "label": "Node.js",
             "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/sync-checkpoints\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ]\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/connections/{id}/authorization": {
+      "post": {
+        "operationId": "IR001",
+        "summary": "Renew connection authorization",
+        "description": "Create a fresh short-lived authorization action on the existing pending, active or reauth_required connection. Preserve its ID, records and synchronization lineage. The consent must authorize the same subject, provider products and purposes. Validate redirect_uri against portal registration. Bind state to this connection and action; echo it on return. A new action invalidates any older unused action. An identical idempotent retry returns the same action, including its original expiry; use a new key when intentionally replacing an expired action. Reauthorization does not backfill data until a successful sync. Revoked or disconnected connections cannot be reopened; obtain new consent and create a new connection. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+        "tags": [
+          "Platform"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "connections:write"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Authorized identifier in this workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "connection_example"
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for this intended action; retain across retries.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "idem_integration_example"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Connection"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    },
+                    "action": {
+                      "$ref": "#/components/schemas/Action"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta",
+                    "action"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "connection_example",
+                        "object": "connection",
+                        "subject_id": "biz_example",
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "updated_at": "2026-10-23T14:00:00Z",
+                        "record_version": 1,
+                        "source_refs": [],
+                        "data_status": "partial",
+                        "missing_fields": [],
+                        "schema_version": "1.4.2",
+                        "client_reference": "app-1029",
+                        "provider_id": "BANK-02",
+                        "provider_tenant_id": "item_example",
+                        "status": "active",
+                        "institution_id": "ins_example",
+                        "institution_name": "Example Bank",
+                        "country": "CA",
+                        "products": [
+                          "transactions",
+                          "balance"
+                        ],
+                        "scopes": [
+                          "banking:read"
+                        ],
+                        "consent_id": "con_01JAMLOK",
+                        "last_successful_sync_at": null,
+                        "next_refresh_at": null,
+                        "history_available_from": "2025-10-22",
+                        "reauth_required_at": null,
+                        "error_code": "reauth_required",
+                        "sync_cursor": "cur_example"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      },
+                      "action": {
+                        "type": "redirect",
+                        "url": "https://authorize.example.com/session/synthetic",
+                        "expires_at": "2026-10-23T14:15:00Z"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthorizationRequest"
+              },
+              "example": {
+                "consent_id": "con_example",
+                "redirect_uri": "https://client.example.com/connected",
+                "state": "synthetic-random-state-at-least-32-characters"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/connections/connection_example/authorization\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}'"
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/connections/connection_example/authorization\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'consent_id': 'con_example',\n 'redirect_uri': 'https://client.example.com/connected',\n 'state': 'synthetic-random-state-at-least-32-characters'},\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/connections/connection_example/authorization\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/subject-associations": {
+      "post": {
+        "operationId": "IR002",
+        "summary": "Create subject association",
+        "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+        "tags": [
+          "Identity"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "identity:write"
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for this intended action; retain across retries.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "idem_integration_example"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SubjectAssociation"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "assoc_example",
+                        "object": "subject_association",
+                        "business_id": "biz_example",
+                        "person_id": "per_example",
+                        "role": "beneficial_owner",
+                        "status": "pending",
+                        "evidence_document_ids": [
+                          "doc_example"
+                        ],
+                        "relationship_id": null,
+                        "reason_code": null,
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "updated_at": "2026-10-23T14:00:00Z",
+                        "record_version": 1
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubjectAssociationRequest"
+              },
+              "example": {
+                "business_id": "biz_example",
+                "person_id": "per_example",
+                "role": "beneficial_owner",
+                "evidence_document_ids": [
+                  "doc_example"
+                ]
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/subject-associations\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\n  \"business_id\": \"biz_example\",\n  \"person_id\": \"per_example\",\n  \"role\": \"beneficial_owner\",\n  \"evidence_document_ids\": [\n    \"doc_example\"\n  ]\n}'"
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001',\n 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/subject-associations\",\n    headers=headers, timeout=30, allow_redirects=False,\n    json={'business_id': 'biz_example',\n 'person_id': 'per_example',\n 'role': 'beneficial_owner',\n 'evidence_document_ids': ['doc_example']},\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\",\n  \"Content-Type\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/subject-associations\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\n  \"business_id\": \"biz_example\",\n  \"person_id\": \"per_example\",\n  \"role\": \"beneficial_owner\",\n  \"evidence_document_ids\": [\n    \"doc_example\"\n  ]\n}),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      },
+      "get": {
+        "operationId": "IR003",
+        "summary": "List subject associations",
+        "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version.",
+        "tags": [
+          "Identity"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "identity:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Default 100; maximum 200.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque cursor bound to filters and the first page snapshot. Do not change filters during pagination.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "business_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter primary business.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "person_id",
+            "in": "query",
+            "required": false,
+            "description": "Filter related person.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Association status.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "pending",
+                "active",
+                "rejected",
+                "revoked"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SubjectAssociation"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "assoc_example",
+                          "object": "subject_association",
+                          "business_id": "biz_example",
+                          "person_id": "per_example",
+                          "role": "beneficial_owner",
+                          "status": "active",
+                          "evidence_document_ids": [
+                            "doc_example"
+                          ],
+                          "relationship_id": null,
+                          "reason_code": null,
+                          "created_at": "2026-10-23T14:00:00Z",
+                          "updated_at": "2026-10-23T14:00:00Z",
+                          "record_version": 2
+                        }
+                      ],
+                      "page": {
+                        "has_more": false,
+                        "next_cursor": null,
+                        "limit": 100
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/subject-associations\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/subject-associations\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/subject-associations\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/subject-associations/{id}": {
+      "get": {
+        "operationId": "IR004",
+        "summary": "Retrieve subject association",
+        "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version.",
+        "tags": [
+          "Identity"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "identity:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Authorized identifier in this workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "assoc_example"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SubjectAssociation"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "assoc_example",
+                        "object": "subject_association",
+                        "business_id": "biz_example",
+                        "person_id": "per_example",
+                        "role": "beneficial_owner",
+                        "status": "active",
+                        "evidence_document_ids": [
+                          "doc_example"
+                        ],
+                        "relationship_id": null,
+                        "reason_code": null,
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "updated_at": "2026-10-23T14:00:00Z",
+                        "record_version": 2
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/subject-associations/assoc_example\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/subject-associations/assoc_example\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/subject-associations/assoc_example\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/workflow-runs/{id}/retry": {
+      "post": {
+        "operationId": "IR005",
+        "summary": "Retry failed workflow",
+        "description": "Retry an existing failed run only when failure.retryable is true and recovery_action is retry_same_run. Retain run identity, application, product context, evidence and the one eventual charge. Increment attempt once per accepted retry and append an audit event; replaying this idempotency key cannot increment it again. Revalidate active consent, parent context, association and workload. Respect retry_after_seconds. Non-retryable, completed, cancelled or already-running runs return 409 invalid_state; concurrent retries can start only one attempt. Unfunded accepted work uses waiting_for_credits, not a replacement run. For non-retryable invalid evidence, correct requirements or contact support as failure.recovery_action directs; do not invent a replacement billable operation. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+        "tags": [
+          "Operations"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "workflows:execute"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Authorized identifier in this workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "wfr_example"
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Stable key for this intended action; retain across retries.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "idem_integration_example"
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WorkflowRun"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "wfr_example",
+                        "object": "workflow_run",
+                        "subject_id": "biz_example",
+                        "created_at": "2026-10-22T13:00:00Z",
+                        "updated_at": "2026-10-22T14:00:00Z",
+                        "record_version": 1,
+                        "source_refs": [],
+                        "data_status": "pending",
+                        "missing_fields": [],
+                        "schema_version": "1.4.2",
+                        "workflow_type": "underwrite",
+                        "workflow_version": "underwrite-v1",
+                        "status": "queued",
+                        "input_resource_ids": [
+                          "app_example",
+                          "doc_example"
+                        ],
+                        "output_resource_ids": [],
+                        "product": "insights",
+                        "input_manifest_id": "manifest_example",
+                        "initial_input_manifest_id": "manifest_example",
+                        "workload_id": "workload_example",
+                        "billing_usage_id": null,
+                        "monitoring_period_id": null,
+                        "blocked_reason": null,
+                        "stop_reason": null,
+                        "failure": null,
+                        "attempt": 2,
+                        "completed_at": null
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/workflow-runs/wfr_example/retry\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_example_1001'"
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_example_1001'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"POST\", base_url + \"/v1/workflow-runs/wfr_example/retry\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_example_1001\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/workflow-runs/wfr_example/retry\", {\n  method: \"POST\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/request-receipts/lookup": {
+      "get": {
+        "operationId": "IR006",
+        "summary": "Look up request receipt",
+        "description": "Find an accepted POST after losing its response, including after the 24-hour full-response replay window. Supply the original Idempotency-Key header, operation_id and exact resolved target_path (no origin or query). The same workspace, environment and original operation scopes are required; key rotation does not break lookup. Receipts are created atomically before acknowledging an accepted command and retained until workspace deletion, including after a linked resource expires. resource_unavailable retains its identity but does not authorize rerunning it. Store a non-reversible key digest, not the raw key. A 404 is not proof that an in-flight request never arrived; within 24 hours retry the same key, afterward contact support with the caller correlation ID before any new submission. This endpoint neither executes nor replays work. resource_path identifies an authorized relative GET route and requires its read scope. For a short-lived document or report link, it identifies the document or report parent, never the signed URL. An expired link can be intentionally regenerated with a new key without paid processing. Webhook replay receipts identify the original webhook event; match delivery replay_request_id to receipt.request_id. A lost create-webhook response cannot reveal its one-time secret through lookup; rotate it in the portal.",
+        "tags": [
+          "Platform"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "platform:read"
+        ],
+        "parameters": [
+          {
+            "name": "operation_id",
+            "in": "query",
+            "required": true,
+            "description": "Original OpenAPI operationId.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "target_path",
+            "in": "query",
+            "required": true,
+            "description": "Exact resolved request path, for example /v1/connections/cnn_example/sync.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "description": "Original key being looked up. This GET does not create a command.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "idem_underwrite_example"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/RequestReceipt"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "rcpt_example",
+                        "object": "request_receipt",
+                        "operation_id": "EP147",
+                        "target_path": "/v1/workflow-runs",
+                        "request_id": "req_example",
+                        "status": "accepted",
+                        "resource_type": "workflow_run",
+                        "resource_id": "wfr_example",
+                        "resource_path": "/v1/workflow-runs/wfr_example",
+                        "original_http_status": 202,
+                        "accepted_at": "2026-10-23T14:00:00Z",
+                        "replay_expires_at": "2026-10-24T14:00:00Z"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/request-receipts/lookup?operation_id=EP147&target_path=%2Fv1%2Fworkflow-runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\" \\\n  --header 'Idempotency-Key: idem_underwrite_example'"
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json',\n 'Idempotency-Key': 'idem_underwrite_example'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/request-receipts/lookup?operation_id=EP147&target_path=%2Fv1%2Fworkflow-runs\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\",\n  \"Idempotency-Key\": \"idem_underwrite_example\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/request-receipts/lookup?operation_id=EP147&target_path=%2Fv1%2Fworkflow-runs\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/configuration": {
+      "get": {
+        "operationId": "IR007",
+        "summary": "Retrieve environment configuration",
+        "description": "Read accepted identifiers and actual operational limits for the key-bound workspace and environment. Numbers in saved examples are synthetic, not production defaults or SLA promises. Use workflow_versions[].id as workflow_version, rulesets[].id as ruleset_version and cadences[].id as cadence. Resource and attribute selection must be allowed by that ruleset. GET /v1/providers supplies enabled product IDs and resource mappings. Rates and workload limits remain in read-only billing rate cards and workload reports. Cache by revision and refresh on configuration-related 422 errors or before adopting a new workflow. Changes to configured limits or identifiers are communicated through the account manager before taking effect under the agreement; in-flight work retains its accepted workflow revision.",
+        "tags": [
+          "Platform"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "platform:read"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/EnvironmentConfiguration"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "config_example",
+                        "object": "environment_configuration",
+                        "workspace_id": "wsp_example",
+                        "environment": "sandbox",
+                        "revision": "cfg_example",
+                        "effective_at": "2026-10-23T14:00:00Z",
+                        "workflow_versions": [
+                          {
+                            "id": "underwrite-v1",
+                            "workflow_type": "underwrite",
+                            "products": [
+                              "insights"
+                            ],
+                            "verification_types": []
+                          },
+                          {
+                            "id": "kyc-ca-v1",
+                            "workflow_type": "verify",
+                            "products": [
+                              "insights",
+                              "signal"
+                            ],
+                            "verification_types": [
+                              "kyc"
+                            ]
+                          },
+                          {
+                            "id": "kyb-ca-v1",
+                            "workflow_type": "verify",
+                            "products": [
+                              "insights",
+                              "signal"
+                            ],
+                            "verification_types": [
+                              "kyb"
+                            ]
+                          }
+                        ],
+                        "rulesets": [
+                          {
+                            "id": "monitoring-v1",
+                            "attribute_keys": [
+                              "cash_flow.net_monthly"
+                            ],
+                            "resource_types": [
+                              "bank_transaction"
+                            ]
+                          }
+                        ],
+                        "cadences": [
+                          {
+                            "id": "daily",
+                            "description": "Daily AMLOK evaluation subject to actual provider freshness and permission."
+                          }
+                        ],
+                        "limits": {
+                          "requests_per_minute": 120,
+                          "burst_requests": 20,
+                          "concurrent_jobs": 5,
+                          "upload_bytes": 10485760,
+                          "document_pages": 100,
+                          "mime_types": [
+                            "application/pdf"
+                          ]
+                        },
+                        "webhooks": {
+                          "event_retention_seconds": 2592000,
+                          "delivery_timeout_seconds": 10,
+                          "rotation_overlap_seconds": 86400,
+                          "retained_from": "2026-09-23T14:00:00Z"
+                        },
+                        "idempotency_replay_seconds": 86400
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/configuration\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/configuration\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/configuration\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/subjects/{id}/readiness": {
+      "get": {
+        "operationId": "IR008",
+        "summary": "Retrieve subject readiness",
+        "description": "Explain whether this subject has a ready evidence set for Insights or an approved baseline for Signal. After source sync and evidence acceptance, AMLOK automatically builds a frozen manifest. Checks include consent, source coverage, at least 12 months of banking history for Insights, required evidence and agreed scope. preparing supplies retry_after_seconds; blocked supplies actionable checks and next_action. Do not treat an empty manifest/baseline list as a completed onboarding. A ready Insights result identifies the manifest; a ready Signal result identifies the approved snapshot. Existing-portfolio Signal onboarding can create the baseline without charging Insights and is arranged with the account manager. This read does not approve evidence, process an underwriting or spend credits. Signal readiness also requires monitoring:read. Initial Insights readiness covers intake evidence; staged owner KYC can remain a requirement on the subsequently accepted underwriting, avoiding a circular prerequisite.",
+        "tags": [
+          "Risk"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "risk:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Authorized identifier in this workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "biz_example"
+          },
+          {
+            "name": "product",
+            "in": "query",
+            "required": true,
+            "description": "Product being initialized.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "insights",
+                "signal"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SubjectReadiness"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "subject_id": "biz_example",
+                        "product": "insights",
+                        "status": "ready",
+                        "checks": [
+                          {
+                            "code": "bank_history_12_months",
+                            "status": "passed",
+                            "message": "At least 12 months of permitted banking evidence included."
+                          }
+                        ],
+                        "input_manifest_id": "manifest_example",
+                        "baseline_snapshot_id": null,
+                        "next_action": "start_underwriting",
+                        "retry_after_seconds": null,
+                        "updated_at": "2026-10-23T14:00:00Z"
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/subjects/biz_example/readiness?product=insights\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/subjects/biz_example/readiness?product=insights\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/subjects/biz_example/readiness?product=insights\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/webhook-events": {
+      "get": {
+        "operationId": "IR009",
+        "summary": "List webhook events",
+        "description": "Discover generated events even when none reached your receiver. Filter by creation time and type; order by (created_at, id), ascending. First page freezes the upper boundary; cursor retains it. Retention and retained_from are provided by configuration. A requested interval earlier than retained_from returns 410 event_history_expired, never a misleading empty success. Reconcile current state using checkpoints and the change feed after expiry. Event availability still requires the key's underlying resource read scopes. Polling events is read-only and does not redeliver them.",
+        "tags": [
+          "Webhooks"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "webhooks:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Default 100; maximum 200.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque cursor bound to filters and the first page snapshot. Do not change filters during pagination.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "created_from",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive UTC lower boundary.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "created_to",
+            "in": "query",
+            "required": false,
+            "description": "Exclusive UTC upper boundary.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Event type.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "business.created",
+                "person.created",
+                "connection.updated",
+                "consent.updated",
+                "sync.completed",
+                "sync.failed",
+                "verification.updated",
+                "verification.completed",
+                "document.processed",
+                "lien_search.completed",
+                "lien_search.failed",
+                "lien.updated",
+                "application.updated",
+                "decision.created",
+                "loan.updated",
+                "repayment.updated",
+                "attributes.calculated",
+                "risk_snapshot.created",
+                "monitor.updated",
+                "alert.created",
+                "alert.updated",
+                "workflow.completed",
+                "workflow.failed",
+                "resource.deleted",
+                "billing.usage.posted",
+                "billing.report.updated",
+                "billing.statement.finalized"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebhookEvent"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "evt_example",
+                          "type": "verification.completed",
+                          "created_at": "2026-10-23T14:00:00Z",
+                          "schema_version": "1.4.2",
+                          "resource_type": "verification",
+                          "resource_id": "ver_example",
+                          "resource_version": 2,
+                          "data": {
+                            "status": "in_review"
+                          }
+                        }
+                      ],
+                      "page": {
+                        "has_more": false,
+                        "next_cursor": null,
+                        "limit": 100
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/webhook-events\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/webhook-events\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/webhook-events\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/webhook-events/{id}": {
+      "get": {
+        "operationId": "IR010",
+        "summary": "Retrieve webhook event",
+        "description": "Retrieve a retained event with its original ID and minimal payload. No provider credentials or signing secrets are returned. Enforce the original resource authorization. Expired known events return 410 event_history_expired; unknown or unauthorized IDs return 404. Retrieve the authoritative resource separately for current data.",
+        "tags": [
+          "Webhooks"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "webhooks:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Authorized identifier in this workspace.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "evt_example"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/WebhookEvent"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": {
+                        "id": "evt_example",
+                        "type": "verification.completed",
+                        "created_at": "2026-10-23T14:00:00Z",
+                        "schema_version": "1.4.2",
+                        "resource_type": "verification",
+                        "resource_id": "ver_example",
+                        "resource_version": 2,
+                        "data": {
+                          "status": "in_review"
+                        }
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/webhook-events/evt_example\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/webhook-events/evt_example\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/webhook-events/evt_example\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/webhook-deliveries": {
+      "get": {
+        "operationId": "IR011",
+        "summary": "List webhook deliveries",
+        "description": "Read one row per delivery attempt in ascending attempt time and ID order. Cursor freezes filters and upper boundary. Filter by endpoint_id or event_id to diagnose missed events, retries and replays. No receiver response body, authentication header or signing secret is retained in this public report. Queued attempts have null attempted_at. Final automatic failure is exhausted. Retention follows webhook event retention; earlier requested time returns 410 event_history_expired. Endpoint disablement cancels queued attempts without deleting retained events.",
+        "tags": [
+          "Webhooks"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "webhooks:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Default 100; maximum 200.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque cursor bound to filters and the first page snapshot. Do not change filters during pagination.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "endpoint_id",
+            "in": "query",
+            "required": false,
+            "description": "Registered destination.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "event_id",
+            "in": "query",
+            "required": false,
+            "description": "Original event ID.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "description": "Delivery state.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "queued",
+                "delivered",
+                "failed",
+                "exhausted"
+              ]
+            }
+          },
+          {
+            "name": "created_from",
+            "in": "query",
+            "required": false,
+            "description": "Inclusive attempt creation time.",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/WebhookDelivery"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "delivery_example",
+                          "object": "webhook_delivery",
+                          "endpoint_id": "whe_example",
+                          "event_id": "evt_example",
+                          "attempt": 1,
+                          "status": "failed",
+                          "created_at": "2026-10-23T14:00:00Z",
+                          "attempted_at": "2026-10-23T14:00:00Z",
+                          "next_attempt_at": "2026-10-23T14:01:00Z",
+                          "http_status": 503,
+                          "failure_code": "http_error",
+                          "replay_request_id": null
+                        }
+                      ],
+                      "page": {
+                        "has_more": false,
+                        "next_cursor": null,
+                        "limit": 100
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/webhook-deliveries\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/webhook-deliveries\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/webhook-deliveries\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
+          }
+        ]
+      }
+    },
+    "/v1/sandbox/scenarios": {
+      "get": {
+        "operationId": "IR012",
+        "summary": "List sandbox scenarios",
+        "description": "Return only synthetic fixtures provisioned in this sandbox workspace. Production returns 404; there are no production fault-injection or time-control commands. The account manager provides sandbox access and the fixture pack through the client portal. A portal administrator selects/reset scenarios before a test run; resetting discards only sandbox fixtures and test credits. GET never resets or mutates a scenario. Returned IDs and approved configuration are authoritative; do not use saved example IDs. Sandbox funding and simulated time controls stay in the portal, cannot move money, and cannot change production. Billing assertions use the real product rules with test credits.",
+        "tags": [
+          "Platform"
+        ],
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "x-required-scopes": [
+          "platform:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Default 100; maximum 200.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 200,
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque cursor bound to filters and the first page snapshot. Do not change filters during pagination.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authorized response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SandboxScenario"
+                      }
+                    },
+                    "page": {
+                      "$ref": "#/components/schemas/Page"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/ResponseMeta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "page",
+                    "meta"
+                  ]
+                },
+                "examples": {
+                  "synthetic": {
+                    "value": {
+                      "data": [
+                        {
+                          "id": "insights_success",
+                          "object": "sandbox_scenario",
+                          "name": "Completed full underwriting",
+                          "subject_id": "biz_sandbox_insights_success",
+                          "application_id": "app_sandbox_insights_success",
+                          "input_manifest_id": "manifest_sandbox_insights_success",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_insights_success",
+                          "person_id": "per_sandbox_insights_success",
+                          "association_id": "assoc_sandbox_insights_success",
+                          "document_id": "doc_sandbox_insights_success",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 202,
+                          "expected_state": "completed",
+                          "instructions": "Run the Insights journey. Includes two bank accounts, five business systems and at least twelve months of synthetic banking history. Expect one Standard Insights charge."
+                        },
+                        {
+                          "id": "signal_success",
+                          "object": "sandbox_scenario",
+                          "name": "Monitoring and reassessment",
+                          "subject_id": "biz_sandbox_signal_success",
+                          "application_id": "app_sandbox_signal_success",
+                          "input_manifest_id": "manifest_sandbox_signal_success",
+                          "baseline_snapshot_id": "rsk_sandbox_signal_success",
+                          "connection_id": "cnn_sandbox_signal_success",
+                          "person_id": "per_sandbox_signal_success",
+                          "association_id": "assoc_sandbox_signal_success",
+                          "document_id": "doc_sandbox_signal_success",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 201,
+                          "expected_state": "active",
+                          "instructions": "Run the Signal journey. A pre-approved existing-portfolio baseline and scheduled synthetic source update produce reassessment and an alert. Expect one Standard Signal charge and no Insights charge."
+                        },
+                        {
+                          "id": "insufficient_credits",
+                          "object": "sandbox_scenario",
+                          "name": "Insufficient available credits",
+                          "subject_id": "biz_sandbox_insufficient_credits",
+                          "application_id": "app_sandbox_insufficient_credits",
+                          "input_manifest_id": "manifest_sandbox_insufficient_credits",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_insufficient_credits",
+                          "person_id": "per_sandbox_insufficient_credits",
+                          "association_id": "assoc_sandbox_insufficient_credits",
+                          "document_id": "doc_sandbox_insufficient_credits",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 402,
+                          "expected_state": "insufficient_credits",
+                          "instructions": "Submit the Insights request; expect no accepted run or debit. Use portal sandbox funding to restore test credits, then retry the identical key."
+                        },
+                        {
+                          "id": "authorization_expired",
+                          "object": "sandbox_scenario",
+                          "name": "Expired connection authorization",
+                          "subject_id": "biz_sandbox_authorization_expired",
+                          "application_id": "app_sandbox_authorization_expired",
+                          "input_manifest_id": "manifest_sandbox_authorization_expired",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_authorization_expired",
+                          "person_id": "per_sandbox_authorization_expired",
+                          "association_id": "assoc_sandbox_authorization_expired",
+                          "document_id": "doc_sandbox_authorization_expired",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 201,
+                          "expected_state": "reauth_required",
+                          "instructions": "Renew the supplied connection authorization; complete the sandbox hosted flow. Retrieve the same connection ID as active and then sync."
+                        },
+                        {
+                          "id": "rejected_evidence",
+                          "object": "sandbox_scenario",
+                          "name": "Rejected evidence",
+                          "subject_id": "biz_sandbox_rejected_evidence",
+                          "application_id": "app_sandbox_rejected_evidence",
+                          "input_manifest_id": "manifest_sandbox_rejected_evidence",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_rejected_evidence",
+                          "person_id": "per_sandbox_rejected_evidence",
+                          "association_id": "assoc_sandbox_rejected_evidence",
+                          "document_id": "doc_sandbox_rejected_evidence",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 202,
+                          "expected_state": "waiting_for_data",
+                          "instructions": "Start underwriting; the sandbox evidence validator rejects the seeded document and returns a rejected requirement with a reason. Upload its replacement from the portal-provided fixture pack using requirement_id; the same run resumes."
+                        },
+                        {
+                          "id": "workload_limit",
+                          "object": "sandbox_scenario",
+                          "name": "Known workload limit exceeded",
+                          "subject_id": "biz_sandbox_workload_limit",
+                          "application_id": "app_sandbox_workload_limit",
+                          "input_manifest_id": "manifest_sandbox_workload_limit",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_workload_limit",
+                          "person_id": "per_sandbox_workload_limit",
+                          "association_id": "assoc_sandbox_workload_limit",
+                          "document_id": "doc_sandbox_workload_limit",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 422,
+                          "expected_state": "workload_limit_exceeded",
+                          "instructions": "Submit the Insights request with over-limit evidence; expect no debit and no automatic tier change."
+                        },
+                        {
+                          "id": "retryable_failure",
+                          "object": "sandbox_scenario",
+                          "name": "Retryable processing failure",
+                          "subject_id": "biz_sandbox_retryable_failure",
+                          "application_id": "app_sandbox_retryable_failure",
+                          "input_manifest_id": "manifest_sandbox_retryable_failure",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_retryable_failure",
+                          "person_id": "per_sandbox_retryable_failure",
+                          "association_id": "assoc_sandbox_retryable_failure",
+                          "document_id": "doc_sandbox_retryable_failure",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 202,
+                          "expected_state": "failed",
+                          "instructions": "Start the run and poll until failure.retryable is true. Retry that same run; its second attempt completes with one total Insights charge."
+                        },
+                        {
+                          "id": "owner_kyc",
+                          "object": "sandbox_scenario",
+                          "name": "Related owner verification",
+                          "subject_id": "biz_sandbox_owner_kyc",
+                          "application_id": "app_sandbox_owner_kyc",
+                          "input_manifest_id": "manifest_sandbox_owner_kyc",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_owner_kyc",
+                          "person_id": "per_sandbox_owner_kyc",
+                          "association_id": "assoc_sandbox_owner_kyc",
+                          "document_id": "doc_sandbox_owner_kyc",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 201,
+                          "expected_state": "approved",
+                          "instructions": "Use an unfinished waiting-for-data business run from the fixture pack and its active association to request person KYC. The included check has no separate charge."
+                        },
+                        {
+                          "id": "duplicate_delivery",
+                          "object": "sandbox_scenario",
+                          "name": "Duplicate webhook delivery",
+                          "subject_id": "biz_sandbox_duplicate_delivery",
+                          "application_id": "app_sandbox_duplicate_delivery",
+                          "input_manifest_id": "manifest_sandbox_duplicate_delivery",
+                          "baseline_snapshot_id": null,
+                          "connection_id": "cnn_sandbox_duplicate_delivery",
+                          "person_id": "per_sandbox_duplicate_delivery",
+                          "association_id": "assoc_sandbox_duplicate_delivery",
+                          "document_id": "doc_sandbox_duplicate_delivery",
+                          "workflow_version": "underwrite-v1",
+                          "ruleset_version": "monitoring-v1",
+                          "cadence": "daily",
+                          "expected_http_status": 201,
+                          "expected_state": "delivered",
+                          "instructions": "Register a sandbox receiver; its seeded event is delivered twice with one event ID and fresh signatures. Reconcile attempts and replay using that ID; your consumer must apply the event once."
+                        }
+                      ],
+                      "page": {
+                        "has_more": false,
+                        "next_cursor": null,
+                        "limit": 100
+                      },
+                      "meta": {
+                        "request_id": "req_example",
+                        "schema_version": "1.4.2",
+                        "generated_at": "2026-10-23T14:00:00Z",
+                        "data_status": "complete"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/Error400"
+          },
+          "401": {
+            "$ref": "#/components/responses/Error401"
+          },
+          "403": {
+            "$ref": "#/components/responses/Error403"
+          },
+          "404": {
+            "$ref": "#/components/responses/Error404"
+          },
+          "409": {
+            "$ref": "#/components/responses/Error409"
+          },
+          "410": {
+            "$ref": "#/components/responses/Error410"
+          },
+          "422": {
+            "$ref": "#/components/responses/Error422"
+          },
+          "429": {
+            "$ref": "#/components/responses/Error429"
+          },
+          "500": {
+            "$ref": "#/components/responses/Error500"
+          },
+          "503": {
+            "$ref": "#/components/responses/Error503"
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/scenarios\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header \"Accept: application/json\""
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nbase_url = os.environ[\"AMLOK_API_BASE_URL\"].rstrip(\"/\")\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\n\nresponse = requests.request(\n    \"GET\", base_url + \"/v1/sandbox/scenarios\",\n    headers=headers, timeout=30, allow_redirects=False,\n)\nresponse.raise_for_status()\nprint(response.json())"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Node.js",
+            "source": "\nconst baseUrl = process.env.AMLOK_API_BASE_URL;\nconst apiKey = process.env.AMLOK_API_KEY;\nif (!baseUrl || !apiKey) throw new Error(\"Configure AMLOK_API_BASE_URL and AMLOK_API_KEY\");\nconst headers = {\n  \"Accept\": \"application/json\"\n};\nheaders.Authorization = `Bearer ${apiKey}`;\nconst response = await fetch(baseUrl.replace(/\\/$/, \"\") + \"/v1/sandbox/scenarios\", {\n  method: \"GET\", headers,\n  redirect: \"error\", signal: AbortSignal.timeout(30000),\n});\nif (!response.ok) throw new Error(`AMLOK returned HTTP ${response.status}`);\nconsole.log(await response.json());"
           }
         ]
       }
@@ -43590,6 +45800,12 @@
               "type": "string"
             },
             "description": "Account/product-specific constraints."
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderProduct"
+            }
           }
         },
         "required": [
@@ -43597,7 +45813,8 @@
           "resources",
           "countries",
           "status",
-          "limitations"
+          "limitations",
+          "products"
         ]
       },
       "ChangePage": {
@@ -46739,6 +48956,17 @@
           },
           "processing_context": {
             "$ref": "#/components/schemas/ProcessingContext"
+          },
+          "subject_association_version": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -46754,7 +48982,8 @@
           "verification_type",
           "status",
           "stop_reason",
-          "processing_context"
+          "processing_context",
+          "subject_association_version"
         ],
         "title": "verification",
         "description": "KYC or KYB session and its aggregate result. Population depends on source and tenant entitlement."
@@ -68409,6 +70638,20 @@
                 "type": "null"
               }
             ]
+          },
+          "failure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcessingFailure"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 1
           }
         },
         "required": [
@@ -68433,10 +70676,46 @@
           "billing_usage_id",
           "monitoring_period_id",
           "blocked_reason",
-          "stop_reason"
+          "stop_reason",
+          "failure",
+          "attempt"
         ],
         "title": "workflow_run",
-        "description": "Coordinated execution of Verify, Underwrite, Monitor or Investigate. Population depends on source and tenant entitlement."
+        "description": "Coordinated execution of Verify, Underwrite, Monitor or Investigate. Population depends on source and tenant entitlement.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "failed"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "failure": {
+                  "$ref": "#/components/schemas/ProcessingFailure"
+                },
+                "billing_usage_id": {
+                  "type": "null"
+                },
+                "output_resource_ids": {
+                  "maxItems": 0
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "failure": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
       },
       "Requirement": {
         "type": "object",
@@ -68701,6 +70980,16 @@
             "x-field-id": "F0965",
             "x-classification": "Restricted",
             "x-availability": "Source, module, country, consent and contracted permissions determine population."
+          },
+          "rejection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceRejection"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -68716,10 +71005,39 @@
           "workflow_run_id",
           "requirement_type",
           "description",
-          "status"
+          "status",
+          "rejection"
         ],
         "title": "requirement",
-        "description": "Evidence required to complete an assessment workflow. Population depends on source and tenant entitlement."
+        "description": "Evidence required to complete an assessment workflow. Population depends on source and tenant entitlement.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "rejected"
+                }
+              },
+              "required": [
+                "status"
+              ]
+            },
+            "then": {
+              "properties": {
+                "rejection": {
+                  "$ref": "#/components/schemas/EvidenceRejection"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "rejection": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
       },
       "AuditEvent": {
         "type": "object",
@@ -72103,6 +74421,17 @@
           },
           "processing_context": {
             "$ref": "#/components/schemas/ProcessingContext"
+          },
+          "subject_association_version": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -93654,6 +95983,20 @@
                 "type": "null"
               }
             ]
+          },
+          "failure": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ProcessingFailure"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 1
           }
         },
         "required": [
@@ -93933,6 +96276,16 @@
             "x-field-id": "F0965",
             "x-classification": "Restricted",
             "x-availability": "Source, module, country, consent and contracted permissions determine population."
+          },
+          "rejection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/EvidenceRejection"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -94705,7 +97058,7 @@
               "type": "string"
             },
             "minItems": 1,
-            "description": "Requested entitled data products."
+            "description": "Product IDs from this provider's products[].id in GET /v1/providers. Resource names are not interchangeable with product IDs. Reject unsupported values with 422 validation_error."
           },
           "consent_id": {
             "type": "string",
@@ -94718,6 +97071,11 @@
             "format": "uri",
             "pattern": "^https://",
             "description": "Registered allowed return URL."
+          },
+          "state": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 256
           }
         },
         "required": [
@@ -94725,7 +97083,8 @@
           "provider_id",
           "products",
           "consent_id",
-          "redirect_uri"
+          "redirect_uri",
+          "state"
         ],
         "additionalProperties": false
       },
@@ -94854,7 +97213,7 @@
           "workflow_version": {
             "type": "string",
             "minLength": 1,
-            "description": "Approved verification configuration."
+            "description": "Approved ID from GET /v1/configuration workflow_versions, matching this workflow type and product."
           },
           "return_url": {
             "type": "string",
@@ -94873,7 +97232,29 @@
           "workflow_version",
           "processing_context"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "verification_type": {
+                  "const": "kyb"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "processing_context": {
+                  "not": {
+                    "required": [
+                      "subject_association_id"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
       },
       "EP143Request": {
         "type": "object",
@@ -94948,6 +97329,17 @@
               "required": [
                 "identifier"
               ]
+            }
+          },
+          {
+            "properties": {
+              "processing_context": {
+                "not": {
+                  "required": [
+                    "subject_association_id"
+                  ]
+                }
+              }
             }
           }
         ]
@@ -95071,7 +97463,7 @@
           "workflow_version": {
             "type": "string",
             "minLength": 1,
-            "description": "Approved orchestration revision."
+            "description": "Approved ID from GET /v1/configuration workflow_versions, matching this workflow type and product."
           },
           "input_resource_ids": {
             "type": "array",
@@ -95145,6 +97537,17 @@
                 "processing_context"
               ]
             }
+          },
+          {
+            "properties": {
+              "processing_context": {
+                "not": {
+                  "required": [
+                    "subject_association_id"
+                  ]
+                }
+              }
+            }
           }
         ]
       },
@@ -95191,7 +97594,20 @@
           "input_manifest_id",
           "processing_context"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "properties": {
+              "processing_context": {
+                "not": {
+                  "required": [
+                    "subject_association_id"
+                  ]
+                }
+              }
+            }
+          }
+        ]
       },
       "EP150Request": {
         "type": "object",
@@ -95290,12 +97706,12 @@
           "cadence": {
             "type": "string",
             "minLength": 1,
-            "description": "Requested refresh policy, not a source SLA."
+            "description": "ID from GET /v1/configuration cadences. Invalid IDs return 422 validation_error. Source freshness is not guaranteed by this schedule."
           },
           "ruleset_version": {
             "type": "string",
             "minLength": 1,
-            "description": "Versioned alert rules."
+            "description": "Approved ID from GET /v1/configuration rulesets; validate attributes and resource types against it."
           }
         },
         "required": [
@@ -95322,7 +97738,7 @@
           "cadence": {
             "type": "string",
             "minLength": 1,
-            "description": "Requested refresh schedule, subject to source capability."
+            "description": "ID from GET /v1/configuration cadences. Invalid IDs return 422 validation_error. Source freshness is not guaranteed by this schedule."
           },
           "attribute_keys": {
             "type": "array",
@@ -95334,7 +97750,7 @@
           "ruleset_version": {
             "type": "string",
             "minLength": 1,
-            "description": "Version of alert thresholds and conditions."
+            "description": "Approved ID from GET /v1/configuration rulesets; validate attributes and resource types against it."
           }
         },
         "additionalProperties": false,
@@ -97789,6 +100205,10 @@
               "workflow_run_id": {
                 "type": "string",
                 "minLength": 1
+              },
+              "subject_association_id": {
+                "type": "string",
+                "minLength": 1
               }
             },
             "required": [
@@ -97807,6 +100227,10 @@
               "monitoring_period_id": {
                 "type": "string",
                 "minLength": 1
+              },
+              "subject_association_id": {
+                "type": "string",
+                "minLength": 1
               }
             },
             "required": [
@@ -97819,7 +100243,7 @@
         "discriminator": {
           "propertyName": "product"
         },
-        "description": "Same-workspace and same-subject parent. Insights requires an unfinished authorized underwriting run; Signal requires an active paid monitoring period. AMLOK validates that this requested stage belongs to the agreed workflow and workload limits. No standalone service or additional product charge."
+        "description": "Parent must belong to this workspace. Same-subject stages need no association. Only person KYC may target a different subject: supply an active subject_association_id linking that person to the parent business. Insights requires an unfinished authorized root run; Signal requires an active paid period. Stage scope, consent, association and workload are checked on every attempt. The parent business remains the billing and workload subject. No standalone service or extra charge."
       },
       "WorkloadDimension": {
         "type": "object",
@@ -98414,6 +100838,1081 @@
           "snapshot_id",
           "as_of",
           "rows"
+        ],
+        "additionalProperties": false
+      },
+      "AuthorizationRequest": {
+        "type": "object",
+        "properties": {
+          "consent_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "redirect_uri": {
+            "type": "string",
+            "format": "uri",
+            "pattern": "^https://"
+          },
+          "state": {
+            "type": "string",
+            "minLength": 32,
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "consent_id",
+          "redirect_uri",
+          "state"
+        ],
+        "additionalProperties": false
+      },
+      "ProviderProduct": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "consent_scopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "purposes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "id",
+          "resources",
+          "consent_scopes",
+          "purposes"
+        ],
+        "additionalProperties": false
+      },
+      "SubjectAssociation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "subject_association",
+            "type": "string"
+          },
+          "business_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "person_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "beneficial_owner",
+              "director",
+              "guarantor",
+              "authorized_signatory"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active",
+              "rejected",
+              "revoked"
+            ]
+          },
+          "evidence_document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "relationship_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "business_id",
+          "person_id",
+          "role",
+          "status",
+          "evidence_document_ids",
+          "relationship_id",
+          "reason_code",
+          "created_at",
+          "updated_at",
+          "record_version"
+        ],
+        "additionalProperties": false
+      },
+      "SubjectAssociationRequest": {
+        "type": "object",
+        "properties": {
+          "business_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "person_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "beneficial_owner",
+              "director",
+              "guarantor",
+              "authorized_signatory"
+            ]
+          },
+          "evidence_document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "business_id",
+          "person_id",
+          "role",
+          "evidence_document_ids"
+        ],
+        "additionalProperties": false
+      },
+      "ProcessingFailure": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "provider_unavailable",
+              "processing_timeout",
+              "invalid_evidence",
+              "unsupported_scope",
+              "internal_processing_error"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "recovery_action": {
+            "type": "string",
+            "enum": [
+              "retry_same_run",
+              "correct_evidence",
+              "contact_support"
+            ]
+          },
+          "retry_after_seconds": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "retryable",
+          "recovery_action",
+          "retry_after_seconds",
+          "occurred_at",
+          "request_id"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "retryable": {
+                  "const": true
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "recovery_action": {
+                  "const": "retry_same_run"
+                },
+                "retry_after_seconds": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "recovery_action": {
+                  "type": "string",
+                  "enum": [
+                    "correct_evidence",
+                    "contact_support"
+                  ]
+                },
+                "retry_after_seconds": {
+                  "type": "null"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "EvidenceRejection": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "unreadable",
+              "wrong_document_type",
+              "subject_mismatch",
+              "incomplete_period",
+              "expired_document",
+              "other"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "reviewed_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "document_ids",
+          "reviewed_at"
+        ],
+        "additionalProperties": false
+      },
+      "RequestReceipt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "request_receipt",
+            "type": "string"
+          },
+          "operation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "target_path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "request_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "accepted",
+              "completed",
+              "failed",
+              "resource_unavailable"
+            ]
+          },
+          "resource_type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resource_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "resource_path": {
+            "type": "string",
+            "pattern": "^/v1/",
+            "description": "Relative authorized GET route for the durable resource or parent. Never a signed URL, external origin or secret-bearing location."
+          },
+          "original_http_status": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 599
+          },
+          "accepted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "replay_expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "operation_id",
+          "target_path",
+          "request_id",
+          "status",
+          "resource_type",
+          "resource_id",
+          "resource_path",
+          "original_http_status",
+          "accepted_at",
+          "replay_expires_at"
+        ],
+        "additionalProperties": false
+      },
+      "WorkflowConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "workflow_type": {
+            "type": "string",
+            "enum": [
+              "verify",
+              "underwrite",
+              "monitor",
+              "investigate"
+            ]
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "insights",
+                "signal"
+              ]
+            }
+          },
+          "verification_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "kyc",
+                "kyb"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "workflow_type",
+          "products",
+          "verification_types"
+        ],
+        "additionalProperties": false
+      },
+      "RulesetConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attribute_keys": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "resource_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "id",
+          "attribute_keys",
+          "resource_types"
+        ],
+        "additionalProperties": false
+      },
+      "CadenceConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "description"
+        ],
+        "additionalProperties": false
+      },
+      "EnvironmentConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "environment_configuration",
+            "type": "string"
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "environment": {
+            "type": "string",
+            "enum": [
+              "sandbox",
+              "production"
+            ]
+          },
+          "revision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "effective_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "workflow_versions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowConfiguration"
+            }
+          },
+          "rulesets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RulesetConfiguration"
+            }
+          },
+          "cadences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CadenceConfiguration"
+            }
+          },
+          "limits": {
+            "type": "object",
+            "properties": {
+              "requests_per_minute": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "burst_requests": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "concurrent_jobs": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "upload_bytes": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "document_pages": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "mime_types": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "required": [
+              "requests_per_minute",
+              "burst_requests",
+              "concurrent_jobs",
+              "upload_bytes",
+              "document_pages",
+              "mime_types"
+            ],
+            "additionalProperties": false
+          },
+          "webhooks": {
+            "type": "object",
+            "properties": {
+              "event_retention_seconds": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "delivery_timeout_seconds": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "rotation_overlap_seconds": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "retained_from": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "event_retention_seconds",
+              "delivery_timeout_seconds",
+              "rotation_overlap_seconds",
+              "retained_from"
+            ],
+            "additionalProperties": false
+          },
+          "idempotency_replay_seconds": {
+            "type": "integer",
+            "const": 86400
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "workspace_id",
+          "environment",
+          "revision",
+          "effective_at",
+          "workflow_versions",
+          "rulesets",
+          "cadences",
+          "limits",
+          "webhooks",
+          "idempotency_replay_seconds"
+        ],
+        "additionalProperties": false
+      },
+      "ReadinessCheck": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "pending",
+              "blocked"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "code",
+          "status",
+          "message"
+        ],
+        "additionalProperties": false
+      },
+      "SubjectReadiness": {
+        "type": "object",
+        "properties": {
+          "subject_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "product": {
+            "type": "string",
+            "enum": [
+              "insights",
+              "signal"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "ready",
+              "preparing",
+              "blocked"
+            ]
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReadinessCheck"
+            }
+          },
+          "input_manifest_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "baseline_snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "next_action": {
+            "type": "string",
+            "enum": [
+              "start_underwriting",
+              "create_monitor",
+              "wait",
+              "supply_evidence",
+              "contact_account_manager"
+            ]
+          },
+          "retry_after_seconds": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "subject_id",
+          "product",
+          "status",
+          "checks",
+          "input_manifest_id",
+          "baseline_snapshot_id",
+          "next_action",
+          "retry_after_seconds",
+          "updated_at"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "ready"
+                },
+                "product": {
+                  "const": "insights"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "input_manifest_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "next_action": {
+                  "const": "start_underwriting"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "ready"
+                },
+                "product": {
+                  "const": "signal"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "baseline_snapshot_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "next_action": {
+                  "const": "create_monitor"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "preparing"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "retry_after_seconds": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "next_action": {
+                  "const": "wait"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "WebhookDelivery": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "webhook_delivery",
+            "type": "string"
+          },
+          "endpoint_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "event_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attempt": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "queued",
+              "delivered",
+              "failed",
+              "exhausted"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "attempted_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "next_attempt_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "http_status": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 599
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failure_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "timeout",
+                  "dns_error",
+                  "tls_error",
+                  "http_error",
+                  "endpoint_disabled"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "replay_request_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "endpoint_id",
+          "event_id",
+          "attempt",
+          "status",
+          "created_at",
+          "attempted_at",
+          "next_attempt_at",
+          "http_status",
+          "failure_code",
+          "replay_request_id"
+        ],
+        "additionalProperties": false
+      },
+      "SandboxScenario": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "const": "sandbox_scenario",
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "application_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "input_manifest_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "baseline_snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "connection_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "person_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "association_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workflow_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ruleset_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cadence": {
+            "type": "string",
+            "minLength": 1
+          },
+          "expected_http_status": {
+            "type": "integer",
+            "minimum": 200,
+            "maximum": 599
+          },
+          "expected_state": {
+            "type": "string",
+            "minLength": 1
+          },
+          "instructions": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "name",
+          "subject_id",
+          "application_id",
+          "input_manifest_id",
+          "baseline_snapshot_id",
+          "connection_id",
+          "person_id",
+          "association_id",
+          "document_id",
+          "workflow_version",
+          "ruleset_version",
+          "cadence",
+          "expected_http_status",
+          "expected_state",
+          "instructions"
         ],
         "additionalProperties": false
       }

@@ -79,7 +79,7 @@ def nav_pages(node):
 
 for page in nav_pages(json.loads((ROOT / 'docs.json').read_text())):
     check((ROOT / (page + '.mdx')).is_file(), 'Missing navigation page: ' + page)
-check(len(index) == len(operations) == 180, 'Operation count mismatch')
+check(len(index) == len(operations) == 180 + len(json.loads((ROOT/'data/integration-api-index.json').read_text())), 'Operation count mismatch')
 check(len(re.findall(r'^#### ', (ROOT / 'data-model/field-dictionary.mdx').read_text(), re.M)) == 957, 'Field count mismatch')
 check(len(re.findall(r'<Accordion title=', (ROOT / 'data-model/entities.mdx').read_text())) == 64, 'Resource count mismatch')
 result = {'checks': checks, 'operations': len(operations), 'removedServicingOperations': 14, 'scope': 'Documentation and API contract; no backend calls.'}

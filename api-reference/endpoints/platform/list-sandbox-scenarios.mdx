@@ -1,0 +1,11 @@
+---
+title: "List sandbox scenarios"
+openapi: "/openapi/amlok-v1.json GET /v1/sandbox/scenarios"
+playground: simple
+---
+
+**Required scope:** `platform:read`
+
+Return only synthetic fixtures provisioned in this sandbox workspace. Production returns 404; there are no production fault-injection or time-control commands. The account manager provides sandbox access and the fixture pack through the client portal. A portal administrator selects/reset scenarios before a test run; resetting discards only sandbox fixtures and test credits. GET never resets or mutates a scenario. Returned IDs and approved configuration are authoritative; do not use saved example IDs. Sandbox funding and simulated time controls stay in the portal, cannot move money, and cannot change production. Billing assertions use the real product rules with test credits.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

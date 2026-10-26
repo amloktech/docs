@@ -29,6 +29,8 @@ The example has HTTP `422`. `meta.data_status: complete` describes the error res
 
 | Code | HTTP | Retryable | Client action |
 | --- | ---: | --- | --- |
+| `idempotency_result_expired` | 409 | No re-execution | Look up the durable request receipt. |
+| `event_history_expired` | 410 | No | Reconcile current state through checkpoints and changes. |
 | `validation_error` | 400 | No | Correct the invalid field or projection. |
 | `cursor_expired` | 410 | No | Create a new synchronization checkpoint and rebuild the snapshot. |
 | `workload_limit_exceeded` | 422 | No, until scope is agreed | Inspect the workload report and agree expanded scope before processing. |

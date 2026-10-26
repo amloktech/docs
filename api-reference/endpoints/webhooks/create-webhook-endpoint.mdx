@@ -8,6 +8,6 @@ playground: simple
 
 Register an HTTPS event destination.
 
-Required scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
+Required scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.
 
 [Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

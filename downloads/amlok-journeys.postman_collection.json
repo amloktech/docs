@@ -1,0 +1,687 @@
+{
+  "info": {
+    "name": "AMLOK sandbox product journeys",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Chained Insights and Signal sandbox tests. Run one folder with 2000 ms delay. Retain keys and resource IDs after failures; never run against production."
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_key}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Insights end to end",
+      "description": "Run this folder only in a freshly provisioned sandbox fixture. Set runner delay to 2000 ms. Preserve action keys after interruption. Use the Python runner for exhaustive paginated charge reconciliation.",
+      "item": [
+        {
+          "name": "Insights configuration",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/configuration",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.environment === \"sandbox\", \"Sandbox only\");",
+                  "pm.collectionVariables.set(\"sandbox_verified\", \"yes\");",
+                  "pm.collectionVariables.set(\"journey_config\", JSON.stringify(d));",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"sandbox_verified\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Insights fixture",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/sandbox/scenarios?limit=200",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "const fixture = d.find(x => x.id === \"insights_success\");",
+                  "requireThat(Boolean(fixture), \"Provision or reset the insights fixture through the portal\");",
+                  "pm.collectionVariables.set(\"journey_fixture\", JSON.stringify(fixture));",
+                  "pm.collectionVariables.set(\"journey_subject\", fixture.subject_id);",
+                  "pm.collectionVariables.set(\"journey_application\", fixture.application_id || \"\");",
+                  "pm.collectionVariables.set(\"journey_manifest\", fixture.input_manifest_id || \"\");",
+                  "pm.collectionVariables.set(\"journey_baseline\", fixture.baseline_snapshot_id || \"\");",
+                  "pm.collectionVariables.set(\"journey_workflow_version\", fixture.workflow_version);",
+                  "pm.collectionVariables.set(\"journey_ruleset\", fixture.ruleset_version);",
+                  "pm.collectionVariables.set(\"journey_cadence\", fixture.cadence);",
+                  "const cfg = JSON.parse(pm.collectionVariables.get(\"journey_config\"));",
+                  "const rules = cfg.rulesets.find(x => x.id === fixture.ruleset_version);",
+                  "if (rules) { pm.collectionVariables.set(\"journey_resources\", JSON.stringify(rules.resource_types)); pm.collectionVariables.set(\"journey_attributes\", JSON.stringify(rules.attribute_keys)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Insights readiness",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/subjects/{{journey_subject}}/readiness?product=insights",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.status !== \"blocked\", \"Evidence readiness must not be blocked\");",
+                  "if (d.status !== \"ready\") {",
+                  " const n = Number(pm.collectionVariables.get(\"poll_count\") || 0) + 1;",
+                  " pm.collectionVariables.set(\"poll_count\", String(n));",
+                  " requireThat(n <= 60, \"Readiness polling deadline; resume later without a new action\");",
+                  " pm.execution.setNextRequest(pm.info.requestName);",
+                  "} else { pm.collectionVariables.set(\"poll_count\", \"0\"); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Insights submit",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/v1/workflow-runs",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{journey_action_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject_id\": \"{{journey_subject}}\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"{{journey_workflow_version}}\",\n  \"application_id\": \"{{journey_application}}\",\n  \"input_manifest_id\": \"{{journey_manifest}}\",\n  \"input_resource_ids\": [\n    \"{{journey_application}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "pm.collectionVariables.set(\"journey_run\", d.id);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const subject = pm.collectionVariables.get(\"journey_subject\");",
+                  "const name = \"insights_key_\" + subject;",
+                  "if (!pm.collectionVariables.get(name)) pm.collectionVariables.set(name, pm.variables.replaceIn(\"{{$guid}}\"));",
+                  "pm.collectionVariables.set(\"journey_action_key\", pm.collectionVariables.get(name));",
+                  "pm.collectionVariables.set(\"journey_operation_id\", \"EP147\");",
+                  "pm.collectionVariables.set(\"journey_target_path\", \"/v1/workflow-runs\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Insights completion",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/workflow-runs/{{journey_run}}",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(![\"failed\", \"cancelled\", \"blocked_by_limit\", \"waiting_for_data\", \"waiting_for_credits\"].includes(d.status), \"Workflow must not be blocked; inspect failure and use the recovery guide\");",
+                  "if (d.status !== \"completed\") {",
+                  " const n = Number(pm.collectionVariables.get(\"poll_count\") || 0) + 1;",
+                  " pm.collectionVariables.set(\"poll_count\", String(n)); requireThat(n <= 60, \"Bounded workflow polling\"); pm.execution.setNextRequest(pm.info.requestName);",
+                  "} else { pm.collectionVariables.set(\"journey_usage\", d.billing_usage_id); pm.collectionVariables.set(\"journey_final_manifest\", d.input_manifest_id); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Insights usage",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/billing/usage/{{journey_usage}}",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.product === \"insights\" && d.quantity === \"1\" && d.workflow_run_id === pm.collectionVariables.get(\"journey_run\"), \"One-unit Insights usage linked to the run\");",
+                  "requireThat(d.input_manifest_id === pm.collectionVariables.get(\"journey_final_manifest\"), \"Usage references the final manifest\");",
+                  "pm.collectionVariables.set(\"journey_snapshot\", d.risk_snapshot_id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Insights evidence",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/risk-snapshots/{{journey_snapshot}}",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.workflow_run_id === pm.collectionVariables.get(\"journey_run\"), \"Snapshot belongs to the run\");",
+                  "requireThat(d.billing_usage_id === pm.collectionVariables.get(\"journey_usage\"), \"Snapshot and usage agree\");",
+                  "requireThat(d.evidence_manifest_id === pm.collectionVariables.get(\"journey_final_manifest\"), \"Evidence manifest agrees\");",
+                  "pm.execution.setNextRequest(null);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Signal end to end",
+      "description": "Run this folder only in a freshly provisioned sandbox fixture. Set runner delay to 2000 ms. Preserve action keys after interruption. Use the Python runner for exhaustive paginated charge reconciliation.",
+      "item": [
+        {
+          "name": "Signal configuration",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/configuration",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.environment === \"sandbox\", \"Sandbox only\");",
+                  "pm.collectionVariables.set(\"sandbox_verified\", \"yes\");",
+                  "pm.collectionVariables.set(\"journey_config\", JSON.stringify(d));",
+                  "pm.collectionVariables.set(\"poll_count\", \"0\");"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.unset(\"sandbox_verified\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal fixture",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/sandbox/scenarios?limit=200",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "const fixture = d.find(x => x.id === \"signal_success\");",
+                  "requireThat(Boolean(fixture), \"Provision or reset the signal fixture through the portal\");",
+                  "pm.collectionVariables.set(\"journey_fixture\", JSON.stringify(fixture));",
+                  "pm.collectionVariables.set(\"journey_subject\", fixture.subject_id);",
+                  "pm.collectionVariables.set(\"journey_application\", fixture.application_id || \"\");",
+                  "pm.collectionVariables.set(\"journey_manifest\", fixture.input_manifest_id || \"\");",
+                  "pm.collectionVariables.set(\"journey_baseline\", fixture.baseline_snapshot_id || \"\");",
+                  "pm.collectionVariables.set(\"journey_workflow_version\", fixture.workflow_version);",
+                  "pm.collectionVariables.set(\"journey_ruleset\", fixture.ruleset_version);",
+                  "pm.collectionVariables.set(\"journey_cadence\", fixture.cadence);",
+                  "const cfg = JSON.parse(pm.collectionVariables.get(\"journey_config\"));",
+                  "const rules = cfg.rulesets.find(x => x.id === fixture.ruleset_version);",
+                  "if (rules) { pm.collectionVariables.set(\"journey_resources\", JSON.stringify(rules.resource_types)); pm.collectionVariables.set(\"journey_attributes\", JSON.stringify(rules.attribute_keys)); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal readiness",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/subjects/{{journey_subject}}/readiness?product=signal",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.status !== \"blocked\", \"Evidence readiness must not be blocked\");",
+                  "if (d.status !== \"ready\") {",
+                  " const n = Number(pm.collectionVariables.get(\"poll_count\") || 0) + 1;",
+                  " pm.collectionVariables.set(\"poll_count\", String(n));",
+                  " requireThat(n <= 60, \"Readiness polling deadline; resume later without a new action\");",
+                  " pm.execution.setNextRequest(pm.info.requestName);",
+                  "} else { pm.collectionVariables.set(\"poll_count\", \"0\"); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal submit",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/v1/monitors",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{journey_action_key}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject_id\": \"{{journey_subject}}\",\n  \"baseline_snapshot_id\": \"{{journey_baseline}}\",\n  \"resource_types\": [\n    \"REPLACE_RESOURCES\"\n  ],\n  \"attribute_keys\": [\n    \"REPLACE_ATTRIBUTES\"\n  ],\n  \"cadence\": \"{{journey_cadence}}\",\n  \"ruleset_version\": \"{{journey_ruleset}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "pm.collectionVariables.set(\"journey_monitor\", d.id);"
+                ]
+              }
+            },
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const subject = pm.collectionVariables.get(\"journey_subject\");",
+                  "const name = \"signal_key_\" + subject;",
+                  "if (!pm.collectionVariables.get(name)) pm.collectionVariables.set(name, pm.variables.replaceIn(\"{{$guid}}\"));",
+                  "pm.collectionVariables.set(\"journey_action_key\", pm.collectionVariables.get(name));",
+                  "pm.collectionVariables.set(\"journey_operation_id\", \"EP150\");",
+                  "pm.collectionVariables.set(\"journey_target_path\", \"/v1/monitors\");",
+                  "",
+                  "const body = JSON.parse(pm.variables.replaceIn(pm.request.body.raw));",
+                  "body.resource_types = JSON.parse(pm.collectionVariables.get(\"journey_resources\"));",
+                  "body.attribute_keys = JSON.parse(pm.collectionVariables.get(\"journey_attributes\"));",
+                  "pm.request.body.update(JSON.stringify(body));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal activation",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/monitors/{{journey_monitor}}",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.status === \"active\", \"Monitoring must be funded and active\");",
+                  "pm.collectionVariables.set(\"journey_period\", d.monitoring_period_id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal period",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/monitoring-periods/{{journey_period}}",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "pm.collectionVariables.set(\"journey_usage\", d.billing_usage_id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal usage",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/billing/usage/{{journey_usage}}",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.product === \"signal\" && d.quantity === \"1\", \"One Signal account-month unit\");",
+                  "requireThat(d.monitoring_period_id === pm.collectionVariables.get(\"journey_period\"), \"Usage belongs to the shared period\");"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal reassessment",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/risk-snapshots?subject_id={{journey_subject}}&limit=200",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "const changed = d.find(x => x.previous_snapshot_id === pm.collectionVariables.get(\"journey_baseline\"));",
+                  "if (!changed) {",
+                  " const n = Number(pm.collectionVariables.get(\"poll_count\") || 0) + 1;",
+                  " pm.collectionVariables.set(\"poll_count\", String(n)); requireThat(n <= 60, \"Bounded reassessment polling\"); pm.execution.setNextRequest(pm.info.requestName);",
+                  "} else { requireThat(changed.billing_usage_id === pm.collectionVariables.get(\"journey_usage\"), \"Reassessment uses the existing Signal charge\"); }"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Signal alerts",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/alerts?subject_id={{journey_subject}}&limit=200",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ]
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "function requireThat(ok, message) {",
+                  "  pm.test(message, () => pm.expect(Boolean(ok)).to.equal(true));",
+                  "  if (!ok) { pm.execution.setNextRequest(null); throw new Error(message); }",
+                  "}",
+                  "requireThat(pm.response.code >= 200 && pm.response.code < 300, \"Successful response required; reconcile saved action key on errors\");",
+                  "const response = pm.response.json(); const d = response.data;",
+                  "",
+                  "requireThat(d.length > 0, \"Synthetic change produced an intervention signal\");",
+                  "pm.execution.setNextRequest(null);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "const origin = pm.variables.get(\"base_url\") || \"\";",
+          "if (!/^https:\\/\\/[^/@?#]+\\/?$/.test(origin)) { pm.execution.setNextRequest(null); pm.execution.skipRequest(); throw new Error(\"Configure a valid HTTPS origin\"); }",
+          "if (!pm.info.requestName.endsWith(\" configuration\") && pm.collectionVariables.get(\"sandbox_verified\") !== \"yes\") { pm.execution.setNextRequest(null); pm.execution.skipRequest(); throw new Error(\"Run sandbox configuration first\"); }"
+        ]
+      }
+    }
+  ]
+}

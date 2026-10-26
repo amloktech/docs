@@ -336,6 +336,9 @@ def samples(op, params, request, example_id):
     headers = {'Authorization':'Bearer <AMLOK_API_KEY>','Accept':'application/json'}
     if op['Method']=='POST': headers['Idempotency-Key']='idem_example_1001'
     if op['Method']=='PATCH': headers['If-Match']='"3"'
+    for p in params:
+        if p.get('in') == 'header' and p.get('required') and p['name'] not in headers:
+            headers[p['name']] = p.get('example', '<'+p['name']+'>')
     if request and not is_multipart: headers['Content-Type']='application/json'
     for k,v in headers.items():
         if k not in ['Authorization','Accept']: curl[-1]+=' \\';curl.append("  --header '"+k+': '+v+"'")
@@ -486,6 +489,8 @@ from baseline_contract import extend as extend_baselines
 BASELINE_OPS = extend_baselines(globals())
 from enterprise_contract import extend as extend_enterprise
 ENTERPRISE_OPS = extend_enterprise(globals())
+from integration_contract import extend as extend_integration
+INTEGRATION_OPS = extend_integration(globals())
 active_pages = {op['page'] for op in OP_INDEX}
 for old_op in previous_ops:
     if old_op['page'] not in active_pages:
@@ -501,7 +506,7 @@ write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
 GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
-ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs', 'processing-lifecycle']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog', 'synchronization']), ('Build your integration', 'blocks', ['products-and-endpoints', 'workflows', 'evidence-traceability', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting', 'chart-column', ['credit-reporting', 'consumption-reporting', 'workload-reporting', 'export-formats']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs', 'processing-lifecycle', 'request-recovery']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog', 'webhook-operations', 'synchronization']), ('Build your integration', 'blocks', ['products-and-endpoints', 'workflows', 'connection-recovery', 'related-person-verification', 'configuration', 'sandbox-journeys', 'evidence-traceability', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting', 'chart-column', ['credit-reporting', 'consumption-reporting', 'workload-reporting', 'export-formats']), ('Security and versioning', 'lock', ['security', 'versioning'])]
 ENDPOINT_ICONS = {'Platform':'server','Identity':'fingerprint','Banking':'landmark','Payments':'credit-card','Commerce':'shopping-cart','Accounting':'calculator','Inventory':'boxes','Lending':'hand-coins','Liens':'file-lock','Risk':'chart-no-axes-combined','Operations':'workflow','Webhooks':'webhook','Reporting':'chart-column'}
 api_tab['groups'] = [
     {'group': 'Get started', 'pages': ['api-reference/' + p for p in GUIDES[:4]]},

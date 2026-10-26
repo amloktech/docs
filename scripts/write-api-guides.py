@@ -861,4 +861,8 @@ Pin the [OpenAPI reference](/openapi/amlok-v1.json) used by your client. Review 
 ''')
 from enterprise_guides import generate
 generate()
+from integration_guides import generate as generate_integration
+generate_integration()
+from sandbox_journeys import generate as generate_journeys
+generate_journeys()
 print('Wrote API guides and enterprise contract guides')

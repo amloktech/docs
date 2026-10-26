@@ -1,0 +1,34 @@
+---
+title: "Discover your integration configuration"
+description: "Read approved identifiers, provider products and runtime limits for your environment."
+---
+
+Your account manager provides client portal access information and the environment details. Authorized administrators **create API keys in the client portal**, selecting a workspace, environment and permitted scopes. Store keys on your server. One key identifies exactly one workspace and environment.
+
+Call [Retrieve environment configuration](/api-reference/endpoints/platform/retrieve-environment-configuration) with `platform:read` before configuring processing:
+
+| Response | How to use it |
+| --- | --- |
+| `workspace_id`, `environment`, `revision` | Confirm your intended tenant and sandbox/production environment; refresh cached settings when the revision changes. |
+| `workflow_versions` | Select an allowed ID by workflow type, paid product and verification type. |
+| `rulesets` | Use an approved `ruleset_version` and its allowed resource types and attribute keys. |
+| `cadences` | Use its ID as `cadence`. It describes requested evaluation, not guaranteed source freshness. |
+| `limits` | Actual request, burst, concurrent-job, upload-byte, page and MIME-type constraints. |
+| `webhooks` | Retained history boundary, retention, delivery timeout and signing-secret overlap. |
+| `idempotency_replay_seconds` | The 24-hour full-response replay window; durable request receipts remain until workspace deletion. |
+
+Numeric values in saved examples are synthetic. The response for your environment is authoritative. The account manager communicates planned configuration changes before their effective time under your agreement. Accepted work retains its approved workflow revision.
+
+Read `GET /v1/providers` separately for each provider's `products[].id`, resource mapping, consent scopes, purposes, markets and limitations. Unsupported identifiers return `422 validation_error`; refresh configuration before correcting your request. Rates and agreed workload limits remain available through billing rate cards and workload reports. Discovery does not alter your tier, rate or agreement.
+
+## Evidence readiness
+
+Read [subject readiness](/api-reference/endpoints/risk/retrieve-subject-readiness) with `product=insights` or `product=signal`.
+
+- `preparing`: source synchronization or evidence validation is still running. Poll after `retry_after_seconds`.
+- `blocked`: inspect every check and `next_action`; supply missing evidence or contact the account manager.
+- `ready`: use `input_manifest_id` for Insights or `baseline_snapshot_id` for Signal.
+
+AMLOK prepares the initial immutable manifest after synchronization and evidence acceptance. Insights banking evidence includes at least 12 months within the agreed record limit. The initial manifest can be ready while later-stage KYC evidence is still required by the underwriting; those requirements belong to the accepted run. Accepted later evidence creates an auditable successor manifest, not a second charge.
+
+A Signal baseline becomes ready after the completed assessment is approved for monitoring, or after the existing-portfolio onboarding process arranged with the account manager. Baseline readiness does not silently run or bill Insights. An empty baseline list is not a readiness signal. Reading readiness never initiates paid processing.

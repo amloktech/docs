@@ -11,7 +11,7 @@ Every POST operation requires an `Idempotency-Key`. Generate it once for one int
 Idempotency-Key: onboarding-connection-1001
 ```
 
-The deduplication scope is **institution + workspace + environment + operation + key**, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
+The deduplication scope is **institution + workspace + environment + operation + key**, with the resolved target path and intended payload validated in its fingerprint, with **24-hour retention**. An identical replay returns the original result; a different intended payload with the same key returns `409 idempotency_conflict`.
 
 | Situation | Client behavior |
 | --- | --- |
@@ -20,6 +20,8 @@ The deduplication scope is **institution + workspace + environment + operation +
 | 409 conflicting payload | Reconcile the original action. Use a new key only for a genuinely new intended action. |
 | Retry beyond the retention window | Reconcile the existing resource/job before creating a new action. |
 | Multipart upload | Reuse the same file bytes and logical fields. Keep the request content unchanged when retrying. |
+
+After full-response replay expires, a retained key returns `409 idempotency_result_expired` without executing again. Durable receipts remain until workspace deletion. [Look up the original accepted request](/api-reference/request-recovery) before taking another action.
 
 Never generate a new idempotency key on every automatic retry. Do not assume a command is safe to replay indefinitely after deduplication retention expires.
 

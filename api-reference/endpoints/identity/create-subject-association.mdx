@@ -1,0 +1,11 @@
+---
+title: "Create subject association"
+openapi: "/openapi/amlok-v1.json POST /v1/subject-associations"
+playground: simple
+---
+
+**Required scope:** `identity:write`
+
+Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

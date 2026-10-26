@@ -14,14 +14,14 @@ AMLOK coordinates assessment processing. It does not execute borrower outreach, 
 | `blocked_by_limit` | The agreed workload cannot cover further work. AMLOK must agree expanded scope before it resumes. |
 | `waiting_for_credits` | Available credits cannot cover final completion. Fund through the portal; AMLOK retries the same completion without duplicating processing or charges. |
 | `completed` | Required output is published. For a root Insights run, its single charge and output publication complete atomically. |
-| `failed` | Processing failed definitively. Inspect the reason and use support when needed. No completed-underwriting charge is created. |
+| `failed` | The attempt failed. Inspect structured `failure`; retry the same run only when permitted, otherwise correct evidence or contact support. No completed-underwriting charge is created. |
 | `cancelled` | Processing has stopped. No later output publication or charge is permitted. |
 
 There is no workflow state for approving borrower communications or other servicing actions.
 
 ## Evidence requirements
 
-Read the requirement to identify the missing evidence and parent workflow. Upload the requested document with `requirement_id`; the subject and workspace must match. Upload acceptance does not mean evidence acceptance. AMLOK's validation process or authorized evidence reviewer accepts, rejects or waives the requirement according to the agreed assessment rules. These review actions are managed in the platform, not public servicing endpoints. Accepted evidence resumes the waiting assessment automatically; rejected evidence includes a reason and remains unresolved. AMLOK does not contact the borrower to collect it.
+Read the requirement to identify the missing evidence and parent workflow. Upload the requested document with `requirement_id`; the subject and workspace must match. Upload acceptance does not mean evidence acceptance. AMLOK's validation process or authorized evidence reviewer accepts, rejects or waives the requirement according to the agreed assessment rules. These review actions are managed in the platform, not public servicing endpoints. Accepted evidence resumes the waiting assessment automatically; rejected evidence includes structured `rejection` with code, message, document IDs and review time and remains unresolved. AMLOK does not contact the borrower to collect it.
 
 ## Credits and concurrent work
 

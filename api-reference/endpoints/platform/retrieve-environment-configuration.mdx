@@ -1,0 +1,11 @@
+---
+title: "Retrieve environment configuration"
+openapi: "/openapi/amlok-v1.json GET /v1/configuration"
+playground: simple
+---
+
+**Required scope:** `platform:read`
+
+Read accepted identifiers and actual operational limits for the key-bound workspace and environment. Numbers in saved examples are synthetic, not production defaults or SLA promises. Use workflow_versions[].id as workflow_version, rulesets[].id as ruleset_version and cadences[].id as cadence. Resource and attribute selection must be allowed by that ruleset. GET /v1/providers supplies enabled product IDs and resource mappings. Rates and workload limits remain in read-only billing rate cards and workload reports. Cache by revision and refresh on configuration-related 422 errors or before adopting a new workflow. Changes to configured limits or identifiers are communicated through the account manager before taking effect under the agreement; in-flight work retains its accepted workflow revision.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

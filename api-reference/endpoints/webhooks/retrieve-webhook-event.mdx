@@ -1,0 +1,11 @@
+---
+title: "Retrieve webhook event"
+openapi: "/openapi/amlok-v1.json GET /v1/webhook-events/{id}"
+playground: simple
+---
+
+**Required scope:** `webhooks:read`
+
+Retrieve a retained event with its original ID and minimal payload. No provider credentials or signing secrets are returned. Enforce the original resource authorization. Expired known events return 410 event_history_expired; unknown or unauthorized IDs return 404. Retrieve the authoritative resource separately for current data.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

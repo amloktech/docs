@@ -1,0 +1,11 @@
+---
+title: "Retrieve subject readiness"
+openapi: "/openapi/amlok-v1.json GET /v1/subjects/{id}/readiness"
+playground: simple
+---
+
+**Required scope:** `risk:read`
+
+Explain whether this subject has a ready evidence set for Insights or an approved baseline for Signal. After source sync and evidence acceptance, AMLOK automatically builds a frozen manifest. Checks include consent, source coverage, at least 12 months of banking history for Insights, required evidence and agreed scope. preparing supplies retry_after_seconds; blocked supplies actionable checks and next_action. Do not treat an empty manifest/baseline list as a completed onboarding. A ready Insights result identifies the manifest; a ready Signal result identifies the approved snapshot. Existing-portfolio Signal onboarding can create the baseline without charging Insights and is arranged with the account manager. This read does not approve evidence, process an underwriting or spend credits. Signal readiness also requires monitoring:read. Initial Insights readiness covers intake evidence; staged owner KYC can remain a requirement on the subsequently accepted underwriting, avoiding a circular prerequisite.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

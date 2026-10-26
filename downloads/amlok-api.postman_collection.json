@@ -367,7 +367,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"subject_type\": \"business\",\n  \"purposes\": [\n    \"credit_assessment\"\n  ],\n  \"scopes\": [\n    \"banking:read\"\n  ],\n  \"policy_version\": \"consent-v1\",\n  \"evidence_document_id\": \"doc_consent\"\n}",
@@ -398,7 +398,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Record authorization and evidence.\n\nRequired scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"subject_type\": \"business\",\n  \"purposes\": [\n    \"credit_assessment\"\n  ],\n  \"scopes\": [\n    \"banking:read\"\n  ],\n  \"policy_version\": \"consent-v1\",\n  \"evidence_document_id\": \"doc_consent\"\n}",
@@ -440,7 +440,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -471,7 +471,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Revoke future collection under this consent.\n\nRequired scope: `consent:write`. Existing evidence retention follows configured policy. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -513,10 +513,10 @@
                 "value": "application/json"
               }
             ],
-            "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Renew an expired link or reauthorization-required connection through POST /v1/connections/{id}/authorization. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\"\n}",
+              "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -544,10 +544,10 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Start an authorized source-connection flow.\n\nRequired scope: `connections:write`. Return a short-lived authorization action; no provider secret in response. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Renew an expired link or reauthorization-required connection through POST /v1/connections/{id}/authorization. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\"\n}",
+                  "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"provider_id\": \"BANK-02\",\n  \"products\": [\n    \"transactions\"\n  ],\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -586,7 +586,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"resources\": [\n    \"bank_transaction\"\n  ],\n  \"from\": \"2026-09-01\",\n  \"to\": \"2026-10-01\"\n}",
@@ -617,7 +617,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Request a bounded data refresh.\n\nRequired scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"resources\": [\n    \"bank_transaction\"\n  ],\n  \"from\": \"2026-09-01\",\n  \"to\": \"2026-10-01\"\n}",
@@ -659,7 +659,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -690,7 +690,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Disconnect a provider link.\n\nRequired scope: `connections:write`. Stops future collection; not a full evidence deletion command. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Requested by the authorized institution.\"\n}",
@@ -748,7 +748,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"provider_id\": \"BANK-02\",\n      \"resources\": [\n        \"bank_account\",\n        \"bank_transaction\"\n      ],\n      \"countries\": [\n        \"CA\"\n      ],\n      \"status\": \"enabled\",\n      \"limitations\": []\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"provider_id\": \"BANK-02\",\n      \"resources\": [\n        \"bank_account\",\n        \"bank_transaction\"\n      ],\n      \"countries\": [\n        \"CA\"\n      ],\n      \"status\": \"enabled\",\n      \"limitations\": [],\n      \"products\": [\n        {\n          \"id\": \"transactions\",\n          \"resources\": [\n            \"bank_account\",\n            \"bank_transaction\"\n          ],\n          \"consent_scopes\": [\n            \"banking:read\"\n          ],\n          \"purposes\": [\n            \"credit_assessment\"\n          ]\n        }\n      ]\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -900,7 +900,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active.",
+            "description": "Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ]\n}",
@@ -931,7 +931,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active.",
+                "description": "Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ]\n}",
@@ -951,6 +951,204 @@
                 }
               ],
               "body": "{\n  \"data\": {\n    \"id\": \"checkpoint_example\",\n    \"object\": \"sync_checkpoint\",\n    \"workspace_id\": \"wsp_example\",\n    \"as_of\": \"2026-10-23T14:00:00Z\",\n    \"expires_at\": \"2026-11-01T14:00:00Z\",\n    \"resource_types\": [\n      \"bank_transaction\",\n      \"lien\"\n    ],\n    \"resume_cursor\": \"changes_after_checkpoint_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Renew connection authorization",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/v1/connections/connection_example/authorization",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotency_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Create a fresh short-lived authorization action on the existing pending, active or reauth_required connection. Preserve its ID, records and synchronization lineage. The consent must authorize the same subject, provider products and purposes. Validate redirect_uri against portal registration. Bind state to this connection and action; echo it on return. A new action invalidates any older unused action. An identical idempotent retry returns the same action, including its original expiry; use a new key when intentionally replacing an expired action. Reauthorization does not backfill data until a successful sync. Revoked or disconnected connections cannot be reopened; obtain new consent and create a new connection. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Synthetic 201",
+              "originalRequest": {
+                "method": "POST",
+                "url": "{{base_url}}/v1/connections/connection_example/authorization",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{idempotency_key}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Create a fresh short-lived authorization action on the existing pending, active or reauth_required connection. Preserve its ID, records and synchronization lineage. The consent must authorize the same subject, provider products and purposes. Validate redirect_uri against portal registration. Bind state to this connection and action; echo it on return. A new action invalidates any older unused action. An identical idempotent retry returns the same action, including its original expiry; use a new key when intentionally replacing an expired action. Reauthorization does not backfill data until a successful sync. Revoked or disconnected connections cannot be reopened; obtain new consent and create a new connection. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Browser return parameters are connection_id, state and result (completed, cancelled or failed); failed returns a sanitized error_code. Verify the saved state and expected connection, then retrieve the connection server-side. The callback never proves consent or connection activation. No credentials or source data appear in return parameters. The state must be unpredictable, bound to the initiating browser session and accepted only once. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"consent_id\": \"con_example\",\n  \"redirect_uri\": \"https://client.example.com/connected\",\n  \"state\": \"synthetic-random-state-at-least-32-characters\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"connection_example\",\n    \"object\": \"connection\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"partial\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"client_reference\": \"app-1029\",\n    \"provider_id\": \"BANK-02\",\n    \"provider_tenant_id\": \"item_example\",\n    \"status\": \"active\",\n    \"institution_id\": \"ins_example\",\n    \"institution_name\": \"Example Bank\",\n    \"country\": \"CA\",\n    \"products\": [\n      \"transactions\",\n      \"balance\"\n    ],\n    \"scopes\": [\n      \"banking:read\"\n    ],\n    \"consent_id\": \"con_01JAMLOK\",\n    \"last_successful_sync_at\": null,\n    \"next_refresh_at\": null,\n    \"history_available_from\": \"2025-10-22\",\n    \"reauth_required_at\": null,\n    \"error_code\": \"reauth_required\",\n    \"sync_cursor\": \"cur_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  },\n  \"action\": {\n    \"type\": \"redirect\",\n    \"url\": \"https://authorize.example.com/session/synthetic\",\n    \"expires_at\": \"2026-10-23T14:15:00Z\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Look up request receipt",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/request-receipts/lookup?operation_id=EP147&target_path=%2Fv1%2Fworkflow-runs",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotency_key}}"
+              }
+            ],
+            "description": "Find an accepted POST after losing its response, including after the 24-hour full-response replay window. Supply the original Idempotency-Key header, operation_id and exact resolved target_path (no origin or query). The same workspace, environment and original operation scopes are required; key rotation does not break lookup. Receipts are created atomically before acknowledging an accepted command and retained until workspace deletion, including after a linked resource expires. resource_unavailable retains its identity but does not authorize rerunning it. Store a non-reversible key digest, not the raw key. A 404 is not proof that an in-flight request never arrived; within 24 hours retry the same key, afterward contact support with the caller correlation ID before any new submission. This endpoint neither executes nor replays work. resource_path identifies an authorized relative GET route and requires its read scope. For a short-lived document or report link, it identifies the document or report parent, never the signed URL. An expired link can be intentionally regenerated with a new key without paid processing. Webhook replay receipts identify the original webhook event; match delivery replay_request_id to receipt.request_id. A lost create-webhook response cannot reveal its one-time secret through lookup; rotate it in the portal."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/request-receipts/lookup?operation_id=EP147&target_path=%2Fv1%2Fworkflow-runs",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{idempotency_key}}"
+                  }
+                ],
+                "description": "Find an accepted POST after losing its response, including after the 24-hour full-response replay window. Supply the original Idempotency-Key header, operation_id and exact resolved target_path (no origin or query). The same workspace, environment and original operation scopes are required; key rotation does not break lookup. Receipts are created atomically before acknowledging an accepted command and retained until workspace deletion, including after a linked resource expires. resource_unavailable retains its identity but does not authorize rerunning it. Store a non-reversible key digest, not the raw key. A 404 is not proof that an in-flight request never arrived; within 24 hours retry the same key, afterward contact support with the caller correlation ID before any new submission. This endpoint neither executes nor replays work. resource_path identifies an authorized relative GET route and requires its read scope. For a short-lived document or report link, it identifies the document or report parent, never the signed URL. An expired link can be intentionally regenerated with a new key without paid processing. Webhook replay receipts identify the original webhook event; match delivery replay_request_id to receipt.request_id. A lost create-webhook response cannot reveal its one-time secret through lookup; rotate it in the portal."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"rcpt_example\",\n    \"object\": \"request_receipt\",\n    \"operation_id\": \"EP147\",\n    \"target_path\": \"/v1/workflow-runs\",\n    \"request_id\": \"req_example\",\n    \"status\": \"accepted\",\n    \"resource_type\": \"workflow_run\",\n    \"resource_id\": \"wfr_example\",\n    \"resource_path\": \"/v1/workflow-runs/wfr_example\",\n    \"original_http_status\": 202,\n    \"accepted_at\": \"2026-10-23T14:00:00Z\",\n    \"replay_expires_at\": \"2026-10-24T14:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve environment configuration",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/configuration",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Read accepted identifiers and actual operational limits for the key-bound workspace and environment. Numbers in saved examples are synthetic, not production defaults or SLA promises. Use workflow_versions[].id as workflow_version, rulesets[].id as ruleset_version and cadences[].id as cadence. Resource and attribute selection must be allowed by that ruleset. GET /v1/providers supplies enabled product IDs and resource mappings. Rates and workload limits remain in read-only billing rate cards and workload reports. Cache by revision and refresh on configuration-related 422 errors or before adopting a new workflow. Changes to configured limits or identifiers are communicated through the account manager before taking effect under the agreement; in-flight work retains its accepted workflow revision."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/configuration",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Read accepted identifiers and actual operational limits for the key-bound workspace and environment. Numbers in saved examples are synthetic, not production defaults or SLA promises. Use workflow_versions[].id as workflow_version, rulesets[].id as ruleset_version and cadences[].id as cadence. Resource and attribute selection must be allowed by that ruleset. GET /v1/providers supplies enabled product IDs and resource mappings. Rates and workload limits remain in read-only billing rate cards and workload reports. Cache by revision and refresh on configuration-related 422 errors or before adopting a new workflow. Changes to configured limits or identifiers are communicated through the account manager before taking effect under the agreement; in-flight work retains its accepted workflow revision."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"config_example\",\n    \"object\": \"environment_configuration\",\n    \"workspace_id\": \"wsp_example\",\n    \"environment\": \"sandbox\",\n    \"revision\": \"cfg_example\",\n    \"effective_at\": \"2026-10-23T14:00:00Z\",\n    \"workflow_versions\": [\n      {\n        \"id\": \"underwrite-v1\",\n        \"workflow_type\": \"underwrite\",\n        \"products\": [\n          \"insights\"\n        ],\n        \"verification_types\": []\n      },\n      {\n        \"id\": \"kyc-ca-v1\",\n        \"workflow_type\": \"verify\",\n        \"products\": [\n          \"insights\",\n          \"signal\"\n        ],\n        \"verification_types\": [\n          \"kyc\"\n        ]\n      },\n      {\n        \"id\": \"kyb-ca-v1\",\n        \"workflow_type\": \"verify\",\n        \"products\": [\n          \"insights\",\n          \"signal\"\n        ],\n        \"verification_types\": [\n          \"kyb\"\n        ]\n      }\n    ],\n    \"rulesets\": [\n      {\n        \"id\": \"monitoring-v1\",\n        \"attribute_keys\": [\n          \"cash_flow.net_monthly\"\n        ],\n        \"resource_types\": [\n          \"bank_transaction\"\n        ]\n      }\n    ],\n    \"cadences\": [\n      {\n        \"id\": \"daily\",\n        \"description\": \"Daily AMLOK evaluation subject to actual provider freshness and permission.\"\n      }\n    ],\n    \"limits\": {\n      \"requests_per_minute\": 120,\n      \"burst_requests\": 20,\n      \"concurrent_jobs\": 5,\n      \"upload_bytes\": 10485760,\n      \"document_pages\": 100,\n      \"mime_types\": [\n        \"application/pdf\"\n      ]\n    },\n    \"webhooks\": {\n      \"event_retention_seconds\": 2592000,\n      \"delivery_timeout_seconds\": 10,\n      \"rotation_overlap_seconds\": 86400,\n      \"retained_from\": \"2026-09-23T14:00:00Z\"\n    },\n    \"idempotency_replay_seconds\": 86400\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List sandbox scenarios",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/sandbox/scenarios",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Return only synthetic fixtures provisioned in this sandbox workspace. Production returns 404; there are no production fault-injection or time-control commands. The account manager provides sandbox access and the fixture pack through the client portal. A portal administrator selects/reset scenarios before a test run; resetting discards only sandbox fixtures and test credits. GET never resets or mutates a scenario. Returned IDs and approved configuration are authoritative; do not use saved example IDs. Sandbox funding and simulated time controls stay in the portal, cannot move money, and cannot change production. Billing assertions use the real product rules with test credits."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/sandbox/scenarios",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Return only synthetic fixtures provisioned in this sandbox workspace. Production returns 404; there are no production fault-injection or time-control commands. The account manager provides sandbox access and the fixture pack through the client portal. A portal administrator selects/reset scenarios before a test run; resetting discards only sandbox fixtures and test credits. GET never resets or mutates a scenario. Returned IDs and approved configuration are authoritative; do not use saved example IDs. Sandbox funding and simulated time controls stay in the portal, cannot move money, and cannot change production. Billing assertions use the real product rules with test credits."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"insights_success\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Completed full underwriting\",\n      \"subject_id\": \"biz_sandbox_insights_success\",\n      \"application_id\": \"app_sandbox_insights_success\",\n      \"input_manifest_id\": \"manifest_sandbox_insights_success\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_insights_success\",\n      \"person_id\": \"per_sandbox_insights_success\",\n      \"association_id\": \"assoc_sandbox_insights_success\",\n      \"document_id\": \"doc_sandbox_insights_success\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 202,\n      \"expected_state\": \"completed\",\n      \"instructions\": \"Run the Insights journey. Includes two bank accounts, five business systems and at least twelve months of synthetic banking history. Expect one Standard Insights charge.\"\n    },\n    {\n      \"id\": \"signal_success\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Monitoring and reassessment\",\n      \"subject_id\": \"biz_sandbox_signal_success\",\n      \"application_id\": \"app_sandbox_signal_success\",\n      \"input_manifest_id\": \"manifest_sandbox_signal_success\",\n      \"baseline_snapshot_id\": \"rsk_sandbox_signal_success\",\n      \"connection_id\": \"cnn_sandbox_signal_success\",\n      \"person_id\": \"per_sandbox_signal_success\",\n      \"association_id\": \"assoc_sandbox_signal_success\",\n      \"document_id\": \"doc_sandbox_signal_success\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 201,\n      \"expected_state\": \"active\",\n      \"instructions\": \"Run the Signal journey. A pre-approved existing-portfolio baseline and scheduled synthetic source update produce reassessment and an alert. Expect one Standard Signal charge and no Insights charge.\"\n    },\n    {\n      \"id\": \"insufficient_credits\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Insufficient available credits\",\n      \"subject_id\": \"biz_sandbox_insufficient_credits\",\n      \"application_id\": \"app_sandbox_insufficient_credits\",\n      \"input_manifest_id\": \"manifest_sandbox_insufficient_credits\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_insufficient_credits\",\n      \"person_id\": \"per_sandbox_insufficient_credits\",\n      \"association_id\": \"assoc_sandbox_insufficient_credits\",\n      \"document_id\": \"doc_sandbox_insufficient_credits\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 402,\n      \"expected_state\": \"insufficient_credits\",\n      \"instructions\": \"Submit the Insights request; expect no accepted run or debit. Use portal sandbox funding to restore test credits, then retry the identical key.\"\n    },\n    {\n      \"id\": \"authorization_expired\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Expired connection authorization\",\n      \"subject_id\": \"biz_sandbox_authorization_expired\",\n      \"application_id\": \"app_sandbox_authorization_expired\",\n      \"input_manifest_id\": \"manifest_sandbox_authorization_expired\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_authorization_expired\",\n      \"person_id\": \"per_sandbox_authorization_expired\",\n      \"association_id\": \"assoc_sandbox_authorization_expired\",\n      \"document_id\": \"doc_sandbox_authorization_expired\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 201,\n      \"expected_state\": \"reauth_required\",\n      \"instructions\": \"Renew the supplied connection authorization; complete the sandbox hosted flow. Retrieve the same connection ID as active and then sync.\"\n    },\n    {\n      \"id\": \"rejected_evidence\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Rejected evidence\",\n      \"subject_id\": \"biz_sandbox_rejected_evidence\",\n      \"application_id\": \"app_sandbox_rejected_evidence\",\n      \"input_manifest_id\": \"manifest_sandbox_rejected_evidence\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_rejected_evidence\",\n      \"person_id\": \"per_sandbox_rejected_evidence\",\n      \"association_id\": \"assoc_sandbox_rejected_evidence\",\n      \"document_id\": \"doc_sandbox_rejected_evidence\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 202,\n      \"expected_state\": \"waiting_for_data\",\n      \"instructions\": \"Start underwriting; the sandbox evidence validator rejects the seeded document and returns a rejected requirement with a reason. Upload its replacement from the portal-provided fixture pack using requirement_id; the same run resumes.\"\n    },\n    {\n      \"id\": \"workload_limit\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Known workload limit exceeded\",\n      \"subject_id\": \"biz_sandbox_workload_limit\",\n      \"application_id\": \"app_sandbox_workload_limit\",\n      \"input_manifest_id\": \"manifest_sandbox_workload_limit\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_workload_limit\",\n      \"person_id\": \"per_sandbox_workload_limit\",\n      \"association_id\": \"assoc_sandbox_workload_limit\",\n      \"document_id\": \"doc_sandbox_workload_limit\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 422,\n      \"expected_state\": \"workload_limit_exceeded\",\n      \"instructions\": \"Submit the Insights request with over-limit evidence; expect no debit and no automatic tier change.\"\n    },\n    {\n      \"id\": \"retryable_failure\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Retryable processing failure\",\n      \"subject_id\": \"biz_sandbox_retryable_failure\",\n      \"application_id\": \"app_sandbox_retryable_failure\",\n      \"input_manifest_id\": \"manifest_sandbox_retryable_failure\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_retryable_failure\",\n      \"person_id\": \"per_sandbox_retryable_failure\",\n      \"association_id\": \"assoc_sandbox_retryable_failure\",\n      \"document_id\": \"doc_sandbox_retryable_failure\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 202,\n      \"expected_state\": \"failed\",\n      \"instructions\": \"Start the run and poll until failure.retryable is true. Retry that same run; its second attempt completes with one total Insights charge.\"\n    },\n    {\n      \"id\": \"owner_kyc\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Related owner verification\",\n      \"subject_id\": \"biz_sandbox_owner_kyc\",\n      \"application_id\": \"app_sandbox_owner_kyc\",\n      \"input_manifest_id\": \"manifest_sandbox_owner_kyc\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_owner_kyc\",\n      \"person_id\": \"per_sandbox_owner_kyc\",\n      \"association_id\": \"assoc_sandbox_owner_kyc\",\n      \"document_id\": \"doc_sandbox_owner_kyc\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 201,\n      \"expected_state\": \"approved\",\n      \"instructions\": \"Use an unfinished waiting-for-data business run from the fixture pack and its active association to request person KYC. The included check has no separate charge.\"\n    },\n    {\n      \"id\": \"duplicate_delivery\",\n      \"object\": \"sandbox_scenario\",\n      \"name\": \"Duplicate webhook delivery\",\n      \"subject_id\": \"biz_sandbox_duplicate_delivery\",\n      \"application_id\": \"app_sandbox_duplicate_delivery\",\n      \"input_manifest_id\": \"manifest_sandbox_duplicate_delivery\",\n      \"baseline_snapshot_id\": null,\n      \"connection_id\": \"cnn_sandbox_duplicate_delivery\",\n      \"person_id\": \"per_sandbox_duplicate_delivery\",\n      \"association_id\": \"assoc_sandbox_duplicate_delivery\",\n      \"document_id\": \"doc_sandbox_duplicate_delivery\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"ruleset_version\": \"monitoring-v1\",\n      \"cadence\": \"daily\",\n      \"expected_http_status\": 201,\n      \"expected_state\": \"delivered\",\n      \"instructions\": \"Register a sandbox receiver; its seeded event is delivered twice with one event ID and fresh signatures. Reconcile attempts and replay using that ID; your consumer must apply the event once.\"\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         }
@@ -1228,7 +1426,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"ver_example\",\n      \"object\": \"verification\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-22T13:00:00Z\",\n      \"updated_at\": \"2026-10-22T14:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"partial\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.4.2\",\n      \"verification_type\": \"kyb\",\n      \"status\": \"not_started\",\n      \"hosted_url\": \"https://verify.example.com/session\",\n      \"stop_reason\": null,\n      \"processing_context\": {\n        \"product\": \"insights\",\n        \"workflow_run_id\": \"wfr_example\"\n      },\n      \"workflow_version\": \"kyb-ca-v1\"\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"ver_example\",\n      \"object\": \"verification\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-22T13:00:00Z\",\n      \"updated_at\": \"2026-10-22T14:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"partial\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.4.2\",\n      \"verification_type\": \"kyb\",\n      \"status\": \"not_started\",\n      \"hosted_url\": \"https://verify.example.com/session\",\n      \"stop_reason\": null,\n      \"processing_context\": {\n        \"product\": \"insights\",\n        \"workflow_run_id\": \"wfr_example\"\n      },\n      \"workflow_version\": \"kyb-ca-v1\",\n      \"subject_association_version\": null\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -1267,7 +1465,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"ver_example\",\n    \"object\": \"verification\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"partial\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"verification_type\": \"kyb\",\n    \"status\": \"not_started\",\n    \"hosted_url\": \"https://verify.example.com/session\",\n    \"stop_reason\": null,\n    \"processing_context\": {\n      \"product\": \"insights\",\n      \"workflow_run_id\": \"wfr_example\"\n    },\n    \"workflow_version\": \"kyb-ca-v1\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"ver_example\",\n    \"object\": \"verification\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"partial\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"verification_type\": \"kyb\",\n    \"status\": \"not_started\",\n    \"hosted_url\": \"https://verify.example.com/session\",\n    \"stop_reason\": null,\n    \"processing_context\": {\n      \"product\": \"insights\",\n      \"workflow_run_id\": \"wfr_example\"\n    },\n    \"workflow_version\": \"kyb-ca-v1\",\n    \"subject_association_version\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -1524,7 +1722,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"legal_name\": \"Example Manufacturing Inc.\",\n  \"client_reference\": \"app-1029\",\n  \"incorporation_country\": \"CA\"\n}",
@@ -1555,7 +1753,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Create a client-asserted business profile.\n\nRequired scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"legal_name\": \"Example Manufacturing Inc.\",\n  \"client_reference\": \"app-1029\",\n  \"incorporation_country\": \"CA\"\n}",
@@ -1597,7 +1795,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"given_name\": \"Alex\",\n  \"family_name\": \"Example\",\n  \"email\": \"alex@example.com\"\n}",
@@ -1628,7 +1826,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Create an authorized client-asserted person profile.\n\nRequired scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"given_name\": \"Alex\",\n  \"family_name\": \"Example\",\n  \"email\": \"alex@example.com\"\n}",
@@ -1670,7 +1868,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+            "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Person KYC within a business assessment requires processing_context.subject_association_id. Its person_id must match the verification subject; its business_id must match the parent subject. Store the association ID and validated record version on the verification for audit. Pending, rejected, revoked, mismatched or cross-workspace associations cannot authorize a stage. Revocation stops unfinished related-person work. Do not create a second product merely to verify its owner. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"verification_type\": \"kyb\",\n  \"workflow_version\": \"kyb-ca-v1\",\n  \"return_url\": \"https://client.example.com/verified\",\n  \"processing_context\": {\n    \"product\": \"insights\",\n    \"workflow_run_id\": \"wfr_example\"\n  }\n}",
@@ -1701,7 +1899,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+                "description": "Start a KYC or KYB session.\n\nRequired scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Person KYC within a business assessment requires processing_context.subject_association_id. Its person_id must match the verification subject; its business_id must match the parent subject. Store the association ID and validated record version on the verification for audit. Pending, rejected, revoked, mismatched or cross-workspace associations cannot authorize a stage. Revocation stops unfinished related-person work. Do not create a second product merely to verify its owner. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"verification_type\": \"kyb\",\n  \"workflow_version\": \"kyb-ca-v1\",\n  \"return_url\": \"https://client.example.com/verified\",\n  \"processing_context\": {\n    \"product\": \"insights\",\n    \"workflow_run_id\": \"wfr_example\"\n  }\n}",
@@ -1720,7 +1918,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"ver_example\",\n    \"object\": \"verification\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"verification_type\": \"kyb\",\n    \"status\": \"not_started\",\n    \"hosted_url\": \"https://verify.example.com/session\",\n    \"workflow_version\": \"kyb-ca-v1\",\n    \"stop_reason\": null,\n    \"processing_context\": {\n      \"product\": \"insights\",\n      \"workflow_run_id\": \"wfr_example\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"ver_example\",\n    \"object\": \"verification\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"verification_type\": \"kyb\",\n    \"status\": \"not_started\",\n    \"hosted_url\": \"https://verify.example.com/session\",\n    \"workflow_version\": \"kyb-ca-v1\",\n    \"stop_reason\": null,\n    \"processing_context\": {\n      \"product\": \"insights\",\n      \"workflow_run_id\": \"wfr_example\"\n    },\n    \"subject_association_version\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
             }
           ]
         },
@@ -1739,7 +1937,7 @@
                 "value": "{{idempotency_key}}"
               }
             ],
-            "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -1787,7 +1985,7 @@
                     "value": "{{idempotency_key}}"
                   }
                 ],
-                "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Upload permitted evidence.\n\nRequired scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "formdata",
                   "formdata": [
@@ -1850,7 +2048,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Issue a short-lived evidence-download URL.\n\nRequired scope: `documents:read`. Signed link is scoped and expires; no permanent public storage URL.",
+            "description": "Issue a short-lived evidence-download URL.\n\nRequired scope: `documents:read`. Signed link is scoped and expires; no permanent public storage URL. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"purpose\": \"credit_assessment\"\n}",
@@ -1881,7 +2079,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Issue a short-lived evidence-download URL.\n\nRequired scope: `documents:read`. Signed link is scoped and expires; no permanent public storage URL.",
+                "description": "Issue a short-lived evidence-download URL.\n\nRequired scope: `documents:read`. Signed link is scoped and expires; no permanent public storage URL. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"purpose\": \"credit_assessment\"\n}",
@@ -1901,6 +2099,157 @@
                 }
               ],
               "body": "{\n  \"data\": {\n    \"document_id\": \"doc_example\",\n    \"url\": \"https://evidence.example.com/temporary\",\n    \"expires_at\": \"2026-10-23T14:00:00Z\",\n    \"id\": \"doc_example\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create subject association",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/v1/subject-associations",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotency_key}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"business_id\": \"biz_example\",\n  \"person_id\": \"per_example\",\n  \"role\": \"beneficial_owner\",\n  \"evidence_document_ids\": [\n    \"doc_example\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "name": "Synthetic 201",
+              "originalRequest": {
+                "method": "POST",
+                "url": "{{base_url}}/v1/subject-associations",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{idempotency_key}}"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"business_id\": \"biz_example\",\n  \"person_id\": \"per_example\",\n  \"role\": \"beneficial_owner\",\n  \"evidence_document_ids\": [\n    \"doc_example\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"assoc_example\",\n    \"object\": \"subject_association\",\n    \"business_id\": \"biz_example\",\n    \"person_id\": \"per_example\",\n    \"role\": \"beneficial_owner\",\n    \"status\": \"pending\",\n    \"evidence_document_ids\": [\n      \"doc_example\"\n    ],\n    \"relationship_id\": null,\n    \"reason_code\": null,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List subject associations",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/subject-associations",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/subject-associations",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"assoc_example\",\n      \"object\": \"subject_association\",\n      \"business_id\": \"biz_example\",\n      \"person_id\": \"per_example\",\n      \"role\": \"beneficial_owner\",\n      \"status\": \"active\",\n      \"evidence_document_ids\": [\n        \"doc_example\"\n      ],\n      \"relationship_id\": null,\n      \"reason_code\": null,\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"record_version\": 2\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve subject association",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/subject-associations/assoc_example",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/subject-associations/assoc_example",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Associate an existing person with a business in this workspace using permitted evidence and recorded authorization. This is a client-declared association, not a verified legal ownership determination. AMLOK validates subject ownership, the authorization and supporting evidence; status becomes active automatically when checks pass, or remains pending for platform review. Rejected records expose reason_code. An active association authorizes only related-person verification within an agreed parent product workflow. It does not grant broader data access. Canonical verified relationships remain read-only evidence. Review, corrections and revocation occur in the portal; create a new association for corrected evidence. Completed assessments retain their historical association version."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"assoc_example\",\n    \"object\": \"subject_association\",\n    \"business_id\": \"biz_example\",\n    \"person_id\": \"per_example\",\n    \"role\": \"beneficial_owner\",\n    \"status\": \"active\",\n    \"evidence_document_ids\": [\n      \"doc_example\"\n    ],\n    \"relationship_id\": null,\n    \"reason_code\": null,\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 2\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         }
@@ -5229,7 +5578,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"applicant_entity_id\": \"biz_example\",\n  \"product_type\": \"term_loan\",\n  \"requested_amount\": {\n    \"amount\": \"100000.00\",\n    \"currency\": \"CAD\"\n  },\n  \"purpose\": \"Equipment purchase\",\n  \"requested_term_months\": 36\n}",
@@ -5260,7 +5609,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Create a credit application.\n\nRequired scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"applicant_entity_id\": \"biz_example\",\n  \"product_type\": \"term_loan\",\n  \"requested_amount\": {\n    \"amount\": \"100000.00\",\n    \"currency\": \"CAD\"\n  },\n  \"purpose\": \"Equipment purchase\",\n  \"requested_term_months\": 36\n}",
@@ -5541,7 +5890,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+            "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"debtor_name\": \"Example Manufacturing Inc.\",\n  \"debtor_type\": \"business\",\n  \"search_type\": \"name\",\n  \"jurisdictions\": [\n    \"US-DE\"\n  ],\n  \"processing_context\": {\n    \"product\": \"insights\",\n    \"workflow_run_id\": \"wfr_example\"\n  }\n}",
@@ -5572,7 +5921,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+                "description": "Run a lien search with explicit jurisdiction and debtor scope.\n\nRequired scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"debtor_name\": \"Example Manufacturing Inc.\",\n  \"debtor_type\": \"business\",\n  \"search_type\": \"name\",\n  \"jurisdictions\": [\n    \"US-DE\"\n  ],\n  \"processing_context\": {\n    \"product\": \"insights\",\n    \"workflow_run_id\": \"wfr_example\"\n  }\n}",
@@ -5931,7 +6280,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+            "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"keys\": [\n    \"operating_inflows\"\n  ],\n  \"window_start\": \"2026-09-01\",\n  \"window_end\": \"2026-10-01\",\n  \"input_manifest_id\": \"manifest_example\",\n  \"processing_context\": {\n    \"product\": \"insights\",\n    \"workflow_run_id\": \"wfr_example\"\n  }\n}",
@@ -5962,7 +6311,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.",
+                "description": "Calculate selected attributes from a frozen evidence window.\n\nRequired scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"keys\": [\n    \"operating_inflows\"\n  ],\n  \"window_start\": \"2026-09-01\",\n  \"window_end\": \"2026-10-01\",\n  \"input_manifest_id\": \"manifest_example\",\n  \"processing_context\": {\n    \"product\": \"insights\",\n    \"workflow_run_id\": \"wfr_example\"\n  }\n}",
@@ -6043,7 +6392,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges. Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately.",
+            "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges. Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"baseline_snapshot_id\": \"rsk_baseline\",\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ],\n  \"attribute_keys\": [\n    \"operating_inflows\"\n  ],\n  \"cadence\": \"daily\",\n  \"ruleset_version\": \"monitor-v1\"\n}",
@@ -6074,7 +6423,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges. Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately.",
+                "description": "Configure ongoing monitoring against a baseline.\n\nRequired scope: `monitoring:write`. Refresh frequency remains subject to provider and consent limits. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover approved baselines through GET /v1/monitoring-baselines. Supply its snapshot_id as baseline_snapshot_id; it must be ready and belong to this subject and workspace. Multiple monitors do not create multiple Signal account-month charges. Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"baseline_snapshot_id\": \"rsk_baseline\",\n  \"resource_types\": [\n    \"bank_transaction\",\n    \"lien\"\n  ],\n  \"attribute_keys\": [\n    \"operating_inflows\"\n  ],\n  \"cadence\": \"daily\",\n  \"ruleset_version\": \"monitor-v1\"\n}",
@@ -6442,6 +6791,45 @@
               "body": "{\n  \"data\": [\n    {\n      \"resource_type\": \"application\",\n      \"resource_id\": \"app_example\",\n      \"resource_version\": 1,\n      \"source_record_id\": \"client-application-example\",\n      \"source_version\": \"1\",\n      \"content_sha256\": \"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"\n    },\n    {\n      \"resource_type\": \"document\",\n      \"resource_id\": \"doc_example\",\n      \"resource_version\": 1,\n      \"source_record_id\": \"client-document-example\",\n      \"source_version\": \"1\",\n      \"content_sha256\": \"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
+        },
+        {
+          "name": "Retrieve subject readiness",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/subjects/biz_example/readiness?product=insights",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Explain whether this subject has a ready evidence set for Insights or an approved baseline for Signal. After source sync and evidence acceptance, AMLOK automatically builds a frozen manifest. Checks include consent, source coverage, at least 12 months of banking history for Insights, required evidence and agreed scope. preparing supplies retry_after_seconds; blocked supplies actionable checks and next_action. Do not treat an empty manifest/baseline list as a completed onboarding. A ready Insights result identifies the manifest; a ready Signal result identifies the approved snapshot. Existing-portfolio Signal onboarding can create the baseline without charging Insights and is arranged with the account manager. This read does not approve evidence, process an underwriting or spend credits. Signal readiness also requires monitoring:read. Initial Insights readiness covers intake evidence; staged owner KYC can remain a requirement on the subsequently accepted underwriting, avoiding a circular prerequisite."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/subjects/biz_example/readiness?product=insights",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Explain whether this subject has a ready evidence set for Insights or an approved baseline for Signal. After source sync and evidence acceptance, AMLOK automatically builds a frozen manifest. Checks include consent, source coverage, at least 12 months of banking history for Insights, required evidence and agreed scope. preparing supplies retry_after_seconds; blocked supplies actionable checks and next_action. Do not treat an empty manifest/baseline list as a completed onboarding. A ready Insights result identifies the manifest; a ready Signal result identifies the approved snapshot. Existing-portfolio Signal onboarding can create the baseline without charging Insights and is arranged with the account manager. This read does not approve evidence, process an underwriting or spend credits. Signal readiness also requires monitoring:read. Initial Insights readiness covers intake evidence; staged owner KYC can remain a requirement on the subsequently accepted underwriting, avoiding a circular prerequisite."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"subject_id\": \"biz_example\",\n    \"product\": \"insights\",\n    \"status\": \"ready\",\n    \"checks\": [\n      {\n        \"code\": \"bank_history_12_months\",\n        \"status\": \"passed\",\n        \"message\": \"At least 12 months of permitted banking evidence included.\"\n      }\n    ],\n    \"input_manifest_id\": \"manifest_example\",\n    \"baseline_snapshot_id\": null,\n    \"next_action\": \"start_underwriting\",\n    \"retry_after_seconds\": null,\n    \"updated_at\": \"2026-10-23T14:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
         }
       ]
     },
@@ -6483,7 +6871,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wfr_example\",\n      \"object\": \"workflow_run\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-22T13:00:00Z\",\n      \"updated_at\": \"2026-10-22T14:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"pending\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.4.2\",\n      \"workflow_type\": \"underwrite\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"status\": \"queued\",\n      \"input_resource_ids\": [\n        \"app_example\",\n        \"doc_example\"\n      ],\n      \"output_resource_ids\": [],\n      \"product\": \"insights\",\n      \"input_manifest_id\": \"manifest_example\",\n      \"initial_input_manifest_id\": \"manifest_example\",\n      \"workload_id\": \"workload_example\",\n      \"billing_usage_id\": null,\n      \"monitoring_period_id\": null,\n      \"blocked_reason\": null,\n      \"stop_reason\": null\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"wfr_example\",\n      \"object\": \"workflow_run\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-22T13:00:00Z\",\n      \"updated_at\": \"2026-10-22T14:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"pending\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.4.2\",\n      \"workflow_type\": \"underwrite\",\n      \"workflow_version\": \"underwrite-v1\",\n      \"status\": \"queued\",\n      \"input_resource_ids\": [\n        \"app_example\",\n        \"doc_example\"\n      ],\n      \"output_resource_ids\": [],\n      \"product\": \"insights\",\n      \"input_manifest_id\": \"manifest_example\",\n      \"initial_input_manifest_id\": \"manifest_example\",\n      \"workload_id\": \"workload_example\",\n      \"billing_usage_id\": null,\n      \"monitoring_period_id\": null,\n      \"blocked_reason\": null,\n      \"stop_reason\": null,\n      \"failure\": null,\n      \"attempt\": 1\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -6522,7 +6910,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wfr_example\",\n    \"object\": \"workflow_run\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"workflow_type\": \"underwrite\",\n    \"workflow_version\": \"underwrite-v1\",\n    \"status\": \"queued\",\n    \"input_resource_ids\": [\n      \"app_example\",\n      \"doc_example\"\n    ],\n    \"output_resource_ids\": [],\n    \"product\": \"insights\",\n    \"input_manifest_id\": \"manifest_example\",\n    \"initial_input_manifest_id\": \"manifest_example\",\n    \"workload_id\": \"workload_example\",\n    \"billing_usage_id\": null,\n    \"monitoring_period_id\": null,\n    \"blocked_reason\": null,\n    \"stop_reason\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wfr_example\",\n    \"object\": \"workflow_run\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"workflow_type\": \"underwrite\",\n    \"workflow_version\": \"underwrite-v1\",\n    \"status\": \"queued\",\n    \"input_resource_ids\": [\n      \"app_example\",\n      \"doc_example\"\n    ],\n    \"output_resource_ids\": [],\n    \"product\": \"insights\",\n    \"input_manifest_id\": \"manifest_example\",\n    \"initial_input_manifest_id\": \"manifest_example\",\n    \"workload_id\": \"workload_example\",\n    \"billing_usage_id\": null,\n    \"monitoring_period_id\": null,\n    \"blocked_reason\": null,\n    \"stop_reason\": null,\n    \"failure\": null,\n    \"attempt\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -6561,7 +6949,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": [\n    {\n      \"id\": \"requirement_example\",\n      \"object\": \"requirement\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"partial\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.4.2\",\n      \"client_reference\": \"app-1029\",\n      \"workflow_run_id\": \"wfr_example\",\n      \"requirement_type\": \"bank_statement\",\n      \"description\": \"Most recent three complete bank statements\",\n      \"status\": \"requested\",\n      \"due_on\": \"2026-10-25\",\n      \"document_ids\": [],\n      \"reviewer_id\": null,\n      \"waiver_reason\": null\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"requirement_example\",\n      \"object\": \"requirement\",\n      \"subject_id\": \"biz_example\",\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"updated_at\": \"2026-10-23T14:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"partial\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.4.2\",\n      \"client_reference\": \"app-1029\",\n      \"workflow_run_id\": \"wfr_example\",\n      \"requirement_type\": \"bank_statement\",\n      \"description\": \"Most recent three complete bank statements\",\n      \"status\": \"requested\",\n      \"due_on\": \"2026-10-25\",\n      \"document_ids\": [],\n      \"reviewer_id\": null,\n      \"waiver_reason\": null,\n      \"rejection\": null\n    }\n  ],\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -6600,7 +6988,7 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"requirement_example\",\n    \"object\": \"requirement\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"partial\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"client_reference\": \"app-1029\",\n    \"workflow_run_id\": \"wfr_example\",\n    \"requirement_type\": \"bank_statement\",\n    \"description\": \"Most recent three complete bank statements\",\n    \"status\": \"requested\",\n    \"due_on\": \"2026-10-25\",\n    \"document_ids\": [],\n    \"reviewer_id\": null,\n    \"waiver_reason\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"requirement_example\",\n    \"object\": \"requirement\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"updated_at\": \"2026-10-23T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"partial\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"client_reference\": \"app-1029\",\n    \"workflow_run_id\": \"wfr_example\",\n    \"requirement_type\": \"bank_statement\",\n    \"description\": \"Most recent three complete bank statements\",\n    \"status\": \"requested\",\n    \"due_on\": \"2026-10-25\",\n    \"document_ids\": [],\n    \"reviewer_id\": null,\n    \"waiver_reason\": null,\n    \"rejection\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"partial\"\n  }\n}"
             }
           ]
         },
@@ -6701,7 +7089,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. AMLOK returns evidence and assessment results. The institution performs all borrower outreach and intervention in its own systems. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge. A root underwrite request is a full Insights underwriting and requires application_id and input_manifest_id. Other workflow types require processing_context and are included stages. Signal reassessment is a Signal child run, never a separately billed root underwrite. Workload checks reject known over-limit inputs with 422 workload_limit_exceeded. If discovery reveals more records later, pause as blocked_by_limit before processing beyond the limit. No automatic tier upgrade occurs. Available credits are checked at acceptance and again atomically with output publication and the one usage debit at successful completion. No credits are reserved. If funds were spent by concurrent work, keep the run waiting_for_credits and withhold its final output; resume without duplicate processing when funded. Cancelled runs never publish or charge. Each evidence manifest is immutable. While an unfinished run waits for required evidence, accepted evidence can create a successor manifest; retain initial_input_manifest_id, update input_manifest_id and record_version, and emit an audit event identifying both manifests. The final snapshot and usage link to the final manifest. This continuation keeps the same run and single charge.",
+            "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. AMLOK returns evidence and assessment results. The institution performs all borrower outreach and intervention in its own systems. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge. A root underwrite request is a full Insights underwriting and requires application_id and input_manifest_id. Other workflow types require processing_context and are included stages. Signal reassessment is a Signal child run, never a separately billed root underwrite. Workload checks reject known over-limit inputs with 422 workload_limit_exceeded. If discovery reveals more records later, pause as blocked_by_limit before processing beyond the limit. No automatic tier upgrade occurs. Available credits are checked at acceptance and again atomically with output publication and the one usage debit at successful completion. No credits are reserved. If funds were spent by concurrent work, keep the run waiting_for_credits and withhold its final output; resume without duplicate processing when funded. Cancelled runs never publish or charge. Each evidence manifest is immutable. While an unfinished run waits for required evidence, accepted evidence can create a successor manifest; retain initial_input_manifest_id, update input_manifest_id and record_version, and emit an audit event identifying both manifests. The final snapshot and usage link to the final manifest. This continuation keeps the same run and single charge. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"underwrite-v1\",\n  \"input_resource_ids\": [\n    \"app_example\",\n    \"doc_example\"\n  ],\n  \"application_id\": \"app_example\",\n  \"input_manifest_id\": \"manifest_example\"\n}",
@@ -6732,7 +7120,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. AMLOK returns evidence and assessment results. The institution performs all borrower outreach and intervention in its own systems. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge. A root underwrite request is a full Insights underwriting and requires application_id and input_manifest_id. Other workflow types require processing_context and are included stages. Signal reassessment is a Signal child run, never a separately billed root underwrite. Workload checks reject known over-limit inputs with 422 workload_limit_exceeded. If discovery reveals more records later, pause as blocked_by_limit before processing beyond the limit. No automatic tier upgrade occurs. Available credits are checked at acceptance and again atomically with output publication and the one usage debit at successful completion. No credits are reserved. If funds were spent by concurrent work, keep the run waiting_for_credits and withhold its final output; resume without duplicate processing when funded. Cancelled runs never publish or charge. Each evidence manifest is immutable. While an unfinished run waits for required evidence, accepted evidence can create a successor manifest; retain initial_input_manifest_id, update input_manifest_id and record_version, and emit an audit event identifying both manifests. The final snapshot and usage link to the final manifest. This continuation keeps the same run and single charge.",
+                "description": "Run a coordinated risk workflow.\n\nRequired scope: `workflows:execute`. AMLOK returns evidence and assessment results. The institution performs all borrower outreach and intervention in its own systems. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge. A root underwrite request is a full Insights underwriting and requires application_id and input_manifest_id. Other workflow types require processing_context and are included stages. Signal reassessment is a Signal child run, never a separately billed root underwrite. Workload checks reject known over-limit inputs with 422 workload_limit_exceeded. If discovery reveals more records later, pause as blocked_by_limit before processing beyond the limit. No automatic tier upgrade occurs. Available credits are checked at acceptance and again atomically with output publication and the one usage debit at successful completion. No credits are reserved. If funds were spent by concurrent work, keep the run waiting_for_credits and withhold its final output; resume without duplicate processing when funded. Cancelled runs never publish or charge. Each evidence manifest is immutable. While an unfinished run waits for required evidence, accepted evidence can create a successor manifest; retain initial_input_manifest_id, update input_manifest_id and record_version, and emit an audit event identifying both manifests. The final snapshot and usage link to the final manifest. This continuation keeps the same run and single charge. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"subject_id\": \"biz_example\",\n  \"workflow_type\": \"underwrite\",\n  \"workflow_version\": \"underwrite-v1\",\n  \"input_resource_ids\": [\n    \"app_example\",\n    \"doc_example\"\n  ],\n  \"application_id\": \"app_example\",\n  \"input_manifest_id\": \"manifest_example\"\n}",
@@ -6751,7 +7139,54 @@
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"data\": {\n    \"id\": \"wfr_example\",\n    \"object\": \"workflow_run\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"workflow_type\": \"underwrite\",\n    \"workflow_version\": \"underwrite-v1\",\n    \"status\": \"queued\",\n    \"input_resource_ids\": [\n      \"app_example\",\n      \"doc_example\"\n    ],\n    \"output_resource_ids\": [],\n    \"application_id\": \"app_example\",\n    \"product\": \"insights\",\n    \"input_manifest_id\": \"manifest_example\",\n    \"initial_input_manifest_id\": \"manifest_example\",\n    \"workload_id\": \"workload_example\",\n    \"billing_usage_id\": null,\n    \"monitoring_period_id\": null,\n    \"blocked_reason\": null,\n    \"stop_reason\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+              "body": "{\n  \"data\": {\n    \"id\": \"wfr_example\",\n    \"object\": \"workflow_run\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"workflow_type\": \"underwrite\",\n    \"workflow_version\": \"underwrite-v1\",\n    \"status\": \"queued\",\n    \"input_resource_ids\": [\n      \"app_example\",\n      \"doc_example\"\n    ],\n    \"output_resource_ids\": [],\n    \"application_id\": \"app_example\",\n    \"product\": \"insights\",\n    \"input_manifest_id\": \"manifest_example\",\n    \"initial_input_manifest_id\": \"manifest_example\",\n    \"workload_id\": \"workload_example\",\n    \"billing_usage_id\": null,\n    \"monitoring_period_id\": null,\n    \"blocked_reason\": null,\n    \"stop_reason\": null,\n    \"failure\": null,\n    \"attempt\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retry failed workflow",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/v1/workflow-runs/wfr_example/retry",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "{{idempotency_key}}"
+              }
+            ],
+            "description": "Retry an existing failed run only when failure.retryable is true and recovery_action is retry_same_run. Retain run identity, application, product context, evidence and the one eventual charge. Increment attempt once per accepted retry and append an audit event; replaying this idempotency key cannot increment it again. Revalidate active consent, parent context, association and workload. Respect retry_after_seconds. Non-retryable, completed, cancelled or already-running runs return 409 invalid_state; concurrent retries can start only one attempt. Unfunded accepted work uses waiting_for_credits, not a replacement run. For non-retryable invalid evidence, correct requirements or contact support as failure.recovery_action directs; do not invent a replacement billable operation. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt."
+          },
+          "response": [
+            {
+              "name": "Synthetic 202",
+              "originalRequest": {
+                "method": "POST",
+                "url": "{{base_url}}/v1/workflow-runs/wfr_example/retry",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Idempotency-Key",
+                    "value": "{{idempotency_key}}"
+                  }
+                ],
+                "description": "Retry an existing failed run only when failure.retryable is true and recovery_action is retry_same_run. Retain run identity, application, product context, evidence and the one eventual charge. Increment attempt once per accepted retry and append an audit event; replaying this idempotency key cannot increment it again. Revalidate active consent, parent context, association and workload. Respect retry_after_seconds. Non-retryable, completed, cancelled or already-running runs return 409 invalid_state; concurrent retries can start only one attempt. Unfunded accepted work uses waiting_for_credits, not a replacement run. For non-retryable invalid evidence, correct requirements or contact support as failure.recovery_action directs; do not invent a replacement billable operation. Account cancellation rejects new processing immediately with 409 invalid_state. Read-only access lasts only until workspace deletion. No separate product charge or financial mutation is introduced. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt."
+              },
+              "status": "Accepted",
+              "code": 202,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"wfr_example\",\n    \"object\": \"workflow_run\",\n    \"subject_id\": \"biz_example\",\n    \"created_at\": \"2026-10-22T13:00:00Z\",\n    \"updated_at\": \"2026-10-22T14:00:00Z\",\n    \"record_version\": 1,\n    \"source_refs\": [],\n    \"data_status\": \"pending\",\n    \"missing_fields\": [],\n    \"schema_version\": \"1.4.2\",\n    \"workflow_type\": \"underwrite\",\n    \"workflow_version\": \"underwrite-v1\",\n    \"status\": \"queued\",\n    \"input_resource_ids\": [\n      \"app_example\",\n      \"doc_example\"\n    ],\n    \"output_resource_ids\": [],\n    \"product\": \"insights\",\n    \"input_manifest_id\": \"manifest_example\",\n    \"initial_input_manifest_id\": \"manifest_example\",\n    \"workload_id\": \"workload_example\",\n    \"billing_usage_id\": null,\n    \"monitoring_period_id\": null,\n    \"blocked_reason\": null,\n    \"stop_reason\": null,\n    \"failure\": null,\n    \"attempt\": 2,\n    \"completed_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         }
@@ -6779,7 +7214,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"url\": \"https://client.example.com/amlok-events\",\n  \"event_types\": [\n    \"verification.completed\"\n  ],\n  \"description\": \"Application events for the underwriting service\"\n}",
@@ -6810,7 +7245,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Register an HTTPS event destination.\n\nRequired scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"url\": \"https://client.example.com/amlok-events\",\n  \"event_types\": [\n    \"verification.completed\"\n  ],\n  \"description\": \"Application events for the underwriting service\"\n}",
@@ -6891,7 +7326,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+            "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt. Discover missing event IDs through GET /v1/webhook-events and inspect attempts through GET /v1/webhook-deliveries. Replay requires a retained event, original resource permission and an enabled endpoint subscribed to its type. Expired events return 410 event_history_expired; a disabled endpoint returns 409 invalid_state. Portal administrators manage destination URLs, subscriptions, enable/disable and signing-secret rotation. During the configured rotation overlap each delivery has v1 signatures for both old and new secrets; verifiers accept any matching v1. After the announced cutoff only the new secret signs deliveries.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"event_id\": \"evt_example\"\n}",
@@ -6922,7 +7357,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.",
+                "description": "Replay a previously generated authorized event.\n\nRequired scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt. Discover missing event IDs through GET /v1/webhook-events and inspect attempts through GET /v1/webhook-deliveries. Replay requires a retained event, original resource permission and an enabled endpoint subscribed to its type. Expired events return 410 event_history_expired; a disabled endpoint returns 409 invalid_state. Portal administrators manage destination URLs, subscriptions, enable/disable and signing-secret rotation. During the configured rotation overlap each delivery has v1 signatures for both old and new secrets; verifiers accept any matching v1. After the announced cutoff only the new secret signs deliveries.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"event_id\": \"evt_example\"\n}",
@@ -6942,6 +7377,123 @@
                 }
               ],
               "body": "{\n  \"data\": {\n    \"event_id\": \"evt_example\",\n    \"endpoint_id\": \"whk_example\",\n    \"status\": \"queued\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"pending\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List webhook events",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/webhook-events",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Discover generated events even when none reached your receiver. Filter by creation time and type; order by (created_at, id), ascending. First page freezes the upper boundary; cursor retains it. Retention and retained_from are provided by configuration. A requested interval earlier than retained_from returns 410 event_history_expired, never a misleading empty success. Reconcile current state using checkpoints and the change feed after expiry. Event availability still requires the key's underlying resource read scopes. Polling events is read-only and does not redeliver them."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/webhook-events",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Discover generated events even when none reached your receiver. Filter by creation time and type; order by (created_at, id), ascending. First page freezes the upper boundary; cursor retains it. Retention and retained_from are provided by configuration. A requested interval earlier than retained_from returns 410 event_history_expired, never a misleading empty success. Reconcile current state using checkpoints and the change feed after expiry. Event availability still requires the key's underlying resource read scopes. Polling events is read-only and does not redeliver them."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"evt_example\",\n      \"type\": \"verification.completed\",\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"schema_version\": \"1.4.2\",\n      \"resource_type\": \"verification\",\n      \"resource_id\": \"ver_example\",\n      \"resource_version\": 2,\n      \"data\": {\n        \"status\": \"in_review\"\n      }\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Retrieve webhook event",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/webhook-events/evt_example",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Retrieve a retained event with its original ID and minimal payload. No provider credentials or signing secrets are returned. Enforce the original resource authorization. Expired known events return 410 event_history_expired; unknown or unauthorized IDs return 404. Retrieve the authoritative resource separately for current data."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/webhook-events/evt_example",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Retrieve a retained event with its original ID and minimal payload. No provider credentials or signing secrets are returned. Enforce the original resource authorization. Expired known events return 410 event_history_expired; unknown or unauthorized IDs return 404. Retrieve the authoritative resource separately for current data."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"evt_example\",\n    \"type\": \"verification.completed\",\n    \"created_at\": \"2026-10-23T14:00:00Z\",\n    \"schema_version\": \"1.4.2\",\n    \"resource_type\": \"verification\",\n    \"resource_id\": \"ver_example\",\n    \"resource_version\": 2,\n    \"data\": {\n      \"status\": \"in_review\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "List webhook deliveries",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/v1/webhook-deliveries",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "description": "Read one row per delivery attempt in ascending attempt time and ID order. Cursor freezes filters and upper boundary. Filter by endpoint_id or event_id to diagnose missed events, retries and replays. No receiver response body, authentication header or signing secret is retained in this public report. Queued attempts have null attempted_at. Final automatic failure is exhausted. Retention follows webhook event retention; earlier requested time returns 410 event_history_expired. Endpoint disablement cancels queued attempts without deleting retained events."
+          },
+          "response": [
+            {
+              "name": "Synthetic 200",
+              "originalRequest": {
+                "method": "GET",
+                "url": "{{base_url}}/v1/webhook-deliveries",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "description": "Read one row per delivery attempt in ascending attempt time and ID order. Cursor freezes filters and upper boundary. Filter by endpoint_id or event_id to diagnose missed events, retries and replays. No receiver response body, authentication header or signing secret is retained in this public report. Queued attempts have null attempted_at. Final automatic failure is exhausted. Retention follows webhook event retention; earlier requested time returns 410 event_history_expired. Endpoint disablement cancels queued attempts without deleting retained events."
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"delivery_example\",\n      \"object\": \"webhook_delivery\",\n      \"endpoint_id\": \"whe_example\",\n      \"event_id\": \"evt_example\",\n      \"attempt\": 1,\n      \"status\": \"failed\",\n      \"created_at\": \"2026-10-23T14:00:00Z\",\n      \"attempted_at\": \"2026-10-23T14:00:00Z\",\n      \"next_attempt_at\": \"2026-10-23T14:01:00Z\",\n      \"http_status\": 503,\n      \"failure_code\": \"http_error\",\n      \"replay_request_id\": null\n    }\n  ],\n  \"page\": {\n    \"has_more\": false,\n    \"next_cursor\": null,\n    \"limit\": 100\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.4.2\",\n    \"generated_at\": \"2026-10-23T14:00:00Z\",\n    \"data_status\": \"complete\"\n  }\n}"
             }
           ]
         }
@@ -7320,7 +7872,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
+            "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\",\n  \"snapshot_id\": \"billing_snapshot_example\",\n  \"filters\": {}\n}",
@@ -7351,7 +7903,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
+                "description": "Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"from\": \"2026-10-01T00:00:00Z\",\n  \"to\": \"2026-11-01T00:00:00Z\",\n  \"report_type\": \"usage\",\n  \"format\": \"csv\",\n  \"time_basis\": \"posted_at\",\n  \"snapshot_id\": \"billing_snapshot_example\",\n  \"filters\": {}\n}",
@@ -7471,7 +8023,7 @@
                 "value": "application/json"
               }
             ],
-            "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
+            "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"reason\": \"Monthly reconciliation.\"\n}",
@@ -7502,7 +8054,7 @@
                     "value": "application/json"
                   }
                 ],
-                "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.",
+                "description": "Only ready, unexpired reports return a short-lived authorized URL. Treat the link as a secret.\n\nRequired scope: billing:export. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export. Accepted commands have a durable request receipt. Full response replay lasts 24 hours; afterward the same key and target return 409 idempotency_result_expired without re-execution. Different payloads return 409 idempotency_conflict. Use GET /v1/request-receipts/lookup to find the original resource. The fingerprint includes the resolved target path and intended payload; a key used on another target is rejected rather than replayed onto it. Pre-execution validation or insufficient-credit rejection creates no accepted receipt.",
                 "body": {
                   "mode": "raw",
                   "raw": "{\n  \"reason\": \"Monthly reconciliation.\"\n}",
