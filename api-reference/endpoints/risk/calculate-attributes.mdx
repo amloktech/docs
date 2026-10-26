@@ -4,10 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/attribute-calculations"
 playground: simple
 ---
 
-**Required scope:** `risk:calculate` · **Execution:** asynchronous.
+**Required scope:** `risk:calculate`
 
-GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage.
+Calculate selected attributes from a frozen evidence window.
 
-Poll `GET /v1/attribute-calculations/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
+Required scope: `risk:calculate`. GET /v1/attribute-calculations/{id} reports job state; values in /v1/attributes. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. Discover input_manifest_id through GET /v1/input-manifests. It must be ready and belong to the same subject and workspace. The calculation window must be contained within its frozen coverage. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.
 
-**Lifecycle event:** `attributes.calculated`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

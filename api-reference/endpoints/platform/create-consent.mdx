@@ -4,10 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/consents"
 playground: simple
 ---
 
-**Required scope:** `consent:write` · **Execution:** synchronous.
+**Required scope:** `consent:write`
 
-Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Record authorization and evidence.
 
-[Data dictionary](/data-model/field-dictionary#consent) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `consent:write`. Caller must have authority; recording consent does not manufacture user authorization. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
 
-**Lifecycle event:** `consent.updated`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

@@ -1,6 +1,6 @@
 ---
 title: "Field Dictionary"
-description: "941 field definitions, organized by domain and resource."
+description: "957 field definitions, organized by domain and resource."
 ---
 
 Open a resource to inspect its fields. **Required** describes a valid resource when it exists; it does not guarantee that a provider supplies the value. Examples are illustrative. A blank source example is shown as “Not specified.”
@@ -1709,7 +1709,7 @@ Human review of the relationship evidence.
 
 </Accordion>
 
-<Accordion title="verification" id="verification" description="14 fields">
+<Accordion title="verification" id="verification" description="16 fields">
 
 #### `verification.verification_type`
 
@@ -1907,6 +1907,24 @@ Parent KYB session for a related person's check.
 - **Source families:** AMLOK verification services; client
 - **Example:** `ver_parent`
 
+
+
+#### `verification.processing_context`
+
+**API contract field** · `ProcessingContext` · Required
+
+Authorized parent Insights workflow or paid Signal monitoring period. This stage is included in the product and creates no separate charge.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `verification.stop_reason`
+
+**API contract field** · `nullable` · Required
+
+Why unfinished processing stopped: account cancellation, parent cancellation, or revoked consent. Null when no stop applies.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
 
 </Accordion>
 
@@ -2650,20 +2668,15 @@ Applicable configured retention policy.
 - **Source families:** All inventory families; client uploads
 - **Example:** `evidence-policy-v1`
 
-#### `document.legal_hold`
 
-**F0174** · `boolean` · Optional · Nullable: Yes
 
-Whether deletion is suspended by a recorded hold.
+#### `document.stop_reason`
 
-- **Format / enum / units:** JSON boolean
-- **Origin:** AMLOK managed
-- **Classification:** Confidential
-- **Availability:** Source, module, country, consent and contracted permissions determine population.
-- **Normalization / validation:** Preserve original evidence; do not invent missing values.
-- **Source families:** All inventory families; client uploads
-- **Example:** `false`
+**API contract field** · `nullable` · Required
 
+Why unfinished processing stopped: account cancellation, parent cancellation, or revoked consent. Null when no stop applies.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
 
 </Accordion>
 
@@ -11809,7 +11822,7 @@ Earlier decision superseded by this one.
 
 <AccordionGroup>
 
-<Accordion title="lien_search" id="lien-search" description="15 fields">
+<Accordion title="lien_search" id="lien-search" description="17 fields">
 
 #### `lien_search.debtor_name`
 
@@ -12021,6 +12034,24 @@ Original report or certificate.
 - **Source families:** AMLOK US registry services; AMLOK Canadian registry services; client registry reports
 - **Example:** `doc_lien`
 
+
+
+#### `lien_search.processing_context`
+
+**API contract field** · `ProcessingContext` · Required
+
+Authorized parent Insights workflow or paid Signal monitoring period. This stage is included in the product and creates no separate charge.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `lien_search.stop_reason`
+
+**API contract field** · `nullable` · Required
+
+Why unfinished processing stopped: account cancellation, parent cancellation, or revoked consent. Null when no stop applies.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
 
 </Accordion>
 
@@ -12647,7 +12678,7 @@ Native scale for licensed scores, if relevant.
 
 </Accordion>
 
-<Accordion title="risk_snapshot" id="risk-snapshot" description="11 fields">
+<Accordion title="risk_snapshot" id="risk-snapshot" description="14 fields">
 
 #### `risk_snapshot.assessment_type`
 
@@ -12804,9 +12835,36 @@ Immutable list of input record versions.
 - **Example:** `manifest_example`
 
 
+
+#### `risk_snapshot.workflow_run_id`
+
+**API contract field** · `string` · Required
+
+Workflow that produced this assessment output.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `risk_snapshot.application_id`
+
+**API contract field** · `nullable` · Required
+
+Associated underwriting application, when applicable.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `risk_snapshot.billing_usage_id`
+
+**API contract field** · `nullable` · Required
+
+The one successful product charge associated with the result. Null before charging, or for an included stage with no separate charge.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
 </Accordion>
 
-<Accordion title="monitor" id="monitor" description="8 fields">
+<Accordion title="monitor" id="monitor" description="10 fields">
 
 #### `monitor.baseline_snapshot_id`
 
@@ -12920,6 +12978,24 @@ Next planned evaluation.
 - **Source families:** AMLOK; contracted provider monitoring
 - **Example:** Not specified
 
+
+
+#### `monitor.blocked_reason`
+
+**API contract field** · `nullable` · Required
+
+Reason processing cannot continue. Null when unblocked. Inspect the enum and processing lifecycle before retrying.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `monitor.monitoring_period_id`
+
+**API contract field** · `nullable` · Required
+
+Shared borrower/business/workspace UTC calendar month. Null for Insights.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
 
 </Accordion>
 
@@ -13130,7 +13206,7 @@ Time the alert was resolved or dismissed.
 
 <AccordionGroup>
 
-<Accordion title="workflow_run" id="workflow-run" description="11 fields">
+<Accordion title="workflow_run" id="workflow-run" description="18 fields">
 
 #### `workflow_run.workflow_type`
 
@@ -13262,7 +13338,7 @@ Terminal completion time.
 
 **F0956** · `id` · Optional · Nullable: Yes
 
-Run that triggered this one, such as Monitor re-entering Underwrite.
+Parent assessment run. Signal reassessment remains included in Signal.
 
 - **Format / enum / units:** Opaque AMLOK identifier
 - **Origin:** AMLOK managed
@@ -13272,20 +13348,77 @@ Run that triggered this one, such as Monitor re-entering Underwrite.
 - **Source families:** AMLOK
 - **Example:** `null`
 
-#### `workflow_run.approval_required`
 
-**F0957** · `boolean` · Required · Nullable: No
+#### `workflow_run.product`
 
-Whether this run awaits institution authorization for an effect.
+**API contract field** · `string` · Required
 
-- **Format / enum / units:** JSON boolean
-- **Origin:** AMLOK managed
-- **Classification:** Confidential
-- **Availability:** Required when resource exists
-- **Normalization / validation:** Preserve original evidence; do not invent missing values.
-- **Source families:** AMLOK
-- **Example:** `false`
+Insights for full underwriting or its stages; Signal for monitoring and included reassessment.
 
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.input_manifest_id`
+
+**API contract field** · `string` · Required
+
+Immutable evidence manifest used for this run, including exact source record versions.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.initial_input_manifest_id`
+
+**API contract field** · `string` · Required
+
+Initial immutable manifest retained when accepted missing evidence creates a successor for an unfinished run. Audit events identify every replacement; completed outputs remain immutable.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.workload_id`
+
+**API contract field** · `string` · Required
+
+Read-only workload report with observed counts and agreed limits.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.billing_usage_id`
+
+**API contract field** · `nullable` · Required
+
+The one successful product charge associated with the result. Null before charging, or for an included stage with no separate charge.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.monitoring_period_id`
+
+**API contract field** · `nullable` · Required
+
+Shared borrower/business/workspace UTC calendar month. Null for Insights.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.blocked_reason`
+
+**API contract field** · `nullable` · Required
+
+Reason processing cannot continue. Null when unblocked. Inspect the enum and processing lifecycle before retrying.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
+
+
+#### `workflow_run.stop_reason`
+
+**API contract field** · `nullable` · Required
+
+Why unfinished processing stopped: account cancellation, parent cancellation, or revoked consent. Null when no stop applies.
+
+See [processing lifecycle](/api-reference/processing-lifecycle) and [evidence traceability](/api-reference/evidence-traceability).
 
 </Accordion>
 
@@ -13309,7 +13442,7 @@ Run requiring this evidence.
 
 **F0959** · `string` · Required · Nullable: No
 
-Requested document or approval category.
+Requested evidence category.
 
 - **Format / enum / units:** UTF-8 string
 - **Origin:** Normalized source

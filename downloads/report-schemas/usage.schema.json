@@ -1,0 +1,366 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/components/schemas/BillingUsageExport",
+  "components": {
+    "schemas": {
+      "BillingUsageExport": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.4.2"
+          },
+          "report_type": {
+            "type": "string",
+            "const": "usage"
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingUsage"
+            }
+          }
+        },
+        "required": [
+          "schema_version",
+          "report_type",
+          "snapshot_id",
+          "as_of",
+          "rows"
+        ],
+        "additionalProperties": false
+      },
+      "BillingUsage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
+          "billing_account_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "product": {
+            "type": "string",
+            "enum": [
+              "insights",
+              "signal"
+            ]
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "standard",
+              "advanced",
+              "complex"
+            ]
+          },
+          "source_resource_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Workflow-run ID for Insights; borrower/business ID for Signal. Follow workflow_run_id, application_id, input_manifest_id and risk_snapshot_id for underwriting evidence, or monitoring_period_id for the single Signal account-month."
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "completed_underwriting",
+              "active_account_month"
+            ],
+            "description": "Signal counts each active borrower/business once per workspace per month, including change-driven reassessment without an additional Insights charge, regardless of checks, monitoring configurations, facilities or data connections. Cancellation immediately stops further processing and usage deductions. Previously spent credits remain consumed; cancelled unfinished work creates no charge."
+          },
+          "quantity": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+          },
+          "unit_rate": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Nonnegative CAD amount, exact decimal string in major units."
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "CAD"
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^-?(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Signed CAD amount with exactly two decimal places. Negative values represent deductions or reversing adjustments."
+          },
+          "entry_type": {
+            "type": "string",
+            "enum": [
+              "charge",
+              "reversal"
+            ]
+          },
+          "reverses_usage_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "posted"
+            ]
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "workflow_run_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "application_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "input_manifest_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "risk_snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "monitoring_period_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "posted_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "billing_period_start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "billing_period_end": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rate_card_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ledger_entry_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Immutable workspace billing snapshot used for this financial representation."
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "record_version",
+          "created_at",
+          "updated_at",
+          "workspace_id",
+          "billing_account_id",
+          "product",
+          "tier",
+          "source_resource_id",
+          "unit",
+          "quantity",
+          "unit_rate",
+          "currency",
+          "amount",
+          "entry_type",
+          "reverses_usage_id",
+          "status",
+          "subject_id",
+          "workflow_run_id",
+          "application_id",
+          "input_manifest_id",
+          "risk_snapshot_id",
+          "monitoring_period_id",
+          "occurred_at",
+          "posted_at",
+          "billing_period_start",
+          "billing_period_end",
+          "rate_card_id",
+          "ledger_entry_id",
+          "snapshot_id"
+        ],
+        "additionalProperties": false,
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "product": {
+                  "const": "insights"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "unit": {
+                  "const": "completed_underwriting"
+                },
+                "workflow_run_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "input_manifest_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "risk_snapshot_id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "monitoring_period_id": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "product": {
+                  "const": "signal"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "unit": {
+                  "const": "active_account_month"
+                },
+                "monitoring_period_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "entry_type": {
+                  "const": "charge"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "quantity": {
+                  "const": "1"
+                },
+                "amount": {
+                  "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$"
+                },
+                "reverses_usage_id": {
+                  "type": "null"
+                }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "entry_type": {
+                  "const": "reversal"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "amount": {
+                  "pattern": "^-(0|[1-9][0-9]*)\\.[0-9]{2}$"
+                },
+                "reverses_usage_id": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

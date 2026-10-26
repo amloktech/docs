@@ -4,6 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/webhook-endpoints"
 playground: simple
 ---
 
-**Required scope:** `webhooks:write` · **Execution:** synchronous.
+**Required scope:** `webhooks:write`
 
-Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Register an HTTPS event destination.
+
+Required scope: `webhooks:write`. Return signing secret only once; validate destination against SSRF and tenant rules. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

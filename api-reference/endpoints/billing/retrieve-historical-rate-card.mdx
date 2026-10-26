@@ -8,4 +8,6 @@ playground: simple
 
 Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.
 
-[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)
+Required scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

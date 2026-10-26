@@ -4,12 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/verifications"
 playground: simple
 ---
 
-**Required scope:** `identity:verify` · **Execution:** asynchronous.
+**Required scope:** `identity:verify`
 
-Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Start a KYC or KYB session.
 
-[Data dictionary](/data-model/field-dictionary#verification) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `identity:verify`. Return hosted_url when applicable; poll verification ID for result. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.
 
-Poll `GET /v1/verifications/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
-
-**Lifecycle event:** `verification.completed`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

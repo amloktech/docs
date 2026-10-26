@@ -54,8 +54,13 @@ OPS = [op for op in rows('API Endpoints') if op['Operation ID'] not in REMOVED_O
 PARAMS = rows('API Parameters')
 EVENTS = [event for event in rows('Events') if event['Event key'] != 'deletion.completed']
 ERRORS = rows('Error Codes')
-ERRORS.append({'Code':'insufficient_credits','HTTP status':'402','Meaning':'Available workspace credits cannot cover this billable operation. No work was started and no usage charge was posted.','Retryable':'No'})
+ERRORS.append({'Code':'insufficient_credits','HTTP status':'402','Meaning':'Available credits cannot cover this operation. A rejected request creates no charge. Fund the workspace through the portal before retrying.','Retryable':'No'})
 ERRORS.append({'Code':'invalid_state','HTTP status':'409','Meaning':'The operation is unavailable in the current resource or account state. Operational commands are unavailable after cancellation is submitted.','Retryable':'No'})
+ERRORS += [
+    {'Code':'validation_error','HTTP status':'400','Meaning':'A field, projection, or request value is invalid. Inspect error.field.','Retryable':'No'},
+    {'Code':'workload_limit_exceeded','HTTP status':'422','Meaning':'The agreed workload limit cannot cover this work. No automatic tier upgrade or surcharge occurs. Contact AMLOK to agree expanded scope.','Retryable':'No'},
+    {'Code':'cursor_expired','HTTP status':'410','Meaning':'The synchronization cursor has expired. Begin a new synchronization checkpoint and rebuild the collection snapshot.','Retryable':'No'},
+]
 SCHEMAS = {f'Enum_{k}': {'type': 'string', 'enum': v} for k, v in ENUMS.items()}
 EXAMPLES = {}
 REFINEMENTS = [
@@ -365,7 +370,7 @@ for op in OPS:
     oid, path, method = op['Operation ID'],op['Path'],op['Method']
     op = deepcopy(op)
     if method != 'GET' and oid != 'EP145':
-        op['Constraints'] += ' Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.'
+        op['Constraints'] += ' Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.'
     if oid == 'EP147':
         op['Constraints'] += ' Billable work requires available credits covering its cost; otherwise return 402 insufficient_credits before accepting work, with no debit. A separately requested full underwriting uses Insights. Signal change-driven reassessment is included in Signal and does not create an additional Insights charge.'
     if oid == 'EP148':
@@ -479,6 +484,8 @@ from status_contract import extend as extend_status
 STATUS_OPS = extend_status(globals())
 from baseline_contract import extend as extend_baselines
 BASELINE_OPS = extend_baselines(globals())
+from enterprise_contract import extend as extend_enterprise
+ENTERPRISE_OPS = extend_enterprise(globals())
 active_pages = {op['page'] for op in OP_INDEX}
 for old_op in previous_ops:
     if old_op['page'] not in active_pages:
@@ -494,7 +501,7 @@ write('artifacts/api-design-refinements.json',dump(REFINEMENTS))
 GUIDES=['overview','quickstart','authentication','environments','response-format','pagination','idempotency','errors','rate-limits','async-jobs','webhooks','event-catalog','documents','versioning','security','workflows','examples','downloads','onboarding']
 config=json.loads((ROOT/'docs.json').read_text())
 api_tab=next(tab for tab in config['navigation']['tabs'] if tab['tab']=='API Reference')
-ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog']), ('Build your integration', 'blocks', ['workflows', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting', 'chart-column', ['credit-reporting', 'consumption-reporting']), ('Security and versioning', 'lock', ['security', 'versioning'])]
+ESSENTIAL_GROUPS = [('Requests and responses', 'arrow-left-right', ['response-format', 'pagination', 'idempotency']), ('Reliability', 'shield-check', ['errors', 'rate-limits', 'async-jobs', 'processing-lifecycle']), ('Events and webhooks', 'webhook', ['webhooks', 'event-catalog', 'synchronization']), ('Build your integration', 'blocks', ['products-and-endpoints', 'workflows', 'evidence-traceability', 'documents', 'examples', 'downloads', 'onboarding']), ('Reporting', 'chart-column', ['credit-reporting', 'consumption-reporting', 'workload-reporting', 'export-formats']), ('Security and versioning', 'lock', ['security', 'versioning'])]
 ENDPOINT_ICONS = {'Platform':'server','Identity':'fingerprint','Banking':'landmark','Payments':'credit-card','Commerce':'shopping-cart','Accounting':'calculator','Inventory':'boxes','Lending':'hand-coins','Liens':'file-lock','Risk':'chart-no-axes-combined','Operations':'workflow','Webhooks':'webhook','Reporting':'chart-column'}
 api_tab['groups'] = [
     {'group': 'Get started', 'pages': ['api-reference/' + p for p in GUIDES[:4]]},

@@ -1,0 +1,11 @@
+---
+title: "List input manifest entries"
+openapi: "/openapi/amlok-v1.json GET /v1/input-manifests/{id}/entries"
+playground: simple
+---
+
+**Required scope:** `risk:read`
+
+Read the frozen source and normalized record-version references for an immutable input manifest. The path ID is the manifest ID. Order by resource_type, resource_id, resource_version; cursors remain bound to the same manifest. The record_count equals the complete entry count, including separately analyzed line items. Download the actual frozen normalized evidence through the record endpoint using manifest_id; raw documents use the document download route with the same manifest_id. Hash canonicalization is specified on InputManifest.sha256. Missing authorization returns 403; unavailable or deleted evidence returns 404 rather than substituting a newer record.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

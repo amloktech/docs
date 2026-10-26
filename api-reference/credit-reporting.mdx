@@ -1,59 +1,37 @@
 ---
 title: "Credit reporting"
-description: "Report on one workspace credit balance, product consumption, ledger history, and statements."
+description: "Read available and spent credits without payment controls."
 ---
 
-Each workspace has one unified billing account and credit balance across eligible AMLOK products. The **public API is reporting-only**. The client portal separately lets customers manage card or bank-account funding, automatic top-up settings, and cancellation.
+Each workspace has one CAD credit balance shared by Insights and Signal. Paid and promotional top-ups join the same balance with no consumption priority.
 
-| Information | Reporting endpoint |
+## Available and spent credits
+
+| Field | Meaning |
 | --- | --- |
-| Agreed billing policy | [Retrieve billing account](/api-reference/endpoints/billing/retrieve-billing-account) |
-| Current credit balance | [Retrieve credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) |
-| Posted credit activity | [List credit ledger entries](/api-reference/endpoints/billing/list-credit-ledger-entries) |
-| Individual product charges | [List usage records](/api-reference/endpoints/billing/list-usage-records) |
-| Usage by product and tier | [Retrieve consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
-| Period reconciliation | [List billing statements](/api-reference/endpoints/billing/list-billing-statements) |
-| Downloadable reports | [Create billing report](/api-reference/endpoints/billing/create-billing-report) |
+| `available_credits` | Credits available to spend now. Successful top-ups add credits; actual product charges and final refunds reduce them. |
+| `spent_credits` | Cumulative product charges since the account opened, less corrections that reverse an erroneous charge. |
 
-## One credit balance
+There are no reserved credits, held balances or separate posted-credit balances. A payment still in progress is visible in funding history, but it becomes credit only after successful completion. An unfinished underwriting has not spent credits. A final cancellation refund is a return of unused credits, not product spend.
 
-Each API key is bound to exactly one workspace, institution, and environment. Reports identify the authorized `workspace_id` and billing account. Paid funding and commercial promotional top-ups are combined; there are no separate source-based spending balances or consumption priorities. Product and tier identify the reason and rate for a charge, not a separate wallet.
+`available credits = successful funding + corrections - product charges - cancellation refunds`
 
-The credit snapshot reports exact CAD decimal strings:
+Read [the credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) and [consumption reports](/api-reference/consumption-reporting). Transaction timestamps such as `posted_at` identify when a historical entry was recorded; they do not describe another kind of credit.
 
-- `total_posted`: credits remaining after posted additions, deductions, refunds, and corrections.
-- `total_held`: credits reserved for pending processing, not an additional posted debit.
-- `available_for_usage`: posted credits less existing holds; this amount can cover processing only while the account is active. A positive balance does not override cancellation.
-- `pending_incoming`: funding awaiting settlement, excluded from available credits.
+## Automatic top-ups
 
-`available_for_usage = total_posted - total_held`
+The trigger uses **available credits**. With auto-pay enabled, a balance strictly below the configured threshold triggers the selected payment. The threshold is at least **CAD 200.00** and the customer-funded top-up is at least **CAD 500.00**. At exactly the threshold, no below-threshold trigger has occurred.
 
-CAD 200.00 is the default automatic top-up trigger, not a protected balance floor. With auto-pay enabled, a balance below the configured threshold triggers the selected top-up of at least CAD 500.00. With auto-pay off, no collection occurs.
+The [billing account](/api-reference/endpoints/billing/retrieve-billing-account) reports the actual `auto_top_up_enabled`, `auto_top_up_threshold` and `auto_top_up_amount` settings. Only the portal changes them. Payment attempts are deduplicated while the same top-up is in progress; every usage debit must not launch another duplicate collection. Failed collections leave credits unchanged and follow the portal's payment handling, without allowing a negative balance.
 
-In either case, requests can continue below CAD 200.00 while available credits cover them. A new billable operation or reservation that cannot be funded is rejected with `402 insufficient_credits`, without charging for unprocessed work. A captured hold replaces the reservation with the charge, avoiding a double deduction. Read-only reporting remains available, including during the cancellation closure period, until workspace deletion.
+Processing can use credits below CAD 200.00 if the balance covers its cost. Read-only reports remain accessible without a new product charge. See [processing lifecycle](/api-reference/processing-lifecycle) for insufficient-credit handling.
 
-For example, CAD 10,900.00 posted credits and CAD 500.00 held leave **CAD 10,400.00 available for new processing**. Pending incoming funds do not increase it. At month-end account closure, all unused credits, including promotional top-ups, are refundable after unused reservations are released; no usage charges are posted after cancellation.
+## Portal and API responsibilities
 
-## Ledger and product reporting
+The client portal manages card/bank payment methods, top-ups, automatic-payment settings and cancellation. Enterprise clients can also request cancellation through their account manager. The public API provides reports and exports only. There are no wallet-management, payment, top-up, refund-request, transfer or cancellation commands.
 
-Ledger entries are immutable and ordered by `sequence`. Each entry shows a signed amount, resulting balance, movement reference, and any reversal link. There is no paid-versus-promotional debit allocation. Use `sequence_after` and cursor pagination for subsequent entries.
+## Cancellation
 
-Statements reconcile opening credits, top-ups, product usage, cancellation refunds, and adjustments. Insights and Signal retain their own units, tiers, and effective rates within the same workspace account. See [consumption reporting](/api-reference/consumption-reporting).
+Cancellation immediately stops processing, deductions, and upcoming top-ups. Unfinished work creates no charge. Full account closure occurs at the end of the request month. AMLOK immediately refunds all remaining available credits, including promotional top-ups, to the saved portal bank account. Correctly spent credits are non-refundable. Bank receipt can take 7-10 business days after issuance.
 
-## API access and portal controls
-
-`billing:read` authorizes credit, usage, and statement reads; `billing:export` authorizes report generation and download links. Reads and exports use the single workspace bound to the API key. A response's `workspace_id` is context, not authorization, and callers cannot select another workspace by adding an undocumented parameter.
-
-Report creation and download links do not change credits. There are no public wallet-management, payment-method, top-up, threshold-setting, cancellation, refund, or transfer endpoints.
-
-In the portal, the minimum automatic top-up threshold is CAD 200.00 and the minimum customer-funded top-up is CAD 500.00. Customers can fund by card or bank account and must save a bank account for cancellation refunds. Enterprise clients can also request cancellation through their dedicated account manager.
-
-When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled and unused reservations are released without another charge.
-
-Cancellation can be requested at any time without notice. Account closure is at the end of the request month; workspace data is deleted after that month closes and final information is generated. AMLOK immediately refunds the entire unused credit balance to the saved bank account when the account closes; bank receipt can take **7-10 business days**. Used credits are non-refundable. See [credits and billing](/pricing/credits-and-billing) and [cancellation and refunds](/pricing/refunds-and-payouts).
-
-AMLOK retains only the necessary final billing, refund, and bank-return records separately from the deleted workspace to reconcile the refund and resolve delivery issues. These records do not retain borrower source data, documents, or analysis outputs and do not keep the workspace or its API access active.
-
-## Audit and reconciliation
-
-Use [consumption reporting](/api-reference/consumption-reporting#reproduce-a-report) to reuse an immutable `snapshot_id` across balances, movements, usage, funding and reservations. [Funding history](/api-reference/endpoints/billing/list-funding-records) reports payment status and receipt references. [Credit reservations](/api-reference/endpoints/billing/list-credit-reservations) explain held amounts. Historical rate cards preserve negotiated pricing for earlier charges. These reports and their exports never initiate payments, transfer credits or request refunds.
+Data is deleted after that month closes and necessary final information is generated. Export needed evidence before deletion. Necessary final billing and refund records are retained separately, without borrower data or continuing workspace API access. See [cancellation and refunds](/pricing/refunds-and-payouts).

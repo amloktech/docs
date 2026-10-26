@@ -21,7 +21,7 @@ def valid(name,value):
 def response(path,method='GET'):
     return ops[(path,method)]['response']['data']
 
-check(len(index)==21,'Expected 21 read-only reporting operations')
+check(len(index)==22,'Expected 22 reporting operations, including workload reads')
 for path in spec['paths']:
     check(not path.startswith(('/v1/wallet','/v1/agreement-','/v1/deletion-requests')),'Unsupported customer endpoint remains: '+path)
 for name in spec['components']['schemas']:
@@ -56,10 +56,12 @@ for obsolete in ['committed_credits','additional_funds','promotional_credits','r
     check(obsolete not in balance,'Obsolete credit bucket remains')
     check(not valid('BillingCreditBalance',{**balance,obsolete:{}}),'Schema accepts obsolete bucket')
 check('withdrawable' not in balance,'Balance advertises immediate cash-out')
-check(Decimal(balance['available_for_usage'])==Decimal(balance['total_posted'])-Decimal(balance['total_held']),'Pending funding counted as available')
+check(Decimal(balance['available_credits'])+Decimal(balance['spent_credits'])==Decimal('12000.00'),'Funding and spend do not reconcile')
+for old_field in ['available_for_usage','total_posted','total_held','pending_funding']:
+    check(not valid('BillingCreditBalance',{**balance,old_field:'0.00'}),'Obsolete credit category accepted')
 check(not valid('BillingCreditBalance',{**balance,'processing_floor':'200.00'}),'Removed floor accepted')
 check('spendable_for_processing' not in balance,'Duplicate spendable balance remains')
-below={**balance,'total_posted':'180.00','total_held':'0.00','available_for_usage':'180.00'}
+below={**balance,'available_credits':'180.00'}
 check(valid('BillingCreditBalance',below),'Credits below CAD 200 cannot be represented')
 check(balance['workspace_id']==account['workspace_id']=='wsp_example','Workspace context missing')
 entry=response('/v1/billing/credit-ledger')[0]
@@ -84,7 +86,7 @@ check(not valid('BillingRate',bad),'Signal allowed historical counting basis')
 check(valid('BillingCreditEntry',{**entry,'amount':'-5.00'}),'Signed ledger amount invalid')
 statement=response('/v1/billing/statements/{id}')
 closing=sum(Decimal(statement[k]) for k in ['opening_balance','funding','adjustments'])-sum(Decimal(statement[k]) for k in ['usage','refunds'])
-check(closing==Decimal(statement['closing_balance'])==Decimal(balance['total_posted']),'Statement not reconciled')
+check(closing==Decimal(statement['closing_balance'])==Decimal(balance['available_credits']),'Statement not reconciled')
 check(not set(statement) & {'withdrawals','transfers_in','transfers_out','fees'},'Unsupported outflow columns remain')
 consumption=response('/v1/billing/consumption')
 check(sum(Decimal(r['net_amount']) for r in consumption['rows'])==Decimal(consumption['total_net_amount'])==Decimal(statement['usage']),'Consumption not reconciled')
@@ -114,7 +116,8 @@ for op in index:
     operation=spec['paths'][op['path']][op['method'].lower()]
     records=op['response']['data'] if isinstance(op['response']['data'],list) else [op['response']['data']]
     check(all(record['workspace_id']==account['workspace_id'] for record in records),'Report crosses workspace context')
-    check(operation['operationId']==OPERATION_IDS[op['method']+' '+op['path']],'Existing operation identity changed')
+    expected=OPERATION_IDS.get(op['method']+' '+op['path'],{'/v1/workloads':'EN001','/v1/workloads/{id}':'EN002'}.get(op['path']))
+    check(operation['operationId']==expected,'Existing operation identity changed')
     check(set(operation['x-required-scopes']) <= {'billing:read','billing:export'},'Unsupported reporting scopes remain')
     check(op['method']=='GET' or (op['method']=='POST' and op['path'] in ['/v1/billing/reports','/v1/billing/reports/{id}/download-link']),'Customer can mutate credits or payment settings')
     if op['method'] in ['POST','PATCH']:

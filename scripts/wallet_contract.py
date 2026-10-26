@@ -15,7 +15,7 @@ OPERATION_IDS.update({
     'GET /v1/billing/rate-cards': 'WA060', 'GET /v1/billing/rate-cards/{id}': 'WA061',
     'GET /v1/billing/snapshot': 'WA062', 'GET /v1/billing/snapshots/{id}': 'WA063',
     'GET /v1/billing/funding': 'WA064', 'GET /v1/billing/funding/{id}': 'WA065',
-    'GET /v1/billing/credit-holds': 'WA066', 'GET /v1/billing/credit-ledger/{id}': 'WA067',
+    'GET /v1/billing/credit-ledger/{id}': 'WA067',
 })
 
 REPORTING_EVENTS = [
@@ -73,6 +73,8 @@ def extend(g):
         'scheduled_closure_at': nullable(date),
         'minimum_top_up_threshold': {**amount, 'const': '200.00'},
         'minimum_top_up_amount': {**amount, 'const': '500.00'},
+        'auto_top_up_enabled': boolean, 'auto_top_up_threshold': amount, 'auto_top_up_amount': amount,
+        'auto_top_up_balance_basis': enum('available_credits'),
         'refund_destination': enum('saved_portal_bank_account'),
         'policy_version': string
     }, dict(currency='CAD',agreement_id='agr_example',agreement_version='3',minimum_monthly_commitment='1000.00',
@@ -83,7 +85,7 @@ def extend(g):
         funding_methods=['card','bank_account'],default_auto_top_up_threshold='200.00',minimum_top_up_threshold='200.00',
         payment_frequency='every_12_months',cancellation_notice_days=0,closure_timing='end_of_request_month',
         processing_cutoff='immediate_on_cancellation',status='active',cancellation_requested_at=None,scheduled_closure_at=None,
-        minimum_top_up_amount='500.00',refund_destination='saved_portal_bank_account',policy_version='unified-workspace-credits'))
+        minimum_top_up_amount='500.00',auto_top_up_enabled=True,auto_top_up_threshold='200.00',auto_top_up_amount='500.00',auto_top_up_balance_basis='available_credits',refund_destination='saved_portal_bank_account',policy_version='unified-workspace-credits'))
     rate_props = {'product': enum('insights','signal'),'tier': enum('standard','advanced','complex'),'unit': enum('completed_underwriting','active_account_month'),'base_rate': amount,'discount_percent': {'type':'string','pattern':r'^(?:100(?:\.0{1,2})?|[0-9]{1,2}(?:\.[0-9]{1,2})?)$'},'effective_rate': amount}
     S['BillingRate'] = obj(rate_props)
     S['BillingWorkloadLimits'] = obj({
@@ -127,16 +129,18 @@ def extend(g):
         dict(currency='CAD',effective_from='2026-10-01T00:00:00Z',effective_to=None,agreement_id='agr_example',agreement_version='3',supersedes_id=None,rates=rates))
     model('BillingUsage','billing_usage',{
         'billing_account_id':string,'product':enum('insights','signal'),'tier':enum('standard','advanced','complex'),
-        'source_resource_id':{**string, 'description':'Underwriting identifier for Insights; stable borrower/business identifier for Signal, never an individual monitor or facility identifier.'},'unit':{**enum('completed_underwriting','active_account_month'), 'description':'Signal counts each active borrower/business once per workspace per month, including change-driven reassessment without an additional Insights charge, regardless of checks, monitoring configurations, facilities or data connections. Cancellation immediately stops further processing and usage deductions. Previously posted charges remain consumed credits; pending reservations are released without another charge.'},
+        'source_resource_id':{**string, 'description':'Workflow-run ID for Insights; borrower/business ID for Signal. Follow workflow_run_id, application_id, input_manifest_id and risk_snapshot_id for underwriting evidence, or monitoring_period_id for the single Signal account-month.'},'unit':{**enum('completed_underwriting','active_account_month'), 'description':'Signal counts each active borrower/business once per workspace per month, including change-driven reassessment without an additional Insights charge, regardless of checks, monitoring configurations, facilities or data connections. Cancellation immediately stops further processing and usage deductions. Previously spent credits remain consumed; cancelled unfinished work creates no charge.'},
         'quantity':{'type':'string','pattern':r'^(0|[1-9][0-9]*)(\.[0-9]+)?$'},
         'unit_rate':amount,'currency':currency,'amount':signed,'entry_type':enum('charge','reversal'),
-        'reverses_usage_id':nullable(string),'status':enum('pending','posted','voided'),
-        'occurred_at':date,'posted_at':nullable(date),'billing_period_start':date,'billing_period_end':date,
-        'rate_card_id':string,'ledger_entry_id':nullable(string)
-    },dict(billing_account_id='billing_account_example',product='insights',tier='standard',source_resource_id='uw_example',unit='completed_underwriting',
-        quantity='1',unit_rate='5.00',currency='CAD',amount='5.00',entry_type='charge',reverses_usage_id=None,status='posted',
+        'reverses_usage_id':nullable(string),'status':enum('posted'),
+        'subject_id':string,'workflow_run_id':nullable(string),'application_id':nullable(string),
+        'input_manifest_id':nullable(string),'risk_snapshot_id':nullable(string),'monitoring_period_id':nullable(string),
+        'occurred_at':date,'posted_at':date,'billing_period_start':date,'billing_period_end':date,
+        'rate_card_id':string,'ledger_entry_id':string
+    },dict(billing_account_id='billing_account_example',product='insights',tier='standard',source_resource_id='wfr_example',unit='completed_underwriting',
+        quantity='1',unit_rate='5.00',currency='CAD',amount='5.00',entry_type='charge',reverses_usage_id=None,status='posted',subject_id='biz_example',workflow_run_id='wfr_example',application_id='app_example',input_manifest_id='manifest_example',risk_snapshot_id='risk_snapshot_example',monitoring_period_id=None,
         occurred_at=now,posted_at=now,billing_period_start='2026-10-01T00:00:00Z',billing_period_end='2026-11-01T00:00:00Z',
-        rate_card_id='billing_rate_card_example',ledger_entry_id='ledger_usage_example'))
+        rate_card_id='billing_rate_card_example',ledger_entry_id='billing_credit_entry_example'))
     S['ConsumptionRow'] = obj({'product':enum('insights','signal'),'tier':enum('standard','advanced','complex'),
         'bucket_start':date,'bucket_end':date,'quantity':{'type':'string','pattern':r'^-?(0|[1-9][0-9]*)(\.[0-9]+)?$'},
         'unit':enum('completed_underwriting','active_account_month'),'gross_amount':amount,'adjustment_amount':signed,'net_amount':signed})
@@ -144,8 +148,8 @@ def extend(g):
         'time_basis':enum('occurred_at','posted_at'),'group_by':enum('product_tier','day','month'),
         'rows':array(ref('ConsumptionRow')),'total_net_amount':signed,'provisional':boolean},
         dict(billing_account_id='billing_account_example',currency='CAD',**{'from':'2026-10-01T00:00:00Z','to':'2026-11-01T00:00:00Z'},as_of=now,
-        time_basis='posted_at',group_by='product_tier',rows=[{'product':'insights','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'100','unit':'completed_underwriting','gross_amount':'500.00','adjustment_amount':'0.00','net_amount':'500.00'},
-        {'product':'signal','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'200','unit':'active_account_month','gross_amount':'600.00','adjustment_amount':'0.00','net_amount':'600.00'}],total_net_amount='1100.00',provisional=True))
+        time_basis='posted_at',group_by='product_tier',rows=[{'product':'insights','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'1','unit':'completed_underwriting','gross_amount':'5.00','adjustment_amount':'0.00','net_amount':'5.00'},
+        {'product':'signal','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'1','unit':'active_account_month','gross_amount':'3.00','adjustment_amount':'0.00','net_amount':'3.00'}],total_net_amount='8.00',provisional=True))
     period_props = {'from':date,'to':date,'billing_account_id':string}
     period_values = {'from':'2026-10-01T00:00:00Z','to':'2026-11-01T00:00:00Z','billing_account_id':'billing_account_example'}
     report_props = {'from':date,'to':date,'report_type':enum('usage','ledger','statement'),'format':enum('csv','json'),'time_basis':enum('occurred_at','posted_at')}
@@ -165,17 +169,17 @@ def extend(g):
         **{k:amount for k in ['opening_balance','funding','usage','refunds','closing_balance']},
         'adjustments':signed,'ledger_sequence_from':integer,'ledger_sequence_to':integer},
         {**period_values,'currency':'CAD','status':'provisional','revision':1,'supersedes_id':None,'as_of':now,
-        'opening_balance':'12000.00','funding':'0.00','usage':'1100.00','refunds':'0.00','adjustments':'0.00','closing_balance':'10900.00',
-        'ledger_sequence_from':1,'ledger_sequence_to':3})
+        'opening_balance':'12000.00','funding':'0.00','usage':'8.00','refunds':'0.00','adjustments':'0.00','closing_balance':'11992.00',
+        'ledger_sequence_from':2,'ledger_sequence_to':3})
     model('BillingCreditBalance','billing_credit_balance',{'billing_account_id':string,'currency':currency,'as_of':date,'ledger_sequence':integer,
-        'pending_incoming':amount,'total_posted':amount,'total_held':amount,'available_for_usage':amount},
+        'available_credits':amount,'spent_credits':amount},
         dict(billing_account_id='billing_account_example',currency='CAD',as_of=now,ledger_sequence=3,
-        pending_incoming='500.00',total_posted='10900.00',total_held='500.00',available_for_usage='10400.00'))
+        available_credits='11992.00',spent_credits='8.00'))
     model('BillingCreditEntry','billing_credit_entry',{'billing_account_id':string,'sequence':integer,'currency':currency,
         'amount':signed,'balance_after':amount,'entry_type':enum('funding','usage','refund','adjustment','reversal'),
         'movement_id':string,'reverses_entry_id':nullable(string),'posted_at':date,'client_reference':nullable(string)},
-        dict(billing_account_id='billing_account_example',sequence=3,currency='CAD',amount='-600.00',balance_after='10900.00',entry_type='usage',
-        movement_id='billing_usage_signal',reverses_entry_id=None,posted_at=now,client_reference='signal-october'))
+        dict(billing_account_id='billing_account_example',sequence=3,currency='CAD',amount='-5.00',balance_after='11992.00',entry_type='usage',
+        movement_id='billing_usage_example',reverses_entry_id=None,posted_at=now,client_reference='insights-october'))
 
     model('BillingSnapshot','billing_snapshot',{
         'billing_account_id':string,'as_of':date,'ledger_sequence':integer,
@@ -189,31 +193,27 @@ def extend(g):
         'initiated_at':date,'settled_at':nullable(date),'failure_code':nullable(string),
         'invoice_reference':nullable(string),'receipt_reference':nullable(string),
         'ledger_entry_id':nullable(string),'client_reference':nullable(string),
-    },dict(billing_account_id='billing_account_example',currency='CAD',amount='500.00',source='customer_top_up',
-        payment_method_type='bank_account',status='pending',initiated_at=now,settled_at=None,failure_code=None,
-        invoice_reference=None,receipt_reference=None,ledger_entry_id=None,client_reference='funding-october'))
-    model('BillingCreditHold','billing_credit_hold',{
-        'billing_account_id':string,'currency':currency,'amount':amount,'source_resource_id':string,
-        'product':enum('insights','signal'),'status':enum('active','captured','released'),
-        'resolved_at':nullable(date),'ledger_entry_id':nullable(string),
-    },dict(billing_account_id='billing_account_example',currency='CAD',amount='500.00',source_resource_id='wfr_batch_example',
-        product='insights',status='active',resolved_at=None,ledger_entry_id=None))
-    # All financial reads share the same immutable snapshot, including resource versions
-    # and holds. A ledger sequence alone cannot freeze pending records or configuration.
+    },dict(billing_account_id='billing_account_example',currency='CAD',amount='12000.00',source='annual_prepayment',
+        payment_method_type='bank_account',status='settled',initiated_at='2026-09-30T12:00:00Z',settled_at='2026-09-30T14:00:00Z',failure_code=None,
+        invoice_reference='invoice_example',receipt_reference='receipt_example',ledger_entry_id='ledger_funding_example',client_reference='annual-prepayment'))
+
+    E['BillingFunding']['created_at']='2026-09-30T12:00:00Z'
+    E['BillingFunding']['updated_at']='2026-09-30T14:00:00Z'
+    # Financial snapshots freeze available/spent credits and their transaction history.
     snapshot_id = E['BillingSnapshot']['id']
     for name in ['BillingAccount','BillingRateCard','BillingUsage','BillingConsumption','BillingReport','BillingStatement',
-                 'BillingCreditBalance','BillingCreditEntry','BillingFunding','BillingCreditHold']:
+                 'BillingCreditBalance','BillingCreditEntry','BillingFunding']:
         S[name]['properties']['snapshot_id'] = {**string,'description':'Immutable workspace billing snapshot used for this financial representation.'}
         S[name]['required'].append('snapshot_id')
         E[name]['snapshot_id'] = snapshot_id
     S['CreateBillingReport']['properties']['snapshot_id'] = {**string,'description':'Reuse a snapshot returned by a financial read. If omitted, freeze a snapshot at acceptance.'}
     report_values['snapshot_id'] = snapshot_id
-    report_types = ['usage','ledger','statement','funding','holds']
+    report_types = ['usage','ledger','statement','funding']
     for name in ['CreateBillingReport','BillingReport']:
         S[name]['properties']['report_type']['enum'] = report_types
     export_filters = {
         'product':enum('insights','signal'),'tier':enum('standard','advanced','complex'),
-        'source_resource_id':string,'rate_card_id':string,'status':enum('pending','posted','voided'),'entry_type':enum('charge','reversal'),
+        'source_resource_id':string,'rate_card_id':string,'status':enum('posted'),'entry_type':enum('charge','reversal'),
     }
     S['CreateBillingReport']['properties']['filters'] = obj(export_filters,[])
     S['BillingReport']['properties']['filters'] = obj(export_filters,[])
@@ -221,19 +221,15 @@ def extend(g):
     E['BillingReport']['filters'] = {}
     report_values['filters'] = {}
     S['CreateBillingReport']['allOf'].append({
-        'if':{'properties':{'report_type':{'enum':['ledger','statement','funding','holds']}}},
+        'if':{'properties':{'report_type':{'enum':['ledger','statement','funding']}}},
         'then':{'properties':{'filters':{'maxProperties':0}}},
     })
     for name in ['CreateBillingReport','BillingReport']:
-        S[name]['properties']['time_basis']['enum'] = ['occurred_at','posted_at','initiated_at','created_at']
+        S[name]['properties']['time_basis']['enum'] = ['occurred_at','posted_at','initiated_at']
     S['CreateBillingReport']['allOf'] += [
         {'if':{'properties':{'report_type':{'const':kind}}},'then':{'properties':{'time_basis':{'enum':bases}}}}
-        for kind,bases in [('usage',['occurred_at','posted_at']),('funding',['initiated_at']),('holds',['created_at'])]
+        for kind,bases in [('usage',['occurred_at','posted_at']),('funding',['initiated_at'])]
     ]
-    S['CreateBillingReport']['allOf'].append({
-        'if':{'properties':{'report_type':{'const':'usage'},'filters':{'required':['status'],'properties':{'status':{'enum':['pending','voided']}}}},'required':['filters']},
-        'then':{'properties':{'time_basis':{'const':'occurred_at'}}},
-    })
     S['BillingReport']['allOf'] = deepcopy(S['CreateBillingReport']['allOf'])
     request('BillingReportDownloadRequest',{'reason':string})
     operations = []
@@ -306,19 +302,19 @@ def extend(g):
     optional_window=[q('from','datetime','Inclusive UTC boundary; provide with to.'),q('to','datetime','Exclusive UTC boundary; provide with from.')]
     usage_filters=[q('product','string','Product filter.',None,enum=['insights','signal']),
         q('tier','string','Complexity filter.',None,enum=['standard','advanced','complex']),
-        q('source_resource_id','string','Underwriting ID for Insights or borrower/business ID for Signal.'),
+        q('source_resource_id','string','Workflow-run ID for Insights or borrower/business ID for Signal.'),
         q('rate_card_id','string','Filter to an immutable rate-card version.')]
-    snapshot_description = 'Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, pending funding, holds, and the posted ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.'
+    snapshot_description = 'Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, payment history and the ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.'
     add('GET','/v1/billing/snapshot','Retrieve current billing snapshot','BillingSnapshot','billing:read',snapshot_description)
     add('GET','/v1/billing/snapshots/{id}','Retrieve billing snapshot','BillingSnapshot','billing:read',snapshot_description)
-    add('GET','/v1/billing/account','Retrieve billing account','BillingAccount','billing:read','Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Processing, usage deductions, and upcoming top-ups stop immediately when cancellation is submitted or set by the account manager. Release pending reservations without another debit. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.')
+    add('GET','/v1/billing/account','Retrieve billing account','BillingAccount','billing:read','Read the unified workspace billing policy, CAD 200 default automatic top-up trigger, and CAD 500 minimum customer-funded top-up. The client portal manages card or bank-account payment methods, automatic top-ups and cancellation; enterprise clients can also use their dedicated account manager. The public API provides reporting only. Cancellation is available at any time with no notice period. Processing, usage deductions, and upcoming top-ups stop immediately when cancellation is submitted or set by the account manager. Cancel unfinished work without another debit. Full closure is at the end of the request month, with an immediate refund of all unused credits, including promotional credits, to the saved portal bank account. Data is deleted after the month closes and necessary final information is generated. Used credits are non-refundable.')
     add('GET','/v1/billing/rate-card','Retrieve billing rate card','BillingRateCard','billing:read','Read published or negotiated rates and agreed workload limits for the workspace. Custom quotes retain standard, advanced or complex as the tier and use pricing_basis negotiated with the agreed effective_rate and workload_limits. Insights record_limit covers the complete underwriting snapshot, including at least 12 months of banking history. Signal record_limit covers only newly processed records during the month; each updated record version counts as new, while retries and unchanged baseline records are not counted again. The tier must cover every workload dimension; custom allowances require an agreed quote. Historical usage retains its own rate-card identifier and effective rate.')
     reads('/v1/billing/rate-cards','historical rate cards','BillingRateCard','billing:read',
         'Read immutable rate-card versions, including published and negotiated rates, workload limits and agreement references. A pricing change creates a new card and supersedes_id; historical usage keeps its original rate_card_id. The singular rate-card route selects the card effective at the snapshot time. effective_to is the exclusive scheduled end, if known when issued; later supersession does not rewrite old cards. Order by effective_from then id. Return only versions known at the selected snapshot.',
         [q('effective_at','datetime','Return the card effective at this UTC instant, no later than the selected snapshot.'),q('agreement_id','string','Filter by agreement reference.')])
-    reads('/v1/billing/usage','usage records','BillingUsage','billing:read','Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.',
-        window+[q('time_basis','string','Choose event or posting time; defaults to posted_at.','posted_at',enum=['occurred_at','posted_at']),q('status','string','Status filter; defaults to posted.',None,enum=['pending','posted','voided']),q('entry_type','string','Charge or compensating reversal.',None,enum=['charge','reversal'])]+usage_filters)
-    add('GET','/v1/billing/consumption','Retrieve consumption summary','BillingConsumption','billing:read','Aggregate posted usage and reversals at a consistent as_of snapshot. Pending usage is excluded. Product and tier remain distinct even when grouping by day or month.',
+    reads('/v1/billing/usage','usage records','BillingUsage','billing:read','Read immutable usage charges and correcting reversals. Usage records exist only for actual deductions or their corrections; unfinished work is represented by its processing resource, not a pending credit category. Order by selected time_basis then id. No customer endpoint creates charges. Cancellation stops all further deductions.',
+        window+[q('time_basis','string','Choose event or posting time; defaults to posted_at.','posted_at',enum=['occurred_at','posted_at']),q('status','string','Usage is recorded only after an actual debit or correcting reversal.',None,enum=['posted']),q('entry_type','string','Charge or compensating reversal.',None,enum=['charge','reversal'])]+usage_filters)
+    add('GET','/v1/billing/consumption','Retrieve consumption summary','BillingConsumption','billing:read','Aggregate posted usage and reversals at a consistent as_of snapshot. Unfinished processing is not spent credit. Product and tier remain distinct even when grouping by day or month.',
         query=window+[q('time_basis','string','Basis for selecting charges.','posted_at',True,enum=['occurred_at','posted_at']),q('group_by','string','Grouping.','product_tier',True,enum=['product_tier','day','month'])]+usage_filters)
     add('POST','/v1/billing/reports','Create billing report','BillingReport','billing:export','Generate a read-only snapshot export asynchronously. This does not change credits or payment settings. Dates are UTC [from,to); from must precede to. Poll until ready. CSV cells that could execute spreadsheet formulas are escaped.','CreateBillingReport',report_values)
     reads('/v1/billing/reports','billing reports','BillingReport','billing:export','Read current export-job status, its frozen financial snapshot and expiry. Job status is current, while exported data stays bound to snapshot_id. Order by created_at then id.',
@@ -329,22 +325,19 @@ def extend(g):
     reads('/v1/billing/funding','funding records','BillingFunding','billing:read',
         'Read annual prepayments, customer top-ups and promotional additions. Filters use initiated_at and ordering is initiated_at then id. Only settled funding adds credits; pending payments remain excluded. Invoice and receipt references are populated when issued. Payment method type is shown without bank or card credentials. Funding source is audit provenance, not a separate spending balance or consumption priority. No endpoint initiates, retries or cancels a payment.',
         optional_window+[q('source','string','Funding source.',None,enum=['annual_prepayment','customer_top_up','promotional_top_up']),q('status','string','Funding status.',None,enum=['pending','settled','failed','cancelled'])])
-    add('GET','/v1/billing/credit-holds','List credit reservations','BillingCreditHold','billing:read',
-        'Explain amounts reserved from the credit balance. Active reservations reduce available credits but are not posted usage debits. Order by created_at then id; date filters use created_at. Captured reservations reference the single posted ledger movement; released reservations add no debit. Cancellation releases active reservations immediately without capture. This endpoint cannot approve or change a reservation.',
-        is_list=True,query=optional_window+[q('status','string','Reservation state; defaults to active.','active',enum=['active','captured','released']),q('source_resource_id','string','Filter by the processing resource holding credits.')])
     add('GET','/v1/billing/credits','Retrieve credit balance','BillingCreditBalance','billing:read',
-        'Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. While the account is active, processing may use credits below CAD 200 and is rejected when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after releasing unused reservations; cancellation stops processing and further usage deductions immediately. This endpoint cannot change credits or portal payment settings.')
+        'Read available_credits, the single spendable balance, and spent_credits, cumulative product charges less correcting reversals since account opening. There are no reserved, held or separate posted-credit balances. Successful paid and promotional top-ups add to available credits with no consumption priority; payments still in progress are not credits. Actual product charges reduce available credits and increase spent credits atomically. Final refunds reduce available credits without increasing spent credits. The automatic top-up trigger compares available_credits with the configured threshold, at least CAD 200. Processing can continue below the trigger while funded. Cancellation immediately stops deductions; all remaining available credits are refunded at month-end closure. This endpoint is read-only.')
     add('GET','/v1/billing/credit-ledger','List credit ledger entries','BillingCreditEntry','billing:read',
         'Read posted credit additions, product consumption, reconciliation adjustments and final-cancellation refunds. Entries are immutable and returned in ascending sequence order at a stable snapshot. The customer cannot create or change ledger entries. Read a statement or export for period reconciliation.',
         is_list=True,query=[q('sequence_after','integer','Read entries after this exclusive billing account sequence.',None,minimum=0)]+optional_window+[q('entry_type','string','Movement type.',None,enum=['funding','usage','refund','adjustment','reversal'])])
     add('GET','/v1/billing/credit-ledger/{id}','Retrieve credit ledger entry','BillingCreditEntry','billing:read',
-        'Read an immutable posted movement by ledger_entry_id from a usage, funding or reservation record. Reversals reference the original entry. Balance_after describes the full account ledger, even when a filtered list omits other movements. The selected snapshot must include the movement; otherwise return 404.')
+        'Read an immutable posted movement by ledger_entry_id from a usage or funding record. Reversals reference the original entry. Balance_after describes the full account ledger, even when a filtered list omits other movements. The selected snapshot must include the movement; otherwise return 404.')
     S['WebhookEvent']['properties']['type']['enum'] += [e[0] for e in REPORTING_EVENTS]
     g['REFINEMENTS'] += [
         'The public API is reporting-only. Client portal controls manage card or bank-account funding, top-up thresholds of at least CAD 200, top-up amounts of at least CAD 500, and cancellation. No public wallet or payment-setting operations exist.',
-        'Cancellation can be requested at any time with no notice, in the portal or through an enterprise account manager. Processing, usage deductions, and upcoming top-ups stop immediately on cancellation; pending reservations are released. Closure occurs at the end of the request month. Workspace deletion follows month closure and generation of final information. AMLOK immediately refunds all unused credits, including promotional credits, to the saved portal bank account when the account closes. Bank receipt may take 7-10 business days. Used credits are non-refundable.',
+        'Cancellation can be requested at any time with no notice, in the portal or through an enterprise account manager. Processing, usage deductions, and upcoming top-ups stop immediately on cancellation; unfinished work is cancelled without a debit. Closure occurs at the end of the request month. Workspace deletion follows month closure and generation of final information. AMLOK immediately refunds all unused credits, including promotional credits, to the saved portal bank account when the account closes. Bank receipt may take 7-10 business days. Used credits are non-refundable.',
         'Each workspace has one shared balance with no paid/promotional consumption priority. Reports identify workspace and product usage. CAD 200 triggers automatic top-ups if enabled, not a processing floor. New processing is rejected only when available credits cannot cover it; pending payments are not spendable.',
-        'Financial reports use immutable snapshot IDs across balances, resource versions, holds, funding, rates, usage and exports. Historical rate cards preserve negotiated rates. Only read and export operations are exposed.',
+        'Financial reports use immutable snapshot IDs across balances, resource versions, funding, rates, usage and exports. Historical rate cards preserve negotiated rates. Only read and export operations are exposed.',
         'Custom pricing retains standard, advanced or complex and publishes negotiated rates and workload limits. Insights limits cover the complete underwriting snapshot including at least 12 months of banking history. Signal limits cover newly processed records each month. The most demanding dimension sets the required tier.',
     ]
     write('data/reporting-api-index.json',dump(operations))

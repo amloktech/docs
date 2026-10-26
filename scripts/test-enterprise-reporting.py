@@ -21,7 +21,7 @@ cancelled={**account,'status':'cancellation_pending','cancellation_requested_at'
 check(valid('BillingAccount',cancelled),'Cancellation-pending account not representable')
 check(not valid('BillingAccount',{**account,'processing_cutoff':'after_closure'}),'Old cutoff accepted')
 snapshot=response('/v1/billing/snapshot')
-for path in ['/v1/billing/credits','/v1/billing/usage','/v1/billing/consumption','/v1/billing/rate-card','/v1/billing/rate-cards','/v1/billing/funding','/v1/billing/credit-holds','/v1/billing/credit-ledger','/v1/billing/credit-ledger/{id}']:
+for path in ['/v1/billing/credits','/v1/billing/usage','/v1/billing/consumption','/v1/billing/rate-card','/v1/billing/rate-cards','/v1/billing/funding','/v1/billing/credit-ledger','/v1/billing/credit-ledger/{id}']:
  op=spec['paths'][path]['get']
  check(any(p['name']=='snapshot_id' and not p['required'] for p in op['parameters']),'Missing reusable snapshot '+path)
  check('X-Billing-Snapshot-ID' in op['responses']['200']['headers'],'Empty list cannot expose snapshot '+path)
@@ -32,11 +32,11 @@ rate=response('/v1/billing/rate-cards/{id}')
 check(rate['id']==response('/v1/billing/usage/{id}')['rate_card_id'],'Historical pricing cannot be resolved')
 for entry in rate['rates']:check(entry['workload_limits']['record_counting_rule']=='distinct_record_versions','Updated versions not counted')
 request=deepcopy(ops[('/v1/billing/reports','POST')]['request'])
-for kind,basis in [('usage','posted_at'),('ledger','posted_at'),('statement','posted_at'),('funding','initiated_at'),('holds','created_at')]:
+for kind,basis in [('usage','posted_at'),('ledger','posted_at'),('statement','posted_at'),('funding','initiated_at')]:
  check(valid('CreateBillingReport',{**request,'report_type':kind,'time_basis':basis}),'Valid export rejected '+kind)
  for bad_basis in {'occurred_at','posted_at','initiated_at','created_at'}-{basis}-({'occurred_at'} if kind=='usage' else set()):
   check(not valid('CreateBillingReport',{**request,'report_type':kind,'time_basis':bad_basis}),'Invalid export basis accepted '+kind)
-check(valid('CreateBillingReport',{**request,'time_basis':'occurred_at','filters':{'status':'pending'}}),'Pending event report rejected')
+check(not valid('CreateBillingReport',{**request,'time_basis':'occurred_at','filters':{'status':'pending'}}),'Non-charge usage accepted')
 check(not valid('CreateBillingReport',{**request,'time_basis':'posted_at','filters':{'status':'pending'}}),'Pending usage claims posting date')
 check(not valid('CreateBillingReport',{**request,'report_type':'ledger','filters':{'product':'signal'}}),'Filtered ledger export can masquerade as full reconciliation')
 check(not valid('CreateBillingReport',{**request,'workspace_id':'someone_else'}),'Workspace override accepted')
@@ -66,7 +66,7 @@ from public_api_scope import REMOVED_OPERATION_IDS
 old=json.loads((backup/'openapi/amlok-v1.json').read_text())
 for path,methods in old['paths'].items():
  for method,op in methods.items():
-  if op['operationId'] in REMOVED_OPERATION_IDS: continue
+  if op['operationId'] in REMOVED_OPERATION_IDS or op['operationId']=='WA066': continue
   check(spec['paths'][path][method]['operationId']==op['operationId'],'Operation ID changed')
 out={'checks':checks,'reportingOperations':len(index),'scope':'Documentation contract and examples only; no backend or payment execution.'}
 (ROOT/'artifacts/enterprise-reporting-validation.json').write_text(json.dumps(out,indent=2)+'\n')

@@ -37,7 +37,9 @@ validator = Draft202012Validator({'components': spec['components'], **request['s
 payload = dict(request['example'], workflow_type='service')
 check(not validator.is_valid(payload), 'Servicing request accepted by contract')
 for workflow in ['verify', 'underwrite', 'monitor', 'investigate']:
-    check(validator.is_valid(dict(payload, workflow_type=workflow)), 'Assessment workflow rejected: ' + workflow)
+    candidate=dict(payload,workflow_type=workflow)
+    if workflow!='underwrite':candidate['processing_context']={'product':'insights','workflow_run_id':'wfr_example'}
+    check(validator.is_valid(candidate), 'Authorized assessment workflow rejected: ' + workflow)
 for path in ['/v1/loans', '/v1/repayments', '/v1/monitors', '/v1/alerts', '/v1/risk-snapshots', '/v1/documents', '/v1/requirements', '/v1/audit-events', '/v1/billing/credits', '/v1/billing/consumption']:
     check('get' in spec['paths'][path], 'Missing assessment/reporting read: ' + path)
 
@@ -77,8 +79,8 @@ def nav_pages(node):
 
 for page in nav_pages(json.loads((ROOT / 'docs.json').read_text())):
     check((ROOT / (page + '.mdx')).is_file(), 'Missing navigation page: ' + page)
-check(len(index) == len(operations) == 175, 'Operation count mismatch')
-check(len(re.findall(r'^#### ', (ROOT / 'data-model/field-dictionary.mdx').read_text(), re.M)) == 941, 'Field count mismatch')
+check(len(index) == len(operations) == 180, 'Operation count mismatch')
+check(len(re.findall(r'^#### ', (ROOT / 'data-model/field-dictionary.mdx').read_text(), re.M)) == 957, 'Field count mismatch')
 check(len(re.findall(r'<Accordion title=', (ROOT / 'data-model/entities.mdx').read_text())) == 64, 'Resource count mismatch')
 result = {'checks': checks, 'operations': len(operations), 'removedServicingOperations': 14, 'scope': 'Documentation and API contract; no backend calls.'}
 (ROOT / 'artifacts/assessment-scope-validation.json').write_text(json.dumps(result, indent=2) + '\n')

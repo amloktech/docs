@@ -4,6 +4,8 @@ openapi: "/openapi/amlok-v1.json GET /v1/changes"
 playground: simple
 ---
 
-**Required scope:** `platform:read` · **Execution:** synchronous.
+**Required scope:** `platform:read`
 
-Returns added/updated/deleted actions; cursor is tenant-bound.
+Read created, updated and deleted normalized-resource changes in ascending sequence order. A cursor from a synchronization checkpoint is required on the first request; thereafter use the returned resume_cursor. Never reuse a collection cursor. Persist the returned resume_cursor only after durably applying every event in the page, deduplicating by resource type, ID and version. A terminal or empty page still returns a resume_cursor; poll it later to receive new changes. Each successful poll returns cursor_expires_at. A cursor expired beyond that time returns 410 cursor_expired and requires a new checkpoint plus a fresh bootstrap. Filters and workspace binding cannot change mid-stream. Deleted resources emit tombstones. Billing resources use billing snapshots and billing events, not this normalized-data feed.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

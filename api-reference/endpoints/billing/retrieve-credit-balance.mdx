@@ -6,6 +6,8 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Read one unified workspace credit balance, including paid and promotional top-ups without consumption priority. Pending incoming payments are excluded. available_for_usage equals total_posted minus total_held. CAD 200 is an automatic top-up trigger, not a reserved balance floor. While the account is active, processing may use credits below CAD 200 and is rejected when available credits cannot cover its cost; rejected unprocessed work is not charged. The full unused balance is refunded only at month-end account closure after releasing unused reservations; cancellation stops processing and further usage deductions immediately. This endpoint cannot change credits or portal payment settings.
+Read available_credits, the single spendable balance, and spent_credits, cumulative product charges less correcting reversals since account opening. There are no reserved, held or separate posted-credit balances. Successful paid and promotional top-ups add to available credits with no consumption priority; payments still in progress are not credits. Actual product charges reduce available credits and increase spent credits atomically. Final refunds reduce available credits without increasing spent credits. The automatic top-up trigger compares available_credits with the configured threshold, at least CAD 200. Processing can continue below the trigger while funded. Cancellation immediately stops deductions; all remaining available credits are refunded at month-end closure. This endpoint is read-only.
 
-[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)
+Required scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

@@ -4,10 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/people"
 playground: simple
 ---
 
-**Required scope:** `identity:write` · **Execution:** synchronous.
+**Required scope:** `identity:write`
 
-Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Create an authorized client-asserted person profile.
 
-[Data dictionary](/data-model/field-dictionary#person) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `identity:write`. Restricted fields require identity scope and documented purpose. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
 
-**Lifecycle event:** `person.created`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

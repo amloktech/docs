@@ -1,0 +1,312 @@
+[
+  {
+    "id": "EN001",
+    "method": "GET",
+    "path": "/v1/workloads",
+    "title": "List workload reports",
+    "group": "Reporting",
+    "scope": "billing:read",
+    "page": "api-reference/endpoints/billing/list-workload-reports",
+    "resource": "workload",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "workload_example",
+          "object": "workload",
+          "workspace_id": "wsp_example",
+          "subject_id": "biz_example",
+          "product": "insights",
+          "workflow_run_id": "wfr_example",
+          "monitoring_period_id": null,
+          "rate_card_id": "billing_rate_card_example",
+          "tier": "standard",
+          "as_of": "2026-10-23T14:00:00Z",
+          "period_start": "2025-10-01T00:00:00Z",
+          "period_end": "2026-10-01T00:00:00Z",
+          "record_counting_basis": "per_underwriting",
+          "bank_accounts": {
+            "used": 2,
+            "limit": 2,
+            "remaining": 0
+          },
+          "business_integrations": {
+            "used": 5,
+            "limit": 5,
+            "remaining": 0
+          },
+          "records": {
+            "used": 2,
+            "limit": 75000,
+            "remaining": 74998
+          },
+          "status": "at_limit",
+          "blocking_dimensions": [],
+          "analysis_scope": "Routine reconciliation and standard analysis",
+          "input_manifest_id": "manifest_example"
+        },
+        {
+          "id": "workload_signal_example",
+          "object": "workload",
+          "workspace_id": "wsp_example",
+          "subject_id": "biz_example",
+          "product": "signal",
+          "workflow_run_id": null,
+          "monitoring_period_id": "monitoring_period_example",
+          "rate_card_id": "billing_rate_card_example",
+          "tier": "standard",
+          "as_of": "2026-10-23T14:00:00Z",
+          "period_start": "2026-10-01T00:00:00Z",
+          "period_end": "2026-11-01T00:00:00Z",
+          "record_counting_basis": "new_records_per_month",
+          "bank_accounts": {
+            "used": 2,
+            "limit": 2,
+            "remaining": 0
+          },
+          "business_integrations": {
+            "used": 5,
+            "limit": 5,
+            "remaining": 0
+          },
+          "records": {
+            "used": 50,
+            "limit": 75000,
+            "remaining": 74950
+          },
+          "status": "at_limit",
+          "blocking_dimensions": [],
+          "analysis_scope": "Routine reconciliation and standard analysis",
+          "input_manifest_id": null
+        }
+      ],
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "EN002",
+    "method": "GET",
+    "path": "/v1/workloads/{id}",
+    "title": "Retrieve workload report",
+    "group": "Reporting",
+    "scope": "billing:read",
+    "page": "api-reference/endpoints/billing/retrieve-workload-report",
+    "resource": "workload",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "workload_example",
+        "object": "workload",
+        "workspace_id": "wsp_example",
+        "subject_id": "biz_example",
+        "product": "insights",
+        "workflow_run_id": "wfr_example",
+        "monitoring_period_id": null,
+        "rate_card_id": "billing_rate_card_example",
+        "tier": "standard",
+        "as_of": "2026-10-23T14:00:00Z",
+        "period_start": "2025-10-01T00:00:00Z",
+        "period_end": "2026-10-01T00:00:00Z",
+        "record_counting_basis": "per_underwriting",
+        "bank_accounts": {
+          "used": 2,
+          "limit": 2,
+          "remaining": 0
+        },
+        "business_integrations": {
+          "used": 5,
+          "limit": 5,
+          "remaining": 0
+        },
+        "records": {
+          "used": 2,
+          "limit": 75000,
+          "remaining": 74998
+        },
+        "status": "at_limit",
+        "blocking_dimensions": [],
+        "analysis_scope": "Routine reconciliation and standard analysis",
+        "input_manifest_id": "manifest_example"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "EN003",
+    "method": "GET",
+    "path": "/v1/monitoring-periods",
+    "title": "List monitoring periods",
+    "group": "Risk",
+    "scope": "monitoring:read",
+    "page": "api-reference/endpoints/risk/list-monitoring-periods",
+    "resource": "monitoring_period",
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "id": "monitoring_period_example",
+          "object": "monitoring_period",
+          "workspace_id": "wsp_example",
+          "subject_id": "biz_example",
+          "period_start": "2026-10-01T00:00:00Z",
+          "period_end": "2026-11-01T00:00:00Z",
+          "first_activated_at": "2026-10-01T00:00:00Z",
+          "charged_at": "2026-10-01T00:00:00Z",
+          "billing_usage_id": "billing_usage_signal",
+          "status": "active",
+          "workload_id": "workload_signal_example",
+          "baseline_snapshot_id": "rsk_baseline",
+          "rate_card_id": "billing_rate_card_example",
+          "tier": "standard",
+          "blocked_reason": null
+        }
+      ],
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "EN004",
+    "method": "GET",
+    "path": "/v1/monitoring-periods/{id}",
+    "title": "Retrieve monitoring period",
+    "group": "Risk",
+    "scope": "monitoring:read",
+    "page": "api-reference/endpoints/risk/retrieve-monitoring-period",
+    "resource": "monitoring_period",
+    "request": null,
+    "response": {
+      "data": {
+        "id": "monitoring_period_example",
+        "object": "monitoring_period",
+        "workspace_id": "wsp_example",
+        "subject_id": "biz_example",
+        "period_start": "2026-10-01T00:00:00Z",
+        "period_end": "2026-11-01T00:00:00Z",
+        "first_activated_at": "2026-10-01T00:00:00Z",
+        "charged_at": "2026-10-01T00:00:00Z",
+        "billing_usage_id": "billing_usage_signal",
+        "status": "active",
+        "workload_id": "workload_signal_example",
+        "baseline_snapshot_id": "rsk_baseline",
+        "rate_card_id": "billing_rate_card_example",
+        "tier": "standard",
+        "blocked_reason": null
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "EN005",
+    "method": "GET",
+    "path": "/v1/input-manifests/{id}/entries",
+    "title": "List input manifest entries",
+    "group": "Risk",
+    "scope": "risk:read",
+    "page": "api-reference/endpoints/risk/list-input-manifest-entries",
+    "resource": null,
+    "request": null,
+    "response": {
+      "data": [
+        {
+          "resource_type": "application",
+          "resource_id": "app_example",
+          "resource_version": 1,
+          "source_record_id": "client-application-example",
+          "source_version": "1",
+          "content_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        },
+        {
+          "resource_type": "document",
+          "resource_id": "doc_example",
+          "resource_version": 1,
+          "source_record_id": "client-document-example",
+          "source_version": "1",
+          "content_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ],
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "limit": 100
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "200"
+  },
+  {
+    "id": "EN006",
+    "method": "POST",
+    "path": "/v1/sync-checkpoints",
+    "title": "Create synchronization checkpoint",
+    "group": "Platform",
+    "scope": "platform:read",
+    "page": "api-reference/endpoints/platform/create-synchronization-checkpoint",
+    "resource": "sync_checkpoint",
+    "request": {
+      "resource_types": [
+        "bank_transaction",
+        "lien"
+      ]
+    },
+    "response": {
+      "data": {
+        "id": "checkpoint_example",
+        "object": "sync_checkpoint",
+        "workspace_id": "wsp_example",
+        "as_of": "2026-10-23T14:00:00Z",
+        "expires_at": "2026-11-01T14:00:00Z",
+        "resource_types": [
+          "bank_transaction",
+          "lien"
+        ],
+        "resume_cursor": "changes_after_checkpoint_example"
+      },
+      "meta": {
+        "request_id": "req_example",
+        "schema_version": "1.4.2",
+        "generated_at": "2026-10-23T14:00:00Z",
+        "data_status": "complete"
+      }
+    },
+    "success": "201"
+  }
+]

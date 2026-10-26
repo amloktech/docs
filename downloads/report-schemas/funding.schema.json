@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$ref": "#/components/schemas/BillingFundingExport",
+  "components": {
+    "schemas": {
+      "BillingFundingExport": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "string",
+            "const": "1.4.2"
+          },
+          "report_type": {
+            "type": "string",
+            "const": "funding"
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingFunding"
+            }
+          }
+        },
+        "required": [
+          "schema_version",
+          "report_type",
+          "snapshot_id",
+          "as_of",
+          "rows"
+        ],
+        "additionalProperties": false
+      },
+      "BillingFunding": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "object": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "workspace_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Authorized workspace whose unified billing account owns this report."
+          },
+          "billing_account_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "CAD"
+            ]
+          },
+          "amount": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Nonnegative CAD amount, exact decimal string in major units."
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "annual_prepayment",
+              "customer_top_up",
+              "promotional_top_up"
+            ]
+          },
+          "payment_method_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "card",
+                  "bank_account"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "settled",
+              "failed",
+              "cancelled"
+            ]
+          },
+          "initiated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "settled_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "failure_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "invoice_reference": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "receipt_reference": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "ledger_entry_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "client_reference": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "snapshot_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Immutable workspace billing snapshot used for this financial representation."
+          }
+        },
+        "required": [
+          "id",
+          "object",
+          "record_version",
+          "created_at",
+          "updated_at",
+          "workspace_id",
+          "billing_account_id",
+          "currency",
+          "amount",
+          "source",
+          "payment_method_type",
+          "status",
+          "initiated_at",
+          "settled_at",
+          "failure_code",
+          "invoice_reference",
+          "receipt_reference",
+          "ledger_entry_id",
+          "client_reference",
+          "snapshot_id"
+        ],
+        "additionalProperties": false
+      }
+    }
+  }
+}

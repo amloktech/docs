@@ -17,10 +17,14 @@ Synthetic request/response; hosted URL is illustrative. Omitted optional fields 
 
 ```json
 {
-  "subject_id": "per_example",
-  "verification_type": "kyc",
-  "workflow_version": "kyc-ca-v1",
-  "return_url": "https://client.example.com/verified"
+  "subject_id": "biz_example",
+  "verification_type": "kyb",
+  "workflow_version": "kyb-ca-v1",
+  "return_url": "https://client.example.com/verified",
+  "processing_context": {
+    "product": "insights",
+    "workflow_run_id": "wfr_example"
+  }
 }
 ```
 
@@ -31,23 +35,29 @@ Synthetic request/response; hosted URL is illustrative. Omitted optional fields 
   "data": {
     "id": "ver_example",
     "object": "verification",
-    "subject_id": "per_example",
+    "subject_id": "biz_example",
     "created_at": "2026-10-22T13:00:00Z",
     "updated_at": "2026-10-22T14:00:00Z",
     "record_version": 1,
     "source_refs": [],
-    "data_status": "partial",
+    "data_status": "pending",
     "missing_fields": [],
     "schema_version": "1.4.2",
-    "verification_type": "kyc",
+    "verification_type": "kyb",
     "status": "not_started",
-    "hosted_url": "https://verify.example.com/session"
+    "hosted_url": "https://verify.example.com/session",
+    "workflow_version": "kyb-ca-v1",
+    "stop_reason": null,
+    "processing_context": {
+      "product": "insights",
+      "workflow_run_id": "wfr_example"
+    }
   },
   "meta": {
     "request_id": "req_example",
     "schema_version": "1.4.2",
-    "generated_at": "2026-10-22T14:00:00Z",
-    "data_status": "complete"
+    "generated_at": "2026-10-23T14:00:00Z",
+    "data_status": "pending"
   }
 }
 ```
@@ -185,7 +195,11 @@ AMLOK absolute amount plus direction; provider signed value remains in authorize
   "search_type": "name",
   "jurisdictions": [
     "US-DE"
-  ]
+  ],
+  "processing_context": {
+    "product": "insights",
+    "workflow_run_id": "wfr_example"
+  }
 }
 ```
 
@@ -211,12 +225,19 @@ AMLOK absolute amount plus direction; provider signed value remains in authorize
       "US-DE"
     ],
     "jurisdictions_completed": [],
-    "status": "queued"
+    "status": "queued",
+    "result_count": 0,
+    "lien_ids": [],
+    "stop_reason": null,
+    "processing_context": {
+      "product": "insights",
+      "workflow_run_id": "wfr_example"
+    }
   },
   "meta": {
     "request_id": "req_example",
     "schema_version": "1.4.2",
-    "generated_at": "2026-10-22T14:00:00Z",
+    "generated_at": "2026-10-23T14:00:00Z",
     "data_status": "pending"
   }
 }
@@ -391,7 +412,9 @@ Missing denominator never becomes a zero score or default approval.
   "input_resource_ids": [
     "app_example",
     "doc_example"
-  ]
+  ],
+  "application_id": "app_example",
+  "input_manifest_id": "manifest_example"
 }
 ```
 
@@ -418,12 +441,20 @@ Missing denominator never becomes a zero score or default approval.
       "doc_example"
     ],
     "output_resource_ids": [],
-    "approval_required": false
+    "application_id": "app_example",
+    "product": "insights",
+    "input_manifest_id": "manifest_example",
+    "initial_input_manifest_id": "manifest_example",
+    "workload_id": "workload_example",
+    "billing_usage_id": null,
+    "monitoring_period_id": null,
+    "blocked_reason": null,
+    "stop_reason": null
   },
   "meta": {
     "request_id": "req_example",
     "schema_version": "1.4.2",
-    "generated_at": "2026-10-22T14:00:00Z",
+    "generated_at": "2026-10-23T14:00:00Z",
     "data_status": "pending"
   }
 }
@@ -544,3 +575,5 @@ Completion means a result is available; it can require review. Verify signature 
   }
 }
 ```
+
+The compact synthetic evidence examples demonstrate request shape and reference linkage. They are not a production underwriting dataset or a benchmark for the minimum twelve months of banking evidence.

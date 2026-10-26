@@ -217,7 +217,7 @@ export const PricingCalculator = () => {
                 <div className="apc-total-row"><dt>Total funding over 12 months</dt><dd data-testid="total-funding">{money(estimate.fundingCents)}</dd></div>
               </dl>
               <p className="apc-explanation">{autoPay ? "Estimated top-ups use your selected trigger and amount. Credits below the trigger can still fund requests while a payment is pending." : "Auto-pay is off. Additional credits shown are manual funding needed to cover this estimate. Processing stops only when credits cannot cover the next billable operation."}</p>
-              <p className="apc-footnote">The prepayment is counted once. Funding is an aggregate estimate with prompt settlement; actual request timing, reservations, and payment delays affect top-ups. Agreed rates or discounts change usage deductions, not your monthly minimum.</p>
+              <p className="apc-footnote">The prepayment is counted once. Funding is an aggregate estimate with prompt settlement; actual request timing and payment delays affect top-ups. Agreed rates or discounts change usage deductions, not your monthly minimum.</p>
             </div>
           ) : <p className="apc-invalid-summary">Complete the highlighted fields to see your estimate.</p>}
         </aside>

@@ -14,9 +14,11 @@ There is no scheduled monthly payment. Monthly usage is deducted from the prepai
 Your workspace shares one balance across AMLOK Insights and AMLOK Signal. Paid and promotional top-ups both become unused credits in that balance, with no consumption priority.
 
 - **Insights:** a completed full underwriting consumes credits at the assigned tier and agreed rate.
-- **Signal:** each active borrower or business is charged once per workspace per month. Monitoring and change-driven reassessment are included, without an additional Insights charge.
+- **Signal:** each active borrower or business is charged once per workspace per month at the start of the month, with a full charge immediately on first activation during a month. Monitoring and change-driven reassessment are included, without an additional Insights charge.
 - **Unused credits:** remain available while your account is active.
 - **Used credits:** are non-refundable.
+
+Available credits are the balance you can spend. Spent credits are the amount already deducted for products, less correcting reversals. There are no reserved amounts or separate credit buckets. Successful top-ups increase available credits; a service charge reduces them and increases spent credits. Payment attempts still in progress remain payment history until successful.
 
 ## Additional credits and automatic top-ups
 
@@ -27,12 +29,12 @@ In the **client portal**, you can add or change a **card or bank account**, enab
 | Automatic top-up trigger | CAD 200.00 by default; you can select a higher threshold |
 | Minimum automatic top-up amount | CAD 500.00; the amount charged is the amount you selected |
 | Payment methods | Card or bank account |
-| When auto-pay is enabled | A balance below your threshold triggers collection from your selected payment method |
+| When auto-pay is enabled | Available credits below your threshold trigger collection from your selected payment method |
 | When auto-pay is disabled | No automatic collection occurs; you can add credits through the portal |
 
 **CAD 200.00 is a trigger, not a balance floor.** Requests can continue below it while available credits cover their cost. For example, a CAD 35.00 charge can reduce CAD 215.00 to CAD 180.00. With auto-pay enabled at the default threshold, that balance triggers your selected top-up.
 
-A pending or failed payment is not spendable. Existing reservations also reduce available credits. If credits cannot cover the next billable operation, AMLOK rejects it with an insufficient-credits error and does not charge for unprocessed work. Retry after funding is available. Read-only reports remain accessible while your account is active.
+A pending or failed payment is not spendable. If credits cannot cover the next billable operation, AMLOK rejects it with an insufficient-credits error and does not charge for unprocessed work. Retry after funding is available. Read-only reports remain accessible while your account is active.
 
 A higher threshold and a suitable top-up amount help avoid interruptions, but processing still depends on available credits and successful payment.
 
@@ -50,13 +52,19 @@ Negotiated pricing uses Standard, Advanced, or Complex with an agreed rate and w
 
 ## Cancellation and unused credits
 
-When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled and unused reservations are released without another charge.
+When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled without another charge.
 
 You can request cancellation at any time in the portal, without a notice period. Enterprise clients can also use their dedicated account manager. Full account closure takes place at the end of the request month.
 
 AMLOK issues an immediate refund of **the entire unused balance**, including promotional credits, at account closure. A saved bank account in the portal is required, even if you funded by card. Bank delivery can take **7-10 business days after issuance**.
 
 Workspace data is deleted after the request month closes and the necessary final information is generated. See [cancellation and refunds](/pricing/refunds-and-payouts) for the sequence.
+
+## Processing and completion
+
+An Insights request checks available credits before acceptance and deducts once when the agreed output is successfully completed and published. Acceptance does not reserve or spend credits. Concurrent completions cannot spend the same credits: the balance check, charge and publication are atomic. If another operation uses the balance before completion, that underwriting waits for funding without publishing its final output or creating a duplicate charge.
+
+Signal deducts before monthly monitoring proceeds. Verification, searches, calculations and investigations are included product stages with no separate AMLOK charge. See [product scope](/api-reference/products-and-endpoints).
 
 ## Reporting access
 

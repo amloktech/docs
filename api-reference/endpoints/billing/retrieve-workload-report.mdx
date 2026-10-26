@@ -1,0 +1,11 @@
+---
+title: "Retrieve workload report"
+openapi: "/openapi/amlok-v1.json GET /v1/workloads/{id}"
+playground: simple
+---
+
+**Required scope:** `billing:read`
+
+Read measured workload against the agreed limits. At a limit, work already within scope can continue; the next operation that would exceed any dimension is rejected or blocked before excess records are processed. Counts across monitors are deduplicated by subject, source record ID and source version during the month. No automatic repricing, mixed-tier limits or extra usage charge occurs. AMLOK must approve an amended rate card before blocked work resumes. Whole-underwriting counts include the complete evidence history; Signal counts only new processed record versions in the UTC calendar month. Counters and limit checks are atomic across concurrent work. as_of and the cursor freeze a read snapshot; a new first-page read gets current progress.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

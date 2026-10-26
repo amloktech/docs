@@ -1,119 +1,64 @@
 ---
 title: "Consumption reporting"
-description: "Reconcile product usage, pricing, credit deductions, statements, and exports."
+description: "Reconcile product charges, credit activity, historical rates and reproducible reports."
 ---
 
-Your workspace has one billing account and credit balance across products. Paid and promotional top-ups have no consumption priority. Each API key is bound to exactly one workspace. Reports include that workspace identifier and preserve product-specific billing units.
-
-Use consumption reporting to answer three questions: **what was used, what it cost, and how your credit balance changed**.
-
-| Question | Resource |
-| --- | --- |
-| What are our agreed rates and minimum? | [Billing account](/api-reference/endpoints/billing/retrieve-billing-account) and [rate card](/api-reference/endpoints/billing/retrieve-billing-rate-card) |
-| What triggered each charge? | [Usage records](/api-reference/endpoints/billing/list-usage-records) |
-| How much did each product and tier consume? | [Consumption summary](/api-reference/endpoints/billing/retrieve-consumption-summary) |
-| What credits remain? | [Credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) |
-| What changed the balance? | [Credit ledger entries](/api-reference/endpoints/billing/list-credit-ledger-entries) |
-| How do we reconcile a period? | [Billing statements](/api-reference/endpoints/billing/list-billing-statements) |
-| What rates applied to an earlier charge? | [Historical rate cards](/api-reference/endpoints/billing/list-historical-rate-cards) |
-| Which payments or promotions added credits? | [Funding history](/api-reference/endpoints/billing/list-funding-records) |
-| What is reserved for pending work? | [Credit reservations](/api-reference/endpoints/billing/list-credit-reservations) |
-| How do reports use the same cutoff? | [Billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot) |
-| How do we download a full dataset? | [Billing reports](/api-reference/endpoints/billing/create-billing-report) |
+Use one immutable billing snapshot to answer what was consumed, what it cost, and how available credits changed. Each API key is bound to one workspace.
 
 ## Billable usage
 
-Each usage record contains the billing account, product, complexity tier, source application or account, billable unit, quantity, effective unit rate, amount, period, timestamps, rate-card ID, and ledger reference.
+| Product | Unit | Standard | Advanced | Complex | Charge timing |
+| --- | --- | ---: | ---: | ---: | --- |
+| Insights | Completed underwriting | CAD 5.00 | CAD 15.00 | CAD 35.00 | Successful completion and publication of the agreed output |
+| Signal | Active borrower/business per month | CAD 3.00 | CAD 5.00 | CAD 8.00 | Beginning of the UTC calendar month, or full charge at first activation during the month |
 
-| Product | Billable unit | Standard | Advanced | Complex |
-| --- | --- | ---: | ---: | ---: |
-| AMLOK Insights | Completed underwriting | CAD 5.00 | CAD 15.00 | CAD 35.00 |
-| AMLOK Signal | Active account-month | CAD 3.00 | CAD 5.00 | CAD 8.00 |
+Signal includes monitoring and reassessment. Multiple monitors, checks or facilities do not create more account-month charges. Included verification, searches, calculations and investigations do not add another AMLOK charge. The monthly consumption unit does not change the monthly minimum's annual payment schedule.
 
-The effective rate card identifies published or negotiated pricing and agreed workload limits. Custom quotes retain `standard`, `advanced`, or `complex`; there is no separate custom tier. Use the actual `unit_rate` and `rate_card_id` on each usage record. Insights uses the total historical snapshot per underwriting, including at least 12 months of bank statements and transactions within the record limit. Signal counts newly processed records and each updated record version during the month; repeated reads or retries of the same unchanged version do not count again. The rate card reports `record_limit` and `record_counting_basis` for each product. The effective rate card reflects agreed discounts. For Signal, count each active borrower/business once per workspace per month, regardless of monitoring configurations, checks, facilities, or data connections. The source identifier is the borrower/business identifier, not an individual monitor ID. Signal includes change-driven reassessment and does not trigger another Insights charge. Its monthly usage deduction does not create a monthly funding payment; the monthly minimum is paid for 12 months in advance. Cancellation stops further deductions immediately; previously consumed credits remain non-refundable. Reporting does not create a different billing event or add a fee.
+Each usage record identifies its subject, product, tier, billable quantity, rate, amount, period, historical rate-card ID and ledger entry. Insights additionally links the workflow run, application, frozen input manifest and risk snapshot. Signal links the shared monitoring-period record and baseline. See [evidence traceability](/api-reference/evidence-traceability).
 
-`charge amount = billable quantity × effective unit rate`
+Custom quotes retain Standard, Advanced or Complex with negotiated rates and explicit workload limits. The rate card reports the product's counting basis, limits and charge timing. [Workload reports](/api-reference/workload-reporting) show processing counts separately from billable quantities.
 
-Round the effective unit rate to two decimals first using decimal half-up rounding. Calculate with decimal arithmetic and round each billed line to two decimal places using decimal half-up rounding. Sum posted line amounts to obtain totals. The agreed billing policy must use the same rule; do not recompute historic charges using today's rate card.
+## Amounts and corrections
 
-Usage records are created by the billing process. Client integrations cannot submit arbitrary usage debits. A correction is a new `reversal` linked through `reverses_usage_id`, with a negative amount and its own ledger reference. The original charge remains visible. Cumulative reversals cannot exceed the original charge; a replacement charge is recorded separately.
+Amounts are CAD decimal strings with two decimals. Round the effective discounted unit rate half up to two decimals first, multiply by the billable quantity, then round the line half up to two decimals. Totals sum those rounded lines. Never apply today's rate card to an earlier charge.
+
+Usage records exist only for actual charges or corrections, with `status: posted`. There is no pending usage credit category. A charge correction creates a negative `reversal` linked by `reverses_usage_id`; the original remains immutable. The ledger reversal has a positive amount and references the original ledger entry. Cumulative reversals cannot exceed that original charge. A replacement charge, when appropriate, is separate.
 
 ## Reproduce a report
 
-1. Read `GET /v1/billing/snapshot` and save its `id`, `as_of`, and `ledger_sequence`.
-2. Pass that ID as `snapshot_id` when reading credits, ledger movements, funding, reservations, usage, rates, and consumption. These financial reads also return `X-Billing-Snapshot-ID`, including empty lists, so you can reuse a snapshot selected automatically.
-3. Use the same ID in the report request body. Downloaded results describe that snapshot even if a payment settles or a correction posts while the export is running.
-4. Keep the returned cursor and original filters for subsequent pages. A cursor with conflicting filters or a different snapshot returns `400`; an unknown snapshot returns `404`.
+1. Read [the current billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot); save its ID, `as_of` and ledger sequence.
+2. Reuse `snapshot_id` across credits, usage, consumption, funding, rate cards and ledger reads. The response header `X-Billing-Snapshot-ID` also supplies the selected snapshot, including for empty lists.
+3. Preserve the same snapshot and filters across cursor pages and export requests.
+4. Use a statement's own snapshot, exact period and revision to reproduce that statement.
 
-A snapshot freezes resource versions and pending reservations as well as posted ledger entries. `as_of` is the server cutoff, not a caller-supplied event date. A correction recorded later appears only in a newer snapshot even if its business event date is earlier. Snapshot IDs belong to one workspace and cannot select another customer's data.
+Snapshots freeze financial resource versions and configuration at the cutoff. Later corrections appear only in newer snapshots. Conflicting cursor parameters return `400`; unknown snapshots return `404`. A financial snapshot does not freeze a source-data collection; use [synchronization checkpoints](/api-reference/synchronization) for that purpose.
 
-Statements carry the snapshot for their own revision. Use that statement's `snapshot_id`, exact period and `report_type=statement` to reproduce it. Report-job lists show current job status, not historical financial state. Snapshots and exports remain accessible only while the workspace exists; save required evidence before deletion.
+## Filters and periods
 
-## Filters and history
+Intervals are UTC and `[from, to)`, with an inclusive start and exclusive end. Usage supports event time (`occurred_at`) or ledger time (`posted_at`); consumption includes only recorded charges and reversals. Product, tier, source resource and historical rate-card filters are supported. Grouping by day or month preserves product, tier and billing unit; it never combines underwritings and account-months into one quantity.
 
-Usage and consumption support product, tier, source resource, and rate-card filters. Usage also supports charge/reversal and status filters. Usage defaults to `posted`; use `time_basis=occurred_at` for pending or voided records, which have no posting timestamp. Consumption includes posted charges and reversals only.
+Ledger entries sort by sequence. Other financial collections document their ordering. Default page size is 100, maximum 200. Payment source labels distinguish annual prepayments, top-ups and promotions for audit; they do not create separate credit balances or priorities.
 
-Each usage record retains the historical `rate_card_id` and actual effective rate. Retrieve that card to inspect the agreed limits, negotiated pricing and agreement version at the time. Later rate changes do not reprice earlier usage. Current-card reads select the effective card at the snapshot time; historical lists can filter by `effective_at` and agreement.
+## Reconciliation example
 
-Funding history distinguishes annual prepayments, customer top-ups and promotional additions and includes invoice/receipt references when issued. Pending or failed funding does not add usable credits. These source labels provide audit history, not separate credit buckets. Reservation reports explain held amounts and their final capture or release without adding another debit.
+All endpoint examples using `billing_snapshot_example` share this dataset:
 
-Collection results use cursor pagination, with a default of 100 and maximum of 200 records. Ledger movements sort by ascending sequence; each other collection documents its stable sort order. Use asynchronous CSV or JSON exports for large reconciliations instead of building an unbounded synchronous request.
+| Activity | CAD | Available credits |
+| --- | ---: | ---: |
+| Annual prepayment completed September 30 | +12,000.00 | 12,000.00 |
+| One Standard Signal business charged October 1 | -3.00 | 11,997.00 |
+| One Standard Insights underwriting completed October 23 | -5.00 | 11,992.00 |
 
-## Time windows and provisional data
-
-All windows use UTC and `[from, to)`: the start is inclusive and the end is exclusive. `from` must precede `to`.
-
-- `occurred_at` groups usage by when the billable event happened.
-- `posted_at` groups usage by when its charge entered the ledger.
-- `as_of` identifies the report snapshot.
-- `pending` usage does not enter posted totals.
-- Late postings and corrections can change a provisional event-period report in a **new** snapshot; an existing snapshot never changes. No new usage deduction is posted after cancellation.
-
-Every aggregation retains product, tier and unit. `group_by=day` or `month` adds calendar buckets; it never adds underwritings and monitored account-months into a shared quantity.
-
-The [consumption endpoint](/api-reference/endpoints/billing/retrieve-consumption-summary) includes complete cURL, Python, and Node.js requests with the required date window, time basis and grouping.
-
-For a synthetic month with 100 Standard Insights underwritings and 200 Standard Signal account-months, the totals are CAD 500.00 and CAD 600.00, or **CAD 1,100.00**. This consumes CAD 1,100.00 from your prepaid credits; it is not an extra platform charge.
-
-## Reconcile your credits
-
-Billing statements use posted time and signed ledger entries:
+October usage and consumption total **CAD 8.00**. The October statement opens at CAD 12,000.00 and closes at CAD 11,992.00. Cumulative spent credits are CAD 8.00. The unfiltered ledger includes all three entries; an October ledger export includes the two October charges. An October funding export is empty because the prepayment completed in September.
 
 `closing = opening + funding - usage - final-cancellation refunds + adjustments`
 
-The named debit and credit columns are nonnegative magnitudes. `adjustments` is signed and contains system reconciliation corrections, not customer-controlled withdrawals or fees. Usage reversals reconcile through ledger adjustments; they are not counted a second time as negative usage in this statement formula.
-
-| Synthetic period movement | CAD |
-| --- | ---: |
-| Opening balance | 12,000.00 |
-| Posted Insights usage | -500.00 |
-| Posted Signal usage | -600.00 |
-| Closing posted balance | **10,900.00** |
-| Still held for pending product usage | 500.00 |
-| Available after holds | **10,400.00** |
-| Available for new processing | **10,400.00** |
-
-A pending incoming top-up of CAD 500.00 does not change these totals. A hold is not a second debit. AMLOK captures it once when posting the movement, or releases it when the activity is cancelled or definitively fails.
-
-The public credit API is reporting-only. The client portal separately provides payment-method, top-up-setting, and cancellation controls. CAD 200.00 is the default automatic top-up trigger. Requests can use credits below it and fail only when available credits cannot cover the operation, without a debit for unprocessed work. On final agreement cancellation, the entire unused credit balance is refunded after usage reconciliation. That refund is reported separately from product usage. Once cancellation is submitted, AMLOK releases the CAD 500.00 hold without posting a new usage charge. In this example the unused balance for refund is CAD 10,900.00, before any additional in-flight funding settles.
+Funding, usage and refund columns are nonnegative magnitudes. Adjustments are signed. Correcting ledger reversals are included in adjustments and are not counted again as negative statement usage. Consumption summaries, by contrast, expose gross charges, correcting adjustments and net usage explicitly.
 
 ## Export and finalize
 
-1. Create a report for `usage`, `ledger`, `statement`, `funding`, or `holds`, with its window, format, time basis and `snapshot_id`. Optional usage filters match the usage collection; filters must be empty for other report types. Reports are scoped to the one workspace bound to your API key.
-2. Poll its returned ID until `ready`; `202` only acknowledges the job.
-3. Create a short-lived [download link](/api-reference/endpoints/billing/create-billing-report-download-link).
-4. Validate the file hash, store it under your institution's access policy, and retain the report's `snapshot_id` and `as_of` values.
+Create an asynchronous report for `usage`, `ledger`, `statement` or `funding`. Usage supports event or posting time; ledger and statements use `posted_at`; funding uses `initiated_at`. Only usage exports accept usage filters. Poll until ready, then request a short-lived download link. These requests do not change credits.
 
-For `usage`, the window uses the selected event or posting time. Ledger and statement exports require `posted_at`. Funding exports require `time_basis=initiated_at`; reservation exports require `time_basis=created_at`. Omitting a snapshot freezes one at export acceptance. A rerun with the same snapshot, period, type and filters reproduces the same financial data; delivery URLs and job metadata may differ.
+[Export formats](/api-reference/export-formats) defines JSON schemas, CSV columns, empty results, decimal handling and downloadable examples. Verify the file's SHA-256 and retain its snapshot ID. A repeated export of the same snapshot and filters reproduces the same financial data; job metadata and delivery URLs can differ.
 
-JSON exports retain decimal strings. CSV exports escape formula-like cells and contain no API keys or payment credentials. Expired exports require a new report request; they must not redirect silently to a newer snapshot.
-
-Final statement revisions are immutable. A later correction creates a new revision referencing `supersedes_id`; retain both for audit. Cancellation confirmation and refund details are provided through the account cancellation process, with dedicated account-manager assistance for enterprise clients.
-
-When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled and unused reservations are released without another charge.
-
-Cancellation can be requested at any time without notice, with account closure at the end of the request month. Data is deleted after that month closes and necessary final information is generated. AMLOK issues the full unused-credit refund, including promotional credits, to the bank account saved in the portal immediately at account closure. Used credits are non-refundable. Funds may take 7-10 business days to reach the bank account, depending on the bank. A closed account can therefore have an issued refund awaiting delivery. Keep the cancellation confirmation and refund reference for delivery assistance through support or your enterprise account manager. The API reports resulting ledger entries and statements; it does not expose refund requests, payouts, or cancellation commands. Closure or issuance is not proof of bank receipt.
-
-See [credit reporting](/api-reference/credit-reporting) and [cancellation and refunds](/pricing/refunds-and-payouts).
-
-AMLOK retains only the necessary final billing, refund, and bank-return records separately from the deleted workspace to reconcile the refund and resolve delivery issues. These records do not retain borrower source data, documents, or analysis outputs and do not keep the workspace or its API access active.
+Final statement revisions are immutable. Later corrections create a new revision with `supersedes_id`. On cancellation, processing and deductions stop immediately; unused credits are refunded at month-end closure. No new product charge can post after the cancellation cutoff. Final documents and refund confirmations are supplied through the closure process. Workspace API access ends on deletion; minimal financial/refund records retained separately contain no borrower evidence. See [cancellation and refunds](/pricing/refunds-and-payouts).

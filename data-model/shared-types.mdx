@@ -252,6 +252,9 @@ description: "Reusable nested fields for addresses, money, provenance, and other
 | `page` | `Page`<br />Required | Tenant-scoped continuation information. | `{"next_cursor":null,"has_more":false,"limit":100}` |
 | `meta` | `ResponseMeta`<br />Required | Response context and completeness. | `null` |
 
+| `resume_cursor` | `string`<br />Required | Durable change-feed position, including after an empty response. | `changes_after_sequence_42` |
+| `cursor_expires_at` | `datetime`<br />Required | Explicit expiry; create a new checkpoint and bootstrap after expiry. | `2026-11-01T14:00:00Z` |
+
 ## Change
 
 | Field | Type / presence | Definition | Example |
@@ -262,3 +265,9 @@ description: "Reusable nested fields for addresses, money, provenance, and other
 | `action` | `enum:event_action`<br />Required | created, updated or deleted. | `updated` |
 | `changed_at` | `datetime`<br />Required | AMLOK change timestamp. | Not specified |
 
+
+| `sequence` | `integer`<br />Required | Monotonic workspace change sequence; filtered streams may contain gaps. | `42` |
+
+## Processing and reporting helpers
+
+Calculation jobs also return `processing_context` and nullable `stop_reason`. Product context, monitoring periods, workload reports, frozen manifests and billing records use dedicated schemas in the [OpenAPI download](/openapi/amlok-v1.json). See [product scope](/api-reference/products-and-endpoints), [workload reporting](/api-reference/workload-reporting), and [export formats](/api-reference/export-formats).

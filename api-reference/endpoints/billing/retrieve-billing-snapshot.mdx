@@ -6,6 +6,8 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, pending funding, holds, and the posted ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.
+Read a consistent workspace billing snapshot. The snapshot freezes financial resource versions, rate cards, payment history and the ledger high-water mark at as_of. Reuse its id as snapshot_id on financial reads and export requests. Later postings or corrections never change this snapshot. Snapshots are available until workspace deletion; export needed evidence before closure. Unknown or deleted snapshot IDs return 404. This read does not spend credits or change payment settings.
 
-[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)
+Required scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

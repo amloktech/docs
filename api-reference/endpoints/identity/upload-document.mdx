@@ -4,12 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/documents"
 playground: simple
 ---
 
-**Required scope:** `documents:write` · **Execution:** asynchronous.
+**Required scope:** `documents:write`
 
-Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Upload permitted evidence.
 
-[Data dictionary](/data-model/field-dictionary#document) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `documents:write`. Validate file content; poll document extraction state. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
 
-Poll `GET /v1/documents/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
-
-**Lifecycle event:** `document.processed`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

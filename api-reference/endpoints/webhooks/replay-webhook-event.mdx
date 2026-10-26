@@ -4,6 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/webhook-endpoints/{id}/replay"
 playground: simple
 ---
 
-**Required scope:** `webhooks:write` · **Execution:** asynchronous.
+**Required scope:** `webhooks:write`
 
-Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Replay a previously generated authorized event.
+
+Required scope: `webhooks:write`. Preserve original event ID for deduplication; log delivery attempt. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

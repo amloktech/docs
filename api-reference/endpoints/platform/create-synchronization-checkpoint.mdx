@@ -1,0 +1,11 @@
+---
+title: "Create synchronization checkpoint"
+openapi: "/openapi/amlok-v1.json POST /v1/sync-checkpoints"
+playground: simple
+---
+
+**Required scope:** `platform:read`
+
+Create a read-only synchronization boundary. This does not synchronize a provider, process a product or spend credits. Read each requested collection with snapshot_id equal to this checkpoint ID, then consume /v1/changes from resume_cursor. Both refer to the same as_of boundary, preventing a bootstrap gap. Snapshots and resume cursors remain valid until their explicit expires_at. Reject unentitled types. Workspace deletion revokes checkpoints. Checkpoint creation remains available while read-only reporting access remains active.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

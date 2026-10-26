@@ -6,6 +6,8 @@ playground: simple
 
 **Required scope:** `billing:read`
 
-Read billable events and compensating reversals. Posted charges are immutable; pending records may become posted or voided in a later snapshot. Order by selected time_basis then id. Status defaults to posted; pending and voided records use occurred_at because they have no posting time. No customer endpoint creates usage charges. After cancellation, pending usage is voided and holds are released without posting another charge.
+Read immutable usage charges and correcting reversals. Usage records exist only for actual deductions or their corrections; unfinished work is represented by its processing resource, not a pending credit category. Order by selected time_basis then id. No customer endpoint creates charges. Cancellation stops all further deductions.
 
-[Credit reporting](/api-reference/credit-reporting) · [Consumption reporting](/api-reference/consumption-reporting) · [Cancellation and refunds](/pricing/refunds-and-payouts)
+Required scope: billing:read. The API key is bound to exactly one workspace, institution and environment. There is no workspace override; this binding applies to every read and export.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

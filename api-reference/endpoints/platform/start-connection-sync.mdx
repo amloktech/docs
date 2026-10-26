@@ -4,12 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/connections/{id}/sync"
 playground: simple
 ---
 
-**Required scope:** `connections:write` · **Execution:** asynchronous.
+**Required scope:** `connections:write`
 
-Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Request a bounded data refresh.
 
-[Data dictionary](/data-model/field-dictionary#connection) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `connections:write`. Poll GET /v1/sync-jobs/{id}; may complete partially. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
 
-Poll `GET /v1/sync-jobs/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
-
-**Lifecycle event:** `sync.completed`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

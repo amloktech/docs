@@ -4,10 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/applications"
 playground: simple
 ---
 
-**Required scope:** `lending:write` · **Execution:** synchronous.
+**Required scope:** `lending:write`
 
-Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Create a credit application.
 
-[Data dictionary](/data-model/field-dictionary#application) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `lending:write`. Creates application record; does not approve or fund. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
 
-**Lifecycle event:** `application.updated`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

@@ -1,0 +1,42 @@
+---
+title: "Processing lifecycle"
+description: "Follow evidence collection, workload checks, credit deductions and terminal states."
+---
+
+AMLOK coordinates assessment processing. It does not execute borrower outreach, servicing actions or credit-limit changes.
+
+## Workflow states
+
+| State | Meaning and next step |
+| --- | --- |
+| `queued` / `running` | Authorized work is accepted or executing. Poll with backoff or consume workflow events. |
+| `waiting_for_data` | Required evidence is missing or not yet accepted. Read requirements and submit an authorized document with its `requirement_id`. |
+| `blocked_by_limit` | The agreed workload cannot cover further work. AMLOK must agree expanded scope before it resumes. |
+| `waiting_for_credits` | Available credits cannot cover final completion. Fund through the portal; AMLOK retries the same completion without duplicating processing or charges. |
+| `completed` | Required output is published. For a root Insights run, its single charge and output publication complete atomically. |
+| `failed` | Processing failed definitively. Inspect the reason and use support when needed. No completed-underwriting charge is created. |
+| `cancelled` | Processing has stopped. No later output publication or charge is permitted. |
+
+There is no workflow state for approving borrower communications or other servicing actions.
+
+## Evidence requirements
+
+Read the requirement to identify the missing evidence and parent workflow. Upload the requested document with `requirement_id`; the subject and workspace must match. Upload acceptance does not mean evidence acceptance. AMLOK's validation process or authorized evidence reviewer accepts, rejects or waives the requirement according to the agreed assessment rules. These review actions are managed in the platform, not public servicing endpoints. Accepted evidence resumes the waiting assessment automatically; rejected evidence includes a reason and remains unresolved. AMLOK does not contact the borrower to collect it.
+
+## Credits and concurrent work
+
+There is one spendable balance and no reservations. AMLOK checks funds before accepting a billable request. Acceptance alone does not spend Insights credits. At successful completion, the balance check, exact usage debit and final output publication are atomic and idempotent per root workflow. Concurrent completions cannot spend the same credits or make the balance negative.
+
+If another operation consumes credits before completion, the run waits for funding without publishing the final output or charging. After funding, the same completion resumes. A pre-execution `402` creates neither an accepted job nor a debit, and may be retried with the same intended idempotency key. A job already accepted keeps its ID; do not create another run to resume it.
+
+Signal deducts its monthly charge before monitoring starts for that period. Insufficient credits leave the period `unfunded` and monitors `blocked` with `blocked_reason: insufficient_credits`. Once funded, AMLOK activates only the current period after its one successful charge. No debt or charge for missed inactive months accumulates. A manually paused monitor stays paused until explicitly resumed.
+
+## Monitoring and alerts
+
+Monitor states are `active`, `paused`, `blocked` or `cancelled`. Customers can set active, paused or cancelled through the monitor update endpoint; blocked is system-controlled. `blocked_reason` distinguishes insufficient credits, workload limits, missing evidence and unavailable consent. Correct the underlying condition before processing resumes. Cancelling one monitor does not cancel other configurations for the borrower or create a refund of its already consumed monthly charge.
+
+Alerts use `open` and `resolved`. AMLOK resolves a signal only when fresh, comparable evidence demonstrates the triggering condition has cleared. An outage, missing evidence or a client's acknowledgement is not resolution. Institution acknowledgements, assignments and follow-up stay in the institution's systems.
+
+## Account cancellation
+
+All processing, deductions and upcoming top-ups stop immediately. Pending workflows, calculations, lien searches, verification and document extraction become `cancelled`, with `stop_reason: account_cancellation` (or `parent_cancelled` for a child). A late provider response does not resume the workflow or create a charge. Read access continues only until workspace deletion under the month-end closure policy.

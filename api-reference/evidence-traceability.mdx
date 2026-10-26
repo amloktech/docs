@@ -1,0 +1,37 @@
+---
+title: "Evidence and charge traceability"
+description: "Follow exact inputs from a completed assessment to its usage charge."
+---
+
+An underwriting is identified by its workflow-run ID. There is no separate opaque underwriting resource that clients must infer.
+
+## Freeze inputs
+
+1. Synchronize permitted sources and resolve the required evidence coverage.
+2. Select a ready input manifest for the subject. Read its coverage, record count and [entries](/api-reference/endpoints/risk/list-input-manifest-entries).
+3. Start the full underwriting with `application_id`, `input_manifest_id`, and input resource IDs present in that manifest. The server retains the initial ID as `initial_input_manifest_id`.
+4. Any included attribute calculations use the same manifest and a window contained within its coverage. They require the parent product context.
+
+The current `input_manifest_id` identifies the run's evidence set. The result's `evidence_manifest_id` and the usage record refer to the final set used at completion. A changed source record never rewrites an existing manifest or completed assessment.
+
+If an unfinished run is waiting for required evidence, AMLOK can validate an uploaded document and attach a successor manifest within the same agreed scope. The run keeps its ID and one completion charge. Its record version increases, and an audit event identifies the old and new manifest IDs; `initial_input_manifest_id` remains unchanged. Recompute affected calculations against the successor before completion. Additional evidence must fit the agreed workload limits; expanded scope requires AMLOK agreement. After completion, a separately requested full underwriting is a new Insights run.
+
+## Audit exact versions
+
+Manifest entries contain the resource type, ID, normalized version, source ID/version and a content digest. Pagination stays bound to that immutable manifest. Retrieve a resource with `manifest_id` to read that exact normalized version. The document download request accepts the manifest ID for the exact original document bytes. Missing or deleted evidence returns an explicit error, never today's replacement version.
+
+To verify the manifest digest, concatenate all entries in `(resource_type, resource_id, resource_version)` order. Serialize each entry as compact UTF-8 JSON with lexically sorted keys, no spaces and a final LF; hash the concatenated bytes with SHA-256. This verifies membership consistency. A digest alone does not prove source authenticity or legal sufficiency. Individual `content_sha256` values identify frozen evidence content; document file verification uses the document's `sha256` against the original downloaded bytes. Digests and evidence in examples are synthetic.
+
+## Connect results and billing
+
+| Record | References |
+| --- | --- |
+| Insights workflow | Application, input manifest, workload report, output resources and billing usage |
+| Risk snapshot | Workflow, application, evidence manifest and billing usage |
+| Insights usage | Subject, workflow-run ID, application, manifest, risk snapshot, historical rate card and ledger entry |
+| Signal usage | Subject, monitoring-period ID, baseline snapshot, rate card and ledger entry |
+| Monitoring period | One borrower/business/month, its charge and combined workload report |
+
+A Signal reassessment is linked to its paid monitoring period and creates no additional Insights debit. Included child stages do not have independent charge records. All references must belong to the key-bound workspace and appropriate subject; report access never grants broader evidence access.
+
+Export evidence before workspace deletion. Necessary financial records retained for final refunds do not retain borrower source data, documents or analysis outputs.

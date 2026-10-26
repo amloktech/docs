@@ -4,12 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/lien-searches"
 playground: simple
 ---
 
-**Required scope:** `liens:search` · **Execution:** asynchronous.
+**Required scope:** `liens:search`
 
-Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Run a lien search with explicit jurisdiction and debtor scope.
 
-[Data dictionary](/data-model/field-dictionary#lien-search) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `liens:search`. Adapter resolves provider business/person context; no filing or perfection action. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion. This is a stage of an authorized Insights or Signal workflow. processing_context is required; unrelated, completed, unpaid, cancelled or unentitled contexts return 409 invalid_state. It creates no separate AMLOK charge. The orchestrator deduplicates equivalent stage work within the parent.
 
-Poll `GET /v1/lien-searches/{id}` with the returned resource ID, or consume the relevant webhook. A successful submission does not mean the work completed.
-
-**Lifecycle event:** `lien_search.completed`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

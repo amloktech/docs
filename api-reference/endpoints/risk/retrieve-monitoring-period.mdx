@@ -1,0 +1,11 @@
+---
+title: "Retrieve monitoring period"
+openapi: "/openapi/amlok-v1.json GET /v1/monitoring-periods/{id}"
+playground: simple
+---
+
+**Required scope:** `monitoring:read`
+
+Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately.
+
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

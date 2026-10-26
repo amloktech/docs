@@ -1,0 +1,58 @@
+---
+title: "Billing export formats"
+description: "Versioned JSON schemas, CSV columns, file examples and integrity checks."
+---
+
+Billing reports support `usage`, `ledger`, `statement` and `funding`. Exports are read-only. Their schema version is **1.4.2**. The selected immutable snapshot and filters determine the financial rows; there is no hidden truncation or maximum-row omission. Larger files are generated asynchronously.
+
+## JSON
+
+JSON files contain `schema_version`, `report_type`, `snapshot_id`, `as_of` and a `rows` array. The row schema matches the corresponding API resource. Empty results use `rows: []`. Amounts remain decimal strings with two digits after the decimal point, and nullable values remain JSON null. Resource IDs and record versions are preserved.
+
+## CSV
+
+CSV files use UTF-8 without a byte-order mark, comma delimiters, CRLF line endings and RFC 4180 quoting. The first row contains the exact ordered headers below. Empty results contain that header row only. Null is an empty cell; an actual empty text value is not permitted for these reporting fields. Dates use the API's UTC representation; amounts use a period decimal separator without currency symbols or thousands separators.
+
+Every data row starts with `export_schema_version`, `export_snapshot_id` and `export_as_of`. Arrays or objects, if present in a future compatible row schema, use compact JSON in a quoted cell. Text beginning with a spreadsheet formula character (`=`, `+`, `-`, `@`, tab or carriage return) is prefixed with a single quote. Validated numeric decimal fields retain their minus sign without escaping. Consumers should treat text cells as data, not evaluate formulas.
+
+## Schemas, samples and columns
+
+The examples share the endpoint fixture: CAD 12,000.00 funded before October, then CAD 3.00 Signal and CAD 5.00 Insights consumption in October. October funding is therefore an empty export. The ledger export contains only the two movements in the selected October window.
+
+### Usage
+
+[JSON Schema](/downloads/report-schemas/usage.schema.json) · [JSON example](/downloads/report-examples/usage.json) · [CSV example](/downloads/report-examples/usage.csv)
+
+```text
+export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,billing_account_id,product,tier,source_resource_id,unit,quantity,unit_rate,currency,amount,entry_type,reverses_usage_id,status,subject_id,workflow_run_id,application_id,input_manifest_id,risk_snapshot_id,monitoring_period_id,occurred_at,posted_at,billing_period_start,billing_period_end,rate_card_id,ledger_entry_id,snapshot_id
+```
+
+### Ledger
+
+[JSON Schema](/downloads/report-schemas/ledger.schema.json) · [JSON example](/downloads/report-examples/ledger.json) · [CSV example](/downloads/report-examples/ledger.csv)
+
+```text
+export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,billing_account_id,sequence,currency,amount,balance_after,entry_type,movement_id,reverses_entry_id,posted_at,client_reference,snapshot_id
+```
+
+### Statement
+
+[JSON Schema](/downloads/report-schemas/statement.schema.json) · [JSON example](/downloads/report-examples/statement.json) · [CSV example](/downloads/report-examples/statement.csv)
+
+```text
+export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,from,to,billing_account_id,currency,status,revision,supersedes_id,as_of,opening_balance,funding,usage,refunds,closing_balance,adjustments,ledger_sequence_from,ledger_sequence_to,snapshot_id
+```
+
+### Funding
+
+[JSON Schema](/downloads/report-schemas/funding.schema.json) · [JSON example](/downloads/report-examples/funding.json) · [CSV example](/downloads/report-examples/funding.csv)
+
+```text
+export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,billing_account_id,currency,amount,source,payment_method_type,status,initiated_at,settled_at,failure_code,invoice_reference,receipt_reference,ledger_entry_id,client_reference,snapshot_id
+```
+
+## Delivery and verification
+
+Download links require a ready, unexpired report. Verify SHA-256 over the exact downloaded bytes before parsing. Content types are `application/json` or `text/csv; charset=utf-8`; filenames identify report ID, type and extension. A failed generation returns `status: failed` and a safe `failure_code`, not a partial file marked ready.
+
+An expired report requires a new export of the same saved snapshot and filters. Do not silently substitute today's data. File-delivery URLs and job timestamps can change; financial rows and schema remain reproducible. Workspace deletion removes access, so retain required exports before closure.

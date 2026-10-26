@@ -29,6 +29,9 @@ The example has HTTP `422`. `meta.data_status: complete` describes the error res
 
 | Code | HTTP | Retryable | Client action |
 | --- | ---: | --- | --- |
+| `validation_error` | 400 | No | Correct the invalid field or projection. |
+| `cursor_expired` | 410 | No | Create a new synchronization checkpoint and rebuild the snapshot. |
+| `workload_limit_exceeded` | 422 | No, until scope is agreed | Inspect the workload report and agree expanded scope before processing. |
 | `invalid_request` | 400 | No | Correct request structure. |
 | `unauthenticated` | 401 | No | Use a valid credential for the intended environment. |
 | `forbidden` | 403 | No | Resolve authorization; do not retry with broader subject IDs. |
@@ -67,3 +70,5 @@ A valid request can return usable partial data with `meta.data_status: partial`.
 Record the AMLOK `request_id`, operation, timestamp, environment, HTTP status, error code, and relevant resource/job IDs in your restricted operational logs. Redact keys, signing secrets, signed links, raw identity evidence, and full response bodies.
 
 Provide sanitized request IDs through your agreed support channel. Your agreement defines support channels and response commitments.
+
+For an accepted job that later runs short of credits, inspect `waiting_for_credits` rather than submitting a duplicate run. See [processing lifecycle](/api-reference/processing-lifecycle).

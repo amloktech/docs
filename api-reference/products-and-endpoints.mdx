@@ -1,0 +1,46 @@
+---
+title: "Products and endpoint scope"
+description: "How Insights, Signal, and shared infrastructure fit together."
+---
+
+AMLOK has two paid products. API categories organize financial data and technical capabilities; they are not additional products or separate charges.
+
+| Capability | Product ownership | AMLOK charge |
+| --- | --- | --- |
+| New full underwriting for an application | Insights | One charge when the agreed output is completed and published |
+| Portfolio monitoring and change-driven reassessment | Signal | One charge per active borrower/business per workspace per month |
+| Verification, lien searches, attribute calculations and analytical investigation | Included stages within an authorized Insights or Signal workflow | No additional AMLOK product charge |
+| Connections, consent, evidence uploads, normalized data reads and result downloads | Shared infrastructure | No additional product charge for the API call |
+| Webhooks, synchronization, availability checks and reporting | Shared infrastructure | No additional product charge for the API call |
+
+Provider data or verification charges, where applicable, follow the agreement. API access does not create a new standalone AMLOK service rate.
+
+## Insights
+
+Start a root `underwrite` workflow with the application and ready input manifest. AMLOK returns `product: insights`, the workflow ID, workload report, and eventually the completed risk snapshot and billing usage ID. A retry of that run does not create a second underwriting charge. A new full underwriting is a distinct authorized request.
+
+## Signal
+
+Create monitoring from an approved baseline. All monitors for a borrower/business share one monthly monitoring-period record. Signal uses existing evidence and new records to reassess risk without launching a separately billed Insights underwriting.
+
+The full monthly rate is deducted at 00:00 UTC on the first day of each calendar month before monitoring proceeds. First activation during a month deducts the full monthly rate immediately, without proration. Repeated activation, pauses, resumes, checks and reassessments do not add another charge in an already paid period. See [Signal pricing](/pricing/signal).
+
+## Included processing stages
+
+Verification, lien-search and calculation requests require `processing_context`. Non-underwriting workflow requests also require it. Supply exactly one of:
+
+```json
+{"product":"insights","workflow_run_id":"wfr_example"}
+```
+
+```json
+{"product":"signal","monitoring_period_id":"monitoring_period_example"}
+```
+
+The context must belong to the same workspace and subject. Insights must be an unfinished authorized underwriting; Signal must have an active paid period. The stage must be permitted by the agreed workflow and fit its workload limits. A context is not permission to run arbitrary additional analysis. AMLOK deduplicates equivalent stage work already requested by the orchestrator. Unrelated, finished, cancelled, unpaid or unentitled contexts are rejected with `409 invalid_state`.
+
+These endpoints support integration steps within the complete product. They do not offer independently purchased verification, search, calculation or investigation services.
+
+## Institution intervention
+
+AMLOK supplies risk results, alerts and evidence. Your institution decides and performs outreach, collections, credit-limit changes and other intervention in its own systems. There are no servicing cases, tasks, borrower messages, payment promises or action-approval endpoints. Read-only loan and repayment records remain evidence supplied by lender systems.

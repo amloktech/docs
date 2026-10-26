@@ -22,7 +22,7 @@ Financial-data and reporting operations use a consistent envelope. Single respon
 
 This example is a completed, known-empty collection. An unqueried source or a failed connection must not be represented as an empty successful result.
 
-Resource records inherit `id`, `object`, `created_at`, `updated_at`, `record_version`, `source_refs`, `data_status`, `missing_fields`, and `schema_version`. Subject context, provenance, and other optional fields appear when relevant and authorized. Response-only helper objects such as calculation jobs and signed links use their documented helper schemas inside `data`.
+Canonical normalized financial-data records inherit `id`, `object`, `created_at`, `updated_at`, `record_version`, `source_refs`, `data_status`, `missing_fields`, and `schema_version`. Subject context, provenance, and other optional fields appear when relevant and authorized. Reporting, manifests, monitoring periods, checkpoints, workload reports, calculation jobs and signed links use their own documented schemas inside `data`.
 
 ## Missing, empty, and redacted values
 
@@ -58,6 +58,6 @@ An observed zero lien count for one completed jurisdiction says nothing about an
 
 The `fields` parameter selects comma-separated **top-level field names** while preserving required identity and metadata. For example, `fields=id,amount` returns the mandatory metadata and the complete `amount` object when authorized. Nested paths, wildcards, and unknown field names return `400 validation_error`.
 
-GET endpoints use a dedicated `*Read` schema whose domain fields can be omitted by projection. Present fields retain their canonical types, nullability, and nested requirements. Full canonical schemas remain available for complete objects and mutation responses. Omitting `fields` returns the full authorized representation. This uses standard OpenAPI 3.1 Schema Objects, so generated clients must treat unselected properties as absent rather than null.
+GET endpoints for canonical financial-data records use a dedicated `*Read` schema whose domain fields can be omitted by projection. Present fields retain their canonical types, nullability, and nested requirements. Full canonical schemas remain available for complete objects and mutation responses. Omitting `fields` returns the full authorized representation. This uses standard OpenAPI 3.1 Schema Objects, so generated clients must treat unselected properties as absent rather than null.
 
 `include` permits `provenance` and `missing_fields`; it does not grant access or allow arbitrary relationship expansion. The [data dictionary](/data-model/field-dictionary) describes full objects. See the [OpenAPI Schema Object specification](https://spec.openapis.org/oas/v3.1.1.html#schema-object) for the schema vocabulary.

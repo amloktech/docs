@@ -1,0 +1,26 @@
+---
+title: "Reliable synchronization"
+description: "Bootstrap a consistent snapshot and resume normalized-data changes without gaps."
+---
+
+Use a synchronization checkpoint for source-data replication. Billing snapshots serve a separate purpose: financial reconciliation.
+
+## Bootstrap without a gap
+
+1. [Create a checkpoint](/api-reference/endpoints/platform/create-synchronization-checkpoint) for the entitled resource types you need. Save its ID, `as_of`, `expires_at` and `resume_cursor`.
+2. Read each selected collection with `snapshot_id` equal to the checkpoint ID. Follow each collection's cursor with unchanged filters. All bootstrap reads describe the same boundary.
+3. After storing the snapshot, read `/v1/changes` using the checkpoint's `resume_cursor`. It begins strictly after that boundary.
+
+Checkpoint creation is a read-only operation and does not start provider synchronization or spend credits. Collections not included in the checkpoint are rejected. Complete bootstrap before `expires_at`; otherwise start again with a new checkpoint.
+
+## Apply and checkpoint changes
+
+Changes are ordered by workspace `sequence`, with created, updated and deleted actions. Sequence gaps are valid for filtered resource types. Deduplicate by resource type, ID and version, and never overwrite a newer version with an older delivery.
+
+Apply every item durably before committing the response's `resume_cursor`. Save data and cursor together transactionally where possible. A crash before committing the cursor may replay a page; idempotent application prevents duplicate effects. Do not advance past an item that failed to persist.
+
+`page.next_cursor` continues a multi-page response. `resume_cursor` is the durable change-feed position after the delivered items and is returned even on the last or an empty page. When `has_more` is false, keep the resume cursor and poll it later with backoff. Never replace it with null or a collection cursor.
+
+Each response supplies `cursor_expires_at`. Poll before expiry; do not assume an unspecified retention period. An expired cursor returns `410 cursor_expired`. Rebuild using a fresh checkpoint and replace the replicated snapshot only after the new bootstrap succeeds. Reconcile absent records during that replacement so deleted records do not survive locally.
+
+The cursor binds workspace, institution, environment, resource types and filters. Attempts to change these return an error. Workspace deletion revokes access and checkpoints. Financial resources use their own billing snapshot and events, not this normalized-data feed.

@@ -859,4 +859,6 @@ Keep sandbox and production credentials and data separate. Confirm source permis
 
 Pin the [OpenAPI reference](/openapi/amlok-v1.json) used by your client. Review schema changes and rerun integration checks when adopting a new version or enabling a provider. See [versioning](/api-reference/versioning) and [Security & Compliance](/security/overview).
 ''')
-print('Wrote 19 API guides')
+from enterprise_guides import generate
+generate()
+print('Wrote API guides and enterprise contract guides')

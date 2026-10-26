@@ -4,10 +4,10 @@ openapi: "/openapi/amlok-v1.json POST /v1/businesses"
 playground: simple
 ---
 
-**Required scope:** `identity:write` · **Execution:** synchronous.
+**Required scope:** `identity:write`
 
-Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled and unused holds are released without another debit. Read-only reporting remains available until workspace deletion.
+Create a client-asserted business profile.
 
-[Data dictionary](/data-model/field-dictionary#business) · [Response conventions](/api-reference/response-format) · [Errors](/api-reference/errors)
+Required scope: `identity:write`. Does not represent successful registry verification. Once account cancellation is submitted, processing and usage deductions stop immediately. Reject new operational commands with 409 invalid_state; pending work is cancelled without another debit. Read-only reporting remains available until workspace deletion.
 
-**Lifecycle event:** `business.created`. See [webhook delivery and verification](/api-reference/webhooks).
+[Product scope](/api-reference/products-and-endpoints) · [Processing lifecycle](/api-reference/processing-lifecycle) · [Errors](/api-reference/errors)

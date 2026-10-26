@@ -5,7 +5,7 @@ description: "Connect the endpoint families into verification, underwriting, mon
 
 ## Verify an applicant
 
-Create a business/person, obtain authorization, and upload permitted evidence. [Start verification](/api-reference/endpoints/identity/start-verification) with an approved workflow version. If a hosted URL is returned, route the applicant through it and wait for the result.
+Create a business/person, obtain authorization, and upload permitted evidence. [Start verification](/api-reference/endpoints/identity/start-verification) as an included stage, with an approved workflow version and authorized `processing_context`. If a hosted URL is returned, route the applicant through it and wait for the result.
 
 Retrieve checks and screening matches. `in_review`, unresolved identity, missing ownership evidence, and possible screening matches require explicit handling. Completion is not the same as a verified identity or institutional approval.
 
@@ -13,8 +13,8 @@ Retrieve checks and screening matches. `in_review`, unresolved identity, missing
 
 1. [Create the application](/api-reference/endpoints/lending/create-application) with exact amount and currency.
 2. Connect and synchronize authorized sources, then inspect coverage and freshness.
-3. [List ready input manifests](/api-reference/endpoints/risk/list-input-manifests) for the subject after synchronization. Use the returned manifest ID for [attribute calculations](/api-reference/endpoints/risk/calculate-attributes), with a calculation window contained in the frozen manifest window. Retrieve the manifest to confirm coverage; missing coverage is not a zero value.
-4. [Start an underwriting run](/api-reference/endpoints/operations/start-workflow-run) with `workflow_type: underwrite`, an approved version, and input resource IDs.
+3. [List ready input manifests](/api-reference/endpoints/risk/list-input-manifests) for the subject after synchronization. Use the returned manifest ID for the underwriting and its included calculations, with a calculation window contained in the frozen manifest window. Retrieve the manifest to confirm coverage; missing coverage is not a zero value.
+4. [Start an underwriting run](/api-reference/endpoints/operations/start-workflow-run) with `workflow_type: underwrite`, an approved version, `application_id`, `input_manifest_id`, and input resource IDs present in that manifest. Included calculation requests identify this parent in `processing_context`.
 5. Retrieve the decision and immutable risk snapshot. Distinguish an advisory recommendation from the institution's decision.
 
 Missing inputs produce explicit unavailability. Do not replace an unavailable DSCR, credit score, PD, or income verification with an inferred value. Provider bank deposits alone do not establish gross income or employment.
@@ -40,8 +40,10 @@ Read alerts alongside the current risk snapshot, the monitoring baseline, and su
 
 Signed webhooks notify your institution's registered systems that results or alerts are available. They do not contact borrowers. Your institution decides whether and how to intervene using its own staff, policies, and systems.
 
-Use `workflow_type: investigate` to analyze suspicious evidence or related-party signals. Its purpose is evidence review and risk assessment. AMLOK does not create servicing cases, assign follow-up tasks, send borrower messages, collect repayments, or manage payment promises.
+Use `workflow_type: investigate` with the existing product `processing_context` to analyze suspicious evidence or related-party signals. Its purpose is evidence review and risk assessment. AMLOK does not create servicing cases, assign follow-up tasks, send borrower messages, collect repayments, or manage payment promises.
 
 ## Four assessment workflow types
 
 `verify`, `underwrite`, `monitor`, and `investigate` are the workflow enum values. Funding and re-underwriting are lifecycle journeys, not additional enum values.
+
+See [product scope](/api-reference/products-and-endpoints), [processing lifecycle](/api-reference/processing-lifecycle), and [evidence traceability](/api-reference/evidence-traceability).

@@ -90,17 +90,18 @@ description: "Allowed values and handling rules for normalized statuses and cate
 
 | Allowed value | Meaning / handling |
 | --- | --- |
-| `not_started` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `in_progress` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `awaiting_user` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `in_review` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `approved` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `declined` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `resubmission_requested` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `expired` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `abandoned` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `verification_expired` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `unknown` | Preserve the source value separately; unknown means the source cannot be classified. |
+| `not_started` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `in_progress` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `awaiting_user` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `in_review` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `approved` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `declined` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `resubmission_requested` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `expired` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `abandoned` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `verification_expired` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `unknown` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `cancelled` | Stopped; no further work or usage charge. |
 
 ## `check_status`
 
@@ -493,11 +494,8 @@ description: "Allowed values and handling rules for normalized statuses and cate
 
 | Allowed value | Meaning / handling |
 | --- | --- |
-| `open` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `acknowledged` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `investigating` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `resolved` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `dismissed` | Preserve the source value separately; unknown means the source cannot be classified. |
+| `open` | Fresh comparable evidence indicates an active risk condition. |
+| `resolved` | Fresh comparable evidence shows the condition cleared. This is not institution acknowledgement. |
 
 ## `workflow_type`
 
@@ -512,13 +510,14 @@ description: "Allowed values and handling rules for normalized statuses and cate
 
 | Allowed value | Meaning / handling |
 | --- | --- |
-| `queued` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `running` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `waiting_for_data` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `waiting_for_approval` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `completed` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `failed` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `cancelled` | Preserve the source value separately; unknown means the source cannot be classified. |
+| `queued` | Accepted; waiting for execution. |
+| `running` | Processing permitted evidence. |
+| `waiting_for_data` | Required evidence is missing or under validation. |
+| `completed` | Finished successfully; output is available under the product rules. |
+| `failed` | Terminated with a reported error. |
+| `cancelled` | Stopped; no further work or usage charge. |
+| `waiting_for_credits` | Final output is withheld until the accepted run can be charged atomically. |
+| `blocked_by_limit` | Paused before exceeding an agreed workload dimension. |
 
 ## `value_type`
 
@@ -582,22 +581,14 @@ description: "Allowed values and handling rules for normalized statuses and cate
 | `invoice` | Preserve the source value separately; unknown means the source cannot be classified. |
 | `other` | Preserve the source value separately; unknown means the source cannot be classified. |
 
-## `retention_action`
-
-| Allowed value | Meaning / handling |
-| --- | --- |
-| `retain` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `delete` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `redact` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `legal_hold` | Preserve the source value separately; unknown means the source cannot be classified. |
-
 ## `monitor_status`
 
 | Allowed value | Meaning / handling |
 | --- | --- |
-| `active` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `paused` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `cancelled` | Preserve the source value separately; unknown means the source cannot be classified. |
+| `active` | Eligible to run within the paid monitoring period and agreed scope. |
+| `paused` | Paused by the customer. |
+| `cancelled` | Stopped; no further work or usage charge. |
+| `blocked` | System-paused; inspect blocked_reason. |
 
 ## `requirement_status`
 
@@ -659,11 +650,12 @@ description: "Allowed values and handling rules for normalized statuses and cate
 
 | Allowed value | Meaning / handling |
 | --- | --- |
-| `queued` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `running` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `completed` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `partial` | Preserve the source value separately; unknown means the source cannot be classified. |
-| `failed` | Preserve the source value separately; unknown means the source cannot be classified. |
+| `queued` | Accepted; waiting for execution. |
+| `running` | Processing permitted evidence. |
+| `completed` | Finished successfully; output is available under the product rules. |
+| `partial` | Assessment-specific state; preserve the underlying evidence and inspect result completeness. |
+| `failed` | Terminated with a reported error. |
+| `cancelled` | Stopped; no further work or usage charge. |
 
 ## `event_action`
 
@@ -689,12 +681,6 @@ description: "Allowed values and handling rules for normalized statuses and cate
 | `documented` | Preserve the source value separately; unknown means the source cannot be classified. |
 | `candidate` | Preserve the source value separately; unknown means the source cannot be classified. |
 | `amlok_defined` | Preserve the source value separately; unknown means the source cannot be classified. |
-
-## `resource_status`
-
-| Allowed value | Meaning / handling |
-| --- | --- |
-| `proposed` | Preserve the source value separately; unknown means the source cannot be classified. |
 
 ## `receivable_kind`
 

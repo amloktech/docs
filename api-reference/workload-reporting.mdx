@@ -1,0 +1,23 @@
+---
+title: "Workload limits and reporting"
+description: "Read measured workload and handle an agreed limit before additional processing."
+---
+
+The rate card defines allowed workload; a [workload report](/api-reference/endpoints/billing/list-workload-reports) shows actual counts, limits, remaining capacity and blocking dimensions. Workload records are not extra billable units.
+
+Insights counts its full frozen underwriting evidence, including at least 12 months of banking statements and transactions. Signal counts newly processed records and each updated source-record version within the UTC month. The same source record and version is counted once across all monitors for the borrower/business; retries and unchanged baseline reads do not count again.
+
+Each report links the subject, product, tier, historical rate card and either the underwriting run or monitoring period. Bank accounts and non-banking business integrations are separate dimensions. All dimensions and analysis scope must fit the assigned tier. Custom rates use an existing tier with explicit negotiated limits.
+
+## Limit handling
+
+- At a limit, already-in-scope work can proceed. Only work that would exceed a dimension is blocked.
+- Known over-limit requests return `422 workload_limit_exceeded` before excess processing.
+- If additional records are discovered asynchronously, processing pauses before consuming records beyond the allowance. The parent workflow becomes `blocked_by_limit`, or a monitor becomes `blocked` with that reason.
+- Counter updates and limit checks are atomic across concurrent processing, so parallel monitors cannot bypass the cap.
+- AMLOK must agree a scope change and effective rate card before resuming. There is no automatic upgrade, additional fee or combination of different tier limits.
+- A Signal month's record allowance resets at the next UTC calendar month. Historical reports retain the earlier counts and limits. Resetting capacity does not waive the next month's Signal charge or an unresolved source-count/scope limit.
+
+Read `as_of` and keep a pagination cursor for a consistent progress snapshot. Start a fresh first-page read to see updated counts. This operational progress snapshot is separate from an immutable financial billing snapshot.
+
+See [complexity tiers](/pricing/complexity-tiers), [processing lifecycle](/api-reference/processing-lifecycle) and [rate cards](/api-reference/endpoints/billing/retrieve-billing-rate-card).
