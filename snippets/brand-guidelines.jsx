@@ -683,7 +683,7 @@ function ProductIllustrationLibrary() {
 }
 
 const navigation = [
-    { label: 'SYSTEM', items: [['overview', 'Overview'], ['identity', 'Identity'], ['geometry', 'Geometry']] },
+    { label: 'SYSTEM', items: [['overview', 'Overview'], ['identity', 'Identity'], ['socials', 'Socials'], ['geometry', 'Geometry']] },
     { label: 'FOUNDATIONS', items: [['surfaces', 'Borders & elevation'], ['color', 'Color & themes'], ['typography', 'Typography'], ['layout', 'Layout & spacing'], ['imagery', 'Fields & imagery'], ['exploration', 'Signals & icons'], ['website-graphics', 'Website graphics']] },
     { label: 'EXPERIENCE', items: [['components', 'Controls & forms'], ['data', 'Data & workflows'], ['ai', 'AI & human decisions'], ['marketing', 'Web & marketing'], ['voice', 'Voice & content']] },
     { label: 'DELIVERY', items: [['motion', 'Motion'], ['accessibility', 'Accessibility'], ['implementation', 'Tokens & governance']] },
@@ -742,6 +742,35 @@ function BrandSystem() {
           <div><span className="ds-meta">SOCIAL / PROFILE LOGO</span><h3>White on AMLOK blue.</h3><p>The default profile logo for social channels and company accounts. Use the solid <strong>#052698</strong> background and the original white symbol. The square asset includes safe space for platforms that crop profile pictures into circles.</p><div className="ds-asset-downloads"><a className="ds-button" href="/brand/amlok-profile-blue.png" download><Download size={16}/>Profile logo · PNG</a><a className="ds-button ds-button-secondary" href="/brand/amlok-profile-blue.svg" download><Download size={16}/>Profile logo · SVG</a></div><p className="ds-note">1024 × 1024px PNG · Scalable SVG · Keep the supplied padding</p></div>
         </div>
         <Rules items={[["Protect the mark", "Keep one symbol-width of clear space around the logo. Use the supplied SVG. Minimum symbol size: 24px; minimum wordmark width: 112px. Use the symbol alone in compact navigation."], ["One identity, two signatures", "AMLOK is the written name. The established lowercase wordmark is the visual signature. Use blue on light surfaces and white on dark fields. Never stretch, outline, crop, rotate, or add glow to the mark."], ["Shield as a supporting motif", "Use an angular shield in illustrations and protection-related signals. It is not a replacement logo or an unearned security certification."]]}/>
+      </Section>
+
+      <Section id="socials" number="SOCIAL" title="Socials" description="Download the AMLOK LinkedIn covers for our company page and employee profiles. Both use our blue hero artwork and leave space on the left for the profile image.">
+        <div className="ds-social-assets">
+          <article className="ds-panel ds-social-asset">
+            <span className="ds-meta">LINKEDIN / COMPANY PAGE</span>
+            <h3>Company banner</h3>
+            <p>Risk is a movie, not a photo</p>
+            <img className="ds-social-preview" src="/brand/socials/amlok-linkedin-company.png" width="4200" height="700" loading="lazy" alt="AMLOK company LinkedIn banner with a blue grid background, the headline Risk is a movie, not a photo, and Deal Underwriting, Portfolio Monitoring, and Risk Simulation" />
+            <div className="ds-asset-downloads">
+              <a className="ds-button" href="/brand/socials/amlok-linkedin-company.jpg" download="amlok-linkedin-company.jpg"><Download size={16}/>Download JPG</a>
+              <a className="ds-button ds-button-secondary" href="/brand/socials/amlok-linkedin-company.png" download="amlok-linkedin-company.png"><Download size={16}/>Download PNG</a>
+            </div>
+            <p className="ds-note">4200 × 700 px · Company page cover · Both files under 3 MB</p>
+          </article>
+          <article className="ds-panel ds-social-asset">
+            <span className="ds-meta">LINKEDIN / EMPLOYEE PROFILE</span>
+            <h3>Employee banner</h3>
+            <p>Infrastructure for financial risk intelligence</p>
+            <img className="ds-social-preview" src="/brand/socials/amlok-linkedin-employee.png" width="1584" height="396" loading="lazy" alt="AMLOK employee LinkedIn banner with a blue grid background, the headline Infrastructure for financial risk intelligence, and Deal Underwriting, Portfolio Monitoring, and Risk Simulation" />
+            <div className="ds-asset-downloads">
+              <a className="ds-button" href="/brand/socials/amlok-linkedin-employee.jpg" download="amlok-linkedin-employee.jpg"><Download size={16}/>Download JPG</a>
+              <a className="ds-button ds-button-secondary" href="/brand/socials/amlok-linkedin-employee.png" download="amlok-linkedin-employee.png"><Download size={16}/>Download PNG</a>
+            </div>
+            <p className="ds-note">1584 × 396 px · Personal profile cover · Both files under 8 MB</p>
+          </article>
+        </div>
+        <p className="ds-note">Use the download buttons to save the full-resolution files. Upload the company version to the AMLOK Page and the employee version to your personal profile. Check LinkedIn's desktop and mobile previews before saving; cropping can vary by device.</p>
+        <p className="ds-note">Format references: <a href="https://www.linkedin.com/help/linkedin/answer/a570368" target="_blank" rel="noopener noreferrer">LinkedIn Page images</a> and <a href="https://www.linkedin.com/help/linkedin/answer/a568217/" target="_blank" rel="noopener noreferrer">profile cover images</a>.</p>
       </Section>
 
       <Section id="geometry" number="02" title="Rounded surfaces. Precise graphics." description="A softer frame for the same intelligence. Use generous card corners, pill-shaped marketing actions, and a compact radius for working controls. Keep the logo, diagrams, and illustration geometry intact.">
