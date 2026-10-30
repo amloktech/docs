@@ -92,10 +92,12 @@ Use one immutable billing snapshot to answer what was consumed, what it cost, an
 
 ## Billable usage
 
+The table shows regular pay-as-you-go rates. Enterprise clients use the negotiated rates in their workspace rate card.
+
 | Product | Unit | Standard | Advanced | Complex | Charge timing |
 | --- | --- | ---: | ---: | ---: | --- |
-| Insights | Completed underwriting | CAD 5.00 | CAD 15.00 | CAD 35.00 | Successful completion and publication of the agreed output |
-| Signal | Active borrower/business per month | CAD 3.00 | CAD 5.00 | CAD 8.00 | Beginning of the UTC calendar month, or full charge at first activation during the month |
+| Insights | Completed underwriting | CAD 8.00 | CAD 25.00 | CAD 45.00 | Successful completion and publication of the agreed output |
+| Signal | Active borrower/business per month | CAD 5.00 | CAD 8.00 | CAD 12.00 | Beginning of the UTC calendar month, or full charge at first activation during the month |
 
 Signal includes monitoring and reassessment. Multiple monitors, checks or facilities do not create more account-month charges. Included verification, searches, calculations and investigations do not add another AMLOK charge. The monthly consumption unit does not change the monthly minimum's annual payment schedule.
 
@@ -131,10 +133,10 @@ All endpoint examples using `billing_snapshot_example` share this dataset:
 | Activity | CAD | Available credits |
 | --- | ---: | ---: |
 | Annual prepayment completed September 30 | +12,000.00 | 12,000.00 |
-| One Standard Signal business charged October 1 | -3.00 | 11,997.00 |
-| One Standard Insights underwriting completed October 23 | -5.00 | 11,992.00 |
+| One Standard Signal business charged October 1 | -5.00 | 11,995.00 |
+| One Standard Insights underwriting completed October 23 | -8.00 | 11,987.00 |
 
-October usage and consumption total **CAD 8.00**. The October statement opens at CAD 12,000.00 and closes at CAD 11,992.00. Cumulative spent credits are CAD 8.00. The unfiltered ledger includes all three entries; an October ledger export includes the two October charges. An October funding export is empty because the prepayment completed in September.
+October usage and consumption total **CAD 13.00**. The October statement opens at CAD 12,000.00 and closes at CAD 11,987.00. Cumulative spent credits are CAD 13.00. The unfiltered ledger includes all three entries; an October ledger export includes the two October charges. An October funding export is empty because the prepayment completed in September.
 
 `closing = opening + funding - usage - final-cancellation refunds + adjustments`
 
@@ -280,7 +282,7 @@ Every data row starts with `export_schema_version`, `export_snapshot_id` and `ex
 
 ## Schemas, samples and columns
 
-The examples share the endpoint fixture: CAD 12,000.00 funded before October, then CAD 3.00 Signal and CAD 5.00 Insights consumption in October. October funding is therefore an empty export. The ledger export contains only the two movements in the selected October window.
+The examples share the endpoint fixture: CAD 12,000.00 funded before October, then CAD 5.00 Signal and CAD 8.00 Insights consumption in October. October funding is therefore an empty export. The ledger export contains only the two movements in the selected October window.
 '''
     for item in exports:
         kind=item['type']

@@ -115,14 +115,14 @@ def extend(g):
             'workload_limits': {'properties': {'record_counting_basis': {'const':'new_records_per_month'}, 'minimum_banking_history_months': {'type':'null'}}}}}},
     ]
     rates = []
-    for product,unit,values in [('insights','completed_underwriting',[5,15,35]),('signal','active_account_month',[3,5,8])]:
+    for product,unit,values in [('insights','completed_underwriting',[8,25,45]),('signal','active_account_month',[5,8,12])]:
         for tier,rate in zip(['standard','advanced','complex'],values):
             limits=deepcopy(tier_limits[tier])
             limits['record_counting_basis']='per_underwriting' if product=='insights' else 'new_records_per_month'
             limits['record_counting_rule']='distinct_record_versions'
             if product=='signal': limits['minimum_banking_history_months']=None
             rates.append(dict(product=product,tier=tier,unit=unit,base_rate=f'{rate:.2f}',discount_percent='0',effective_rate=f'{rate:.2f}',pricing_basis='published',workload_limits=limits))
-    S['BillingRate']['description']='CAD rates have exactly two decimals. Round the discounted effective unit rate first using decimal half-up rounding; multiply by billable quantity and round each charge to two decimals. Negotiated effective rates already include any discount.'
+    S['BillingRate']['description']='Published rates represent regular pay-as-you-go pricing; enterprise customers use their negotiated rate card. CAD rates have exactly two decimals. Round the discounted effective unit rate first using decimal half-up rounding; multiply by billable quantity and round each charge to two decimals. Negotiated effective rates already include any discount.'
 
     model('BillingRateCard','billing_rate_card',{'currency':currency,'effective_from':date,'effective_to':nullable(date),
         'agreement_id':string,'agreement_version':string,'supersedes_id':nullable(string),'rates':array(ref('BillingRate'))},
@@ -138,7 +138,7 @@ def extend(g):
         'occurred_at':date,'posted_at':date,'billing_period_start':date,'billing_period_end':date,
         'rate_card_id':string,'ledger_entry_id':string
     },dict(billing_account_id='billing_account_example',product='insights',tier='standard',source_resource_id='wfr_example',unit='completed_underwriting',
-        quantity='1',unit_rate='5.00',currency='CAD',amount='5.00',entry_type='charge',reverses_usage_id=None,status='posted',subject_id='biz_example',workflow_run_id='wfr_example',application_id='app_example',input_manifest_id='manifest_example',risk_snapshot_id='risk_snapshot_example',monitoring_period_id=None,
+        quantity='1',unit_rate='8.00',currency='CAD',amount='8.00',entry_type='charge',reverses_usage_id=None,status='posted',subject_id='biz_example',workflow_run_id='wfr_example',application_id='app_example',input_manifest_id='manifest_example',risk_snapshot_id='risk_snapshot_example',monitoring_period_id=None,
         occurred_at=now,posted_at=now,billing_period_start='2026-10-01T00:00:00Z',billing_period_end='2026-11-01T00:00:00Z',
         rate_card_id='billing_rate_card_example',ledger_entry_id='billing_credit_entry_example'))
     S['ConsumptionRow'] = obj({'product':enum('insights','signal'),'tier':enum('standard','advanced','complex'),
@@ -148,8 +148,8 @@ def extend(g):
         'time_basis':enum('occurred_at','posted_at'),'group_by':enum('product_tier','day','month'),
         'rows':array(ref('ConsumptionRow')),'total_net_amount':signed,'provisional':boolean},
         dict(billing_account_id='billing_account_example',currency='CAD',**{'from':'2026-10-01T00:00:00Z','to':'2026-11-01T00:00:00Z'},as_of=now,
-        time_basis='posted_at',group_by='product_tier',rows=[{'product':'insights','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'1','unit':'completed_underwriting','gross_amount':'5.00','adjustment_amount':'0.00','net_amount':'5.00'},
-        {'product':'signal','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'1','unit':'active_account_month','gross_amount':'3.00','adjustment_amount':'0.00','net_amount':'3.00'}],total_net_amount='8.00',provisional=True))
+        time_basis='posted_at',group_by='product_tier',rows=[{'product':'insights','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'1','unit':'completed_underwriting','gross_amount':'8.00','adjustment_amount':'0.00','net_amount':'8.00'},
+        {'product':'signal','tier':'standard','bucket_start':'2026-10-01T00:00:00Z','bucket_end':'2026-11-01T00:00:00Z','quantity':'1','unit':'active_account_month','gross_amount':'5.00','adjustment_amount':'0.00','net_amount':'5.00'}],total_net_amount='13.00',provisional=True))
     period_props = {'from':date,'to':date,'billing_account_id':string}
     period_values = {'from':'2026-10-01T00:00:00Z','to':'2026-11-01T00:00:00Z','billing_account_id':'billing_account_example'}
     report_props = {'from':date,'to':date,'report_type':enum('usage','ledger','statement'),'format':enum('csv','json'),'time_basis':enum('occurred_at','posted_at')}
@@ -169,16 +169,16 @@ def extend(g):
         **{k:amount for k in ['opening_balance','funding','usage','refunds','closing_balance']},
         'adjustments':signed,'ledger_sequence_from':integer,'ledger_sequence_to':integer},
         {**period_values,'currency':'CAD','status':'provisional','revision':1,'supersedes_id':None,'as_of':now,
-        'opening_balance':'12000.00','funding':'0.00','usage':'8.00','refunds':'0.00','adjustments':'0.00','closing_balance':'11992.00',
+        'opening_balance':'12000.00','funding':'0.00','usage':'13.00','refunds':'0.00','adjustments':'0.00','closing_balance':'11987.00',
         'ledger_sequence_from':2,'ledger_sequence_to':3})
     model('BillingCreditBalance','billing_credit_balance',{'billing_account_id':string,'currency':currency,'as_of':date,'ledger_sequence':integer,
         'available_credits':amount,'spent_credits':amount},
         dict(billing_account_id='billing_account_example',currency='CAD',as_of=now,ledger_sequence=3,
-        available_credits='11992.00',spent_credits='8.00'))
+        available_credits='11987.00',spent_credits='13.00'))
     model('BillingCreditEntry','billing_credit_entry',{'billing_account_id':string,'sequence':integer,'currency':currency,
         'amount':signed,'balance_after':amount,'entry_type':enum('funding','usage','refund','adjustment','reversal'),
         'movement_id':string,'reverses_entry_id':nullable(string),'posted_at':date,'client_reference':nullable(string)},
-        dict(billing_account_id='billing_account_example',sequence=3,currency='CAD',amount='-5.00',balance_after='11992.00',entry_type='usage',
+        dict(billing_account_id='billing_account_example',sequence=3,currency='CAD',amount='-8.00',balance_after='11987.00',entry_type='usage',
         movement_id='billing_usage_example',reverses_entry_id=None,posted_at=now,client_reference='insights-october'))
 
     model('BillingSnapshot','billing_snapshot',{

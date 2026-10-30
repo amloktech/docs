@@ -135,11 +135,11 @@ def extend(g):
     # System-only blocked state must not be a user-controlled PATCH value.
     S['EP151Request']['properties']['status'] = enum('active', 'paused', 'cancelled')
 
-    # Two-record shared fixture: one Signal month (3.00), one Insights underwriting (5.00).
+    # Two-record shared fixture: one Signal month (5.00), one Insights underwriting (8.00).
     insights = deepcopy(E['BillingUsage'])
     signal = deepcopy(insights)
     signal.update(id='billing_usage_signal', product='signal', source_resource_id='biz_example', unit='active_account_month',
-                  unit_rate='3.00', amount='3.00', workflow_run_id=None, application_id=None,
+                  unit_rate='5.00', amount='5.00', workflow_run_id=None, application_id=None,
                   input_manifest_id='manifest_example', risk_snapshot_id='rsk_baseline', monitoring_period_id='monitoring_period_example',
                   ledger_entry_id='ledger_signal_example', occurred_at='2026-10-01T00:00:00Z', posted_at='2026-10-01T00:00:00Z',
                   created_at='2026-10-01T00:00:00Z', updated_at='2026-10-01T00:00:00Z')
@@ -147,7 +147,7 @@ def extend(g):
     funding_entry.update(id='ledger_funding_example', sequence=1, amount='12000.00', balance_after='12000.00', entry_type='funding',
                          movement_id=E['BillingFunding']['id'], posted_at='2026-09-30T14:00:00Z', created_at='2026-09-30T14:00:00Z', updated_at='2026-09-30T14:00:00Z', client_reference='annual-prepayment')
     signal_entry = deepcopy(E['BillingCreditEntry'])
-    signal_entry.update(id='ledger_signal_example', sequence=2, amount='-3.00', balance_after='11997.00', movement_id=signal['id'],
+    signal_entry.update(id='ledger_signal_example', sequence=2, amount='-5.00', balance_after='11995.00', movement_id=signal['id'],
                         posted_at='2026-10-01T00:00:00Z', created_at='2026-10-01T00:00:00Z', updated_at='2026-10-01T00:00:00Z', client_reference='signal-october')
     fixtures = {'usage': [signal, insights], 'ledger': [funding_entry, signal_entry, deepcopy(E['BillingCreditEntry'])],
                 'statement': [deepcopy(E['BillingStatement'])], 'funding': [deepcopy(E['BillingFunding'])]}

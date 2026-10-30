@@ -72,7 +72,7 @@ for rate in rate_card['rates']:
     check(rate['workload_limits']['minimum_banking_history_months']==(12 if rate['product']=='insights' else None),'Wrong history basis')
     check(rate['workload_limits']['record_counting_basis']==('per_underwriting' if rate['product']=='insights' else 'new_records_per_month'),'Wrong record-counting basis')
     check(rate['workload_limits']['record_limit']=={'standard':75000,'advanced':250000,'complex':1000000}[rate['tier']],'Published per-analysis limit wrong')
-negotiated=deepcopy(rate_card['rates'][0]);negotiated.update(pricing_basis='negotiated',effective_rate='4.50',discount_percent='10')
+negotiated=deepcopy(rate_card['rates'][0]);negotiated.update(pricing_basis='negotiated',effective_rate='4.50',discount_percent='43.75')
 check(valid('BillingRate',negotiated),'Negotiated rate must retain existing tier')
 check(not valid('BillingRate',{**negotiated,'tier':'custom'}),'Fourth reporting tier accepted')
 custom=deepcopy(rate_card['rates'][2]);custom.update(pricing_basis='negotiated');custom['workload_limits']['record_limit']=2000000

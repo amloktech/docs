@@ -2,9 +2,9 @@
 export const PricingCalculator = () => {
   // PRICING_MATH_START: exercised directly by scripts/test-pricing-calculator.mjs.
   const tiers = [
-    { name: "Standard", insights: 500, signal: 300 },
-    { name: "Advanced", insights: 1500, signal: 500 },
-    { name: "Complex", insights: 3500, signal: 800 },
+    { name: "Standard", insights: 800, signal: 500 },
+    { name: "Advanced", insights: 2500, signal: 800 },
+    { name: "Complex", insights: 4500, signal: 1200 },
   ];
   const calculatePricing = (input) => {
     const errors = {};
@@ -79,7 +79,7 @@ export const PricingCalculator = () => {
   const [commitment, setCommitment] = useState("1000");
   const [discount, setDiscount] = useState("0");
   const [useAgreedRates, setUseAgreedRates] = useState(false);
-  const [agreedRates, setAgreedRates] = useState({ insights: ["5", "15", "35"], signal: ["3", "5", "8"] });
+  const [agreedRates, setAgreedRates] = useState({ insights: ["8", "25", "45"], signal: ["5", "8", "12"] });
   const estimate = calculatePricing({ enabled, volumes, selectedTiers, commitment, discount, useAgreedRates, agreedRates, autoPay, topUpAmount, topUpThreshold });
   const money = (cents) => `CAD ${(cents / 100).toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const updateVolume = (product, index, value) => setVolumes((current) => ({ ...current, [product]: current[product].map((quantity, i) => i === index ? value : quantity) }));
@@ -93,7 +93,7 @@ export const PricingCalculator = () => {
     updateVolume(product, index, value);
     if (value !== "") setCustomVolumes((current) => ({ ...current, [`${product}-${index}`]: Number(value) >= 10000 }));
   };
-  const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["50", "50", "50"], signal: ["50", "50", "50"] }); setSelectedTiers({ insights: [true, false, false], signal: [true, false, false] }); setAutoPay(true); setTopUpAmount("500"); setTopUpThreshold("200"); setCustomVolumes({}); setCommitment("1000"); setDiscount("0"); setUseAgreedRates(false); setAgreedRates({ insights: ["5", "15", "35"], signal: ["3", "5", "8"] }); };
+  const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["50", "50", "50"], signal: ["50", "50", "50"] }); setSelectedTiers({ insights: [true, false, false], signal: [true, false, false] }); setAutoPay(true); setTopUpAmount("500"); setTopUpThreshold("200"); setCustomVolumes({}); setCommitment("1000"); setDiscount("0"); setUseAgreedRates(false); setAgreedRates({ insights: ["8", "25", "45"], signal: ["5", "8", "12"] }); };
   const products = [
     { key: "insights", name: "AMLOK Insights", description: "Completed underwritings per month", unit: "underwriting", accessibleUnit: "underwritings per month" },
     { key: "signal", name: "AMLOK Signal", description: "Active monitored accounts each month", unit: "account / month", accessibleUnit: "active accounts per month" },
