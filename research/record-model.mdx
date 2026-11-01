@@ -1,0 +1,51 @@
+---
+title: "Records, events, and reconciliation"
+description: "Represent source versions and economic activity without double-counting sales or cash flows."
+keywords: ["AMLOK research", "record model"]
+sidebarTitle: "Records and reconciliation"
+---
+
+The research representation separates a source record from the economic event it describes. This distinction is essential for a system that combines banking, payments, commerce, and accounting. Several observations can corroborate one sale without becoming several sales.
+
+## Proposed research record
+
+| Field family | Required information |
+| --- | --- |
+| Identity and scope | Pseudonymous workspace and subject, source system/account, source record ID and version. |
+| Time | Event time, settlement time where applicable, first known time, ingestion time, correction time. |
+| Financial meaning | Amount, original currency, debit/credit convention, record type, pending/posted/reversed state. |
+| Interpretation | Original descriptor, normalized text, category candidates, entity candidates, unresolved fields. |
+| Evidence | Raw-object digest/reference, source page or response location, transformation version. |
+| Rights and quality | Allowed purposes, access scope, completeness, freshness, missingness, consent state. |
+
+This is a research schema specification, not a new API resource. Map it to the existing [data model](/data-model/start-here) and versioned API through an implementation review.
+
+## Two forms of deduplication
+
+**Ingestion deduplication** identifies repeat deliveries of the same source record version. A retry does not become new activity. An updated version remains linked to its predecessor.
+
+**Economic reconciliation** links distinct source records that describe the same underlying activity. An order, invoice, payment, settlement, and deposit are retained as evidence with different roles. They are not collapsed into one raw record or summed as independent revenue. This also differs from [Signal's processing-volume count](/pricing/complexity-tiers): a newly processed source version can count toward workload without creating new economic revenue.
+
+## Reconciliation procedure
+
+Generate candidates using provider references, invoice/payment IDs, currencies, amounts, timing, and known settlement schedules. Account for one-to-many and many-to-one relationships. Exact documented identifiers take precedence over fuzzy similarity. Use constraints for fees, taxes, refunds, reserves, partial payments, chargebacks, settlement delay, and currency conversion. Persist unmatched residuals with reasons.
+
+Do not force balance by inventing a transaction or changing an amount. A discrepancy can be normal timing, a missing source, an accounting choice, or a data error. It is not automatically fraud.
+
+## Synthetic settlement example
+
+A fictional merchant records CAD 13,560.00 of customer charges, comprising CAD 12,000.00 before tax and CAD 1,560.00 of tax. It refunds CAD 560.00, including CAD 500.00 before tax. The processor deducts CAD 350.00 of fees and holds CAD 600.00 in reserve.
+
+```text
+Bank payout = 13,560.00 - 560.00 - 350.00 - 600.00 = CAD 12,050.00
+Net sales before tax = 12,000.00 - 500.00 = CAD 11,500.00
+Processor reserve = CAD 600.00, subject to its release conditions
+```
+
+The bank deposit is neither additional sales nor necessarily equal to net sales. Accounting revenue recognition still depends on the relevant policy and fulfillment evidence. This example is arithmetic, not an observed customer or a universal tax rate.
+
+## Revisions and unavailable data
+
+Maintain the original and corrected source versions. Recompute affected features with a new evidence snapshot; do not rewrite historical outputs as though the correction was known earlier. Distinguish zero, missing, unavailable, stale, revoked, and not-applicable values. Source disconnection must produce a data-quality state rather than a fabricated income collapse.
+
+Validate sign conventions and reversals explicitly. Use fixed-point or decimal arithmetic for financial calculations and store the original precision. Do not use binary floating-point output as an unexplained monetary rounding policy.

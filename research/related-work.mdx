@@ -1,0 +1,33 @@
+---
+title: "Related work and comparative scope"
+description: "Transaction language models, financial event models, cash-flow scoring, and Canadian prior work."
+keywords: ["AMLOK research", "related work"]
+sidebarTitle: "Related work"
+---
+
+The relevant literature spans several distinct problems. A model that extracts merchant names, a model that represents transaction histories, and a model that estimates default risk do not have interchangeable results. AMLOK's comparisons must reproduce the task, evidence access, population, and evaluation conditions before claiming an advantage.
+
+## Primary methodological references
+
+| Work | What the source describes | Relevance and boundary |
+| --- | --- | --- |
+| [Slope TransFormer](https://slopepay.com/blog/slope-transformer-llm-for-banks) | A compact OPT-125M model adapted with LoRA for bank-transaction counterparty labeling. The authors report over 72% exact match versus 62% for their Plaid comparison. | A reference for narrow descriptor interpretation. These 2023 author-reported figures are not Canadian underwriting accuracy and are not an AMLOK comparison. |
+| [Revolut PRAGMA v1](https://arxiv.org/html/2604.08649v1) | Encoder-style models combine typed event fields and profile state, with masked pretraining and downstream adaptation. The paper reports 26 million user records, 24 billion events, and 207 billion tokens. | A reference for heterogeneous financial histories. The proprietary corpus is not available to this project; we do not claim reproduction of its results or training scale. |
+| [Prism CashScore v4](https://www.prismdata.com/blog/the-creation-of-cashscore-v4-raising-the-bar-for-cash-flow-underwriting/) | A vendor report on cash-flow score development and comparisons with earlier scores and traditional credit scores. | A reference for evaluation of actual credit outcomes. The linked full whitepaper was not obtained here; the blog does not disclose a reproducible neural architecture or training recipe. |
+| [Prism development standards](https://www.prismdata.com/blog/five-essential-market-standards-for-cash-flow-score-development/) | Emphasizes lender diversity, economic-period coverage, documentation, consistent categorization, and protection of contributed data. | Supports a multi-institution validation design. Do not borrow another vendor's consortium size, customer data, or reported lift. |
+| [Prism Pulse](https://www.prismdata.com/blog/introducing-prism-pulse-for-cash-flow-monitoring/) | Describes longitudinal cash-flow attributes and monitoring of changing financial conditions. | Related to Signal's analytical purpose. AMLOK does not adopt servicing, collections, or borrower messaging workflows. |
+| [RBC Borealis ATOM](https://rbcborealis.com/applications/atom/) | Describes financial foundation models for asynchronous transaction sequences and banking applications. | Important Canadian prior work. A broad claim that AMLOK is Canada's first financial foundation model is not supported. |
+| [Nubank nuFormer](https://arxiv.org/abs/2507.23267) | Transformer representations of transaction histories combined with tabular features, evaluated on recommendation tasks. | A useful representation-learning comparator; recommendation gains do not establish underwriting or monitoring performance. |
+| [Visa TransactionGPT](https://arxiv.org/abs/2511.08939) | A transaction-native foundation model with a 3D-Transformer and downstream prediction tasks. | Related architectural work. Its payment-network data does not supply AMLOK training records or a reproducible same-cohort benchmark. |
+
+## Financial language is not financial risk validation
+
+[BloombergGPT](https://arxiv.org/abs/2303.17564) studies financial language-model training. [FinBen](https://arxiv.org/abs/2402.12659) covers a broad financial task suite. [FinanceBench](https://arxiv.org/abs/2311.11944) evaluates evidence-based financial question answering. [FinQA](https://arxiv.org/abs/2109.00122) and [TAT-QA](https://arxiv.org/abs/2105.07624) test numerical reasoning over financial documents. These resources can evaluate extraction, retrieval, and arithmetic. None replaces a Canadian borrower outcome cohort.
+
+For structured prediction, include regularized regression, gradient boosting, [FT-Transformer](https://arxiv.org/abs/2106.11959), and a permitted [TabPFN](https://priorlabs.ai/technical-reports/tabpfn-3-5) release. A strong tabular baseline can be more appropriate than a language model. Architecture selection depends on evidence, latency, sample size, cost, and interpretability.
+
+## Proposed contribution
+
+The proposed contribution is a jointly evaluated Canadian system that connects bilingual transaction meaning to economic-event reconciliation, an evidence-backed temporal graph, and task-specific risk models. Its novelty must be demonstrated by ablations and a fuller prior-art review. It is not established by combining familiar components or naming a new model.
+
+The Canadian adaptation must be measured directly. [Prism already describes Canadian support](https://www.prismdata.com/blog/prism-data-announces-new-support-for-canada-partners-with-neo-financial/), and ATOM establishes relevant Canadian research. We therefore use **Canadian financial risk intelligence research**, without a first-in-country or state-of-the-art claim.

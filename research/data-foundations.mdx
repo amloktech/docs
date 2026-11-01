@@ -1,0 +1,48 @@
+---
+title: "Data foundations and study populations"
+description: "Define permissioned sources, independent labels, temporal boundaries, and representative cohorts."
+keywords: ["AMLOK research", "data foundations"]
+sidebarTitle: "Data foundations"
+---
+
+A scientifically useful dataset connects authorized observations to independently defined outcomes. Data volume alone does not establish validity. This protocol separates source acquisition, model-development permission, feature availability, annotation, and outcome ascertainment.
+
+## Source layers
+
+| Layer | Examples | Role | Main failure mode |
+| --- | --- | --- | --- |
+| Institution-provided | Authorized account history, applications, facilities, repayment schedules, outcomes | Existing evidence and independent performance labels | Institution selection bias and policy feedback. |
+| Borrower-permissioned | External bank accounts, payment processors, commerce, accounting, invoicing, payroll, eligible consumer financial records | Cross-source activity and obligations | Partial connections, revoked permission, account exclusions, duplicated economic events. |
+| Public or licensed reference | Corporate identity, relevant legal events, aggregate economic series | Corroboration and context | Mistaken identity, publication lag, licensing restrictions, outcome leakage. |
+| Derived | Entity links, reconciled events, features, embeddings | Reusable analytical representation | Propagating an upstream error or private-data restriction. |
+| Synthetic | Generated records and known failure cases | Engineering checks and controlled method experiments | Mistaking designed behavior for population evidence. |
+
+“Third party” describes the external system, not the source of authority. Borrower permission to connect a system is distinct from permission to train a shared model. Record permitted purposes for operational processing, institution-specific adaptation, shared training, evaluation, retention, and redistribution separately. No cross-workspace training is assumed.
+
+## Required acquisition manifest
+
+For every dataset, record source and owner, delivery mechanism, schema/version, acquisition time, content digest, covered period, jurisdiction, language, consent or other authorized basis, license version, allowed purposes, derived-data restrictions, retention, and deletion obligations. Keep secrets and direct identifiers outside the experiment manifest. Pseudonymous subject IDs remain potentially personal information.
+
+No public record, provider integration, or literature citation in this section establishes possession of a training corpus. A valid research inventory counts actual acquired and permitted records, not reachable URLs or possible integrations.
+
+## Cohorts and denominators
+
+Define business and consumer cohorts independently. Stratify businesses by industry, size, province, language, lender, product, and available systems. Define consumer cohorts by lending product, income pattern, financial-history coverage, and authorized demographic audit variables. Newcomers, thin-file applicants, seasonal businesses, and self-employed consumers need explicit coverage analyses.
+
+Maintain a population flow: eligible applications, permission requested, permission granted, sources connected, adequate history, successfully processed, decision observed, and outcome matured. Report exclusions and reasons at each step. Connection success is not a random sample. Compare included and excluded groups using permissible variables; missing data must not silently become evidence of financial distress.
+
+## Independent labels
+
+Use separate labels for counterparty identity, transaction purpose, economic-event linkage, contractual delinquency, charge-off, insolvency, confirmed fraud, covenant breach, and liquidity stress. A registered security interest is not a default. A loan approval is not evidence of successful repayment. A model-generated label is a weak label until independently checked.
+
+For identity and reconciliation, use two qualified reviewers blinded to model predictions and resolve disagreements with a third adjudication step. Preserve `unknown` and multiple plausible candidates. For credit outcomes, record the horizon, grace periods, restructuring treatment, cure, prepaid loans, censoring, and policy changes. Do not treat an applicant declined by the lender as a known default or a successful loan.
+
+## Time and leakage
+
+Retain both event time and the earliest verified availability time. At evaluation cutoff `t`, require event time and availability time to be no later than `t`. Apply this rule to aliases, registry versions, accounting restatements, reviewer notes, macro releases, graph edges, and labels used as features. Later information can establish an outcome, but cannot enter a historical prediction.
+
+Split by time and related-subject group; hold out institutions separately. Freeze training normalization, dictionaries, candidate indexes, prompts, and retrieval corpora before scoring the holdout. Pretraining on the holdout's unlabeled histories is transductive access and must not be concealed as an inductive test.
+
+## Minimum history versus research history
+
+The [product workload definition](/pricing/complexity-tiers) includes at least 12 months of banking history for a full underwriting. Model development may need multiple economic periods and longer outcome follow-up. Twelve months of input per application does not mean twelve months of total development data is sufficient. Do not create missing historical observations to satisfy the product requirement.

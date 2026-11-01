@@ -1,0 +1,60 @@
+---
+title: "Reproducibility and research artifacts"
+description: "Inspect the experiment code, result records, assumptions, and steps needed to reproduce the study."
+keywords: ["AMLOK research", "reproducibility"]
+sidebarTitle: "Reproducibility"
+---
+
+The research package includes executable synthetic training, raw prediction outputs, numerical checks, source references, and a public-data calculation. It uses no API credentials or real borrower records. Its purpose is to make the limited executed evidence inspectable and the larger research protocol actionable.
+
+[Download the reproducibility bundle](https://raw.githubusercontent.com/amloktech/docs/322a7df1208d294318b9cf3e13a307d1ed758936/downloads/research/amlok-research-0.1.zip). The ZIP contains generated arrays, six transformer checkpoints, predictions, measured results, charts, code, the public FX source snapshot, and a per-file integrity manifest. Its SHA-256 is `243ccbc7bec85b18ffe66d3a5099cc32b3b76a30f08fb4d1117e06ffa822994e`.
+
+## What was executed
+
+- A fixed-seed generator produced 1,200 synthetic subjects and 100,800 monthly source observations.
+- Three structured-data baselines and six small transformer runs were fitted and evaluated.
+- Transformer variants compare training from scratch with masked-value pretraining, across three seeds each.
+- Results include held-out predictions, losses, parameter counts, timings, environment versions, and file digests.
+- A separate public-data analysis calculated descriptive statistics for Bank of Canada FX observations.
+- Contract checks test selected temporal, reconciliation, isolation, and numerical invariants on explicit fixtures.
+
+## Files and roles
+
+| Artifact | Purpose |
+| --- | --- |
+| `scripts/research/run_synthetic_study.py` | Dataset generation, fitting, inference, metrics, bootstrap intervals, and run manifest. |
+| `scripts/research/requirements.txt` | Versions used for the experiment. |
+| `scripts/research/test_research.py` | Independent checks of results and selected financial/data invariants. |
+| `scripts/research/render_results.py` | Generate result tables, figures, paired comparisons, and public research outputs. |
+| `scripts/research/public_data.py` | Reproduce the bounded public FX analysis and record source integrity. |
+| [Synthetic results](/downloads/research/synthetic-results.json) | Executed run metadata and metrics; all observations are generated. |
+| [Paired comparisons](/downloads/research/paired-comparisons.json) | Paired uncertainty estimates within the toy cohort. |
+| [Public-data summary](/downloads/research/public-data-summary.json) | Source URL, series, period, statistics, and digest. |
+| [Research references](/research/references) | Primary-source bibliography with scope limits. |
+
+The source files and full experiment outputs accompany this research change in the documentation repository and downloadable bundle. Raw weights and generated arrays are engineering artifacts, not an approved downloadable production model. The 14 delivered checks passed, including reloading all six checkpoints and reproducing saved test predictions. This validates the supplied artifacts and selected fixtures, not a live backend or full production pipeline.
+
+## Run locally
+
+From the documentation repository, use an isolated Python 3.12 environment:
+
+```bash
+python3 -m venv /tmp/amlok-research-env
+/tmp/amlok-research-env/bin/python -m pip install -r scripts/research/requirements.txt
+/tmp/amlok-research-env/bin/python scripts/research/run_synthetic_study.py
+/tmp/amlok-research-env/bin/python scripts/research/public_data.py
+/tmp/amlok-research-env/bin/python scripts/research/render_results.py
+/tmp/amlok-research-env/bin/python scripts/research/test_research.py
+```
+
+The public-data step accesses only the stated Bank of Canada endpoint. Other steps read local files. Allow for environment-dependent floating-point differences; compare metrics with stated tolerances rather than expecting identical elapsed times. The experiment uses CPU execution and two PyTorch threads. No hosted model calls or paid cloud training occur.
+
+## Reproduction boundaries
+
+Reproducing a generated-data result verifies the delivered code and experiment under its assumptions. It does not verify production AMLOK, prove deployment, confirm data rights for a future corpus, or establish predictive performance on real borrowers.
+
+For real-cohort work, keep restricted data and identifiers in the authorized research environment. Share hashes, schemas, aggregate counts, redacted methods, and reviewed result tables. Preserve raw predictions for audit under controlled access. Apply retention, cancellation, and approved training-purpose rules to all derived artifacts, including embeddings and checkpoints.
+
+## Research sequence
+
+First finalize the task and source rights. Then acquire authorized outcome-linked cohorts, freeze the labeling and split protocol, run transparent baselines, test the proposed representation with ablations, calibrate, and obtain independent review. Follow with a prospective shadow study and a controlled assessment of operational impact. This sequence is an evidence plan, not a schedule or a claim that each step has occurred.

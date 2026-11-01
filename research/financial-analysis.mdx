@@ -1,0 +1,54 @@
+---
+title: "Financial features and calculation rules"
+description: "Calculate cash flow, debt service, liquidity, and concentration from reconciled evidence."
+keywords: ["AMLOK research", "financial analysis"]
+sidebarTitle: "Financial analysis"
+---
+
+Financial interpretation must preserve the difference between cash movement, accounting income, and a contractual obligation. A language model can help classify evidence, but the reported amounts and ratios should come from versioned deterministic calculations.
+
+## Feature contract
+
+Every feature should identify its unit, currency, observation window, as-of timestamp, formula version, contributing evidence, exclusions, missingness, confidence basis, and eligibility for the intended task. A ratio without a known denominator is undefined. A zero debt payment in connected accounts does not establish that the borrower has no debt.
+
+## Proposed feature families
+
+| Family | Examples | Required qualification |
+| --- | --- | --- |
+| Receipts and income | Eligible operating receipts, payroll recurrence, customer concentration, variability, seasonality | Remove evidenced own-account transfers, financing proceeds, reversals, and duplicate economic events. Do not classify every unknown inflow as income. |
+| Expenses and margins | Operating outflows, fixed/variable costs, gross margin, net margin, payroll burden | Accrual margins require appropriate accounting evidence. Cash outflows alone cannot establish EBITDA. |
+| Debt and obligations | Scheduled principal and interest, recurring debt-service patterns, maturity ladder, covenant headroom | Observed debits are evidence of payments, not necessarily the complete contractual obligation. |
+| Liquidity | Available cash, minimum daily balance, negative-balance days, cash buffer, working capital | Connected-account coverage, restricted balances, undrawn facilities, and snapshot timing matter. |
+| Working capital | Receivables aging, payable aging, inventory turnover, cash conversion cycle | Match periods and accounting policies; incomplete ledgers can bias denominators. |
+| Concentration | Largest customer/supplier shares, industry/counterparty concentration, processor dependence | Measure on resolved economic counterparties, and report unresolved value separately. |
+| Revenue quality | Refund/chargeback rates, reconciliation residuals, delayed settlements, reserve changes | Use consistent transaction cohorts and maturity windows. A chargeback is not automatically fraud. |
+| Financial behavior | Irregular income, new obligations, recurring-payment changes, persistent liquidity pressure | Preserve ambiguity and separate activity change from source failure. |
+| Public context | Rates, FX, industry conditions, evidenced legal events | Respect release vintages and avoid assigning population statistics to an individual. |
+
+## Explicit calculations
+
+```text
+Cash-flow debt-service proxy =
+  (eligible operating cash receipts - eligible operating cash outflows)
+  / scheduled debt-service cash outflows
+
+Customer concentration =
+  eligible sales attributed to the largest resolved customer
+  / total eligible sales in the same window
+
+Residual monthly cash =
+  eligible monthly net income - essential expenses - required debt payments
+
+Days of cash buffer =
+  eligible unrestricted cash / estimated average daily essential cash outflow
+```
+
+The cash-flow proxy is not interchangeable with EBITDA-based DSCR. [BDC's DSCR explanation](https://www.bdc.ca/en/articles-tools/entrepreneur-toolkit/templates-business-guides/glossary/debt-service-coverage-ratio) uses earnings and debt-service inputs; the exact covenant definition belongs to the agreement. A consumer debt-payment-to-income ratio must specify gross or net income. Do not interchange it with stock debt divided by annual income, or with mortgage GDS/TDS.
+
+Ratios use consistently defined periods. Annualize only with explicit assumptions and seasonal sensitivity. Preserve adequate precision for ratios; round displayed monetary amounts to two decimals according to the product's monetary rules. The analytical precision of a source rate is not the same as billing precision.
+
+## Error propagation
+
+Quantify how identity errors, unmatched settlements, stale accounts, uncertain categories, and missing liabilities alter features. Recalculate with plausible alternatives and report a range where appropriate. Do not convert a low-quality input into an exact risk probability merely because the calculation produces many decimal places.
+
+Use deterministic invariants: reconciled amounts balance within documented tolerances; source versions are not counted twice; excluded financing remains traceable; all evidence predates the cutoff; and a corrected input produces a new feature version. The [reproducibility package](/research/reproducibility) tests selected invariants on synthetic fixtures.

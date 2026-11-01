@@ -1,0 +1,48 @@
+---
+title: "Temporal entity resolution and graph"
+description: "Resolve entities and relationships with evidence, uncertainty, and historical validity."
+keywords: ["AMLOK research", "entity graph"]
+sidebarTitle: "Entity graph"
+---
+
+The proposed graph connects entities to observed financial activity while preserving uncertainty. It must distinguish identifying a payment processor from identifying the underlying merchant, customer, or beneficial owner. A plausible language-model completion does not establish legal identity.
+
+## Ontology and evidence
+
+Candidate node types include businesses, authorized person references, accounts, source records, economic events, facilities, invoices, processors, documents, and risk signals. Typed edges distinguish account ownership, payment direction, settlement membership, declared relationships, verified aliases, lending relationships, and evidentiary support.
+
+Each assertion records source references, jurisdiction, event validity interval, known-at interval, evidence scope, model or rule version, review state, and correction history. Separate observations from inferred edges. Keep customer-private graphs isolated; public reference identities do not authorize linking private borrowers across institutions.
+
+## Resolution pipeline
+
+1. Preserve the original string and normalize Unicode, punctuation, and spacing without discarding meaningful digits or jurisdiction.
+2. Retrieve candidates through authorized identifiers, aliases, lexical matching, and embeddings.
+3. Rank candidates using permitted evidence. Include a no-match candidate.
+4. Apply consistency checks for legal identifiers, geography, time, account relationships, and contradictory evidence.
+5. Return resolved, review, or unresolved with evidence and the reason for abstention.
+6. Calibrate match confidence on independent labels, then select operating thresholds from the institution's tolerated false-link cost.
+
+[Ditto](https://arxiv.org/abs/2004.00584) is a relevant language-model approach to entity matching. Its method does not make a transaction name equivalent to a verified legal entity. Exact identifiers also require source validation and collision checks.
+
+## Difficult cases
+
+| Observation | Defensible output | Unsupported inference |
+| --- | --- | --- |
+| Masked Interac descriptor | Rail identified; counterparty unresolved | Reconstructing the hidden sender. |
+| Common address or similar trading name | Candidate relationship requiring evidence | Beneficial ownership or common control. |
+| Processor settlement | Processor and payout linkage where source references match | Every underlying customer's identity. |
+| New recurring debit | Candidate obligation or payment pattern | Exact principal, fraud, or default. |
+| Lien filing | Time-specific registered interest | Current drawn balance or delinquency. |
+| Circular observed transfers | Reviewable flow pattern within observed accounts | Proof of fraudulent intent. |
+
+## Temporal graph learning
+
+A proposed relational model may combine typed neighborhood aggregation with event-sequence embeddings. Restrict every neighborhood to the prediction cutoff and authorized scope. Evaluate unseen entities, disconnected components, relation types, and noisy-edge robustness separately. A held-out borrower connected through training relatives is not an independent test unless the split explicitly permits that information.
+
+Use graph evidence as an input whose errors can be measured, not as ground truth. Estimate the effect of false merges and missed links on concentration, debt-service estimates, and downstream predictions. Avoid inferring sensitive personal attributes from transaction patterns or relationship neighborhoods.
+
+## Evaluation and correction
+
+Report candidate recall, pair precision/recall, false-merge and false-split rates, cluster metrics, abstention, and count/value-weighted coverage. Precision among accepted matches must be reported alongside coverage. A model can appear precise by refusing difficult cases.
+
+Freeze a correction set separate from the final test set. Record who changed an assertion, why, and which snapshots or decisions are affected. Repeated analyst feedback should not leak future test labels into a published result. Thresholds such as 0.98 are not meaningful probabilities until calibrated on the intended population.

@@ -1,3 +1,51 @@
 ---
 title: "Research"
+description: "A Canadian research program for evidence-grounded underwriting and continuous risk monitoring."
+keywords: ["AMLOK research", "index"]
 ---
+
+AMLOK's research question is whether a shared representation of financial activity can support better underwriting and earlier, more reliable risk signals. The proposed system combines institution-provided evidence, borrower-permissioned banking and business-system data, and appropriately licensed public context. It covers business and consumer use cases through separate task definitions and validation cohorts.
+
+<Info>
+**Research specification and initial experiments - November 1, 2026.** This release contains a literature review, proposed architecture and training protocol, a real public-data descriptive analysis, and an executed synthetic transformer study. It does not report a trained production foundation model, observed borrower outcomes, or completed comparisons against commercial or frontier models. Each result identifies its evidence class.
+</Info>
+
+## Abstract
+
+Financial records describe different stages of the same economic activity. A sale can appear as an order, invoice, payment, settlement, bank deposit, and accounting entry. Combining those records without resolving their relationships overstates activity. Examining only bank deposits can hide margins, obligations, reversals, and changes that precede settlement. The proposed AMLOK architecture therefore separates transaction interpretation, economic-event reconciliation, temporal entity resolution, financial calculation, and outcome prediction.
+
+The core hypothesis is that this separation improves evidence quality and permits a shared representation to transfer across underwriting and monitoring. It remains a hypothesis until tested on authorized, representative Canadian cohorts. A secondary hypothesis is that a relatively compact specialist model can match or exceed a general-purpose language model on a tightly defined task at lower cost. Model size and technical novelty are not substitutes for this evidence.
+
+## Research questions
+
+| ID | Question | Primary test |
+| --- | --- | --- |
+| H1 | Does permissioned multi-source evidence add useful information beyond banking alone? | Paired out-of-time and institution-held-out evaluation, controlling model and cohort. |
+| H2 | Does domain adaptation improve bilingual transaction interpretation? | Unseen-entity and unseen-bank-format tests against rules, text encoders, and frontier models. |
+| H3 | Does a temporal graph improve resolution and reconciliation? | Graph ablation at the same false-match tolerance and evidence availability. |
+| H4 | Does self-supervised pretraining improve transfer? | Matched pretrained and from-scratch models, including strong tabular baselines. |
+| H5 | Does monitoring surface useful changes earlier? | Prospective alert precision, false-alert burden, and paired lead time at matched sensitivity. |
+| H6 | Can explanations remain faithful under ambiguity and missing data? | Evidence support, numerical correctness, abstention, correction, and adversarial tests. |
+
+## Read the program
+
+<Columns cols={2}>
+  <Card title="Scientific context" icon="book-open" href="/research/related-work">What prior work establishes and which comparisons remain open.</Card>
+  <Card title="Data and evidence" icon="database" href="/research/data-foundations">Source rights, point-in-time data, labels, and Canadian context.</Card>
+  <Card title="Model and training" icon="network" href="/research/model-architecture">The proposed representation, training stages, and ablations.</Card>
+  <Card title="Evaluation and results" icon="chart-no-axes-combined" href="/research/evaluation">Task-specific benchmarks and the initial synthetic experiment.</Card>
+</Columns>
+
+## Evidence classes
+
+| Label | Meaning |
+| --- | --- |
+| Published finding | A claim made by an identified external author, with its original task and limitations. |
+| Proposed method | An AMLOK design or experiment specified here; execution is not implied. |
+| Public-data analysis | A calculation performed on an identified public dataset with a reproducible acquisition record. |
+| Executed synthetic experiment | A real local run on deliberately generated data; no claim about actual borrowers. |
+| Real-cohort validation | Requires authorized borrower data, independent labels, frozen predictions, and an auditable evaluation. None is reported in this release. |
+
+## Product boundary
+
+[Insights](/pricing/insights) is a full underwriting. [Signal](/pricing/signal) monitors new evidence and includes change-driven reassessment. The research introduces no new paid product or standalone verification charge. Institutions retain credit decisions, borrower communication, and intervention. Research schemas are not additions to the public API. See the [model card](/research/model-card) for intended use and limitations.
