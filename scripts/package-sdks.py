@@ -8,6 +8,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 build = Path(sys.argv[1]).resolve()
+source_ref = sys.argv[2] if len(sys.argv) > 2 else "main"
 destination = ROOT / "downloads/sdks"
 destination.mkdir(parents=True, exist_ok=True)
 languages = ("typescript", "python", "java", "csharp", "go", "php", "ruby")
@@ -34,7 +35,8 @@ for language in languages:
             info.external_attr = 0o644 << 16
             archive.writestr(info, file.read_bytes())
     manifest["packages"].append({
-        "language": language, "path": "/downloads/sdks/" + target.name,
+        "language": language, "repository_path": "downloads/sdks/" + target.name,
+        "download_url": f"https://raw.githubusercontent.com/amloktech/docs/{source_ref}/downloads/sdks/{target.name}",
         "sha256": hashlib.sha256(target.read_bytes()).hexdigest(), "bytes": target.stat().st_size,
         "operations": metadata["operations"], "contract_sha256": metadata["contract_sha256"],
     })
