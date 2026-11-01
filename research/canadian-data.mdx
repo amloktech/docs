@@ -1,0 +1,45 @@
+---
+title: "Canadian public data and limitations"
+description: "Use public sources for corroboration and context without inventing transaction histories or loan outcomes."
+keywords: ["AMLOK research", "canadian data"]
+sidebarTitle: "Canadian public data"
+---
+
+Public Canadian data can strengthen identity checks, contextual analysis, and selected event labels. It generally cannot reconstruct a business's private bank ledger, processor sales, repayment history, or every closed lending deal. The public-data program therefore measures what each source actually establishes.
+
+## Source acquisition register
+
+| Source | Candidate use | Required limitation |
+| --- | --- | --- |
+| [Corporations Canada data services](https://ised-isde.canada.ca/site/corporations-canada/en/data-services) | Federal legal identity, status, and permitted registry attributes | Federal scope is not all Canadian businesses. Preserve jurisdiction and effective dates. The authority documents an API; “no Canadian registries have APIs” is inaccurate. |
+| Provincial and territorial registries, including Québec REQ | Jurisdiction-specific identity corroboration | Verify current terms, fields, access rights, and historical availability individually. Do not assume uniform coverage or bulk-training rights. |
+| PPSA/PPR and Québec RDPRM | Registered security-interest evidence | Registration is not necessarily a funded loan, current balance, default, fraud, or a unique deal. Amendments and discharges change interpretation. |
+| [OSB insolvency statistics](https://ised-isde.canada.ca/site/office-superintendent-bankruptcy/en/statistics-and-research) | Population context and changes in reported insolvencies | Aggregate rates do not label individual borrowers. Reporting lag must enter historical analysis. |
+| Authorized insolvency/court case records | Carefully adjudicated events for matched entities | Publication and selection bias; filings, allegations, judgments, appeals, and final dispositions differ. |
+| [Statistics Canada WDS](https://www.statcan.gc.ca/en/developers/wds/user-guide) | Industry, employment, price, and regional context | Use the original release vintage where available. Revised present-day series can leak future information. Check the applicable [open licence](https://www.statcan.gc.ca/en/terms-conditions/open-licence-faq). |
+| [Bank of Canada Valet](https://www.bankofcanada.ca/valet/docs) | Rates and foreign-exchange context | State units, dates, missing days, and transformations; observe [source terms](https://www.bankofcanada.ca/terms/). |
+| SEDAR+ issuer filings | Financial-document extraction and public-company case studies | Public issuers do not represent typical private SMEs or consumers. Document-specific rights and accounting periods matter. |
+| CanLII | Potential legal research reference | Terms could not be retrieved in this review. No bulk acquisition, redistribution, or model-training entitlement is asserted. |
+
+This register is a source plan, not a claim that these sources were acquired or included in model training. Only the public FX analysis below was downloaded and calculated in this release.
+
+## Executed public-data example
+
+We retrieved the Bank of Canada's `FXUSDCAD` observations for January 1 to December 31, 2025. The returned series contains **249 observations**. Values are Canadian dollars per US dollar. The minimum is **1.3558**, the maximum **1.4603**, and the arithmetic mean of returned observations **1.39776225**. These are descriptive calculations over published observations, not a forecast, trading result, annual accounting conversion rule, or borrower-risk finding.
+
+The mean is not weighted by transaction value. Non-reporting days are not zero rates. Actual financial conversion requires the relevant transaction date, reporting policy, and documented handling of unavailable observations. See the [acquisition URL](https://www.bankofcanada.ca/valet/observations/FXUSDCAD/json?start_date=2025-01-01&end_date=2025-12-31) and [machine-readable summary](/downloads/research/public-data-summary.json).
+
+## Public-record validation design
+
+1. Define the unit: registry row, distinct legal entity, registered interest, or independently documented lending outcome.
+2. Deduplicate using source identifiers, amendments, parties, dates, and jurisdiction. Publish uncertainty in entity merges.
+3. Establish source rights and access conditions before acquisition.
+4. Construct the historical view using only information available at the cutoff.
+5. Evaluate entity matching and event extraction against adjudicated source evidence.
+6. Evaluate repayment or default prediction only where an independent authorized outcome record exists.
+
+A security registration can corroborate a creditor relationship. It does not reveal the full repayment schedule or the descriptor that will appear in a private bank account. Public records alone cannot substantiate claims that raw bank data was rerun for every closed Canadian deal.
+
+## Canadian adaptation hypotheses
+
+Test French and English descriptors, accented and truncated names, numbered corporations across jurisdictions, Interac ambiguity, processor settlements, provincial tax conventions, CAD/USD activity, seasonal businesses, and incomplete histories. These are evaluation dimensions, not assertions that a model has solved them. Rail recognition must not be represented as recovery of hidden sender identity.

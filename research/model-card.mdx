@@ -1,0 +1,43 @@
+---
+title: "Research model card and evidence status"
+description: "An explicit inventory of implemented experiments, proposed components, and unsupported uses."
+keywords: ["AMLOK research", "model card"]
+sidebarTitle: "Model card"
+---
+
+This card describes the **research package**, not a production model release. It makes the implemented and proposed parts distinguishable for scientific and institutional review.
+
+| Item | Current evidence |
+| --- | --- |
+| Research package | Version 0.1, November 1, 2026. Separate from public API version 1.4.2. |
+| Intended research focus | Canadian business and consumer underwriting, financial evidence quality, and post-funding risk monitoring. |
+| Production foundation-model checkpoint | Not supplied or trained in this release. |
+| Descriptor LLM and entity graph | Proposed specifications; not validated by the synthetic event study. |
+| Executed training | A small transformer encoder trained locally on generated monthly source summaries. |
+| Training data | 1,200 synthetic subjects, two bank-source channels and five business-system channels, 12 months per subject. |
+| Real public data analyzed | Bank of Canada 2025 CAD-per-USD observations, descriptively only. |
+| Borrower outcome data | None acquired or used. |
+| Frontier/commercial head-to-head evaluation | Not executed. |
+| Supported performance claim | Only the measured synthetic results and descriptive public-data calculations reported here. |
+| Independent model validation | Not completed. |
+| Approval or production deployment | Not established by this package. |
+
+## Intended use
+
+Use the package to review the research design, reproduce the synthetic experiment, evaluate data requirements, and plan controlled experiments. The methods connect to Insights and Signal without changing their API or commercial boundaries.
+
+## Unsupported uses
+
+Do not use the synthetic probabilities for lending decisions, affordability determinations, capital calculations, IFRS 9 provisions, fraud accusations, regulatory reporting, or customer targeting. Do not present the synthetic test set as Canadian market validation. No causal loss reduction, approval expansion, production latency, fairness certification, or first-in-country claim is supported.
+
+## Known limitations
+
+The experiment's target is generated from an authored equation. Its 12 monthly observations per source omit transaction-level descriptors, payment timing, real identity ambiguity, integration failures, borrower selection, human interventions, and economic-regime change. Synthetic institution labels do not simulate real institution distributions. The graph and text-model hypotheses remain untested.
+
+A learned representation can absorb population and source biases. Public records may overrepresent distress and formal legal entities. More connected systems can increase information and error simultaneously. Provider availability and permitted histories vary; an integration catalog entry is not evidence of complete financial coverage.
+
+## Evidence required for the next model card
+
+Record the actual base model and revision, weight digest, architecture, parameter count, training corpus and purposes, source licences, token/event counts, training dates and hardware, full configuration, split manifests, independent labels, predictions, calibration, costs, failures, subgroup results, and reviewer findings. Publish changes and limitations alongside improvements.
+
+Model cards for business outcome prediction, consumer outcome prediction, entity resolution, narrative generation, and monitoring should be separate. One successful component does not validate the complete system.

@@ -1,0 +1,66 @@
+---
+title: "Transaction language and annotation"
+description: "A proposed bilingual labeling and adaptation protocol for financial descriptors and supporting documents."
+keywords: ["transaction language", "French", "annotation", "LLM"]
+sidebarTitle: "Transaction language"
+---
+
+Financial descriptors compress names, rails, intermediaries, references, and purpose into incomplete strings. A language model can help interpret those strings, but it cannot recover information that the source never supplied. This page specifies a proposed text-model study. No transaction-language LLM was trained or evaluated in the initial synthetic event experiment.
+
+## Separate the tasks
+
+| Task | Proposed output | Boundary |
+| --- | --- | --- |
+| Descriptor parsing | Observed spans for rail, intermediary, name candidate, and reference | Preserve the original string and offsets. Do not manufacture a name. |
+| Purpose classification | Versioned category and confidence or abstention | A category is not proof of business purpose or tax treatment. |
+| Counterparty resolution | Candidate entity identifier linked to corroborating evidence | A plausible name match is not verified legal identity. |
+| Document extraction | Amount, currency, period, parties, and source location | Preserve ambiguous fields and extraction errors for review. |
+| Grounded explanation | A readable account of supplied evidence and calculations | No unsupported input, approval decision, or causal claim. |
+
+A descriptor containing an Interac marker can establish a possible payment rail while leaving the counterparty unresolved. A Stripe settlement identifies an intermediary; it does not identify each underlying buyer. Train and score those roles separately.
+
+## Annotation unit and schema
+
+Use the descriptor plus the evidence that was available at the observation cutoff. Annotators must not see later outcomes or private information excluded from the model's task. Preserve an isolated-text task and a context-assisted task so added information is not mistaken for superior language understanding.
+
+```json
+{
+  "example_id": "synthetic-descriptor-001",
+  "evidence_class": "illustrative_schema",
+  "text": "INTERAC E-TRANSFER REF 3841",
+  "language": "en",
+  "rail": "interac_e_transfer",
+  "intermediary": null,
+  "counterparty_candidate": null,
+  "purpose": "unknown",
+  "identity_status": "unresolved",
+  "annotation_version": "proposed-1",
+  "source_evidence_ids": ["synthetic-record-001"]
+}
+```
+
+This is a research annotation schema, not an API response or a labeled observation collected from a customer. Label definitions must specify inclusions, exclusions, ambiguous cases, multi-label cases, and adjudication rules. Preserve negative and unresolved examples.
+
+## Build an independent reference set
+
+Sample across institutions, formats, source families, English, French, code-switching, industries, and descriptor lengths. Retain natural prevalence for the main test and a separately reported challenge set for rare failures. Deduplicate templates and related entities before splitting. Otherwise, repeated merchant strings can make the task appear easier than identifying an unseen counterparty.
+
+Have two qualified annotators independently label a stratified sample. Record agreement by field and category, disagreements, adjudication, and the remaining unresolved share. Use bilingual annotators for French evidence. An agreement coefficient is informative only with its prevalence and label definitions; raw agreement alone can conceal poor performance on uncommon classes.
+
+Keep provider labels, rules, and teacher-model outputs as explicitly marked weak supervision. Estimate their error against adjudicated evidence. Do not use the same model's generated labels as the independent test of that model. Prevent final-test examples from entering prompt templates, few-shot exemplars, retrieval indexes, or annotation-training material.
+
+## Proposed adaptation study
+
+Compare a transparent rule system, character-based retrieval, a compact multilingual encoder, an instruction model adapted for structured extraction, and hosted frontier models with matched evidence. Freeze each checkpoint revision and licence. Compare native French supervision with a translation pipeline; evaluate the final financial meaning rather than translation fluency alone.
+
+For a labeled sequence task, optimize the likelihood of the adjudicated structured target. For span tagging, use token-level supervision and evaluate complete spans as well as tokens. Optional continued language-model pretraining must use a separately approved corpus and be tested against a no-adaptation control. Prevent model-generated narratives from becoming financial labels without independent evidence.
+
+An initial parameter-efficient search can compare adapter ranks 8 and 16, learning rates 0.00005 and 0.0002, and one to three passes through the approved training set. These are **proposed search candidates**, not measured optimal settings or completed runs. Choose the model and sequence length from observed input lengths, available resources, and licence constraints. Reserve the final holdout before any search.
+
+## Scoring and error analysis
+
+Report field-level exact match, span F1, category macro-F1, unresolved coverage, and false-resolution rate. Evaluate confidence on a separate calibration set. Measure precision at a required coverage and coverage at a required false-match tolerance. Do not count abstentions as correct resolved identities.
+
+Break errors down into missing source information, extraction failure, normalization error, wrong candidate retrieval, wrong entity merge, and unsupported inference. Report performance on unseen names and formats, language slices, and time-held-out evidence. Test malicious instructions embedded in descriptors and documents as untrusted content.
+
+Use the resulting evidence in the [entity graph](/research/entity-graph). A language prediction can propose an edge; corroboration, permissions, and temporal checks determine whether that edge is usable.

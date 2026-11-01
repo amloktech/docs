@@ -1,0 +1,91 @@
+---
+title: "Training and experiment protocol"
+description: "Specify pretraining, adaptation, hyperparameter selection, data isolation, and reproducible experiment records."
+keywords: ["AMLOK research", "training"]
+sidebarTitle: "Training protocol"
+---
+
+This protocol defines the proposed training program. Only the small synthetic run described in [initial experiments](/research/synthetic-study) has been executed for this release. The production corpus, model checkpoint, compute budget, and training runs are not represented as completed.
+
+## Staged curriculum
+
+| Stage | Objective | Required evidence |
+| --- | --- | --- |
+| 0. Data qualification | Validate rights, source versions, identity partitions, dates, and financial consistency | Dataset manifest, exclusion report, leakage checks, annotation quality. |
+| 1. Descriptor adaptation | Learn counterparty roles and transaction purpose from adjudicated examples | Bilingual labels, weak-label provenance, unseen-entity evaluation. |
+| 2. Event pretraining | Learn typed financial histories without outcome labels | Masked-field losses by field, reconstruction error, data exposure accounting. |
+| 3. Relationship learning | Learn candidate matching and source-event linkage | Independently labeled pairs, hard negatives, temporal and tenant boundaries. |
+| 4. Downstream adaptation | Fit underwriting, change detection, and forecasting tasks | Task-specific outcomes, frozen splits, matched baselines. |
+| 5. Calibration and explanation | Calibrate predictions and generate evidence-grounded summaries | Held-out calibration, faithful explanations, abstention and numerical tests. |
+| 6. Independent validation | Challenge every material claim | Frozen predictions, reviewer findings, reproducibility and intended-use approval. |
+
+## Losses and sampling
+
+A candidate pretraining objective combines masked categorical cross-entropy, robust numeric reconstruction, and contrastive consistency between genuinely linked source views. Weight losses by task relevance and measured scale, not by the count of convenient fields. Report each loss separately so a dominant easy field cannot hide failure on a critical one.
+
+Mask at field, event, and source levels. A mask must not leave the target trivially visible in a duplicate source record. Cross-source alignment needs verified positive pairs and plausible hard negatives. For a forecasting task, restrict attention to the past. Bidirectional reconstruction is permissible inside a historical window whose complete contents were available at the cutoff; it cannot access later observations.
+
+Sample by subject and activity regime to prevent a few high-volume accounts from dominating. Cap or weight repeated near-identical records. Keep related entities in the same partition. Fit vocabulary, normalization, imputation, and retrieval indexes using the allowed training data only.
+
+## Supervision and adaptation
+
+Use weak provider labels for candidate generation or auxiliary training, then measure their noise against independent adjudication. Teacher-model labels are not independent ground truth. Preserve label source and confidence; hold out a human-reviewed set that was never used to revise prompts or teachers.
+
+Compare frozen embeddings plus a simple head, full fine-tuning, and parameter-efficient adaptation such as [LoRA](https://arxiv.org/abs/2106.09685). Train equivalent from-scratch and no-pretraining controls. Reuse neither competitor labels nor restricted model outputs without appropriate permission.
+
+## Model selection and compute
+
+Freeze the search space, resource cap, random seeds, early-stopping criterion, and primary endpoint before the final test. Use training for fitting, development for selection, calibration for probability mapping and operating thresholds, and a locked holdout for the final report. If resources require nested cross-validation, document the nesting and all data exposure.
+
+Record wall time, accelerator type/count, precision, batch size, accumulated tokens or events, optimizer, schedule, clipping, checkpoint policy, and failures. Distinguish model inference time from retrieval, normalization, reconciliation, and human review. Compare resource-matched alternatives as well as best-performing alternatives. Do not extrapolate a CPU prototype into production throughput or cost.
+
+## Candidate search space
+
+The following is a bounded starting design for an authorized pilot, not a description of completed production runs. Dataset qualification and a resource estimate must precede execution.
+
+| Component | Proposed candidates | Selection constraint |
+| --- | --- | --- |
+| Event encoder | Width 64, 128, or 256; depth 2 or 4; four attention heads | Compare under a fixed optimization budget, with the same allowed history. |
+| Sequence construction | Recent windows plus hierarchical daily/monthly summaries | Evaluate lost rare events and material obligations; record exact truncation. |
+| Masked pretraining | Field mask rates 0.15 or 0.30; independent source-dropout ablation | Prevent duplicate-view leakage; report loss per field and source. |
+| Optimization | AdamW; learning rate 0.0001 or 0.0003; effective batch 64 or 128 subjects | Select on development loss and task metrics, never the final holdout. |
+| Downstream head | Regularized linear model, boosting, or shallow neural head | Hold the representation and cohort constant when attributing gains. |
+| Graph integration | No graph, explicit graph-derived features, or learned neighborhood aggregation | Use only permitted as-of neighbors; retain an entity-disjoint test. |
+| Language adaptation | Frozen encoder, structured extraction, or parameter-efficient adaptation | Follow the separate [annotation protocol](/research/transaction-language). |
+
+Do not launch the Cartesian product blindly. Predeclare a staged search or a bounded optimization method and record trials that fail. Use at least three fixed training seeds for shortlisted neural configurations. Keep equal-compute and equal-data comparisons separate. The actual synthetic configuration is recorded independently in its run manifest.
+
+## Objective specification
+
+For a candidate event encoder, define the training loss as a weighted sum of categorical reconstruction, numeric reconstruction, and verified cross-view alignment:
+
+```text
+L = lambda_category * L_category
+  + lambda_numeric * L_numeric
+  + lambda_alignment * L_alignment
+```
+
+Normalize each term over its eligible, observed targets. Missing fields are not zero-valued targets. Use a robust numeric loss with source-specific training-set scaling and report unscaled errors in meaningful units. Choose and freeze the weights on development data; include each objective's removal as an ablation. No specific weight or claimed optimum is asserted before that experiment.
+
+For a binary outcome head, record the outcome definition, horizon, censoring eligibility, and loss weighting. Class weighting or negative subsampling changes probability interpretation, so calibrate on a representative held-out cohort and report its prevalence. For censored follow-up, compare a survival formulation with an explicitly mature binary cohort rather than labeling unobserved outcomes as negative.
+
+## Run manifest
+
+```json
+{
+  "experiment_id": "research-candidate-001",
+  "evidence_class": "proposed_method",
+  "dataset_manifest_sha256": null,
+  "split_manifest_sha256": null,
+  "base_checkpoint_revision": null,
+  "training_purposes_approved": false,
+  "code_commit": null,
+  "configuration_sha256": null,
+  "outcome_definition_version": null,
+  "primary_metric": "task_specific",
+  "test_access_count": 0,
+  "run_status": "not_executed"
+}
+```
+
+Nulls explicitly denote unavailable artifacts. Replace them with original run evidence when an experiment occurs; do not generate plausible identifiers or historical timestamps. Material changes after seeing the holdout require a new holdout or an explicitly exploratory result.

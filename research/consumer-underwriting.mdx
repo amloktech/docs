@@ -1,0 +1,46 @@
+---
+title: "Consumer underwriting research"
+description: "Study income, affordability, obligations, and resilience with consumer-specific validation."
+keywords: ["AMLOK research", "consumer underwriting"]
+sidebarTitle: "Consumer underwriting"
+---
+
+Consumer risk intelligence requires its own data permissions, labels, financial definitions, and validation cohorts. A business-trained model or a public-company financial benchmark cannot establish consumer underwriting performance.
+
+## Permitted evidence and scope
+
+Candidate inputs include authorized bank-account activity, institution-held facilities and repayment history, borrower-provided income evidence, and specifically authorized payroll or recurring-obligation sources. Evaluate each source for necessity and purpose. Do not add a source merely because it is technically accessible.
+
+Transaction histories can reveal highly sensitive information. Exclude prohibited or unjustified attributes and proxies from lending features. Fairness audit data should be separately justified, access-controlled, and kept distinct from production prediction inputs. Do not infer protected characteristics from names, location, merchants, or a relationship graph to create an audit label.
+
+## Proposed dimensions
+
+| Dimension | Analytical distinction |
+| --- | --- |
+| Income stability | Payroll, self-employment receipts, benefits, transfers, and one-off windfalls need different interpretation. |
+| Affordability | Required debt payments, essential expenses, and residual cash must share a period and income definition. |
+| Obligations | Bank debits, credit reporting, and contractual schedules provide different views; missing liabilities stay unknown. |
+| Liquidity | Low balances, overdrafts, and timing mismatches require coverage and recurrence context. |
+| Volatility and seasonality | A seasonal or variable income pattern is not automatically deterioration. |
+| Stress resilience | Model explicit changes to income, expenses, rates, and payment timing with stated assumptions. |
+| Evidence sufficiency | Partial accounts, short history, consent withdrawal, and delayed feeds can invalidate a conclusion. |
+
+## Affordability definitions
+
+Separate monthly debt-payment-to-income, debt-stock-to-income, residual cash, and mortgage GDS/TDS. Record whether income is gross, net, recurring, verified, or estimated. A bank deposit does not directly reveal gross salary or taxable income.
+
+For mortgage research, implement the relevant lender and insurance definitions. [CMHC's GDS/TDS guidance](https://www.cmhc-schl.gc.ca/professionals/project-funding-and-mortgage-financing/mortgage-loan-insurance/calculating-gds-tds) distinguishes housing costs from total debt obligations and specifies treatment of inputs such as condo fees and revolving debt. This research does not impose mortgage thresholds on every consumer credit product.
+
+## Evaluation populations
+
+Report results separately for relevant credit products, province, language, history coverage, income regularity, and institution. Assess newcomers and thin-file consumers using properly authorized and sufficiently sized cohorts. Do not infer inclusion benefits from the fact that more data fields were collected.
+
+Use independent outcome labels and mature follow-up. Compare against the institution's authorized incumbent score or policy, as well as transparent statistical baselines. State which applicants lack outcomes because they were declined or did not accept an offer. Reject inference is a sensitivity analysis requiring assumptions, not a source of observed truth.
+
+## Explanation and review
+
+Reasons must identify supported evidence and the actual model or policy factors that influenced a result. A plausible narrative written after the decision is not a faithful explanation. Evaluate stability under immaterial wording changes, correct arithmetic, uncertainty, and the correction process.
+
+For Québec, section 12.1 of the [private-sector privacy statute](https://www.legisquebec.gouv.qc.ca/fr/version/lc/P-39.1?code=se%3A12_1&history=20250414&langCont=en) addresses decisions based exclusively on automated processing, including information and review-related requirements. Determine applicability with the institution's privacy and legal teams. The statute does not establish that a particular AMLOK workflow is compliant or certified.
+
+AMLOK supplies analytical findings. The institution determines and communicates lending decisions. No borrower messaging, servicing, or collection workflow is introduced by this research.

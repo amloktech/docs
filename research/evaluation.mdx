@@ -1,0 +1,60 @@
+---
+title: "Benchmark and statistical evaluation protocol"
+description: "Compare models on matched tasks, evidence, cohorts, costs, and uncertainty."
+keywords: ["AMLOK research", "evaluation"]
+sidebarTitle: "Benchmark protocol"
+---
+
+A credible benchmark fixes the task, available evidence, population, outcome, and operating conditions before comparing models. This protocol is specified for future real-cohort evaluation. No AMLOK-versus-frontier or AMLOK-versus-vendor result is reported here.
+
+## Benchmark tracks
+
+| Track | Target | Primary measures | Critical control |
+| --- | --- | --- | --- |
+| Descriptor understanding | Counterparty roles, purpose, language | Exact match, span/entity F1, macro-F1, abstention/coverage | Unseen entities, unseen bank formats, human-adjudicated labels. |
+| Entity and graph resolution | Correct identity and relations | Pair/cluster precision and recall, false merges, candidate recall | Related entities and reference indexes separated across splits. |
+| Economic reconciliation | Correct event linkage and financial totals | Link precision/recall, residual distribution, amount-weighted error | Split batches and many-to-many settlements. |
+| Financial reasoning | Evidence-supported calculations | Numerical/program accuracy, evidence precision, unsupported-claim rate | Frozen evidence and calculator access; no invented missing inputs. |
+| Underwriting | Independently defined outcome and horizon | AUROC, average precision, Brier/log loss, calibration, decision costs | Mature labels, censoring, lender and time holdouts. |
+| Monitoring | Qualifying change and eventual event | Precision/recall, false alerts, lead time and review burden | Known-at timestamps, matched sensitivity, undetected events. |
+| Operations | Complete assessment workflow | Median/p95 latency, throughput, cost, analyst time and corrections | Equal scope, concurrency, hardware, tools, and failure accounting. |
+
+## Comparator matrix
+
+| Comparator | Role | Status in this release |
+| --- | --- | --- |
+| Rules, exact matching, fuzzy retrieval | Transparent minimal baselines | Selected invariants demonstrated; no real-cohort benchmark. |
+| Regularized regression and gradient boosting | Strong structured-data baselines | Executed on the synthetic study only. |
+| Compact text encoder and FT-Transformer | Specialist neural baselines | Proposed. |
+| TabPFN permitted release | Tabular foundation-model baseline | Proposed; pin exact release and permitted use before execution. |
+| AMLOK event encoder, graph variant, and language adaptation | Candidate research system | Small event encoder executed on synthetic data; full system not trained here. |
+| OpenAI GPT family | Frontier extraction, reasoning, and grounded explanations | Proposed. Official [GPT-6 Astra page](https://openai.com/index/gpt-6-astra/) and its GPT-6.1 Sol update identify candidate generations. |
+| Anthropic Claude family | Frontier counterpart with the same inputs and tools | Proposed. [Claude Fable 5.1](https://www.anthropic.com/claude/fable) is a documented candidate. |
+| Google Gemini family | Frontier counterpart with the same inputs and tools | Proposed. Select an accessible version from the [official model catalogue](https://deepmind.google/models/gemini/) at experiment freeze. |
+| Slope, Prism, PRAGMA, ATOM, nuFormer, TransactionGPT | Domain and methodological comparators | Literature only unless lawful same-cohort access or reproducible implementations become available. |
+
+Record the exact model identifier/revision, access date, parameters, reasoning budget, context limit, tool access, retrieval settings, output schema, pricing basis, rate limits, and retry policy. A family name alone is insufficient to reproduce a result. Limited-access models are not treated as available simply because a vendor announced them.
+
+## Two fair comparisons
+
+Run a **matched-evidence** comparison in which every method receives the same as-of evidence and permitted calculator/retrieval tools. Separately run an **end-to-end system** comparison that includes each system's normalization, graph, and retrieval. Attribute differences to the correct level. Do not give AMLOK extra sources and describe the resulting gain as a model-architecture improvement.
+
+Test prompt-only, retrieval-assisted, and tool-assisted language models separately. Log invalid outputs, refusals, timeouts, rate-limit failures, and retries. Report quality and coverage jointly. Restrict real personal data sent to hosted models to specifically authorized, contract-compatible evaluation environments.
+
+## Splits and analysis
+
+Use development, selection, calibration, and final test partitions with no related-subject overlap. Include an out-of-time test and an institution-held-out test; report them separately rather than assuming either proves the other. Freeze cohort eligibility and source-availability rules before test access. Keep final labels inaccessible to prompt authors and model developers during selection.
+
+Report point estimates with uncertainty. Use paired borrower-level resampling for model comparisons; use cluster-aware or hierarchical resampling for repeated borrowers and institutions. Report both entity-weighted and institution-weighted results where useful. An interval based on one institution does not establish national generalization.
+
+Use precision-recall metrics with stated prevalence for rare events. Average precision is not an unspecified “accuracy.” Show reliability plots, Brier score, and calibration slope/intercept for probability outputs. Select thresholds on development/calibration data only. Compare operating points, not just ranking metrics. The [calibration literature](https://arxiv.org/abs/1706.04599) motivates separately testing probability reliability.
+
+## Sample size and multiple comparisons
+
+Determine sample size from the primary endpoint, event prevalence, clustering, desired precision, and practical effect size. For illustration, estimating sensitivity of 0.80 within roughly ±0.05 under an independent binomial approximation requires about 246 positive outcomes; this is not 246 total loans and does not account for clustering or subgroup analysis. Use simulation-based power analysis for the actual design.
+
+Pre-register one primary endpoint per study and identify exploratory comparisons. Control multiplicity where claims rely on many tests. Publish negative results and seed variability. Do not choose only the best seed, slice, prompt, or threshold after seeing the holdout.
+
+## Required ablations
+
+Bank-only versus additional source families; graph versus no graph; pretraining versus scratch; text versus structured encoding; native French labels versus translation; public context versus none; missing-source robustness; temporal truncation; weak-label versus adjudicated supervision; and narrative-only versus calculator-backed output. Hold all other conditions constant or explicitly report the differences.

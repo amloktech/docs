@@ -1,0 +1,44 @@
+---
+title: "Monitoring and change-driven reassessment"
+description: "Measure financial changes, source health, and useful intervention signals over time."
+keywords: ["AMLOK research", "monitoring"]
+sidebarTitle: "Monitoring"
+---
+
+Signal research examines whether new evidence changes a previously supported assessment. Monitoring must distinguish economic deterioration from normal variation, corrected records, and lost visibility. It identifies reviewable signals; institution staff determine intervention in their own systems.
+
+## Signal construction
+
+| Candidate signal | Evidence | Confounders to test |
+| --- | --- | --- |
+| Falling demand | Orders, invoices, payments, and later settlements | Seasonality, promotions, incomplete channels, and cancellations. |
+| Income interruption | Expected payroll or recurring receipts | Holidays, pay-cycle changes, account switching, or source delays. |
+| New obligation | Repeated debits corroborated by authorized evidence | Transfers, subscriptions, reversals, or an unverified counterparty. |
+| Liquidity pressure | Persistent low balances and obligations | Incomplete accounts, sweeps, restricted cash, or planned timing. |
+| Revenue-quality change | Refunds, chargebacks, reserves, unmatched payouts | Cohort maturity, product mix, processor changes, and settlement lag. |
+| Concentration change | Reconciled counterparties and economic flows | Entity-resolution corrections and missing source coverage. |
+| Evidence disruption | Stale feeds, revoked permission, schema changes | This is a data-quality alert, not proof of financial distress. |
+
+## Temporal design
+
+Maintain a versioned baseline and a durable change sequence. Recompute only affected features while preserving sufficient historical context. A corrected old record becomes newly known evidence; it must not silently rewrite a historical backtest. Evaluate detection time using the actual time the system could have known the new information.
+
+Use trailing windows, seasonal comparisons, robust change-point methods, and explicit quality gates. Select thresholds on development data according to false-alert cost and review capacity. Apply documented grouping and cooldown rules so repeated evidence does not generate a misleading number of “detected events.” Review suppression logic for missed persistent problems.
+
+## Lead-time study
+
+Predefine the eventual event, such as a specified delinquency, and the time at which an incumbent process first identifies it. Compare methods at matched sensitivity or matched false-alert burden. Measure paired lead time for jointly detected events and report detection coverage for the full eligible cohort. Include events never detected and right-censored histories instead of dropping them.
+
+Orders sometimes precede settlement by construction, but this does not prove a universal two-to-four-week risk advantage. Estimate lag distributions per source and product. Follow the [integration refresh guidance](/integrations/data-refresh): provider webhooks, AMLOK processing schedules, and business-event visibility are different clocks.
+
+## Metrics
+
+Report event-level precision and recall, false alerts per 100 monitored borrower-months, alerts per analyst-hour, median and tail lead time, repeated-alert burden, stale-data coverage, and eventual outcomes. Distinguish signal generation, analyst acknowledgement, intervention, and loss. An alert associated with default does not establish that intervention would have prevented default.
+
+Use a prospective shadow phase before controlled intervention evaluation. Preserve existing institution safeguards and record interventions as time-varying factors. No experimental withholding of required protection is proposed.
+
+## Product correspondence
+
+Signal includes monitoring and change-driven reassessment with existing and new evidence; a detected event does not launch a separately charged Insights underwriting. The account-month billing unit remains one borrower/business per workspace. Newly processed source versions count toward workload, while unchanged baseline data and retries do not count again. Billing rules are independent of statistical event counts.
+
+Cancellation stops processing immediately. A research collection or continuous-learning loop cannot override cancellation, consent, retention, or workspace isolation. Model updates follow a separate reviewed release process rather than learning automatically from every production event.
