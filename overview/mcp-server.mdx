@@ -1,0 +1,96 @@
+---
+title: "MCP server"
+sidebarTitle: "MCP Server"
+description: "Connect your AI assistant to AMLOK's public documentation MCP server to search guides, inspect the API specification, and retrieve integration skills."
+icon: "plug"
+keywords: ["MCP", "documentation search", "AI integration", "AMLOK"]
+---
+
+Connect your AI assistant to the AMLOK documentation through Model Context Protocol (MCP). Your assistant can search current guides, read the API specification, and retrieve AMLOK integration skills while helping you build.
+
+## Connect your assistant
+
+Add a remote MCP server in your assistant's MCP or connector settings:
+
+| Setting | Value |
+| --- | --- |
+| Name | AMLOK Docs |
+| Server URL | `https://docs.amlok.io/mcp` |
+| Transport | HTTP |
+| Authentication | None for public documentation |
+
+```text
+https://docs.amlok.io/mcp
+```
+
+The connection provides access to public documentation. It does not connect to your customer workspace, retrieve borrower data, start underwriting or monitoring, or access your credit balance. Do not supply your AMLOK API key to this documentation server.
+
+<Tabs>
+  <Tab title="Claude Code">
+
+```bash
+claude mcp add --transport http amlok-docs https://docs.amlok.io/mcp
+```
+
+Confirm the connection with `claude mcp list`, then ask your assistant to search the AMLOK documentation.
+
+  </Tab>
+  <Tab title="Cursor">
+
+Open **MCP settings**, choose **Add custom MCP**, and merge this entry into your existing configuration:
+
+```json
+{
+  "mcpServers": {
+    "amlok-docs": {
+      "url": "https://docs.amlok.io/mcp"
+    }
+  }
+}
+```
+
+  </Tab>
+  <Tab title="VS Code">
+
+Merge this server into your project's `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "amlok-docs": {
+      "type": "http",
+      "url": "https://docs.amlok.io/mcp"
+    }
+  }
+}
+```
+
+  </Tab>
+</Tabs>
+
+## What you can ask
+
+| Task | Example prompt |
+| --- | --- |
+| Plan an integration | "Use the AMLOK docs to explain how to integrate Insights and Signal into our backend." |
+| Inspect the API | "Find the request schema and required permissions for starting an underwriting." |
+| Implement reliability | "Read AMLOK's webhook and request-recovery guides, then review our integration against them." |
+| Understand reporting | "Show me how to read AMLOK credit and product-consumption reports through the API." |
+
+Ask for links to the source pages when reviewing an answer. These prompts retrieve documentation; executing an API request requires a separate authorized backend connection.
+
+## Discover resources
+
+The server exposes documentation search, read-only queries over published documentation and OpenAPI content, and skill resources. Your MCP client discovers the available tools and resources when it connects.
+
+- [Documentation index](https://docs.amlok.io/llms.txt): find guides and reference pages.
+- [AMLOK agent skill](/skill.md): retrieve product workflows and integration rules.
+- [MCP discovery](https://docs.amlok.io/.well-known/mcp): inspect the public server address and transport.
+
+## Troubleshooting
+
+Use a client that supports remote HTTP MCP servers. If tools do not appear, reconnect the server and refresh the client's tool list. If your client asks for an AMLOK API key for this public server, check the URL and authentication setting above.
+
+If a search does not find a page, ask the assistant to inspect the documentation index or open the relevant guide directly. Keep customer records and secrets out of documentation search queries.
+
+Continue with the [integration prompt](/overview/integration-prompt) or [agent skills](/overview/agent-skills).

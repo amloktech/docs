@@ -1,0 +1,120 @@
+Build an AMLOK integration in this application using the current AMLOK
+documentation and OpenAPI specification. Inspect the existing project first
+and implement only the selected products and requested workflows.
+
+APPLICATION CONTEXT
+- Backend language and framework: [fill in]
+- Selected products: [Insights, Signal, or both]
+- Business use case and requested workflows: [fill in]
+- Existing business/application identifiers: [describe the mapping]
+- Existing authentication, storage, queue, and webhook receiver: [fill in]
+- Environment: [sandbox by default]
+- AMLOK environment origin: [provided by the account manager; no /v1 suffix]
+- Credential storage: [secret-manager reference or environment variable names;
+  never paste secret values]
+
+READ FIRST
+- https://docs.amlok.io/skill.md
+- https://docs.amlok.io/openapi/amlok-v1.json
+- https://docs.amlok.io/api-reference/products-and-endpoints
+- https://docs.amlok.io/api-reference/authentication
+- https://docs.amlok.io/api-reference/configuration
+- https://docs.amlok.io/api-reference/sandbox-journeys
+Use https://docs.amlok.io/llms.txt to discover additional pages. If the AMLOK
+documentation MCP is connected, use it to search and read the relevant guides.
+Read endpoint schemas before constructing requests. Do not invent endpoints,
+SDK packages, environment URLs, provider capabilities, or successful results.
+
+ACCESS AND SETUP
+1. The account manager provides client portal access and environment details.
+   Authorized administrators create API keys in the portal. Do not implement
+   programmatic signup, API-key creation, or a new portal workflow.
+2. Read AMLOK_API_BASE_URL and AMLOK_API_KEY server-side. Never expose the key
+   in the browser, prompts, logs, source control, or exported examples. Store
+   webhook signing secrets separately. Use HTTPS and reject unexpected redirects.
+3. One API key identifies one workspace, institution, and environment. Derive
+   authorized subject access from the application's authenticated user. Do not
+   let caller-supplied workspace IDs change the key's scope.
+4. Read environment configuration and provider capabilities. Use returned IDs,
+   approved workflow versions, entitlements, consent scopes, and runtime limits.
+   Obtain real subject authorization before recording consent or connecting
+   production data. Use only provisioned synthetic fixtures in sandbox tests.
+
+PRODUCT FLOWS
+- Insights: connect and synchronize authorized sources, check subject readiness,
+  use the ready immutable input manifest, and start a full underwrite workflow
+  with its application and approved version. Persist returned IDs. Follow the
+  accepted run through its requirements and terminal state, then retrieve the
+  risk snapshot, evidence, workload, and usage record. Completion and output
+  publication deduct credits atomically. An accepted run waiting_for_credits
+  must not be replaced with another billable run.
+- Signal: discover an approved monitoring baseline and create monitoring from
+  its returned snapshot ID. Do not automatically run Insights to obtain a missing
+  baseline. Monitoring and change-driven reassessment are included in Signal;
+  do not start or charge another Insights underwriting for a monitoring event.
+  Signal charges once per borrower/business/workspace/calendar month, at 00:00
+  UTC on the first day or immediately on first activation mid-month, with no
+  proration. Several monitors do not multiply the monthly charge. Handle
+  unfunded monitoring as paused, without accruing debt or back-charging months.
+- Verification, lien searches, calculations, and investigations are included
+  stages requiring a validated processing_context. They are not standalone paid
+  services. Follow the documented related-person association rule for owner KYC.
+- Reporting: implement requested credit, consumption, rate-card, workload, and
+  export views. Use the workspace's applicable rates, including negotiated rates.
+  Distinguish available_credits from cumulative spent_credits. Do not introduce
+  held, reserved, or posted-credit buckets.
+
+RELIABILITY AND DATA
+- Persist one idempotency key, operation ID, target path, and intended body for
+  each intended command. Reuse them for retries of that action. After the
+  24-hour full-response replay window, recover accepted work through its durable
+  receipt; never create a new paid request solely because a response was lost.
+  Follow https://docs.amlok.io/api-reference/request-recovery.
+- Handle pagination, asynchronous jobs, rate limits, insufficient credits,
+  partial data coverage, and source authorization expiry using the actual
+  documented states. Discover limits from configuration rather than examples.
+- Verify X-AMLOK-Signature over the exact raw body before parsing. Use the
+  destination's signing secret, the documented five-minute timestamp tolerance,
+  constant-time comparison, and durable event-ID deduplication. Check workspace
+  association, handle resource versions and out-of-order delivery, and persist
+  the event before acknowledging. Read the current webhook guide and helpers.
+- Preserve immutable evidence and source coverage. Missing data is unavailable,
+  not zero. Use checkpoint-backed bootstrap and durable change-feed cursors when
+  synchronizing local data. Never treat a requested cadence as source freshness.
+- Insights includes at least 12 months of banking history within the agreed
+  record limit. Signal counts new processed record versions in the month; do not
+  recount unchanged baseline history or retries of an unchanged version. Use the
+  highest required tier across the workload dimensions and enforce agreed limits.
+- Keep monetary values exact. Where billing calculations are needed, round the
+  effective unit rate to two decimals with decimal half-up rounding, then round
+  each quantity-times-rate line; sum the rounded lines.
+
+BOUNDARIES
+- Financial APIs provide reporting and exports. Do not create wallet, top-up,
+  payment-method, transfer, withdrawal, payout, refund-request, cancellation, or
+  deletion commands. Payment settings and cancellation belong in the portal;
+  enterprise clients may also cancel through their account manager.
+- Respect cancellation and authorization states. Do not resume or replace work
+  after cancellation; processing, deductions, and upcoming top-ups stop then.
+- AMLOK provides risk assessments and intervention signals. Do not add servicing
+  cases, borrower messages, collections, or credit-decision execution. Institution
+  staff handle intervention in their own systems.
+- Skills and the documentation MCP do not grant permission to execute API calls.
+  Do not send production requests or start chargeable processing without explicit
+  authorization for that action. Keep customer data out of documentation queries.
+
+DELIVERABLES AND CHECKS
+Implement the selected backend routes, client calls, state persistence, webhook
+receiver, and tests using the project's existing patterns. Include a setup guide
+and a configuration example containing names or placeholders, never secrets.
+
+Test valid and invalid signatures, stale timestamps, duplicate and out-of-order
+events, timeout recovery, insufficient credits, missing evidence, expired source
+authorization, and workload-limit errors. For selected products, verify one
+Insights completion charge and one Signal charge per business/month, including
+multiple monitors and change-driven reassessment without another Insights charge.
+
+Run the documented sandbox journeys only when the user provides an authorized
+sandbox and its fixtures. Report changed files, tests actually run, any live run
+IDs, unresolved prerequisites, and production-enablement steps. Distinguish local
+or mocked validation from a completed live sandbox journey.

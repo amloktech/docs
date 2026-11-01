@@ -1,0 +1,57 @@
+---
+title: "Agent skills"
+sidebarTitle: "Agent Skills"
+description: "Install the AMLOK integration skill so your coding agent can follow documented Insights, Signal, reporting, and recovery workflows with consistent rules."
+icon: "bot"
+keywords: ["agent skills", "SKILL.md", "AI coding", "AMLOK integration"]
+---
+
+Give your coding agent reusable instructions for building with AMLOK. The AMLOK integration skill connects product workflows, API references, and implementation checks in one maintained resource.
+
+## Install the skill
+
+Run the following command from your application project and select your supported coding agent when prompted:
+
+```bash
+npx skills add https://docs.amlok.io
+```
+
+The installer requires Node.js and `npx`. Review the skill before installing it into your project.
+
+<Columns cols={2}>
+  <Card title="Read the AMLOK skill" icon="file-code" href="/skill.md">Open the complete skill, including workflows and source links.</Card>
+  <Card title="Connect through MCP" icon="plug" href="/overview/mcp-server">Let your assistant discover the skill through the documentation MCP server.</Card>
+</Columns>
+
+For an agent with manual skill installation, save the contents of `/skill.md` as `SKILL.md` in an `amlok-integration` folder inside your agent's supported skill directory. Follow your agent's installation instructions for the directory location.
+
+## Workflows covered
+
+| Workflow | What the skill guides your agent through |
+| --- | --- |
+| Insights | Authorized source data, evidence readiness, a complete underwriting, asynchronous results, and a single completion charge. |
+| Signal | Approved monitoring baselines, activation, risk changes, alerts, and one charge per borrower/business per month. |
+| Reporting | Credit balances, consumption, negotiated rate cards, and report exports without financial controls. |
+| Reliable integration | Workspace isolation, webhook verification, pagination, idempotency, durable recovery, and sandbox acceptance checks. |
+
+## Use it with your coding agent
+
+After installation, give your agent a task and your application's non-secret context:
+
+```text
+Use the AMLOK integration skill to add Signal to our existing backend.
+Read our project first, then use the current AMLOK API specification.
+Implement monitoring from an approved baseline, signed webhook handling,
+and usage reporting. Preserve our existing authentication and data access.
+Use synthetic fixtures for tests and report which checks actually ran.
+```
+
+Use the [integration prompt](/overview/integration-prompt) when you want a fuller implementation brief with product selection and acceptance criteria.
+
+## Access and product rules
+
+Installing a skill supplies instructions, not credentials or workspace access. Your account manager provides portal and environment information. An authorized administrator creates the workspace-scoped API key in the portal; your application keeps it on the server.
+
+The skill keeps verification, lien searches, calculations, and investigations inside an authorized Insights or Signal workflow. It also preserves reporting-only financial APIs and the institution's responsibility for credit decisions and borrower communications.
+
+Review generated code and complete your provisioned sandbox checks before enabling production processing. Documentation examples and local tests do not establish that a live workflow has succeeded.
