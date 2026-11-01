@@ -813,6 +813,10 @@ The webhook helpers link to the maintained source files for this reference. Save
 
 Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes initiate processing or change a monitoring configuration.
 
+## Server SDKs
+
+Download [AMLOK server SDKs](/overview/sdks) for TypeScript/JavaScript, Python, Java, C#/.NET, Go, PHP, and Ruby. Install the versioned source packages locally and use your institution-issued environment and API key.
+
 ## Language examples
 
 Endpoint pages provide cURL, Python with `requests`, and Node.js using `fetch`. The examples use a 30-second client timeout and reject unexpected redirects. They are integration examples, not official AMLOK SDK packages.
