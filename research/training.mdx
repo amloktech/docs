@@ -5,7 +5,7 @@ keywords: ["AMLOK research", "training"]
 sidebarTitle: "Training protocol"
 ---
 
-This protocol defines the proposed training program. Only the small synthetic run described in [initial experiments](/research/synthetic-study) has been executed for this release. The production corpus, model checkpoint, compute budget, and training runs are not represented as completed.
+This protocol defines the financial-language, temporal-event and graph training program. The current public-record release has acquired source evidence and executed [retrieval baselines](/research/public-results). These baselines use lexical statistics; supervised language-model training and the larger representation-learning curriculum remain separate experiments.
 
 ## Staged curriculum
 
@@ -53,7 +53,7 @@ The following is a bounded starting design for an authorized pilot, not a descri
 | Graph integration | No graph, explicit graph-derived features, or learned neighborhood aggregation | Use only permitted as-of neighbors; retain an entity-disjoint test. |
 | Language adaptation | Frozen encoder, structured extraction, or parameter-efficient adaptation | Follow the separate [annotation protocol](/research/transaction-language). |
 
-Do not launch the Cartesian product blindly. Predeclare a staged search or a bounded optimization method and record trials that fail. Use at least three fixed training seeds for shortlisted neural configurations. Keep equal-compute and equal-data comparisons separate. The actual synthetic configuration is recorded independently in its run manifest.
+Do not launch the Cartesian product blindly. Predeclare a staged search or a bounded optimization method and record trials that fail. Use at least three fixed training seeds for shortlisted neural configurations. Keep equal-compute and equal-data comparisons separate. Record the configuration and data exposure for every completed run, including unsuccessful candidates.
 
 ## Objective specification
 

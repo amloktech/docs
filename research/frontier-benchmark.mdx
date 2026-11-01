@@ -1,0 +1,76 @@
+---
+title: "Frontier-model comparison protocol"
+description: "Compare AMLOK with frontier language and vision models using frozen evidence, independent labels, matched tools, costs and statistical tests."
+sidebarTitle: "Frontier comparison"
+keywords: ["frontier models", "AMLOK benchmark", "financial LLM", "comparison protocol"]
+---
+
+AMLOK's specialist-model hypothesis is that financial structure, temporal evidence and entity relationships can improve task accuracy, reliability or cost relative to general-purpose models. You test that hypothesis with matched inputs and independent labels. A comparison is complete only when the model versions, predictions, failures and scoring artifacts exist.
+
+## Entrants and comparison levels
+
+| Entrant | Comparison role | Required execution artifact |
+| --- | --- | --- |
+| Deterministic parsers, rules and lexical retrieval | Reproducible minimum baselines | Versioned code, configuration and item-level outputs. |
+| Compact multilingual encoder and specialist document model | Domain-appropriate baselines | Exact weight revision, permitted licence and preprocessing. |
+| OpenAI GPT family | General language/reasoning and supported visual-document tasks | Pinned API model identifier and actual response records. |
+| Anthropic Claude family | Independent frontier architecture/provider | Pinned API model identifier and actual response records. |
+| Google Gemini family | Independent frontier architecture/provider | Pinned API model identifier and actual response records. |
+| AMLOK language component | Transaction meaning and structured extraction | Weight digest, training-data boundary and frozen inference settings. |
+| AMLOK temporal and graph system | Multi-source financial reasoning and monitoring | Component manifests, permitted graph snapshot and end-to-end outputs. |
+
+Choose accessible model versions at the experiment freeze from the official [OpenAI](https://platform.openai.com/docs/models), [Anthropic](https://docs.anthropic.com/en/docs/about-claude/models/overview) and [Google](https://ai.google.dev/gemini-api/docs/models) catalogues. Record both the requested and returned model identifiers. A mutable alias is insufficient for an archival result. Published announcements do not prove access or constitute a benchmark run.
+
+Slope, Prism, Revolut PRAGMA and RBC ATOM remain methodological comparators unless their systems can lawfully process the same cohort under comparable conditions. Comparing unrelated published percentages is a literature comparison, not a head-to-head result.
+
+## Three experimental conditions
+
+**Matched evidence:** all entrants receive the same source documents, observation cutoff, entity candidates and output schema. This measures interpretation and reasoning conditional on equal information.
+
+**Matched tools:** all entrants receive the same retrieval index, calculator, table representation and tool-call allowance. The orchestration layer logs tool inputs and outputs. This tests tool-assisted models without awarding one entrant extra evidence.
+
+**Complete system:** compare each deployed pipeline, including OCR, retrieval, graph construction, reconciliation and explanation. Count all errors, latency and costs. Attribute the result to the system rather than solely to its language model.
+
+Keep text and page-image conditions separate. A model receiving a clean text layer is not competing on the same task as one reading a difficult PDF image. For mixed documents, publish both extraction quality and downstream answer quality.
+
+## Freeze before final evaluation
+
+Record the source-file and split hashes, task schema, primary metric, eligibility rules, gold version, model revision, prompt version, retrieval settings, output constraints, reasoning budget, maximum input/output length, allowed tools, temperature, sampling seed where supported, timeout, retries and resource cap.
+
+Prompt authors and model developers may inspect development examples. They must not optimize against final-test answers. Lock prompt, checkpoints and routing before opening the final labels. Any post-test repair produces a separately labeled exploratory run or requires a new holdout.
+
+Public benchmarks are valuable for reproducibility but may have appeared in pretraining. Add a separately acquired, time-held-out Canadian document set with an acquisition cutoff and documented publication dates. A new download date does not make an old filing unseen. Do not claim contamination-free evaluation without a justified exposure assessment.
+
+## Shared inference contract
+
+Each task supplies source items with stable IDs. Require typed values, units, periods, evidence IDs and explicit unsupported/ambiguous states. Preserve the original response and validated normalized output separately. The evaluator receives no private chain of thought and does not need it; it scores observable answers, citations and tool results.
+
+Malformed JSON, missing required fields, invalid citations, refusal, timeout and tool failure remain in the denominator. Retry only according to the frozen policy. Report first-attempt success and eventual success separately, including the extra latency and cost. Do not give one model unlimited correction attempts while limiting another to one response.
+
+For an answer that is absent from the source, an unsupported assertion fails even if it sounds plausible. For a supported numeric answer, require compatible units and period before applying a numeric tolerance. Exact monetary extraction is normally a source-precision task; do not hide a thousand-fold scale error inside a broad relative tolerance.
+
+## Statistical comparisons
+
+Specify one primary endpoint per study. For extraction, use field macro-F1 or complete-record accuracy; for financial QA, use evidence-supported answer correctness; for transaction classification, use macro-F1 with coverage; for risk prediction, use a separately justified outcome metric.
+
+Use paired resampling at the document, entity or borrower level. Repeated questions from one filing are not independent institutions. Cluster by the actual sampling design and show subgroup uncertainty. Use an appropriate paired test for binary correctness and control multiplicity when testing many models or endpoints. Report effect sizes and confidence intervals, not only p-values.
+
+Define the smallest useful improvement before the final run. A superiority claim requires the paired interval and the practical criterion to support it. A lower-cost claim requires comparable quality and full pipeline costs. A non-inferiority claim requires a prespecified margin. If the evidence does not meet the criterion, report no demonstrated advantage.
+
+## Cost, speed and reliability
+
+Measure median and p95 end-to-end latency, accepted documents per minute at declared concurrency, invalid-output rate and timeouts. Record hardware for local models and provider region where available. Separate warm/cold starts, caching, batch discounts and retry overhead.
+
+Report input, output and reasoning-token charges where billed, OCR/retrieval compute, storage and required human review. Distinguish one-time development/training cost from marginal inference cost. Compare the same document volume and task scope. Do not extrapolate a local parser runtime into a hosted model SLA.
+
+## Canadian slices and ablations
+
+Report French and English, numbered corporations, co-borrowers, CAD/USD units, provincial source formats, conditional facilities, sparse disclosures and older scanned records. Include unavailable fields and unresolved identities. Report sample sizes so a very small slice does not look like national validation.
+
+The core ablations are bank-only versus additional sources, no graph versus graph, generic versus domain-adapted language model, raw text versus layout-aware extraction, rules versus learned representations, and narrative-only versus calculator-backed answers. Keep cohort, cutoff and available evidence fixed when isolating an architectural effect.
+
+## Result status
+
+The [executed results](/research/public-results) currently contain two transparent retrieval baselines on real financial-report questions. The acquisition and evaluation artifacts do not contain a production AMLOK foundation-model checkpoint or hosted frontier predictions. Those comparison cells remain **not run**. They are not zero scores, estimated wins or results inferred from another company's paper.
+
+The public-data program establishes sources, fields, reproducible retrieval measurements and a concrete evaluation design. Completing a frontier ranking requires actual model execution against the frozen tasks. The design permits AMLOK to win, tie or lose; all three outcomes are reportable research findings.

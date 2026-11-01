@@ -1,0 +1,95 @@
+---
+mode: "wide"
+title: "Research data points and field semantics"
+description: "Map public financing evidence and permissioned financial activity to typed research fields, preserving units, missingness, time and provenance."
+sidebarTitle: "Data points"
+keywords: ["research data dictionary", "financial evidence", "cash flow", "entity graph"]
+---
+
+AMLOK's research representation connects public financing evidence to financial activity without treating every source as a complete borrower record. You can use this dictionary to identify what a source directly supplies, what requires an additional source, and which calculations remain unavailable.
+
+## Evidence envelope
+
+Every extracted value carries its original representation and a typed normalized representation. A decimal without its currency, scale, period and meaning is not a complete financial observation.
+
+| Field group | Required data points | Validation rule |
+| --- | --- | --- |
+| Provenance | Source ID, publisher, URL, file digest, acquisition timestamp, query/release version | A claim must resolve to the acquired version, not just a homepage. |
+| Locator | PDF page and printed page, table/row/column or text offsets | Keep physical PDF numbering distinct from printed numbering. |
+| Time | Event time, publication time, first verified availability, observation period, retrieval time | Never substitute retrieval time for the historical event date. |
+| Interpretation | Raw text, normalized value, units, currency, range bounds, status | Preserve source precision and conditions. |
+| Extraction | Method, model/version, confidence, reviewer state, correction lineage | Confidence is a prediction, not independent evidence. |
+| Rights | Allowed access, evaluation/training use, redistribution and retention | Public visibility alone does not grant all uses. |
+| Missingness | Not disclosed, not applicable, unavailable, redacted, ambiguous or extraction failed | Missing is not zero and is not a negative outcome. |
+
+## Identity and financing
+
+| Data point | Direct evidence route | Interpretation |
+| --- | --- | --- |
+| Legal name and identifier | Corporate registries; identifiers in executed filings | Preserve jurisdiction and effective name history. |
+| Borrower, issuer and subsidiary | Agreement parties and issuer disclosures | Do not assign a subsidiary obligation to every group company. |
+| Lender, agent and guarantor roles | Financing agreements, EDC records, security registrations | An agent is not necessarily the only lender. |
+| Country and province | Source jurisdiction and explicitly disclosed location | Export destination, borrower location and exporter location differ. |
+| Industry | Published sector or NAICS classification | Preserve classification version and source granularity. |
+| Financing product | Loan, revolver, guarantee, equity, quasi-equity or other stated type | A guarantee limit is not the borrower's cash inflow. |
+| Signing, close and disbursement dates | Explicit event statement or authoritative dated field | Keep distinct even when dates coincide. |
+| Commitment amount | Stated contractual limit | Not equal to funded principal or present debt. |
+| Drawn amount and outstanding balance | Dated financial disclosure or authorized account evidence | Drawn at a reporting date may differ from original proceeds. |
+| Available capacity | Explicit table field or documented calculation | Keep letters of credit and commercial-paper backing separate. |
+| Amount range | Disclosed lower/upper bounds and boundary inclusivity | Do not replace a band with its midpoint and call it observed. |
+| Currency and magnitude | Table heading, footnote, agreement or source dictionary | CAD millions and USD units must not be added without conversion. |
+| Interest basis | Fixed/variable indicator, base rate, spread and step conditions | A spread is not an all-in interest rate. |
+| Term and maturity | Effective term, maturity date, extension option and conditions | Options are not exercised extensions. |
+| Amortization and repayment | Explicit schedule, mandatory payments and prepayment terms | Unknown repayment terms remain unknown. |
+| Covenants and security | Exact clause, measurement period, threshold and collateral description | Do not infer breach from a generic covenant reference. |
+| Status and amendments | Executed, conditional, renewed, amended, repaid or source-specific state | Preserve both the source state and normalized event. |
+
+These fields are supported by the [source register](/research/canadian-data) and [worked public records](/research/public-record-findings). Their presence varies by source and record; the dictionary is not a claim of universal coverage.
+
+## What public records can establish
+
+| Evidence | Available research labels | Labels it does not establish alone |
+| --- | --- | --- |
+| Corporate registration | Identity attributes and effective registry status | Income, creditworthiness or debt repayment. |
+| Security registration | Named debtor, secured-party relationship and registered collateral | Cash advanced, current balance, default or a bank debit descriptor. |
+| Signed financing disclosure | Stated parties, product, date, amount or band | Complete funding path or subsequent payment performance. |
+| Financial statements | Reported period balances, flows and selected debt terms | Individual account transactions or all unreported obligations. |
+| Court or insolvency record | Precisely identified procedural event or adjudicated finding | Every allegation as fact, or every filing as a contractual default. |
+| Published program aggregates | Cohort totals and historical program context | Identifiable loan examples or individual outcomes. |
+
+## Permissioned activity needed for transaction understanding
+
+Public financing records form the corroboration and document corpus. The following record families require actual authorized activity data for a linked, multi-source borrower benchmark. Do not fabricate a bank ledger by expanding a published annual total.
+
+| Record family | Research data points | Linkage question |
+| --- | --- | --- |
+| Bank transaction | Account reference, posting/value date, direction, amount, currency, descriptor, pending/posted status and available balance | Is the inflow revenue, financing, transfer, refund or another event? |
+| Payment processor | Charge/payment ID, gross amount, fee, refund, dispute, payout ID and settlement time | Which sales and adjustments produced a net payout? |
+| Commerce | Order, line items, discounts, tax, shipping, fulfillment, cancellation and return | Which commercial activity precedes or reverses a payment? |
+| Accounting | Journal, ledger account, invoice, bill, credit note, receivable/payable status and period | Is cash movement consistent with accrual accounting? |
+| Payroll and consumer income | Pay period, gross/net payment, source identity, deductions and recurrence | Is income recurrent and attributable without inventing employer identity? |
+| Lending evidence | Facility, installment schedule, paid amounts, days past due and authorized outcome | What is owed, what was paid, and what outcome definition applies? |
+
+Record identifiers alone are not cross-provider joins. Test joins against shared references, amounts, currency, timing, netting and independently reviewed relationships. One payment can settle several invoices, and one bank deposit can aggregate many payments.
+
+## Financial features and admissible inputs
+
+| Feature family | Required inputs | Calculation constraint |
+| --- | --- | --- |
+| Operating cash flow | Classified bank activity and linked business records | Exclude transfers and financing from revenue; report unclassified coverage. |
+| Revenue quality | Orders, payments, refunds, disputes and settlement links | Separate gross sales, net sales and net settled receipts. |
+| Liquidity | Available cash, supported obligations and time windows | Distinguish observed liquidity from an assumption-dependent projection. |
+| DSCR | Defined cash flow available for debt service and contractual debt service over the same period | Show numerator, denominator, adjustments and missing debt coverage. |
+| Consumer DTI | Eligible income and debt obligations under a stated definition | Keep gross/net income conventions and monthly units explicit. |
+| Concentration | Resolved customers, suppliers, funders and attributable volumes | Report unresolved exposure instead of forcing a counterparty match. |
+| Working capital | Receivables, payables, inventory and relevant flows | Align stock dates and flow periods; avoid double counting invoice payments. |
+| Stability and seasonality | Sufficient dated observations and coverage | Distinguish seasonality from missing feeds and one-time events. |
+| Monitoring change | Versioned baseline, newly available events and materiality rules | A data correction is distinguishable from a new economic event. |
+
+The [financial analysis specification](/research/financial-analysis) defines formulas and the [record model](/research/record-model) defines event reconciliation. Derived features retain source references and calculation versions so a reviewer can reconstruct them.
+
+## Amounts, dates and ambiguity
+
+Store decimal quantities without binary floating-point conversion at ingestion. Preserve source rounding. A printed dash is interpreted only after checking the table convention; an empty cell stays absent. Use interval-valued amounts when a source supplies a band. Record date precision as day, month, quarter or year rather than inventing a more precise date.
+
+For a conditional facility, preserve initial availability, conditional capacity and total potential commitment as separate observations. For bilingual names, retain the original accents and legal form; use a normalized matching field in addition to, not in place of, the source name. Every derived relationship identifies whether it is directly stated, corroborated or still a candidate.

@@ -10,7 +10,7 @@ AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and i
 
 ## Research evidence boundary
 
-The November 2026 research section contains a proposed scientific program, attributed prior work, one executed public FX descriptive analysis, and an executed synthetic event-transformer study. It does not establish production foundation-model training, real borrower validation, Canadian market superiority, or a completed frontier-model benchmark. Distinguish proposed methods, synthetic experiments, public-data calculations, and actual customer evidence.
+Research package 0.2 builds an original-source inventory, Canadian financing cases, field semantics and real financial-document retrieval measurements. It specifies financial-language, event and graph training and matched frontier comparisons. It does not establish production foundation-model training, Canadian borrower validation or frontier superiority. Preserve actual source units, acquisition status and measured denominators. The prior 0.1 engineering experiment remains accurately archived and is excluded from current research navigation and claims.
 
 ## Voice and presentation
 

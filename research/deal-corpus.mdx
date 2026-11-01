@@ -1,0 +1,77 @@
+---
+title: "Building the Canadian financing corpus"
+description: "Construct a traceable financing corpus from real public records, with explicit event definitions, deduplication rules and historical cutoffs."
+sidebarTitle: "Financing corpus"
+keywords: ["Canadian financing", "public records", "research corpus", "deal data"]
+---
+
+AMLOK's financing corpus links public evidence about legal entities, credit arrangements, registered security and later events. You can use it to test extraction, entity resolution, relationship reconstruction and financial reasoning. Its unit is an evidenced financing event, with separate identifiers for the underlying facility and every source document.
+
+## Define a deal before counting one
+
+The corpus distinguishes seven events. Preserve the original source wording alongside the normalized classification.
+
+| Event | Evidence required | What remains unknown |
+| --- | --- | --- |
+| Announced financing | Dated announcement naming the proposed financing | Whether conditions were met or an agreement was signed. |
+| Authorized or accepted financing | Published approval or accepted intervention | Whether funding occurred, and the amount actually advanced. |
+| Executed agreement | Explicit signing or execution statement, or executed agreement | Whether a revolving facility was drawn. |
+| Financial close | Explicit close statement with the relevant parties and date | Subsequent drawdowns and borrower performance. |
+| Disbursement | Explicit use of proceeds, dated drawdown, or a source disbursement field | Complete repayment history. |
+| Amendment or renewal | A change to an identified existing arrangement | Whether incremental commitments became cash. |
+| Repayment, release or distress event | A source-specific, dated event | Its equivalence to another event type or to a general default definition. |
+
+An institution can sign a facility, register security, draw twice, amend the limit and release the security. That sequence can produce many public records but still describe one facility. A syndicated facility can name many lenders without becoming one deal per lender. A single borrower can also have multiple genuinely distinct facilities.
+
+The [Canada Infrastructure Bank's investment process](https://cib-bic.ca/en/work-with-us/investment-process/) distinguishes its investment stages. [Bank Act Security Registry principles](https://www.basr.ca/Content/pdf/Core%20Principles/English/Core%20Registry%20Principles%20EN.pdf) also show why a registry release does not automatically prove repayment: release can follow a situation in which no security was given.
+
+## Corpus objects
+
+| Object | Identifier and required fields | Relationships |
+| --- | --- | --- |
+| Source document | Publisher, URL, retrieval timestamp, byte digest, publication date, language and access terms | Contains evidence spans or table cells. |
+| Legal entity | Source registry identifier, jurisdiction, effective names and match status | Acts as borrower, lender, guarantor, agent or issuer. |
+| Facility | Internal ID, supported type, currency, contractual amount semantics and terms | Has participants, documents, collateral and events. |
+| Financing event | Event type, date precision, source locator and supporting text | Changes or observes a facility. |
+| Registration | Jurisdiction, source registration number, base registration family and amendment links | Records a security interest; linkage to a facility requires evidence. |
+| Observation | Field value, units, as-of time, availability time and extraction method | Describes a document, entity or facility at a particular time. |
+| Outcome | Definition, horizon, event source, event date and ascertainment quality | Joins to a facility or entity without entering earlier features. |
+
+These are research objects, not new public API resources. Preserve the distinction between an issuer and its borrowing subsidiary, and between a lender, an administrative agent and a guarantor.
+
+## Construct the corpus
+
+1. **Acquire a bounded source release.** Record query parameters, pagination, coverage dates and returned bytes. Save failures and unavailable fields as part of the acquisition record.
+2. **Assign a source unit.** Identify whether each row is a company, registration, signed support transaction, annual aggregate, document, facility or outcome. Reject unitless counts.
+3. **Extract source claims.** Retain page and row locations, stated units, dates, amount ranges and conditional language. Keep absent values null.
+4. **Resolve entities conservatively.** Prefer registry identifiers. Use name, jurisdiction, address and legal form for candidate generation. Preserve uncertain matches for review; similar names alone do not justify merging.
+5. **Build facility families.** Link amendments, renewals and syndicated participants to the original facility when evidence supports the relationship. Keep competing linkage hypotheses when it does not.
+6. **Create the historical view.** A record enters the input only when it was publicly available by the assessment cutoff. Signing date alone does not establish publication availability.
+7. **Qualify task labels.** A disclosed amount can label extraction. A matched registration can label a security relationship. Neither automatically labels repayment, affordability or fraud.
+8. **Freeze the release.** Publish aggregate counts, exclusion reasons, schema and hashes. Keep restricted source material under the original access conditions.
+
+## Deduplication and overlap
+
+Deduplicate exact bytes first, then source identifiers, then economically equivalent events. Do not use a single name-and-amount key as the final rule. The same amount can recur in renewals or separate facilities, while currency conversion can make the same facility appear different.
+
+Retain separate `document_count`, `source_row_count`, `registration_count`, `entity_count`, `facility_count`, `event_count` and `outcome_linked_facility_count`. Record the number of uncertain matches and exclusions. A link that merges two facilities must preserve its evidence and be reversible.
+
+For cross-source overlap, distinguish an exact duplicate, a confirming observation, an amendment and an unrelated event. Québec and federal corporate records can describe the same legal entity. EDC support can accompany a syndicated facility disclosed by an issuer. These records add corroboration, not necessarily another borrower or loan.
+
+## Current index and scaling beyond 250,000 records
+
+The [initial record index](/downloads/research/public-records/record-index.jsonl) contains 1,047 source observations with deterministic IDs, original-file hashes, explicit locations and field-availability metadata. It does not claim facility deduplication or independently labeled outcomes. The [source findings](/research/public-record-findings) explain the observed denominators.
+
+The acquisition design supports a corpus above 250,000 source records through partitioned ingestion and stable provenance. That scale is a construction objective, not a measured count in this release. The earlier 275,019 figure is not used as a verified denominator because a deduplicated record manifest has not established that count.
+
+The measured [source findings](/research/public-record-findings) illustrate the distinction: one Canadian public table represents 214,158 loans in annual aggregates, but contains no individual loan records. Those aggregate counts cannot be inserted as 214,158 training examples. Registry documentation establishes available fields and access routes; it does not establish that all corresponding live records have been acquired.
+
+Use a scalable ingestion ledger keyed by source, partition and source revision. Record fetched, parsed, failed, duplicate, eligible and adjudicated counts per partition. Resume from durable checkpoints. Changes to a source record append a version; they do not silently replace the historical training view. Review the final count from the frozen ledger before making a corpus-size claim.
+
+## Sampling and validation
+
+Stratify the adjudication sample by source, province, language, event type, date, amount format, borrower size and entity ambiguity. Oversample difficult cases for diagnostics but keep a separate prevalence-weighted estimate. Record inclusion probabilities where sampling permits them.
+
+Review entity and facility matching independently of model predictions. Report agreement and unresolved cases. Inspect the tails: repeated numbered corporations, renamed borrowers, groups of co-borrowers, partial discharges, conditional facilities, missing currencies and terms spread across footnotes.
+
+Public-company and infrastructure records can validate difficult extraction and financial semantics. They do not by themselves establish performance for small private businesses or consumers. Maintain those transfer claims as separate studies with separate eligible populations.

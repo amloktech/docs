@@ -1,60 +1,67 @@
 ---
 title: "Reproducibility and research artifacts"
-description: "Inspect the experiment code, result records, assumptions, and steps needed to reproduce the study."
-keywords: ["AMLOK research", "reproducibility"]
+description: "Reproduce public-source acquisition, the financing-record index, financial-document retrieval results and source-integrity checks."
 sidebarTitle: "Reproducibility"
 ---
 
-The research package includes executable synthetic training, raw prediction outputs, numerical checks, source references, and a public-data calculation. It uses no API credentials or real borrower records. Its purpose is to make the limited executed evidence inspectable and the larger research protocol actionable.
+Research package 0.2 contains an original-source inventory, acquisition hashes, a record-level observation index, source-analysis outputs and a completed financial-document retrieval experiment. The package separates acquired records from documented access routes and measured results from planned model comparisons.
 
-[Download the reproducibility bundle](https://raw.githubusercontent.com/amloktech/docs/322a7df1208d294318b9cf3e13a307d1ed758936/downloads/research/amlok-research-0.1.zip). The ZIP contains generated arrays, six transformer checkpoints, predictions, measured results, charts, code, the public FX source snapshot, and a per-file integrity manifest. Its SHA-256 is `243ccbc7bec85b18ffe66d3a5099cc32b3b76a30f08fb4d1117e06ffa822994e`.
+[Download the public-record research bundle](/downloads/research/amlok-public-records-0.2.zip). It includes the methods, derived artifacts and an integrity manifest. Original third-party reports and borrower-row extracts remain at their cited sources rather than being redistributed in the bundle.
 
-## What was executed
-
-- A fixed-seed generator produced 1,200 synthetic subjects and 100,800 monthly source observations.
-- Three structured-data baselines and six small transformer runs were fitted and evaluated.
-- Transformer variants compare training from scratch with masked-value pretraining, across three seeds each.
-- Results include held-out predictions, losses, parameter counts, timings, environment versions, and file digests.
-- A separate public-data analysis calculated descriptive statistics for Bank of Canada FX observations.
-- Contract checks test selected temporal, reconciliation, isolation, and numerical invariants on explicit fixtures.
-
-## Files and roles
+## Artifacts
 
 | Artifact | Purpose |
 | --- | --- |
-| `scripts/research/run_synthetic_study.py` | Dataset generation, fitting, inference, metrics, bootstrap intervals, and run manifest. |
-| `scripts/research/requirements.txt` | Versions used for the experiment. |
-| `scripts/research/test_research.py` | Independent checks of results and selected financial/data invariants. |
-| `scripts/research/render_results.py` | Generate result tables, figures, paired comparisons, and public research outputs. |
-| `scripts/research/public_data.py` | Reproduce the bounded public FX analysis and record source integrity. |
-| [Synthetic results](/downloads/research/synthetic-results.json) | Executed run metadata and metrics; all observations are generated. |
-| [Paired comparisons](/downloads/research/paired-comparisons.json) | Paired uncertainty estimates within the toy cohort. |
-| [Public-data summary](/downloads/research/public-data-summary.json) | Source URL, series, period, statistics, and digest. |
-| [Research references](/research/references) | Primary-source bibliography with scope limits. |
+| [Source register](/downloads/research/public-records/source-register.json) | 26 reviewed sources, available fields, acquisition status, record unit and limitations. |
+| [Acquisition manifest](/downloads/research/public-records/acquisition-manifest.json) | Exact URLs, UTC acquisition times, byte counts, retrieval scope and SHA-256 hashes. |
+| [Record index](/downloads/research/public-records/record-index.jsonl) | 1,047 source observations with deterministic IDs, source hashes, page/row locations and field availability. |
+| [Source analysis](/downloads/research/public-records/source-analysis.json) | Counts, aggregate reconciliation, actual financing-table values and extraction probes. |
+| [Retrieval results](/downloads/research/public-records/retrieval-results.json) | Methods, dataset and script digests, measured metrics and paired uncertainty. |
+| [Item-level rankings](/downloads/research/public-records/retrieval-predictions.json) | Every question ID, source filename, gold evidence IDs, top-five predictions and scores. |
 
-The source files and full experiment outputs accompany this research change in the documentation repository and downloadable bundle. Raw weights and generated arrays are engineering artifacts, not an approved downloadable production model. The 14 delivered checks passed, including reloading all six checkpoints and reproducing saved test predictions. This validates the supplied artifacts and selected fixtures, not a live backend or full production pipeline.
+The observation index comprises 1,014 parser-identified Québec interventions, 30 EDC disclosure rows, two issuer announcements and one aggregate facility-position table. These are source observations, not 1,047 adjudicated closed loans. The index retains company-text hashes for linkage reproducibility without republishing the company lists. A hash match is not independent legal-entity verification.
+
+## Executed workflow
+
+1. Retrieve explicitly listed public URLs through bounded requests. Record unsuccessful retrievals and distinguish complete files from byte prefixes.
+2. Parse source tables and dictionaries. Preserve their units, repeated-language presentations and record types.
+3. Render selected original PDF pages to inspect values the text layer may omit.
+4. Build stable record IDs from the acquired source hash and explicit location. Record field availability and unresolved linkage.
+5. Rank real FinQA evidence using two fixed lexical methods; score only after predictions exist.
+6. Recompute metrics from saved item-level outputs and verify source, script and prediction hashes.
+
+The source review includes selected manual visual checks, not independent double annotation of the full corpus. No paid registry searches, authenticated borrower-data downloads, hosted-model calls or production training jobs were executed.
 
 ## Run locally
 
-From the documentation repository, use an isolated Python 3.12 environment:
+Use Python 3.12 in an isolated environment from the documentation repository or extracted bundle:
 
 ```bash
-python3 -m venv /tmp/amlok-research-env
-/tmp/amlok-research-env/bin/python -m pip install -r scripts/research/requirements.txt
-/tmp/amlok-research-env/bin/python scripts/research/run_synthetic_study.py
-/tmp/amlok-research-env/bin/python scripts/research/public_data.py
-/tmp/amlok-research-env/bin/python scripts/research/render_results.py
-/tmp/amlok-research-env/bin/python scripts/research/test_research.py
+python3 -m venv /tmp/amlok-public-research
+/tmp/amlok-public-research/bin/python -m pip install -r scripts/research/requirements-public.txt
+/tmp/amlok-public-research/bin/python scripts/research/acquire_public_audit.py
+/tmp/amlok-public-research/bin/python scripts/research/analyze_public_sources.py
+/tmp/amlok-public-research/bin/python scripts/research/build_source_register.py
+/tmp/amlok-public-research/bin/python scripts/research/benchmark_public_evidence.py
+/tmp/amlok-public-research/bin/python scripts/research/test_public_research.py
 ```
 
-The public-data step accesses only the stated Bank of Canada endpoint. Other steps read local files. Allow for environment-dependent floating-point differences; compare metrics with stated tolerances rather than expecting identical elapsed times. The experiment uses CPU execution and two PyTorch threads. No hosted model calls or paid cloud training occur.
+Acquisition writes original files to `artifacts/research-review/public-records`. Derived public outputs go to `downloads/research/public-records`. Downloading a source requires respecting its current terms; the acquisition script is not a grant of commercial training or redistribution rights. FinanceBench is inspected for source feasibility and is excluded from scoring/training.
 
-## Reproduction boundaries
+The acquisition step skips successful snapshots already present. Reproduce this release with files matching the published hashes. If upstream content changes, preserve the new version separately and treat the run as a new dataset snapshot. If a source is unavailable, retain that status; do not replace it with invented rows. The SBA request deliberately captures only a bounded byte prefix ending on a complete row.
 
-Reproducing a generated-data result verifies the delivered code and experiment under its assumptions. It does not verify production AMLOK, prove deployment, confirm data rights for a future corpus, or establish predictive performance on real borrowers.
+## Benchmark integrity
 
-For real-cohort work, keep restricted data and identifiers in the authorized research environment. Share hashes, schemas, aggregate counts, redacted methods, and reviewed result tables. Preserve raw predictions for audit under controlled access. Apply retention, cancellation, and approved training-purpose rules to all derived artifacts, including embeddings and checkpoints.
+The FinQA ranking function uses only source text/table fields and the question. It excludes answers, programs, existing retrieved evidence and model-input annotations. Gold evidence IDs enter scoring after ranking. No supervised fitting or test-label tuning is performed.
 
-## Research sequence
+The evaluation uses all 1,147 test questions. Table rows include their column headings. Recall is averaged per question; complete-evidence rate requires every annotated supporting item. Confidence intervals resample source filenames in paired comparisons and retain all questions in each selected cluster. They do not represent variation across independent institutions.
 
-First finalize the task and source rights. Then acquire authorized outcome-linked cohorts, freeze the labeling and split protocol, run transparent baselines, test the proposed representation with ablations, calibrate, and obtain independent review. Follow with a prospective shadow study and a controlled assessment of operational impact. This sequence is an evidence plan, not a schedule or a claim that each step has occurred.
+The checks verify source digests, record-index uniqueness and locators, count denominators, saved metrics, deterministic prediction reproduction, and exclusion of reference-answer fields from ranking. These checks establish artifact consistency, not a trained model's suitability for lending.
+
+## Extending the corpus and experiments
+
+Keep source snapshots immutable. Add retrieval history, licence/permission decisions, schema changes, extraction versions, correction records and adjudication logs. Publish the population flow from fetched documents to parsed observations, resolved facilities, eligible outcomes and final evaluation examples.
+
+For a trained-model run, add checkpoint hashes, approved training purposes, split manifests, seeds, optimization settings, compute, failures and frozen predictions. For a frontier run, add exact API model identifiers, prompt/tool versions, raw responses and cost/latency logs under the [comparison protocol](/research/frontier-benchmark). Never fill an unrun result cell with an expected score.
+
+Prior research artifacts remain versioned separately. They are not pooled with this public-record dataset, its denominators or its performance claims.
