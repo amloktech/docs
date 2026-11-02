@@ -1,5 +1,7 @@
 """Package only public methods, generated data, and measured research artifacts."""
 from pathlib import Path
+raise SystemExit('This archived generator is retired. Use the public-record research workflow.')
+
 import hashlib,json,zipfile
 
 ROOT=Path(__file__).resolve().parents[2]

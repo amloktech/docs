@@ -4,7 +4,7 @@ description: "Scope, data, implemented baselines, proposed model components and 
 sidebarTitle: "Model card"
 ---
 
-This card describes research package **0.2**, not a production model release or a change to API version 1.4.2. It separates completed source analysis and baseline measurements from the model-development program.
+This card describes the public-record research collection and completed studies through release **0.3**. Research versioning is separate from API version 1.4.2. The measured systems are structured-loan baselines and financial-document retrievers.
 
 ## System and data
 
@@ -14,7 +14,8 @@ This card describes research package **0.2**, not a production model release or 
 | Acquired public evidence | Canadian financing disclosures, government aggregates, issuer reports, registry documentation and released financial-document datasets. |
 | Executed benchmark | TF-IDF and BM25 evidence retrieval on 1,147 FinQA test questions from 380 source filenames. |
 | Best measured baseline Recall@5 | BM25 73.90%; complete annotated evidence retrieved for 61.81% of questions. |
-| Supervised model training in this release | None; the two retrievers use document-local lexical statistics. |
+| Supervised model training | Logistic regression and gradient-boosted trees, trained on 19,135 SBA observations; 5,264 validation and 11,996 held-out evaluation observations. |
+| Supervised target and measured AUROC | Reported charge-off within 36 months; logistic regression 0.72284 and gradient boosting 0.71820. |
 | Production foundation-model checkpoint | Not produced by this package. |
 | Transaction-language, temporal and graph models | Research specifications and ablation protocols. |
 | Hosted frontier comparison | Not run; no GPT, Claude or Gemini prediction records in the result artifacts. |
@@ -31,11 +32,11 @@ Use task-specific model cards for language extraction, entity resolution, financ
 
 Public issuers differ from private SMEs and consumers. Disclosure practices select which events become observable. Registry and court records can overrepresent formal security and distress. Missing information can reflect confidentiality, access conditions, publication lag or extraction failure rather than financial weakness.
 
-FinQA is a public benchmark of financial reports, with possible exposure in general-model training. Its source filenames are the clustering unit for the reported uncertainty; they are not independent Canadian institutions. The SBA inspection is a US byte prefix. FinanceBench was inspected but not scored under commercial use. No source is counted as acquired merely because its documentation or URL exists.
+FinQA is a public benchmark of financial reports, with possible exposure in general-model training. Its source filenames are the clustering unit for the reported uncertainty; they are not independent Canadian institutions. The SBA collection contains six complete files. The supervised cohort is an approximately 10% hash sample of eligible 2010-2016 approval records with year-separated and normalized-entity-separated partitions. Current-snapshot predictors still require point-in-time review. FinanceBench was inspected but not scored under commercial use. No source is counted as acquired merely because its documentation or URL exists.
 
 ## Performance and unsupported claims
 
-The supported performance statement is the measured lexical-retrieval comparison in [public results](/research/public-results). It supports neither AMLOK superiority over frontier models nor a first-in-Canada foundation-model claim. Canadian financial-model prior work appears in the [related-work review](/research/related-work).
+Supported performance statements are the structured-loan baseline and lexical-retrieval measurements in [public results](/research/public-results). It supports neither AMLOK superiority over frontier models nor a first-in-Canada foundation-model claim. Canadian financial-model prior work appears in the [related-work review](/research/related-work).
 
 Do not use these baseline scores as lending probabilities, approval thresholds, fraud determinations, loss forecasts or production service commitments. The research has not demonstrated causal loss reduction, approval expansion, regulatory compliance of a trained model, or national representativeness.
 

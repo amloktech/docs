@@ -1,0 +1,52 @@
+---
+title: "Research datasets and data points"
+description: "Inspect the collected financial records, source fields, observation counts, extraction coverage and labeling workflow for AMLOK research."
+sidebarTitle: "Datasets and data points"
+keywords: ["research datasets", "public financial records", "data dictionary"]
+mode: "wide"
+---
+
+AMLOK's public-record collection preserves each source release and the meaning of its fields. The tables below describe acquired records, not estimates of records available elsewhere. Download the [collection summary](/downloads/research/corpus/summary.json), [source-table counts](/downloads/research/corpus/source-tables.json) and [acquisition manifest](/downloads/research/corpus/acquisition-manifest.json).
+
+## Collected datasets
+
+| Dataset and scope | Observation count | Data points available | Interpretation |
+| --- | ---: | --- | --- |
+| SBA 7(a) and 504, six complete releases spanning FY1991 onward; snapshot September 30, 2026 | 2,207,426 loan-program rows | Approval date, first disbursement, approval amount, guarantee amount, program, industry, business age, initial rate, rate type, reported status and selected outcome dates; 42 fields for 7(a), 39 for 504. | 1,897,410 rows contain first-disbursement dates. Approvals, cancellations, funded loans and resolved loans remain distinct. |
+| Investissement Québec, 2023-24 intervention disclosure | 1,017 rows | Company text, assistance type, financing amount, PDF page and row location. | 993 amounts recovered through OCR. Five anchors visually checked; other recovered amounts require review. |
+| EDC captured disclosure page | 30 rows | Signing date, country, counterparty, purpose, industry, sector of interest, cleantech indicator, product, description, CAD amount band and Canadian company. | One visible table page, not the entire archive. Published bands remain bands. |
+| Kinross and Lundin issuer disclosures | 2 announcements | Parties, facility type, principal or capacity, currency, term, maturity, conditional stages, rate basis and use of proceeds where disclosed. | A term-loan announcement and a facility amendment; neither supplies a complete repayment ledger. |
+| HMDA 2024, New York, action taken = 1 | 208,818 mortgage originations | 99 source fields, including amount, purpose, loan type, income, debt-to-income band, combined loan-to-value, property value, rate, costs and reporting institution. | Privacy-modified public values; geographic cohort only. No subsequent repayment outcome supplied. |
+| SEC financial-statement data, 2026 Q3 | 3,905,397 numeric facts from 6,516 filings | Accession, issuer CIK, tag, taxonomy version, period, quarters, unit, value, segment and co-registrant context. | The archive also has 87,871 tag definitions and 731,170 presentation rows. Facts are not loans or unique businesses. |
+
+The 1,049 Canadian-source disclosure rows comprise the 1,017 interventions, 30 EDC disclosures and two issuer announcements. Do not sum all datasets into a unique-deal count. A single issuer, facility or financial period can appear in several records.
+
+## Source-level fields and canonical attributes
+
+The [source-field dictionary](/downloads/research/corpus/field-dictionary.json) contains **424 source/field definitions**, including repeated fields tracked separately by release. A source field retains its original name, definition, populated-row count and denominator. The [canonical dictionary](/downloads/research/corpus/canonical-fields.json) groups the concepts used for labeling:
+
+| Attribute family | Required context | Labeling rule |
+| --- | --- | --- |
+| Identity | Source identifier, named party, institution or issuer, jurisdiction and role | Similar names generate candidates; they do not prove legal identity or ownership. |
+| Financing value | Currency, amount or band, amount basis and source date | Separate approval, commitment, availability, drawdown and outstanding balance. |
+| Time | Approval, signing, first disbursement, publication, reporting period and acquisition | Preserve distinct dates and source precision. Do not backdate availability. |
+| Instrument | Program, loan/facility type, assistance type and conditional terms | Preserve source-specific meanings before mapping to a shared category. |
+| Outcome | Source status, event date, horizon and observation eligibility | A charge-off label is not a universal default label; unknown status remains unknown. |
+| Financial fact | Tag, taxonomy, unit, period, quarters, segment and filing | Do not combine facts with incompatible periods or overlapping consolidation scope. |
+| Provenance | Original URL, file hash, row/page locator and extraction method | Every derived value must resolve to the preserved source version. |
+
+## Review and labeling
+
+The internal review workbench contains **4,149 records**: 3,149 loan/disclosure observations, 500 mortgage records and 500 financial facts. It is a review subset. The complete source files remain in the controlled research workspace.
+
+Each record has source values, a suggested label, review status, two independent reviewer fields, a final label and an adjudicator. Suggested labels do not become verified labels until review is complete. Missing values stay missing. The SBA review preview uses a deterministic hash rule capped at 350 rows per release and is not a representative population sample.
+
+## Task eligibility
+
+SBA records support a scoped retrospective charge-off study. HMDA supports origination-field analysis, not repayment prediction without linked outcomes. SEC records support financial-fact interpretation and document reasoning. Canadian disclosures support extraction, financing semantics and entity/facility linkage.
+
+These releases do not contain linked private bank ledgers, payment-processor events or complete ecommerce/accounting histories. Transaction-understanding and longitudinal monitoring evaluations require separately authorized evidence with suitable labels. Preserve these task boundaries when constructing training cohorts.
+
+## Original publishers
+
+Source routes: [SBA](https://data.sba.gov/dataset/7a-504-foia), [Investissement Québec](https://www.investquebec.com/sites/default/files/2026-02/investissement-quebec-interventions-financieres-2024.pdf), [EDC](https://www.edc.ca/en/about-us/corporate/disclosure/reporting-transactions/individual-transaction-information.html), [HMDA](https://ffiec.cfpb.gov/documentation/publications/loan-level-datasets/lar-data-fields) and [SEC](https://www.sec.gov/data-research/sec-markets-data/financial-statement-data-sets). The manifest records exact downloaded URLs and file hashes. Source-specific access, attribution and use conditions remain attached to each release.

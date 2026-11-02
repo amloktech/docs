@@ -1,20 +1,20 @@
 ---
 mode: "wide"
-title: "Canadian public-source inventory"
+title: "Public-source inventory"
 description: "A source-by-source inventory of financing records, registry evidence, fields, access conditions and verified acquisition scope."
 sidebarTitle: "Public-source inventory"
 ---
 
 The inventory starts with original records and documented schemas. It distinguishes record inspection, aggregate inspection, schema verification and access-gated acquisition. A source can be useful without exposing a complete borrower ledger or independently verified lending outcome.
 
-Download the [source register](/downloads/research/public-records/source-register.json), [acquisition manifest](/downloads/research/public-records/acquisition-manifest.json) and [computed source analysis](/downloads/research/public-records/source-analysis.json). The manifest preserves exact retrieved bytes through SHA-256 hashes; the register explains what those bytes mean. These are the sources reviewed for this release, not an exhaustive inventory of all Canadian public records.
+Download the [source register](/downloads/research/public-records/source-register.json), [acquisition manifest](/downloads/research/public-records/acquisition-manifest.json) and [computed source analysis](/downloads/research/public-records/source-analysis.json). The manifest preserves exact retrieved bytes through SHA-256 hashes; the register explains what those bytes mean. The linked 0.2 manifests preserve the initial source inspection. The [expanded 0.3 dataset inventory](/research/datasets) and [current acquisition manifest](/downloads/research/corpus/acquisition-manifest.json) record the subsequent complete releases. These are bounded collections, not an exhaustive inventory of all public records.
 
 ## Financing disclosures and corporate reporting
 
 | Source | Fields and research use | Verified scope |
 | --- | --- | --- |
 | [EDC individual transactions](https://www.edc.ca/en/about-us/corporate/disclosure/reporting-transactions/individual-transaction-information.html) | Signing date; country; counterparty; purpose; sector; product; CAD amount band; Canadian company. | 30 visible rows, 11 columns; full archive not enumerated. Guarantees, equity and financing remain separate. Signed support is not proof of disbursement. |
-| [Investissement Québec interventions](https://www.investquebec.com/fr/tout-sur-nous/diffusion-de-linformation/archives) | Company; financing amount; assistance type. | 18-page 2023-24 PDF. Parser identifies 1,014 typed rows, not adjudicated unique loans. Amounts require visual recovery; repeated companies and co-borrowers need linkage. |
+| [Investissement Québec interventions](https://www.investquebec.com/fr/tout-sur-nous/diffusion-de-linformation/archives) | Company; financing amount; assistance type. | 18-page 2023-24 PDF. Expanded extraction identifies 1,017 rows across assistance types; 993 amounts recovered. Five anchors visually checked; remaining OCR values and linkage need review. |
 | [Kinross term loan](https://www.kinross.com/news-and-investors/news-releases/press-release-details/2022/Kinross-announces-US1.0-billion-term-loan/default.aspx) | Borrower; USD principal; maturity; term; use of proceeds; arrangers. | One disclosed loan event. Refinancing is not new operating revenue; no repayment-performance ledger supplied. |
 | [Lundin Mining credit amendment](https://www.lundinmining.com/news/lundin-mining-increases-existing-credit-facility-to-us45-billion) | Facility capacity; conditional stages; maturity; reference rate; margin; lenders. | One amendment. Separate initial availability, conditional capacity and actual drawn cash. |
 | [BCE annual financial report](https://www.bce.ca/cs-assets/2025-bce-annual-financial-report.pdf-blt5d552f866d8a58a3) | Committed capacity; drawn amounts; letters of credit; commercial paper; net available; units; date. | 180-page report acquired. Liquidity table on PDF page 78 visually checked; positions are not new originations. |
@@ -48,7 +48,7 @@ Download the [source register](/downloads/research/public-records/source-registe
 
 | Source | Fields and research use | Verified scope |
 | --- | --- | --- |
-| [SBA 7(a)/504 FOIA](https://data.sba.gov/dataset/7a-504-foia) | Approval; first disbursement; amount; rate; term; industry; status; selected outcomes. | 548 complete rows from one US release byte prefix, plus dictionary. Not random or Canadian. LocationID is lender ID, not loan ID. EXEMPT is not known successful repayment. |
+| [SBA 7(a)/504 FOIA](https://data.sba.gov/dataset/7a-504-foia) | Approval; first disbursement; amount; rate; term; industry; status; selected outcomes. | Six complete releases contain 2,207,426 observations; 1,897,410 have first-disbursement dates. The initial 548-row inspection is superseded by this acquisition. LocationID identifies a lender; EXEMPT is not known successful repayment. |
 | [FinQA](https://github.com/czyssrs/FinQA) | Question; report text/table; gold evidence IDs; answer; program. | 6,251 train / 883 dev / 1,147 test questions. Test retrieval executed. Gold used only for scoring; no borrower outcomes. Repository licence and report rights are distinct. |
 | [TAT-QA](https://github.com/NExTplusplus/TAT-QA) | Question; text; tables; answer type; evidence. | 278 development contexts, 1,668 questions. Not used as a locked final test. No performance reported. |
 | [FinanceBench](https://www.patronus.ai/research/financebench) | Question; answer; document/evidence metadata. | 150 released questions inspected. Publisher describes noncommercial open-sample conditions; no commercial scoring/training performed. |

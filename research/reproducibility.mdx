@@ -4,11 +4,31 @@ description: "Reproduce public-source acquisition, the financing-record index, f
 sidebarTitle: "Reproducibility"
 ---
 
-Research package 0.2 contains an original-source inventory, acquisition hashes, a record-level observation index, source-analysis outputs and a completed financial-document retrieval experiment. The package separates acquired records from documented access routes and measured results from planned model comparisons.
+The current collection includes complete public source releases, field dictionaries, review records and two supervised baseline models trained on real loan observations. The earlier 0.2 release also contains the completed financial-document retrieval study. Each study keeps its own input, prediction and result manifests.
 
-[Download the public-record research bundle](/downloads/research/amlok-public-records-0.2.zip). It includes the methods, derived artifacts and an integrity manifest. Original third-party reports and borrower-row extracts remain at their cited sources rather than being redistributed in the bundle.
+[Download the current research methods and results bundle](/downloads/research/amlok-public-records-0.3.zip). It includes the documentation, aggregate source metadata, dictionaries, measured predictions and method implementations.
 
-## Artifacts
+## Current collection and training artifacts
+
+| Artifact | Contents |
+| --- | --- |
+| [Dataset inventory](/research/datasets) | Acquired records, field families, coverage and labeling scope. |
+| [Collection summary](/downloads/research/corpus/summary.json) | Counts with explicit observation units. |
+| [Acquisition manifest](/downloads/research/corpus/acquisition-manifest.json) | Original source URLs, acquisition times, byte counts and SHA-256 hashes. |
+| [Source tables](/downloads/research/corpus/source-tables.json) | Complete release sizes, source schemas and populated-field counts. |
+| [Baseline result manifest](/downloads/research/corpus/baseline-results.json) | Model settings, features, partitions, metrics, uncertainty and scientific limits. |
+| [Baseline predictions](/downloads/research/corpus/baseline-predictions.csv) | 11,996 hashed record IDs, source-derived outcomes and both model predictions. |
+| [Artifact integrity](/downloads/research/corpus/integrity.json) | Byte sizes and hashes for the public collection artifacts. |
+
+The controlled research workspace retains source originals, complete normalized tables, review decisions, model checkpoints and cohort-building code. Public artifacts omit borrower names and addresses. Source-specific access and use conditions remain attached to the original files.
+
+The training implementation is `scripts/research/train_public_baselines.py`. Set `AMLOK_RESEARCH_WORKSPACE` to the frozen corpus workspace containing `processed/training-cohort.json`. It fits both models with seed 42, preserves the temporal and normalized-entity partitions, saves predictions and recomputes the grouped uncertainty. Its results can be checked against the recorded corpus digest and runtime. The broader transaction and foundation-model studies use separate datasets and protocols.
+
+## Financial-document study artifacts
+
+The [0.2 public-record bundle](/downloads/research/amlok-public-records-0.2.zip) preserves the source-inspection and FinQA retrieval workflow. It contains derived artifacts and method code rather than the original borrower-row corpora. The counts in its historical record index describe that inspection, not the expanded 0.3 collection.
+
+### Preserved 0.2 artifacts
 
 | Artifact | Purpose |
 | --- | --- |
@@ -21,7 +41,7 @@ Research package 0.2 contains an original-source inventory, acquisition hashes, 
 
 The observation index comprises 1,014 parser-identified Québec interventions, 30 EDC disclosure rows, two issuer announcements and one aggregate facility-position table. These are source observations, not 1,047 adjudicated closed loans. The index retains company-text hashes for linkage reproducibility without republishing the company lists. A hash match is not independent legal-entity verification.
 
-## Executed workflow
+## Financial-document workflow
 
 1. Retrieve explicitly listed public URLs through bounded requests. Record unsuccessful retrievals and distinguish complete files from byte prefixes.
 2. Parse source tables and dictionaries. Preserve their units, repeated-language presentations and record types.
@@ -32,7 +52,7 @@ The observation index comprises 1,014 parser-identified Québec interventions, 3
 
 The source review includes selected manual visual checks, not independent double annotation of the full corpus. No paid registry searches, authenticated borrower-data downloads, hosted-model calls or production training jobs were executed.
 
-## Run locally
+## Reproduce the financial-document study
 
 Use Python 3.12 in an isolated environment from the documentation repository or extracted bundle:
 

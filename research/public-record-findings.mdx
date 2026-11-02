@@ -7,7 +7,7 @@ keywords: ["Canadian public records", "financing data", "source findings", "real
 
 AMLOK's source review retrieved original public financing disclosures and inspected what can actually be extracted. The findings below are observations about those records. They establish source feasibility and concrete research cases; they do not imply completed borrower-outcome validation.
 
-## Evidence acquired
+## Initial source inspection
 
 | Source snapshot | What was inspected | What the count means |
 | --- | --- | --- |
@@ -18,6 +18,8 @@ AMLOK's source review retrieved original public financing disclosures and inspec
 | Lundin Mining amendment announcement | Original issuer HTML | One amendment with staged, conditional credit capacity. |
 | BCE 2025 annual financial report | Complete 180-page PDF; liquidity table on PDF page 78 | A dated facility-position table, not a list of new originations. |
 | SBA 7(a) FY2010-19 release | First 548 complete data rows plus the official dictionary | A bounded US schema inspection, not a Canadian cohort or representative sample. |
+
+This table records the initial 0.2 inspection. The subsequent [0.3 collection](/research/datasets) expands SBA to six complete releases and Québec to 1,017 intervention rows, with 993 amounts recovered, and adds complete scoped HMDA and SEC releases. The initial checks below remain reproducible against their original snapshots.
 
 The [acquisition manifest](/downloads/research/public-records/acquisition-manifest.json) records file sizes, dates, URLs and SHA-256 hashes. [Source-analysis output](/downloads/research/public-records/source-analysis.json) records counts and checks. The [record index](/downloads/research/public-records/record-index.jsonl) provides 1,047 reproducible source observations with page/row locations and field availability. These observations are not adjudicated distinct facilities. Do not sum different source units into a deal total.
 
@@ -69,7 +71,7 @@ The visually read amounts for those rows are 375,000; 75,000; 1,000,000; 2,075,0
 
 The [SBA dataset and dictionary](https://data.sba.gov/dataset/7a-504-foia) expose approval, first disbursement, rate, term, industry and selected status fields. The dictionary identifies `LocationID` as a lender identifier, not a unique loan ID. It also describes an `EXEMPT` status for certain disbursed loans whose current status is withheld; that value cannot be interpreted as a known successful repayment outcome.
 
-The local sample is only a byte prefix, ending on a complete CSV row. It can confirm the schema and observed encodings, including spaces in status values. It cannot estimate portfolio default rates or national coverage. No individual borrower names or addresses from that sample are republished here.
+The initial inspection used a byte prefix ending on a complete CSV row to check the schema. The expanded collection now preserves all six source releases. [Supervised baseline results](/research/public-results) use a defined eligible cohort from those complete files. No individual borrower names or addresses are republished in the public prediction files.
 
 ## Findings that shape the research
 

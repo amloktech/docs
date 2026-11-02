@@ -1,0 +1,102 @@
+{
+  "kind": "measured_retrospective_pipeline_pilot",
+  "not": "foundation model training, frontier model benchmark, production risk score or proof of AMLOK superiority",
+  "outcome": "SBA-reported charge-off within 36 calendar months of first disbursement; not all defaults",
+  "source_asof": "2026-09-30",
+  "sampling": "deterministic approximately 10 percent by record hash; funded-status records approved 2010-2016",
+  "features": [
+    "log_amount",
+    "guarantee_fraction",
+    "initial_rate_pct",
+    "program",
+    "industry",
+    "business_age",
+    "rate_type"
+  ],
+  "split_rule": "2010-2013 train; 2014 validation; 2015-2016 test; exact normalized-name/state groups removed from later splits",
+  "split_counts": {
+    "train": {
+      "rows": 19135,
+      "positives": 291,
+      "entity_groups": 18837
+    },
+    "validation": {
+      "rows": 5264,
+      "positives": 69,
+      "entity_groups": 5216
+    },
+    "test": {
+      "rows": 11996,
+      "positives": 210,
+      "entity_groups": 11822
+    }
+  },
+  "exclusions": {
+    "overlap_prior_split": 283
+  },
+  "models": [
+    {
+      "model": "logistic_regression",
+      "status": "measured_cpu_pilot",
+      "train_seconds": 0.04419589042663574,
+      "validation": {
+        "roc_auc": 0.6652341298070887,
+        "average_precision": 0.029481559586375796,
+        "brier_score": 0.012922032224450881,
+        "log_loss": 0.06849384649306471
+      },
+      "test": {
+        "roc_auc": 0.7228370221327969,
+        "average_precision": 0.04576505713189247,
+        "brier_score": 0.01705833238451706,
+        "log_loss": 0.0836641425221151,
+        "roc_auc_95pct_group_bootstrap": [
+          0.6894999349237143,
+          0.7507165508973719
+        ]
+      }
+    },
+    {
+      "model": "gradient_boosted_trees",
+      "status": "measured_cpu_pilot",
+      "train_seconds": 0.27361583709716797,
+      "validation": {
+        "roc_auc": 0.6224198295462471,
+        "average_precision": 0.02254579795140612,
+        "brier_score": 0.013092188949123354,
+        "log_loss": 0.07240002859517318
+      },
+      "test": {
+        "roc_auc": 0.7182001648444887,
+        "average_precision": 0.04267003597020275,
+        "brier_score": 0.017075672009644646,
+        "log_loss": 0.08436918353050861,
+        "roc_auc_95pct_group_bootstrap": [
+          0.6847993024667729,
+          0.7463635465119652
+        ]
+      }
+    }
+  ],
+  "paired_auc_delta_95pct_ci": [
+    -0.024057485366025057,
+    0.012779504849109717
+  ],
+  "seed": 42,
+  "bootstrap_repetitions": 300,
+  "limitations": [
+    "Current FOIA snapshot does not prove that every predictor has its original underwriting-time value.",
+    "Normalized borrower names do not resolve beneficial ownership or all aliases.",
+    "US government-guaranteed small-business loans are not representative of Canadian borrowers or all consumer lending.",
+    "Registry-reported charge-offs do not capture all delinquency, restructuring or default events.",
+    "No bank transaction, card, ecommerce or accounting event-stream training is supported by these rows.",
+    "No operational lending decisions should use these pilot predictions."
+  ],
+  "runtime": {
+    "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+    "sklearn": "1.9.1",
+    "numpy": "2.5.4",
+    "platform": "macOS-27.0.1-arm64-arm-64bit"
+  },
+  "training_data_sha256": "f569fca7b08564ad3990953fe913324db58ae0070f9a50d959e6fb3c45d9bd11"
+}

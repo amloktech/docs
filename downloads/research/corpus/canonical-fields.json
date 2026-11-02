@@ -1,0 +1,205 @@
+[
+  {
+    "field": "record_id",
+    "type": "string",
+    "definition": "SHA256(source digest + locator), prefixed pub_",
+    "role": "linkage",
+    "rule": "Unique source observation, not unique economic deal"
+  },
+  {
+    "field": "source_file",
+    "type": "string",
+    "definition": "Original downloaded file name",
+    "role": "provenance",
+    "rule": "Raw files are immutable"
+  },
+  {
+    "field": "source_row",
+    "type": "integer",
+    "definition": "1-based data row; PDF locator also in quality_flags",
+    "role": "provenance",
+    "rule": "CSV row count excludes header"
+  },
+  {
+    "field": "record_type",
+    "type": "enum",
+    "definition": "loan_program_observation / financing_intervention / signed_support_disclosure / announcement",
+    "role": "label",
+    "rule": "Separate units of observation"
+  },
+  {
+    "field": "party_name",
+    "type": "string",
+    "definition": "Source company or counterparty text",
+    "role": "linkage",
+    "rule": "Not a global entity ID; no borrower re-identification"
+  },
+  {
+    "field": "country",
+    "type": "string",
+    "definition": "Source jurisdiction; source country retained",
+    "role": "context",
+    "rule": "Country and currency are not interchangeable"
+  },
+  {
+    "field": "jurisdiction",
+    "type": "string",
+    "definition": "Source state or province",
+    "role": "context",
+    "rule": "Blank means not extracted"
+  },
+  {
+    "field": "product",
+    "type": "string",
+    "definition": "Source financing program / assistance type",
+    "role": "feature",
+    "rule": "Not AMLOK product"
+  },
+  {
+    "field": "currency",
+    "type": "ISO currency",
+    "definition": "USD / CAD",
+    "role": "unit",
+    "rule": "No FX conversion or cross-currency sum"
+  },
+  {
+    "field": "approval_date",
+    "type": "date",
+    "definition": "Source approval or signing date according to record_type",
+    "role": "time",
+    "rule": "Not necessarily disbursement"
+  },
+  {
+    "field": "first_disbursement_date",
+    "type": "date",
+    "definition": "SBA reported initial disbursement date",
+    "role": "cohort",
+    "rule": "Blank does not prove no funding"
+  },
+  {
+    "field": "as_of",
+    "type": "date",
+    "definition": "Source snapshot or disclosure period end",
+    "role": "time",
+    "rule": "Not model training date"
+  },
+  {
+    "field": "amount",
+    "type": "decimal",
+    "definition": "Exact reported value where recoverable",
+    "role": "feature",
+    "rule": "Interpret with amount_basis; OCR values need review"
+  },
+  {
+    "field": "amount_basis",
+    "type": "enum",
+    "definition": "gross_approval / authorized_financing / conditional_maximum",
+    "role": "unit",
+    "rule": "Do not equate commitment, facility capacity and outstanding balance"
+  },
+  {
+    "field": "guaranteed_amount",
+    "type": "decimal",
+    "definition": "SBA guaranteed approval in USD",
+    "role": "feature",
+    "rule": "Missing for 504; not zero"
+  },
+  {
+    "field": "amount_band",
+    "type": "string",
+    "definition": "Published EDC CAD interval",
+    "role": "feature",
+    "rule": "Do not substitute midpoint as observed amount"
+  },
+  {
+    "field": "term_months",
+    "type": "decimal",
+    "definition": "SBA current reported term or issuer announced term",
+    "role": "excluded_from_pilot",
+    "rule": "Original point-in-time status not established"
+  },
+  {
+    "field": "initial_rate_pct",
+    "type": "decimal",
+    "definition": "SBA initial total interest rate at approval",
+    "role": "feature",
+    "rule": "Percent units, not fraction"
+  },
+  {
+    "field": "industry_code",
+    "type": "string",
+    "definition": "NAICS as source-reported",
+    "role": "feature",
+    "rule": "Preserve leading zero and source revision"
+  },
+  {
+    "field": "business_age",
+    "type": "category",
+    "definition": "Source age category",
+    "role": "feature",
+    "rule": "Current snapshot provenance remains a limitation"
+  },
+  {
+    "field": "lender",
+    "type": "string",
+    "definition": "7a current assigned bank or 504 CDC",
+    "role": "linkage",
+    "rule": "Original lender is not guaranteed; do not use in pilot"
+  },
+  {
+    "field": "source_status",
+    "type": "string",
+    "definition": "Raw source status, whitespace normalized",
+    "role": "outcome",
+    "rule": "Unknown codes stay unmapped"
+  },
+  {
+    "field": "candidate_label",
+    "type": "enum",
+    "definition": "Deterministic mapping defined in codebook",
+    "role": "candidate_label",
+    "rule": "Not human gold until adjudicated"
+  },
+  {
+    "field": "label_basis",
+    "type": "string",
+    "definition": "Source field/rule supporting suggested label",
+    "role": "provenance",
+    "rule": "No inferred default from announcements"
+  },
+  {
+    "field": "outcome_date",
+    "type": "date",
+    "definition": "Charge-off or paid-in-full date",
+    "role": "outcome",
+    "rule": "Excluded from predictor matrix"
+  },
+  {
+    "field": "chargeoff_amount",
+    "type": "decimal",
+    "definition": "SBA reported total charged-off balance",
+    "role": "outcome",
+    "rule": "Excluded from predictor matrix"
+  },
+  {
+    "field": "review_status",
+    "type": "enum",
+    "definition": "Source-derived / Needs review / Adjudicated / Conflict",
+    "role": "review",
+    "rule": "Reviewer changes belong in separate label columns"
+  },
+  {
+    "field": "source_url",
+    "type": "URL",
+    "definition": "Primary public source including PDF page when known",
+    "role": "provenance",
+    "rule": "Raw hash fixes exact snapshot"
+  },
+  {
+    "field": "quality_flags",
+    "type": "string",
+    "definition": "Extraction, scope and missingness conditions",
+    "role": "quality",
+    "rule": "Resolve flags before creating gold labels"
+  }
+]

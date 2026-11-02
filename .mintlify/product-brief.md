@@ -10,7 +10,7 @@ AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and i
 
 ## Research evidence boundary
 
-Research package 0.2 builds an original-source inventory, Canadian financing cases, field semantics and real financial-document retrieval measurements. It specifies financial-language, event and graph training and matched frontier comparisons. It does not establish production foundation-model training, Canadian borrower validation or frontier superiority. Preserve actual source units, acquisition status and measured denominators. The prior 0.1 engineering experiment remains accurately archived and is excluded from current research navigation and claims.
+Research package 0.3 extends the acquired corpus and adds measured supervised SBA baselines. Package 0.2 builds an original-source inventory, Canadian financing cases, field semantics and real financial-document retrieval measurements. It specifies financial-language, event and graph training and matched frontier comparisons. It does not establish production foundation-model training, Canadian borrower validation or frontier superiority. Preserve actual source units, acquisition status and measured denominators. The prior 0.1 engineering experiment is retained only in local archival evidence, outside public pages and downloads. Do not relabel its outputs as observed data.
 
 ## Voice and presentation
 
