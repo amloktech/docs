@@ -1,0 +1,56 @@
+---
+title: "Industry benchmarks"
+description: "Financial-risk reference measures and AMLOK evaluation methods by lending product and institution type."
+icon: "chart-no-axes-combined"
+keywords: ["AMLOK research", "industry benchmarks", "financial risk benchmarks"]
+---
+
+Use this collection to select financial-risk benchmarks and evaluate AMLOK for a specific industry. Consumer Lending and Business Lending define product-level cohorts. Financial Institutions and Fintech describe institution and distribution contexts. Insurtech covers trade credit, surety and premium finance. A loan can belong to several contexts; count it once in a consolidated portfolio.
+
+Each page separates published market evidence from AMLOK evaluation methods. A market delinquency rate is not a model accuracy score. The [measured results](/research/public-results) page contains completed AMLOK research measurements; these industry pages do not add unexecuted model results.
+
+## Explore by industry
+
+| Industry | Segments | Primary assessment |
+| --- | --- | --- |
+| Consumer Lending | [Personal](/research/industries/consumer/personal), [auto](/research/industries/consumer/auto), [mortgage](/research/industries/consumer/mortgage), [student](/research/industries/consumer/student), [rent](/research/industries/consumer/rent) | Affordability, payment performance and changes in household obligations. |
+| Business Lending | [SMB](/research/industries/business/smb), [commercial](/research/industries/business/commercial), [business financing](/research/industries/business/business-financing), [MCA](/research/industries/business/mca), [working capital](/research/industries/business/working-capital) | Reconciled cash flow, repayment structure, leverage and liquidity. |
+| Financial Institutions | [Banks](/research/industries/institutions/banks), [credit unions](/research/industries/institutions/credit-unions), [alternative lenders](/research/industries/institutions/alternative-lenders) | Portfolio composition, credit performance and operational validation. |
+| Fintech | [Digital lenders](/research/industries/fintech/digital-lenders), [embedded finance](/research/industries/fintech/embedded-finance), [platforms](/research/industries/fintech/platforms) | Distribution effects, evidence completeness and financial-event reconciliation. |
+| Insurtech | [Trade credit](/research/industries/insurtech/trade-credit), [surety](/research/industries/insurtech/surety), [premium finance](/research/industries/insurtech/premium-finance) | Counterparty, performance and financed-premium exposure. |
+
+## Dated public reference points
+
+These observations are contextual anchors, not approval thresholds or predictions for an AMLOK customer. Preserve each source's denominator and reporting period.
+
+| Segment | Published observation | Population and interpretation |
+| --- | --- | --- |
+| Canadian mortgages | 0.24% delinquency in Q4 2025 | CMHC's reported national mortgage delinquency measure for loans at least 90 days past due. See the [CMHC release](https://www.cmhc-schl.gc.ca/media-newsroom/news-releases/2026/renewal-wave-peaks-still-dominates-mortgage-market). |
+| Canadian student loans | 8% three-year default rate for the 2021-2022 repayment cohort | Value-weighted federal student-loan measure; default follows more than 270 days of arrears. See the [Canada Student Financial Assistance annual report](https://www.canada.ca/content/dam/esdc-edsc/documents/programs/canada-student-loans-grants/reports/csfa-annual-2023-2024/5447-2023-24-CSFA-Program-Annual-Report-EN.pdf). |
+| Canadian small-business financing | 49% of surveyed debt-financing borrowers intended to use it for working or operating capital in 2024 | Financing-purpose context, not a default or loss rate. See [ISED's 2014-2024 credit-condition trends](https://www.ised-isde.canada.ca/site/sme-research-statistics/en/small-business-credit-condition-trends-2014-2024). |
+
+These examples retain their original dates. They are not presented as the latest available release. Refresh a benchmark from its source before using it in a current portfolio comparison.
+
+## Benchmark contract
+
+Record these fields with every numerical comparison:
+
+| Field | Required information |
+| --- | --- |
+| Population | Geography, product, borrower type, origination vintage, selection criteria and exclusions. |
+| Observation unit | Borrower, account, facility, invoice, policy, bond or exposure amount. |
+| Outcome | Exact event, past-due threshold, measurement horizon and cure treatment. |
+| Denominator | Eligible accounts, borrowers, principal, exposure, insured sales or earned premium. |
+| Time | Decision cutoff, observation window, outcome maturity and publication date. |
+| Evidence | Source URL, table or field identifier, extraction date, transformation and known gaps. |
+| Uncertainty | Sample size, confidence interval, missingness and censoring. |
+
+Do not compare a borrower-level 60-day arrears rate with an account-level 90-day rate. Do not infer a loan's default probability from an approval rate, rental vacancy rate or aggregate banking return.
+
+## AMLOK evaluation design
+
+For Insights, freeze the evidence available at the underwriting cutoff. For Signal, evaluate new information against the previously available baseline and measure the timing and usefulness of a change signal. A later repayment outcome must not enter the input snapshot.
+
+Compare the same eligible cohort, evidence and decision date across a tabular baseline, the AMLOK system under evaluation and any eligible frontier-model comparator. Keep borrowers and related entities out of both training and evaluation sets. Report classification, calibration, evidence quality, abstention, latency and cost separately. See the [evaluation protocol](/research/evaluation), [frontier comparison](/research/frontier-benchmark) and [document benchmarks](/research/document-benchmarks).
+
+Institutions define lending and intervention policies. These research pages introduce no servicing workflow, automatic credit decision, new paid product or public API endpoint.

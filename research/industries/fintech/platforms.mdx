@@ -1,0 +1,33 @@
+---
+title: "Platform benchmarks"
+sidebarTitle: "Platforms"
+description: "Evaluate financial evidence from platforms through identity, reconciliation, timeliness and coverage."
+keywords: ["AMLOK research", "platforms", "financial risk benchmarks"]
+---
+
+Use platforms as evidence contexts for the institution's authorized risk assessment. Keep the platform, merchant, customer, payment and settlement identities distinct. Do not assume one transaction ID remains stable across providers.
+
+## Financial-data measures
+
+| Measure | Definition and comparison rule |
+| --- | --- |
+| Reconciliation coverage | Eligible payment value or count linked to its settlement and bank receipt, with the denominator stated. |
+| Duplicate-event rate | Incorrectly repeated economic events after cross-system matching, assessed against reviewed evidence. |
+| Freshness | Delay between source event, source availability and AMLOK observation, reported separately. |
+| Coverage | Observed accounts, channels and periods compared with the authorized scope. |
+| Identity quality | Correct, missed and incorrect links among merchants, entities and accounts. |
+| Continuity | Missing updates, recovery completeness and unchanged-version deduplication. |
+
+## Public benchmark sources
+
+[Payments Canada's 2025 payment-market release](https://www.payments.ca/canadian-payment-transactions-total-more-12-trillion-2025-real-time-payments-appeal-over-half) reports **26.7 billion transactions totaling CAD 12.9 trillion**. These are national market-scale observations, not an AMLOK processed-record count or a platform reconciliation target.
+
+Use the [integration refresh guide](/integrations/data-refresh) for provider-specific capabilities. Upstream webhook or polling support does not establish one universal AMLOK refresh interval.
+
+## AMLOK evaluation
+
+Build reviewed event chains with source identifiers, timestamps and correction history. Measure reconciliation by both event count and value. Report false merges separately from missed links because their financial effects differ.
+
+Evaluate replayed deliveries, late updates, refunds and corrected records without double-counting unchanged versions. Hold out merchants and time periods. Where platform evidence supports underwriting, evaluate the downstream product outcome separately from data-quality scores.
+
+Follow the [data foundations](/research/data-foundations) and [monitoring protocol](/research/monitoring). These methods do not add payment execution or servicing functionality.
