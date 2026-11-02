@@ -1,0 +1,81 @@
+---
+mode: "wide"
+title: "Document and transaction benchmark tasks"
+description: "Specify matched-input tests for financial document extraction, bank-transaction meaning, entity matching, reconciliation and risk monitoring."
+sidebarTitle: "Benchmark tasks"
+keywords: ["financial benchmarks", "document extraction", "bank transactions", "evaluation"]
+---
+
+AMLOK's benchmark separates recovering a field, understanding its meaning and using it in a financial assessment. You can inspect each task's input, reference label, scoring unit and failure criteria before comparing models. No single accuracy number stands for all of these capabilities.
+
+## Track A: document extraction
+
+Use real source PDFs, HTML disclosures and financial tables. Keep a text-only track separate from a visual-document track. Giving one system a clean table and another the original image changes the task.
+
+| Task | Input and target | Primary score | Material errors |
+| --- | --- | --- | --- |
+| A1. Field extraction | Document to parties, dates, amounts, currency and product | Field macro-F1 and complete-record exact match | Missing an amount, assigning it to the wrong party, or confusing signing with funding. |
+| A2. Table reconstruction | Original page to rows, columns, headings and cells | Cell accuracy plus correct row/column association | Correct number in the wrong row; lost scale or unit. |
+| A3. Financial semantics | Evidence to commitment/drawn/available distinctions and conditions | Typed field accuracy and contradiction rate | Treating a conditional limit as cash received. |
+| A4. Evidence grounding | Answer to exact supporting source locations | Citation precision, citation recall and unsupported-field rate | A plausible value whose citation does not support it. |
+| A5. Numerical reasoning | Source evidence plus question to result and operands | Numerical accuracy with unit/scale correctness | Arithmetic on the wrong period, double counting, or invented inputs. |
+| A6. Abstention | Incomplete source to explicit unknown or ambiguity | Error-versus-coverage curve | Filling in an undisclosed interest rate or identifying a hidden counterparty. |
+
+Score currency, period, amount meaning and locator separately from the numeric value. A result of 4,500 can be numerically correct and financially wrong if it is reported as CAD cash drawn instead of a USD commitment in millions.
+
+## Real document corpus
+
+| Dataset or source | Verified role | Evaluation boundary |
+| --- | --- | --- |
+| Canadian issuer and financing disclosures | Original source documents with real financing fields and conditions | Current examples are a development and source-feasibility set, not a national random sample. |
+| [FinQA](https://github.com/czyssrs/FinQA) | Financial-report questions, reference programs and evidence identifiers; acquired split counts are 6,251/883/1,147 | Existing report exposure can contaminate model evaluation. The local run tests retrieval, not answer generation. |
+| [TAT-QA](https://github.com/NExTplusplus/TAT-QA) | Hybrid table/text reasoning; acquired development release has 278 contexts and 1,668 questions | The inspected split is development data and must not be called an untouched final test. |
+| [CUAD](https://www.atticusprojectai.org/cuad) | Expert-labeled commercial-contract clauses | The [publisher's licence](https://www.atticusprojectai.org/legal/) identifies CC BY 4.0. This review verified the candidate source; it did not acquire or score its full corpus. |
+| [FinanceBench](https://www.patronus.ai/research/financebench) | Public-company financial question answering; 150 open questions inspected | The publisher restricts the free sample to noncommercial use. AMLOK commercial evaluation requires an appropriate licence; no scoring or training was performed here. |
+
+Keep benchmark-specific original annotations and scoring conventions. Do not pool questions, documents and cells into one denominator. Source licences, filing rights and redistribution rights remain separate.
+
+## Track B: bank-transaction understanding
+
+The benchmark input is the actual transaction record and the explicitly permitted context. A lien entry or annual financial statement cannot substitute for a transaction descriptor. The public-source review did not verify an openly licensed, representative Canadian bank-plus-business-system ledger corpus.
+
+| Task | Target | Reference evidence | Scoring |
+| --- | --- | --- | --- |
+| B1. Observed descriptor parsing | Rail, name fragment, intermediary and reference spans | Literal input plus an adjudicated schema | Span F1 and invalid-span rate. |
+| B2. Transaction purpose | Revenue, operating expense, transfer, financing, reversal or unresolved | Independently reviewed activity and related evidence | Macro-F1, class prevalence and coverage. |
+| B3. Counterparty role | Merchant, processor, lender, employer or unknown | Role-specific evidence, not only a merchant string | Role accuracy and false attribution. |
+| B4. Legal-entity resolution | Correct entity or unresolved candidate set | Authorized registries and corroborating records | Candidate recall, false-merge rate and precision at coverage. |
+| B5. Cross-source reconciliation | Links between orders, invoices, payments, fees, refunds and deposits | Verified source identifiers and reviewed settlement relationships | Link precision/recall and amount-weighted residual. |
+| B6. Economic-event counting | One economic event represented by several source records | Adjudicated event families | Overcount/undercount rates and total-value error. |
+
+Run isolated-descriptor and context-assisted variants. Keep extra evidence identical across models within each variant. A masked or truncated counterparty can be genuinely unidentifiable; abstention is a valid behavior, but does not count as a resolved match.
+
+Stratify by English/French/code-switching, institution format, rail, missingness, settlement batching, refunds, reversals, cross-currency activity and unseen counterparties. Reserve entity families and descriptor templates across splits. Test stale, deleted and corrected records with their original timestamps.
+
+The historical PKDD'99 financial dataset is a possible non-Canadian transaction-method reference. The original host was unavailable during acquisition, and this review did not verify a suitable use licence or acquire the corpus. It is excluded from executed counts. Do not substitute an unverified mirror or present its observations as Canadian data.
+
+## Track C: entity graph and financial reasoning
+
+Evaluate candidate retrieval before graph linking. A matching model cannot recover a correct entity absent from its candidate set. Report both candidate recall and precision after linking, including unresolved names.
+
+Use entity-disjoint and time-disjoint tests. Check numbered corporations, co-borrowers, aliases, administrative agents and shared addresses. A shared director or address is evidence of a relationship candidate, not automatic common ownership or liability. Registration amendments belong to a source family; they are not independent borrowers.
+
+For financial reasoning, require the calculation's operands, periods, units and evidence references. Evaluate transfers excluded from revenue, net/gross settlement differences, debt-service denominators and conditional credit capacity. Run the same deterministic calculator for all tool-assisted entrants. Score retrieval failures separately from arithmetic failures.
+
+## Track D: underwriting and monitoring
+
+Underwriting evaluation requires a defined outcome and observation horizon, not only extracted deal terms. Fix event definitions, cure/restructure treatment, prepayment, missing follow-up and censoring before training. Use AUROC, average precision with prevalence, Brier score, calibration and decision-cost curves. Compare at matched approval rate or matched risk only when the study design supports that operating point.
+
+Monitoring evaluation requires point-in-time evidence, eventual events and a defined alert threshold. Report alert precision, event recall, false alerts per borrower-month, coverage and lead time at matched sensitivity. Include missed events in the denominator; measuring lead time only among detected cases inflates apparent performance.
+
+Distinguish a financial change from a delayed source refresh, a corrected historical record and a model-version change. In a retrospective study, use evidence availability as well as event dates. Do not use a later court finding or revised filing as an earlier input.
+
+## Annotation and gold-set controls
+
+Create an annotation handbook with field definitions, allowed nulls, event states, temporal rules and source-location requirements. Two reviewers independently label a stratified sample; a third adjudicates disagreements. Keep reviewer qualifications, agreement, corrections and uncertain cases in the release log. No dual-review completion is claimed for the initial worked examples.
+
+Do not create ground truth by asking the same model that will be evaluated to label its test set. Teacher labels can support development only with their provenance and error rate retained. Separate naturally incomplete evidence from parser failure. Record a source-visible value even when the extraction tool cannot recover it.
+
+## Error taxonomy
+
+Every failed item receives one or more causes: inaccessible source, unreadable page, missing glyph, table misalignment, wrong period, wrong unit, unsupported identity, wrong event state, duplicate economic event, retrieval miss, calculation error, unsupported explanation or inappropriate confidence. Publish failures as well as averages. The [public-record findings](/research/public-record-findings) include real examples that motivate these categories.

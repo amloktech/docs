@@ -32,17 +32,17 @@ Generate candidates using provider references, invoice/payment IDs, currencies, 
 
 Do not force balance by inventing a transaction or changing an amount. A discrepancy can be normal timing, a missing source, an accounting choice, or a data error. It is not automatically fraud.
 
-## Synthetic settlement example
+## Reconciliation in an original public record
 
-A fictional merchant records CAD 13,560.00 of customer charges, comprising CAD 12,000.00 before tax and CAD 1,560.00 of tax. It refunds CAD 560.00, including CAD 500.00 before tax. The processor deducts CAD 350.00 of fees and holds CAD 600.00 in reserve.
+BCE's 2025 annual financial report separates committed credit capacity from drawings, letters of credit and commercial paper. The inspected totals, in CAD millions, reconcile as follows:
 
 ```text
-Bank payout = 13,560.00 - 560.00 - 350.00 - 600.00 = CAD 12,050.00
-Net sales before tax = 12,000.00 - 500.00 = CAD 11,500.00
-Processor reserve = CAD 600.00, subject to its release conditions
+Net available capacity = 6,393 - 1,409 - 71 - 2,550 = 2,363
 ```
 
-The bank deposit is neither additional sales nor necessarily equal to net sales. Accounting revenue recognition still depends on the relevant policy and fulfillment evidence. This example is arithmetic, not an observed customer or a universal tax rate.
+Each term has a distinct role; neither total capacity nor remaining capacity is cash already received. The [source findings](/research/public-record-findings) retain the original report, date, table location and units. This is a real financial-table calculation, not a linked merchant settlement ledger.
+
+For permissioned payment data, apply the same discipline to customer charges, refunds, fees, reserves and bank payouts. Retain each source record and its role. Accounting revenue recognition depends on the relevant policy and fulfillment evidence; a deposit is not automatically additional sales.
 
 ## Revisions and unavailable data
 

@@ -1,0 +1,80 @@
+---
+title: "Findings from real public financing records"
+description: "Inspect verified Canadian financing examples, source field availability, amount semantics and extraction failures found in original public records."
+sidebarTitle: "Source findings"
+keywords: ["Canadian public records", "financing data", "source findings", "real data"]
+---
+
+AMLOK's source review retrieved original public financing disclosures and inspected what can actually be extracted. The findings below are observations about those records. They establish source feasibility and concrete research cases; they do not imply completed borrower-outcome validation.
+
+## Initial source inspection
+
+| Source snapshot | What was inspected | What the count means |
+| --- | --- | --- |
+| CSBFP financial-activity CSV | 27 fiscal-year observations, 1999-2000 through 2025-26 | Annual aggregates representing 214,158 loans, with zero individual loan rows. |
+| EDC current disclosure table | 30 visible rows and 11 columns | One captured table page, not the full archive or a random sample. |
+| Investissement Québec 2023-24 intervention list | Complete 18-page PDF; 1,014 parser-identified typed rows and rendered page checks | Published financing interventions, with repeated companies and different assistance types. |
+| Kinross financing announcement | Original issuer HTML | One disclosed term-loan event and explicit use of proceeds. |
+| Lundin Mining amendment announcement | Original issuer HTML | One amendment with staged, conditional credit capacity. |
+| BCE 2025 annual financial report | Complete 180-page PDF; liquidity table on PDF page 78 | A dated facility-position table, not a list of new originations. |
+| SBA 7(a) FY2010-19 release | First 548 complete data rows plus the official dictionary | A bounded US schema inspection, not a Canadian cohort or representative sample. |
+
+This table records the initial 0.2 inspection. The subsequent [0.3 collection](/research/datasets) expands SBA to six complete releases and Québec to 1,017 intervention rows, with 993 amounts recovered, and adds complete scoped HMDA and SEC releases. The initial checks below remain reproducible against their original snapshots.
+
+The [acquisition manifest](/downloads/research/public-records/acquisition-manifest.json) records file sizes, dates, URLs and SHA-256 hashes. [Source-analysis output](/downloads/research/public-records/source-analysis.json) records counts and checks. The [record index](/downloads/research/public-records/record-index.jsonl) provides 1,047 reproducible source observations with page/row locations and field availability. These observations are not adjudicated distinct facilities. Do not sum different source units into a deal total.
+
+## Canadian program scale without invented loan rows
+
+The [CSBFP source release](https://open.canada.ca/data/dataset/3f718801-099d-4037-bb0a-1d41ba8aca8b) reports 214,158 loans over the 27 inspected fiscal years. The local calculation sums the English annual loan-count column and reconciles it with the published total. The source also contains a French presentation of the same figures; counting both would double the population.
+
+This dataset supports program-scale and period analysis. It does not expose 214,158 borrower identities, individual balances or transaction histories. The published loan-value total is CAD 30,523,393.5 thousand; summing the displayed annual values gives CAD 30,523,393.4 thousand. Preserve this CAD 0.1 thousand discrepancy rather than silently changing the source, and distinguish it from the exact reconciliation of loan counts. Claims paid during a fiscal year cannot be divided by that year's new loans and interpreted as a cohort default rate without matching vintages and definitions.
+
+## Signed Canadian support with explicit amount bands
+
+The captured [EDC table](https://www.edc.ca/en/about-us/corporate/disclosure/reporting-transactions/individual-transaction-information.html) contains signing date, country, counterparty, purpose, industry, sector of interest, cleantech indicator, product, description, CAD amount band and Canadian company. The captured page includes financing, guarantees and equity; those product types must remain distinct.
+
+For example, the September 22, 2026 record for Prémoulé Inc. identifies Canada, manufacturing, a guarantee and a CAD 1 million to under CAD 5 million band. That supports a signed-support observation, not a claim of CAD 3 million cash disbursed. EDC describes publication after signing, normally within 90 days, so historical availability must not be backdated to signing. See its [reporting policy](https://www.edc.ca/en/about-us/corporate/disclosure/reporting-transactions.html).
+
+## A financing event with use-of-proceeds evidence
+
+[Kinross's March 7, 2022 announcement](https://www.kinross.com/news-and-investors/news-releases/press-release-details/2022/Kinross-announces-US1.0-billion-term-loan/default.aspx) states a USD 1 billion, three-year term loan maturing March 7, 2025. It states that proceeds repaid drawings associated with the Great Bear acquisition and identifies lead arrangers.
+
+This supports a borrower, product, currency, principal, term, maturity, use-of-proceeds and arranger extraction case. The announcement does not supply a complete amortization ledger, bank descriptors or a later performance outcome. Preserve the fact that the earlier revolving balance and new term loan describe refinancing rather than two independent revenue inflows.
+
+## Conditional capacity is not funded cash
+
+[Lundin Mining's February 26, 2026 disclosure](https://www.lundinmining.com/news/lundin-mining-increases-existing-credit-facility-to-us45-billion) describes an amended USD 4.5 billion revolving facility maturing February 26, 2031. Initial access is USD 2.25 billion; later stages depend on conditions. The stated pricing is adjusted term SOFR plus a margin of 1.45% to 2.50%.
+
+The extraction target therefore separates total commitment, initial availability, conditional stages, maturity, floating-rate basis and spread. The correct output does not report USD 4.5 billion as drawn cash. An amendment remains linked to the original facility rather than counted as an unrelated new borrower.
+
+## Balance-sheet reconciliation from an original table
+
+The [BCE annual financial report](https://www.bce.ca/cs-assets/2025-bce-annual-financial-report.pdf-blt5d552f866d8a58a3), printed page 76 / PDF page 78, supplies the following December 31, 2025 committed-facility totals in CAD millions:
+
+| Field | Value |
+| --- | ---: |
+| Total available | 6,393 |
+| Drawn | 1,409 |
+| Letters of credit | 71 |
+| Commercial paper outstanding | 2,550 |
+| Net available | 2,363 |
+
+The arithmetic reconciles: `6,393 - 1,409 - 71 - 2,550 = 2,363`. This is a directly checkable extraction-and-calculation case. A parser must preserve the table's unit, reporting date and distinctions between drawn amounts and other uses of capacity. It must not treat net availability as cash already held.
+
+## A real visual-extraction failure
+
+The [Investissement Québec intervention PDF](https://www.investquebec.com/sites/default/files/2026-02/investissement-quebec-interventions-financieres-2024.pdf) visibly contains company, financing amount and assistance type. However, the inspected text extraction omitted the amount digits for five selected rows on PDF page 2 even though the rendered page showed them.
+
+The visually read amounts for those rows are 375,000; 75,000; 1,000,000; 2,075,000; and 1,616,250. The diagnostic checks whether their digits are recoverable from the extracted page text. It is a five-cell development probe, not an independently annotated OCR benchmark or an AMLOK accuracy claim. It demonstrates why a text-only pipeline needs an image/layout recovery path and field-completeness checks.
+
+## Loan status needs source-specific interpretation
+
+The [SBA dataset and dictionary](https://data.sba.gov/dataset/7a-504-foia) expose approval, first disbursement, rate, term, industry and selected status fields. The dictionary identifies `LocationID` as a lender identifier, not a unique loan ID. It also describes an `EXEMPT` status for certain disbursed loans whose current status is withheld; that value cannot be interpreted as a known successful repayment outcome.
+
+The initial inspection used a byte prefix ending on a complete CSV row to check the schema. The expanded collection now preserves all six source releases. [Supervised baseline results](/research/public-results) use a defined eligible cohort from those complete files. No individual borrower names or addresses are republished in the public prediction files.
+
+## Findings that shape the research
+
+Real public financing data is available and useful. It supports document extraction, typed event classification, financial semantics, entity corroboration and selected relationship studies. Its limitations are specific: visibility is uneven, records overlap, some amounts are conditional or banded, publication can lag, and a PDF's text layer can omit visible values.
+
+The next acquisition stages should expand source and period coverage while retaining these semantics. The benchmark must test those difficult cases, not only clean records. Public-record availability does not establish access to the private multi-source transaction histories needed for a complete borrower cash-flow model.

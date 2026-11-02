@@ -1,0 +1,499 @@
+{
+  "version": "0.2",
+  "review_date": "2026-11-01",
+  "counting_rule": "Do not sum aggregates, documents, registry events, questions or parser rows as unique closed deals.",
+  "sources": [
+    {
+      "source_id": "edc",
+      "name": "EDC individual transactions",
+      "jurisdiction": "CA",
+      "group": "financing",
+      "status": "record_sample_inspected",
+      "record_unit": "signed support disclosure",
+      "primary_url": "https://www.edc.ca/en/about-us/corporate/disclosure/reporting-transactions/individual-transaction-information.html",
+      "available_or_documented_fields": [
+        "Signing date",
+        "country",
+        "counterparty",
+        "purpose",
+        "sector",
+        "product",
+        "CAD amount band",
+        "Canadian company"
+      ],
+      "verified_scope": "30 visible rows, 11 columns; full archive not enumerated. Guarantees, equity and financing remain separate. Signed support is not proof of disbursement.",
+      "acquisition_files": [
+        "edc-transactions.html",
+        "edc-reporting.html"
+      ]
+    },
+    {
+      "source_id": "iq",
+      "name": "Investissement Québec interventions",
+      "jurisdiction": "CA-QC",
+      "group": "financing",
+      "status": "record_document_inspected",
+      "record_unit": "financing intervention",
+      "primary_url": "https://www.investquebec.com/fr/tout-sur-nous/diffusion-de-linformation/archives",
+      "available_or_documented_fields": [
+        "Company",
+        "financing amount",
+        "assistance type"
+      ],
+      "verified_scope": "18-page 2023-24 PDF. Parser identifies 1,014 typed rows, not adjudicated unique loans. Amounts require visual recovery; repeated companies and co-borrowers need linkage.",
+      "acquisition_files": [
+        "iq-interventions.pdf",
+        "iq-archives.html"
+      ]
+    },
+    {
+      "source_id": "kinross",
+      "name": "Kinross term loan",
+      "jurisdiction": "CA",
+      "group": "financing",
+      "status": "record_document_inspected",
+      "record_unit": "issuer financing announcement",
+      "primary_url": "https://www.kinross.com/news-and-investors/news-releases/press-release-details/2022/Kinross-announces-US1.0-billion-term-loan/default.aspx",
+      "available_or_documented_fields": [
+        "Borrower",
+        "USD principal",
+        "maturity",
+        "term",
+        "use of proceeds",
+        "arrangers"
+      ],
+      "verified_scope": "One disclosed loan event. Refinancing is not new operating revenue; no repayment-performance ledger supplied.",
+      "acquisition_files": [
+        "kinross-term-loan.html"
+      ]
+    },
+    {
+      "source_id": "lundin",
+      "name": "Lundin Mining credit amendment",
+      "jurisdiction": "CA",
+      "group": "financing",
+      "status": "record_document_inspected",
+      "record_unit": "facility amendment",
+      "primary_url": "https://www.lundinmining.com/news/lundin-mining-increases-existing-credit-facility-to-us45-billion",
+      "available_or_documented_fields": [
+        "Facility capacity",
+        "conditional stages",
+        "maturity",
+        "reference rate",
+        "margin",
+        "lenders"
+      ],
+      "verified_scope": "One amendment. Separate initial availability, conditional capacity and actual drawn cash.",
+      "acquisition_files": [
+        "lundin-facility.html"
+      ]
+    },
+    {
+      "source_id": "bce",
+      "name": "BCE annual financial report",
+      "jurisdiction": "CA",
+      "group": "financing",
+      "status": "record_document_inspected",
+      "record_unit": "dated facility position",
+      "primary_url": "https://www.bce.ca/cs-assets/2025-bce-annual-financial-report.pdf-blt5d552f866d8a58a3",
+      "available_or_documented_fields": [
+        "Committed capacity",
+        "drawn amounts",
+        "letters of credit",
+        "commercial paper",
+        "net available",
+        "units",
+        "date"
+      ],
+      "verified_scope": "180-page report acquired. Liquidity table on PDF page 78 visually checked; positions are not new originations.",
+      "acquisition_files": [
+        "bce-annual-report.pdf"
+      ]
+    },
+    {
+      "source_id": "sedar",
+      "name": "SEDAR+ public filings",
+      "jurisdiction": "CA",
+      "group": "financing",
+      "status": "documentation_verified",
+      "record_unit": "issuer filing",
+      "primary_url": "https://systems.securities-administrators.ca/onlinehelp/faqs/searching-sedar/",
+      "available_or_documented_fields": [
+        "Issuer",
+        "filing type",
+        "publication date",
+        "available financial/contractual text"
+      ],
+      "verified_scope": "Search documentation reviewed; no bulk issuer corpus acquired. Public issuers do not represent private SMEs or consumers.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "cib",
+      "name": "Canada Infrastructure Bank",
+      "jurisdiction": "CA",
+      "group": "financing",
+      "status": "documentation_verified",
+      "record_unit": "investment/project stage",
+      "primary_url": "https://cib-bic.ca/en/work-with-us/investment-process/",
+      "available_or_documented_fields": [
+        "Project",
+        "investment stage",
+        "financial-close terminology",
+        "disclosed amount"
+      ],
+      "verified_scope": "Process reviewed; no complete project ledger acquired. Commitment, financial close and disbursement differ.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "bc-ppr",
+      "name": "BC Personal Property Registry",
+      "jurisdiction": "CA-BC",
+      "group": "registry",
+      "status": "documentation_verified",
+      "record_unit": "registered security event",
+      "primary_url": "https://developer.api.bcregistry.gov.bc.ca/en-CA/products/ppr/overview/",
+      "available_or_documented_fields": [
+        "Registrations",
+        "parties",
+        "search criteria",
+        "amendments",
+        "renewals",
+        "discharges"
+      ],
+      "verified_scope": "Documented API requires account/key and applicable fees. Documentation acquired; no paid live search executed. Not an anonymous free bulk export.",
+      "acquisition_files": [
+        "bc-ppr.html"
+      ]
+    },
+    {
+      "source_id": "on-ppsa",
+      "name": "Ontario PPSA",
+      "jurisdiction": "CA-ON",
+      "group": "registry",
+      "status": "documentation_verified",
+      "record_unit": "registered security event",
+      "primary_url": "https://www.personalproperty.gov.on.ca/ppsrweb/en/help/makingEnquiry.htm",
+      "available_or_documented_fields": [
+        "Name",
+        "registration",
+        "vehicle searches",
+        "registration family/history"
+      ],
+      "verified_scope": "Search help reviewed; no individual search result acquired. Security registration does not prove funded principal or repayment.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "acol",
+      "name": "ACOL PPRS",
+      "jurisdiction": "CA",
+      "group": "registry",
+      "status": "documentation_verified",
+      "record_unit": "registered security event",
+      "primary_url": "https://www.acol.ca/en/pprs/responsibilities/searcher.html",
+      "available_or_documented_fields": [
+        "Jurisdiction",
+        "registration",
+        "parties",
+        "search-report information"
+      ],
+      "verified_scope": "Documentation reviewed. Participating jurisdictions, fees and entitlements must be handled separately; no record acquisition.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "rdprm",
+      "name": "Québec RDPRM",
+      "jurisdiction": "CA-QC",
+      "group": "registry",
+      "status": "documentation_verified",
+      "record_unit": "registered movable/personal right",
+      "primary_url": "https://www.rdprm.gouv.qc.ca/",
+      "available_or_documented_fields": [
+        "Registered right",
+        "parties",
+        "dates",
+        "amendments according to returned report"
+      ],
+      "verified_scope": "Consultation documentation reviewed; no bulk export or individual report acquired.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "basr",
+      "name": "Bank Act Security Registry",
+      "jurisdiction": "CA",
+      "group": "registry",
+      "status": "documentation_verified",
+      "record_unit": "notice of intention/security event",
+      "primary_url": "https://www.basr.ca/",
+      "available_or_documented_fields": [
+        "Notice",
+        "bank/debtor",
+        "renewal",
+        "expiry",
+        "release"
+      ],
+      "verified_scope": "Principles PDF acquired. A release may also mean no security was given; do not infer successful loan repayment. No individual searches.",
+      "acquisition_files": [
+        "basr-principles.pdf"
+      ]
+    },
+    {
+      "source_id": "corporations",
+      "name": "Corporations Canada",
+      "jurisdiction": "CA",
+      "group": "registry",
+      "status": "documentation_verified",
+      "record_unit": "federal legal entity",
+      "primary_url": "https://ised-isde.canada.ca/site/corporations-canada/en/data-services",
+      "available_or_documented_fields": [
+        "Corporate identifier",
+        "name",
+        "status",
+        "permitted registry attributes"
+      ],
+      "verified_scope": "Data services/API verified; federal scope is not all Canadian corporations. No national identity corpus acquired.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "req",
+      "name": "Québec enterprise register",
+      "jurisdiction": "CA-QC",
+      "group": "registry",
+      "status": "catalogue_verified",
+      "record_unit": "registered enterprise",
+      "primary_url": "https://www.donneesquebec.ca/recherche/dataset/registre-des-entreprises",
+      "available_or_documented_fields": [
+        "NEQ",
+        "published entity identity and register attributes"
+      ],
+      "verified_scope": "Catalogue reviewed; underlying bulk files not acquired in this release.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "csbfp",
+      "name": "CSBFP loans and claims",
+      "jurisdiction": "CA",
+      "group": "outcomes_context",
+      "status": "aggregate_inspected",
+      "record_unit": "annual program aggregate",
+      "primary_url": "https://open.canada.ca/data/dataset/3f718801-099d-4037-bb0a-1d41ba8aca8b",
+      "available_or_documented_fields": [
+        "Fiscal year",
+        "loan count/value",
+        "claims",
+        "provincial breakdown"
+      ],
+      "verified_scope": "27 annual observations represent 214,158 loans, with zero individual loan rows. English/French tables repeat the same population. Claims are not matched cohort defaults.",
+      "acquisition_files": [
+        "csbfp-summary.csv",
+        "csbfp-provinces.csv"
+      ]
+    },
+    {
+      "source_id": "osb-records",
+      "name": "OSB insolvency-record search",
+      "jurisdiction": "CA",
+      "group": "outcomes_context",
+      "status": "documentation_verified",
+      "record_unit": "individual insolvency proceeding",
+      "primary_url": "https://ised-isde.canada.ca/site/office-superintendent-bankruptcy/en/bankruptcy-and-insolvency-records-search/instructions",
+      "available_or_documented_fields": [
+        "Debtor match",
+        "proceeding type",
+        "dates",
+        "available case details"
+      ],
+      "verified_scope": "Search instructions verified. Authenticated/fee-based searches not executed; identity and event adjudication required.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "osb-statistics",
+      "name": "OSB statistics",
+      "jurisdiction": "CA",
+      "group": "outcomes_context",
+      "status": "documentation_verified",
+      "record_unit": "aggregate insolvency statistic",
+      "primary_url": "https://ised-isde.canada.ca/site/office-superintendent-bankruptcy/en/statistics-and-research",
+      "available_or_documented_fields": [
+        "Period",
+        "jurisdiction",
+        "aggregate insolvency counts"
+      ],
+      "verified_scope": "Context reference only; aggregate totals do not label individual borrowers.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "canlii",
+      "name": "CanLII",
+      "jurisdiction": "CA",
+      "group": "outcomes_context",
+      "status": "terms_reviewed_restricted_direct_access",
+      "record_unit": "court/tribunal document",
+      "primary_url": "https://www.canlii.org/info/terms.html",
+      "available_or_documented_fields": [
+        "Case",
+        "jurisdiction",
+        "publication",
+        "parties",
+        "judicial event"
+      ],
+      "verified_scope": "Indexed primary terms reviewed; direct retrieval restricted. No automated bulk corpus. Use authorized routes/original publishers and distinguish allegations from decisions.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "statcan",
+      "name": "Statistics Canada WDS",
+      "jurisdiction": "CA",
+      "group": "outcomes_context",
+      "status": "documentation_verified",
+      "record_unit": "statistical observation",
+      "primary_url": "https://www.statcan.gc.ca/en/developers/wds/user-guide",
+      "available_or_documented_fields": [
+        "Series",
+        "region",
+        "industry",
+        "period",
+        "value",
+        "units"
+      ],
+      "verified_scope": "Documented source route; preserve release vintage and licence. Revised present-day values can leak future information.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "boc",
+      "name": "Bank of Canada Valet",
+      "jurisdiction": "CA",
+      "group": "outcomes_context",
+      "status": "prior_context_analysis",
+      "record_unit": "FX observation",
+      "primary_url": "https://www.bankofcanada.ca/valet/docs",
+      "available_or_documented_fields": [
+        "Date",
+        "series",
+        "currency quote",
+        "value"
+      ],
+      "verified_scope": "Prior FXUSDCAD calculation inspected 249 observations in 2025. Context only; not borrower outcomes. Separate prior manifest.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "sba",
+      "name": "SBA 7(a)/504 FOIA",
+      "jurisdiction": "US",
+      "group": "benchmarks",
+      "status": "record_prefix_inspected",
+      "record_unit": "loan-program row",
+      "primary_url": "https://data.sba.gov/dataset/7a-504-foia",
+      "available_or_documented_fields": [
+        "Approval",
+        "first disbursement",
+        "amount",
+        "rate",
+        "term",
+        "industry",
+        "status",
+        "selected outcomes"
+      ],
+      "verified_scope": "548 complete rows from one US release byte prefix, plus dictionary. Not random or Canadian. LocationID is lender ID, not loan ID. EXEMPT is not known successful repayment.",
+      "acquisition_files": [
+        "sba-prefix.csv",
+        "sba-dictionary.xlsx"
+      ]
+    },
+    {
+      "source_id": "finqa",
+      "name": "FinQA",
+      "jurisdiction": "US-document-benchmark",
+      "group": "benchmarks",
+      "status": "benchmark_executed",
+      "record_unit": "financial-report question",
+      "primary_url": "https://github.com/czyssrs/FinQA",
+      "available_or_documented_fields": [
+        "Question",
+        "report text/table",
+        "gold evidence IDs",
+        "answer",
+        "program"
+      ],
+      "verified_scope": "6,251 train / 883 dev / 1,147 test questions. Test retrieval executed. Gold used only for scoring; no borrower outcomes. Repository licence and report rights are distinct.",
+      "acquisition_files": [
+        "finqa-train.json",
+        "finqa-dev.json",
+        "finqa-test.json",
+        "finqa-license.txt",
+        "finqa-readme.md"
+      ]
+    },
+    {
+      "source_id": "tatqa",
+      "name": "TAT-QA",
+      "jurisdiction": "international-document-benchmark",
+      "group": "benchmarks",
+      "status": "benchmark_development_inspected",
+      "record_unit": "financial-report question",
+      "primary_url": "https://github.com/NExTplusplus/TAT-QA",
+      "available_or_documented_fields": [
+        "Question",
+        "text",
+        "tables",
+        "answer type",
+        "evidence"
+      ],
+      "verified_scope": "278 development contexts, 1,668 questions. Not used as a locked final test. No performance reported.",
+      "acquisition_files": [
+        "tatqa-dev.json"
+      ]
+    },
+    {
+      "source_id": "financebench",
+      "name": "FinanceBench",
+      "jurisdiction": "US-document-benchmark",
+      "group": "benchmarks",
+      "status": "sample_inspected_not_scored",
+      "record_unit": "financial-report question",
+      "primary_url": "https://www.patronus.ai/research/financebench",
+      "available_or_documented_fields": [
+        "Question",
+        "answer",
+        "document/evidence metadata"
+      ],
+      "verified_scope": "150 released questions inspected. Publisher describes noncommercial open-sample conditions; no commercial scoring/training performed.",
+      "acquisition_files": [
+        "financebench.jsonl",
+        "financebench-readme.md"
+      ]
+    },
+    {
+      "source_id": "cuad",
+      "name": "CUAD",
+      "jurisdiction": "contract-benchmark",
+      "group": "benchmarks",
+      "status": "documentation_verified",
+      "record_unit": "contract clause",
+      "primary_url": "https://www.atticusprojectai.org/cuad",
+      "available_or_documented_fields": [
+        "Contract text",
+        "clause labels",
+        "spans",
+        "category"
+      ],
+      "verified_scope": "Description/licence reviewed; corpus not acquired or scored. Candidate clause task, not private bank transactions.",
+      "acquisition_files": []
+    },
+    {
+      "source_id": "berka",
+      "name": "PKDD 1999 original source",
+      "jurisdiction": "CZ",
+      "group": "benchmarks",
+      "status": "unavailable",
+      "record_unit": "banking research dataset",
+      "primary_url": "https://sorry.vse.cz/~berka/challenge/pkdd1999/",
+      "available_or_documented_fields": [
+        "Not verified from original host in this audit"
+      ],
+      "verified_scope": "Original host unavailable. No mirror corpus acquired and no training entitlement assumed.",
+      "acquisition_files": [
+        "berka-original.html"
+      ]
+    }
+  ]
+}

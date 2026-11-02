@@ -1,51 +1,45 @@
 ---
 title: "Research"
-description: "A Canadian research program for evidence-grounded underwriting and continuous risk monitoring."
-keywords: ["AMLOK research", "index"]
+description: "Explore AMLOK's public financial-record corpus, completed model training, measured benchmarks and methods for financial risk intelligence."
+keywords: ["AMLOK research", "financial records", "model training"]
 ---
 
-AMLOK's research question is whether a shared representation of financial activity can support better underwriting and earlier, more reliable risk signals. The proposed system combines institution-provided evidence, borrower-permissioned banking and business-system data, and appropriately licensed public context. It covers business and consumer use cases through separate task definitions and validation cohorts.
+AMLOK researches financial-data understanding for business and consumer underwriting and continuous monitoring. This research collection brings together original public records, source-level field definitions, completed baseline training and reproducible financial-document measurements.
 
-<Info>
-**Research specification and initial experiments - November 1, 2026.** This release contains a literature review, proposed architecture and training protocol, a real public-data descriptive analysis, and an executed synthetic transformer study. It does not report a trained production foundation model, observed borrower outcomes, or completed comparisons against commercial or frontier models. Each result identifies its evidence class.
-</Info>
+## Research foundation
 
-## Abstract
+Financial activity appears in several systems. An order becomes an invoice, payment, processor settlement, bank deposit and accounting entry. Resolving these relationships is necessary to measure cash flow, obligations and changes without counting the same economic event several times.
 
-Financial records describe different stages of the same economic activity. A sale can appear as an order, invoice, payment, settlement, bank deposit, and accounting entry. Combining those records without resolving their relationships overstates activity. Examining only bank deposits can hide margins, obligations, reversals, and changes that precede settlement. The proposed AMLOK architecture therefore separates transaction interpretation, economic-event reconciliation, temporal entity resolution, financial calculation, and outcome prediction.
+The research covers financial language, document extraction, temporal entity relationships, deterministic financial calculations and outcome modeling. Public financing records provide a source-backed foundation for the tasks their fields support. Transaction histories and borrower-permissioned business systems require their own authorized datasets and evaluation populations.
 
-The core hypothesis is that this separation improves evidence quality and permits a shared representation to transfer across underwriting and monitoring. It remains a hypothesis until tested on authorized, representative Canadian cohorts. A secondary hypothesis is that a relatively compact specialist model can match or exceed a general-purpose language model on a tightly defined task at lower cost. Model size and technical novelty are not substitutes for this evidence.
+## Data and completed studies
 
-## Research questions
+| Research output | Recorded evidence |
+| --- | --- |
+| Business lending records | 2,207,426 SBA loan-program observations; 1,897,410 contain a first-disbursement date. |
+| Financing disclosures | 1,049 Canadian-source intervention and financing-disclosure rows. |
+| Consumer lending records | 208,818 mortgage originations from the 2024 New York HMDA cohort. |
+| Financial statements | 3,905,397 numeric facts from 6,516 SEC filing submissions. |
+| Supervised model training | Logistic regression and gradient-boosted trees trained on 19,135 real SBA observations, with separate validation and held-out evaluation cohorts. |
+| Document retrieval | TF-IDF and BM25 evaluated on 1,147 FinQA questions from real financial reports. |
 
-| ID | Question | Primary test |
-| --- | --- | --- |
-| H1 | Does permissioned multi-source evidence add useful information beyond banking alone? | Paired out-of-time and institution-held-out evaluation, controlling model and cohort. |
-| H2 | Does domain adaptation improve bilingual transaction interpretation? | Unseen-entity and unseen-bank-format tests against rules, text encoders, and frontier models. |
-| H3 | Does a temporal graph improve resolution and reconciliation? | Graph ablation at the same false-match tolerance and evidence availability. |
-| H4 | Does self-supervised pretraining improve transfer? | Matched pretrained and from-scratch models, including strong tabular baselines. |
-| H5 | Does monitoring surface useful changes earlier? | Prospective alert precision, false-alert burden, and paired lead time at matched sensitivity. |
-| H6 | Can explanations remain faithful under ambiguity and missing data? | Evidence support, numerical correctness, abstention, correction, and adversarial tests. |
+Counts retain their source units. A financial fact, disclosure row and loan observation are different objects and are not added into a unique-deal total. The [dataset inventory](/research/datasets) identifies coverage and available data points. The [measured results](/research/public-results) distinguish the completed tasks and their metrics.
 
-## Read the program
+## Explore the research
 
 <Columns cols={2}>
-  <Card title="Scientific context" icon="book-open" href="/research/related-work">What prior work establishes and which comparisons remain open.</Card>
-  <Card title="Data and evidence" icon="database" href="/research/data-foundations">Source rights, point-in-time data, labels, and Canadian context.</Card>
-  <Card title="Model and training" icon="network" href="/research/model-architecture">The proposed representation, training stages, and ablations.</Card>
-  <Card title="Evaluation and results" icon="chart-no-axes-combined" href="/research/evaluation">Task-specific benchmarks and the initial synthetic experiment.</Card>
+  <Card title="Datasets and data points" icon="database" href="/research/datasets">Collected records, field definitions, coverage and labeling workflow.</Card>
+  <Card title="Measured results" icon="chart-no-axes-combined" href="/research/public-results">Real-data model evaluation and financial-document retrieval.</Card>
+  <Card title="Source findings" icon="file-search" href="/research/public-record-findings">Financing terms, source semantics and observed extraction challenges.</Card>
+  <Card title="Model and training methods" icon="layers" href="/research/model-architecture">Financial-language, event and graph research methods.</Card>
+  <Card title="Comparison methodology" icon="flask-conical" href="/research/frontier-benchmark">Matched evidence, evaluation populations and scoring protocols.</Card>
+  <Card title="Research artifacts" icon="files" href="/research/reproducibility">Source hashes, result manifests and reproducible methods.</Card>
 </Columns>
 
-## Evidence classes
+## Scientific scope
 
-| Label | Meaning |
-| --- | --- |
-| Published finding | A claim made by an identified external author, with its original task and limitations. |
-| Proposed method | An AMLOK design or experiment specified here; execution is not implied. |
-| Public-data analysis | A calculation performed on an identified public dataset with a reproducible acquisition record. |
-| Executed synthetic experiment | A real local run on deliberately generated data; no claim about actual borrowers. |
-| Real-cohort validation | Requires authorized borrower data, independent labels, frozen predictions, and an auditable evaluation. None is reported in this release. |
+The completed supervised models use structured loan fields. The document study measures evidence retrieval. These results do not measure a foundation model, transaction-stream understanding or frontier-model performance. The architecture and comparison pages describe the methods for those separate research tasks. The [model card](/research/model-card) records the scope and limitations of each completed study.
 
 ## Product boundary
 
-[Insights](/pricing/insights) is a full underwriting. [Signal](/pricing/signal) monitors new evidence and includes change-driven reassessment. The research introduces no new paid product or standalone verification charge. Institutions retain credit decisions, borrower communication, and intervention. Research schemas are not additions to the public API. See the [model card](/research/model-card) for intended use and limitations.
+[Insights](/pricing/insights) performs full underwriting. [Signal](/pricing/signal) monitors changes and includes reassessment. Institutions retain lending decisions, borrower communication and intervention. Research introduces no new paid product or public API schema.

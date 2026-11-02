@@ -5,7 +5,7 @@ keywords: ["transaction language", "French", "annotation", "LLM"]
 sidebarTitle: "Transaction language"
 ---
 
-Financial descriptors compress names, rails, intermediaries, references, and purpose into incomplete strings. A language model can help interpret those strings, but it cannot recover information that the source never supplied. This page specifies a proposed text-model study. No transaction-language LLM was trained or evaluated in the initial synthetic event experiment.
+Financial descriptors compress names, rails, intermediaries, references, and purpose into incomplete strings. A language model can help interpret those strings, but it cannot recover information that the source never supplied. This page specifies the text-model study and annotation process. The [document and transaction benchmarks](/research/document-benchmarks) separate public-report extraction from private transaction interpretation; the current measured retrieval study does not validate transaction-language understanding.
 
 ## Separate the tasks
 
@@ -23,23 +23,18 @@ A descriptor containing an Interac marker can establish a possible payment rail 
 
 Use the descriptor plus the evidence that was available at the observation cutoff. Annotators must not see later outcomes or private information excluded from the model's task. Preserve an isolated-text task and a context-assisted task so added information is not mistaken for superior language understanding.
 
-```json
-{
-  "example_id": "synthetic-descriptor-001",
-  "evidence_class": "illustrative_schema",
-  "text": "INTERAC E-TRANSFER REF 3841",
-  "language": "en",
-  "rail": "interac_e_transfer",
-  "intermediary": null,
-  "counterparty_candidate": null,
-  "purpose": "unknown",
-  "identity_status": "unresolved",
-  "annotation_version": "proposed-1",
-  "source_evidence_ids": ["synthetic-record-001"]
-}
-```
+| Annotation field | Meaning and admissible evidence |
+| --- | --- |
+| `source_record_id` | Stable identifier of the actual authorized source observation. |
+| `original_text` and `spans` | Unmodified descriptor and character offsets for observed information. |
+| `language` | Observed language or mixed/undetermined status. |
+| `rail` and `intermediary` | Payment rail and processor roles, separated from the underlying counterparty. |
+| `counterparty_candidate` | Proposed entity match, with candidate evidence and unresolved state. |
+| `purpose` | Versioned category, multiple plausible labels or unknown. |
+| `annotation_version` | Label-policy version, reviewer decisions and adjudication lineage. |
+| `evidence_ids` and `available_at` | Supporting records and their verified availability at the task cutoff. |
 
-This is a research annotation schema, not an API response or a labeled observation collected from a customer. Label definitions must specify inclusions, exclusions, ambiguous cases, multi-label cases, and adjudication rules. Preserve negative and unresolved examples.
+This is a research annotation contract, not a new public API response. Populate it only from observed evidence. Label definitions specify inclusions, exclusions, ambiguity, multi-label cases and adjudication rules. Preserve negative and unresolved examples.
 
 ## Build an independent reference set
 

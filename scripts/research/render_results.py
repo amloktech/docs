@@ -1,5 +1,7 @@
 """Render measured outputs; does not choose or tune models using test results."""
 from pathlib import Path
+raise SystemExit('This archived generator is retired. Use the public-record research workflow.')
+
 import csv,json
 import numpy as np
 import matplotlib

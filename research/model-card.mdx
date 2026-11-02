@@ -1,43 +1,47 @@
 ---
 title: "Research model card and evidence status"
-description: "An explicit inventory of implemented experiments, proposed components, and unsupported uses."
-keywords: ["AMLOK research", "model card"]
+description: "Scope, data, implemented baselines, proposed model components and validation boundaries for the public-record research release."
 sidebarTitle: "Model card"
 ---
 
-This card describes the **research package**, not a production model release. It makes the implemented and proposed parts distinguishable for scientific and institutional review.
+This card describes the public-record research collection and completed studies through release **0.3**. Research versioning is separate from API version 1.4.2. The measured systems are structured-loan baselines and financial-document retrievers.
 
-| Item | Current evidence |
+## System and data
+
+| Item | Evidence in this release |
 | --- | --- |
-| Research package | Version 0.1, November 1, 2026. Separate from public API version 1.4.2. |
-| Intended research focus | Canadian business and consumer underwriting, financial evidence quality, and post-funding risk monitoring. |
-| Production foundation-model checkpoint | Not supplied or trained in this release. |
-| Descriptor LLM and entity graph | Proposed specifications; not validated by the synthetic event study. |
-| Executed training | A small transformer encoder trained locally on generated monthly source summaries. |
-| Training data | 1,200 synthetic subjects, two bank-source channels and five business-system channels, 12 months per subject. |
-| Real public data analyzed | Bank of Canada 2025 CAD-per-USD observations, descriptively only. |
-| Borrower outcome data | None acquired or used. |
-| Frontier/commercial head-to-head evaluation | Not executed. |
-| Supported performance claim | Only the measured synthetic results and descriptive public-data calculations reported here. |
-| Independent model validation | Not completed. |
-| Approval or production deployment | Not established by this package. |
+| Intended research use | Canadian financial-document understanding, transaction interpretation, entity relationships, underwriting and monitoring. |
+| Acquired public evidence | Canadian financing disclosures, government aggregates, issuer reports, registry documentation and released financial-document datasets. |
+| Executed benchmark | TF-IDF and BM25 evidence retrieval on 1,147 FinQA test questions from 380 source filenames. |
+| Best measured baseline Recall@5 | BM25 73.90%; complete annotated evidence retrieved for 61.81% of questions. |
+| Supervised model training | Logistic regression and gradient-boosted trees, trained on 19,135 SBA observations; 5,264 validation and 11,996 held-out evaluation observations. |
+| Supervised target and measured AUROC | Reported charge-off within 36 months; logistic regression 0.72284 and gradient boosting 0.71820. |
+| Production foundation-model checkpoint | Not produced by this package. |
+| Transaction-language, temporal and graph models | Research specifications and ablation protocols. |
+| Hosted frontier comparison | Not run; no GPT, Claude or Gemini prediction records in the result artifacts. |
+| Canadian borrower-outcome validation | Not completed; source disclosures do not constitute an outcome-linked private ledger cohort. |
+| Independent validation or regulatory approval | Not established by the package. |
 
 ## Intended use
 
-Use the package to review the research design, reproduce the synthetic experiment, evaluate data requirements, and plan controlled experiments. The methods connect to Insights and Signal without changing their API or commercial boundaries.
+Use the source inventory to assess field feasibility, the original records to develop and challenge extraction, the measurements to reproduce a retrieval baseline, and the protocols to execute controlled model comparisons. Preserve the original distinction between signed support, commitments, drawn balances, registered rights and outcomes.
 
-## Unsupported uses
+Use task-specific model cards for language extraction, entity resolution, financial reasoning, business risk, consumer risk and monitoring. A retrieval result is evidence about retrieval; it does not validate the complete lending workflow.
 
-Do not use the synthetic probabilities for lending decisions, affordability determinations, capital calculations, IFRS 9 provisions, fraud accusations, regulatory reporting, or customer targeting. Do not present the synthetic test set as Canadian market validation. No causal loss reduction, approval expansion, production latency, fairness certification, or first-in-country claim is supported.
+## Data limitations
 
-## Known limitations
+Public issuers differ from private SMEs and consumers. Disclosure practices select which events become observable. Registry and court records can overrepresent formal security and distress. Missing information can reflect confidentiality, access conditions, publication lag or extraction failure rather than financial weakness.
 
-The experiment's target is generated from an authored equation. Its 12 monthly observations per source omit transaction-level descriptors, payment timing, real identity ambiguity, integration failures, borrower selection, human interventions, and economic-regime change. Synthetic institution labels do not simulate real institution distributions. The graph and text-model hypotheses remain untested.
+FinQA is a public benchmark of financial reports, with possible exposure in general-model training. Its source filenames are the clustering unit for the reported uncertainty; they are not independent Canadian institutions. The SBA collection contains six complete files. The supervised cohort is an approximately 10% hash sample of eligible 2010-2016 approval records with year-separated and normalized-entity-separated partitions. Current-snapshot predictors still require point-in-time review. FinanceBench was inspected but not scored under commercial use. No source is counted as acquired merely because its documentation or URL exists.
 
-A learned representation can absorb population and source biases. Public records may overrepresent distress and formal legal entities. More connected systems can increase information and error simultaneously. Provider availability and permitted histories vary; an integration catalog entry is not evidence of complete financial coverage.
+## Performance and unsupported claims
 
-## Evidence required for the next model card
+Supported performance statements are the structured-loan baseline and lexical-retrieval measurements in [public results](/research/public-results). It supports neither AMLOK superiority over frontier models nor a first-in-Canada foundation-model claim. Canadian financial-model prior work appears in the [related-work review](/research/related-work).
 
-Record the actual base model and revision, weight digest, architecture, parameter count, training corpus and purposes, source licences, token/event counts, training dates and hardware, full configuration, split manifests, independent labels, predictions, calibration, costs, failures, subgroup results, and reviewer findings. Publish changes and limitations alongside improvements.
+Do not use these baseline scores as lending probabilities, approval thresholds, fraud determinations, loss forecasts or production service commitments. The research has not demonstrated causal loss reduction, approval expansion, regulatory compliance of a trained model, or national representativeness.
 
-Model cards for business outcome prediction, consumer outcome prediction, entity resolution, narrative generation, and monitoring should be separate. One successful component does not validate the complete system.
+## Required evidence for a trained-model release
+
+Record the actual base checkpoint and weight digest, training corpus and purposes, source licences, token/event counts, architecture, hardware, run configuration, split manifests, independent labels, predictions, calibration, costs, failures, subgroup results and validation findings. Freeze evidence cutoff rules and record each test access.
+
+For an improved result, report the matched comparator, effect size, uncertainty and operational tradeoff. For a negative result, retain the same artifacts and explain the limitation. The [frontier protocol](/research/frontier-benchmark) defines the comparison conditions.
