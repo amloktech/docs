@@ -1,0 +1,32 @@
+---
+title: "Mortgage benchmarks"
+sidebarTitle: "Mortgage"
+description: "Evaluate mortgage affordability, collateral, renewal exposure and arrears."
+keywords: ["AMLOK research", "mortgage", "financial risk benchmarks"]
+---
+
+Separate purchase, refinance and renewal decisions, and distinguish insured from uninsured mortgages. Record amortization, term, fixed or variable rate, lien position and owner-occupied or investment use.
+
+## Financial-risk measures
+
+| Measure | Definition and comparison rule |
+| --- | --- |
+| Gross debt service | Housing obligations divided by gross income, with the included tax, heating and condominium-cost treatment identified. |
+| Total debt service | Housing and other scheduled debt obligations divided by gross income. Use the applicable lender and product policy. |
+| Loan-to-value | Mortgage exposure divided by the supported property value at a stated date. Identify additional liens separately. |
+| Renewal exposure | Change in scheduled payment at the contractual reset or renewal date under an explicit rate scenario. |
+| Arrears and loss | Report delinquency threshold, outstanding-loan denominator, cure, prepayment and loss timing. |
+
+## Public benchmark sources
+
+CMHC reported a **0.24% national mortgage delinquency rate in Q4 2025** for its 90-day-plus measure. This is a dated portfolio observation, not a probability assigned to a new applicant. See the [CMHC release](https://www.cmhc-schl.gc.ca/media-newsroom/news-releases/2026/renewal-wave-peaks-still-dominates-mortgage-market).
+
+Use [CMHC's delinquency tables](https://www.cmhc-schl.gc.ca/professionals/housing-markets-data-and-research/housing-data/data-tables/mortgage-and-debt/mortgage-delinquency-rate-canada-provinces-cmas) for matching geography and reporting period. The [AMLOK dataset inventory](/research/datasets) also contains a US HMDA origination cohort. HMDA origination records do not establish later repayment performance, and a US cohort does not validate a Canadian mortgage model.
+
+## AMLOK evaluation
+
+Evaluate document extraction for income, liabilities, mortgage terms and property evidence, then independently recompute affordability ratios. Test fixed-rate renewal exposure separately from variable-rate payment changes. Do not apply an immediate rate shock to a contract that cannot yet reprice.
+
+For outcome evaluation, prevent the same borrower or property from appearing across training and test partitions. Separate model performance from approval-policy changes, and report results by product, region and vintage. For Signal, score the evidence and lead time of renewal or liquidity signals rather than claiming that an alert prevented a loss.
+
+Apply the [shared evaluation design](/research/industries/index#amlok-evaluation-design) and [document benchmark protocol](/research/document-benchmarks).
