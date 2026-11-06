@@ -1,40 +1,52 @@
 ---
-title: "Read a risk package"
-sidebarTitle: "Risk packages"
-description: "Read a risk package for the AMLOK product API."
-keywords: ["AMLOK", "API", "Insights", "Signal"]
+title: "Risk package"
+description: "Read underwriting results, financial dimensions, evidence and monitoring changes."
 ---
 
-A risk package is an immutable, complete assessment result from Insights or Signal. Retrieve it using `GET /v1/risk-packages/{id}`. It contains the institution's exact application context, product and policy versions, evaluated dimensions, source coverage and a frozen evidence set.
+A risk package is the immutable assessment returned by Insights or Signal. It combines your application, product and risk-policy versions with authorized integration data and documents. You receive the underlying facts, calculated dimensions, supporting analyses and evidence references through the same API.
 
-## What the response contains
+## What you receive
 
-| Field | Meaning |
+| Section | Purpose |
 | --- | --- |
-| `product`, `origination_id`, `monitoring_run_id` | The product and assessment that produced the package |
-| `application` | Submitted application context; may be null for an independently onboarded portfolio |
-| `lending_product`, `risk_policy` | Immutable definitions and hashes used for this assessment |
-| `assessment` | Advisory recommendation, reasons and a human-readable summary |
-| `dimensions` | Financial and risk dimensions, typed metrics, windows and evidence links |
-| `policy_results` | Each evaluated rule, threshold, actual value, result and explanation |
-| `sources` | Per-integration retrieval time, source freshness, coverage and limitations |
-| `evidence_set` | Stable evidence-set ID, hash and record count |
-| `versions` | Schema, normalization, calculation and applicable model versions |
-| `previous_package_id` | Prior package for a monitoring comparison |
-| `billing_usage_id` | Link to the applicable usage record, when present |
+| `scope` | Borrower type, market, currency, assessed period, entities, accounts, consolidation and excluded sources. |
+| `assessment` | Your policy outcome and review reasons. `is_institution_decision` is always `false`; your institution makes the lending decision. |
+| `dimensions` | 24 assessment families with 149 defined metrics. Every metric appears once with `available`, `unavailable` or `not_applicable` status. |
+| `completeness` | Counts of each availability state. Coverage measures evidence availability, not creditworthiness. |
+| `findings` | Explained observations, inconsistencies and risk signals with metric keys and exact evidence locations. |
+| `policy_results` | Each evaluated rule, actual value, threshold, calculation version, window and evidence. |
+| `analyses` | Verification checks, financial statements, debt schedules, income streams, reconciliations, concentrations, collateral, ownership/related parties, credit reports, tax obligations, projections, benchmarks, eligible model outputs and monitoring changes. |
+| `required_actions` | Missing information or review steps; links to origination requirements when a collection action exists. |
+| `sources`, `evidence_set`, `document_ids` | Source freshness, coverage, immutable evidence and controlled file access. |
+| `versions` and `catalog_version` | Exact schema, normalization, calculation, model and metric-definition versions. |
 
-## Dimensions
+Use the [dimension and metric dictionary](/api-reference/underwriting-dimensions) for each formula, unit, input requirement and applicability rule. Use the [methodology](/api-reference/risk-package-methodology) for consolidation, missing data, period alignment and interpretation.
 
-The contract supports identity, cash flow, liquidity, revenue quality, profitability, leverage, repayment capacity, concentration, collateral, fraud/consistency and consumer income/affordability. Which metrics are available depends on borrower type, approved calculations, source coverage and entitlement. [Derived attributes](/data-model/derived-attributes) explain retained definitions; [configuration](/api-reference/configuration) identifies authorized metric keys and versions.
+## Retrieve and inspect a result
 
-A metric contains a decimal-string value, unit, observation window, calculation version and evidence IDs. Available values have `missing_reason: null`. Unavailable or not-applicable values are null with an explicit reason. Missing values are never converted into zero or a passing rule result.
+1. Submit your borrower, application, product, policy, connection IDs and documents through [origination](/api-reference/workflows).
+2. Receive `origination.completed`, then retrieve the origination's `risk_package_id` through [Get risk package](/api-reference/endpoints/results/get-risk-package).
+3. Read `scope`, `completeness`, `assessment` and `required_actions` before interpreting a metric. Read all rule outcomes; a package with required missing evidence needs review.
+4. Use [List evidence](/api-reference/endpoints/evidence/list-evidence) with the package's `evidence_set.id`, then retrieve the exact frozen evidence record. Metric inputs and findings link to record fields or document pages.
+5. Use [Data access](/api-reference/data-access) for normalized records and permitted source payloads. Use [Documents](/api-reference/documents) for controlled downloads. Source restrictions remain explicit; provider credentials are never exposed.
+6. Export the same package and evidence using [Exports](/api-reference/workflows#exports) when you need an offline archive.
 
-Business DSCR needs eligible cash flow and complete comparable debt-service inputs. Consumer affordability needs verified income and obligations; deposits alone do not establish gross income. The API does not prescribe universal thresholds or claim an unvalidated probability of default.
+You do not configure provider jobs, enrichment pipelines or internal calculation services. The Hub captures connection authorization; Insights and Signal produce the assessment and traceable outputs.
 
-## Decision and evidence
+## Available does not mean complete underwriting
 
-`assessment.is_institution_decision` is always false. Your institution makes and records the final lending decision. An unavailable policy input requires review.
+An available metric has a decimal value, unit, currency when monetary, exact window, calculation version, input values and evidence. A ratio of `0.25` means 25%. A missing or inapplicable value is `null` with a reason; it is never substituted with zero.
 
-Follow `evidence_set.id` to [list evidence](/api-reference/endpoints/evidence/list-evidence), then read a record or download an authorized source file. IDs, hashes and versions refer to the evidence used in this package, not a later replacement.
+An individual source can support cash-flow metrics without supporting complete debt, profitability or collateral analysis. All 149 catalog entries are accounted for, but only applicable metrics with sufficient entitled evidence have values. The connected-source set does not prove that every external account or liability is known.
 
-[Download a complete synthetic risk package](/downloads/risk-package-example.json). Its sample threshold, amounts, IDs and hashes illustrate the shape; they are not an observed assessment or a pricing commitment.
+## Examples
+
+All examples use synthetic borrowers, sources, amounts, IDs and hashes. They demonstrate different evidence coverage, not recommended lending thresholds or investment advice.
+
+- [Partial assessment](/downloads/risk-package-example.json): an observed inflow is available while debt-service coverage is unavailable.
+- [Business assessment](/downloads/risk-package-business-example.json): cash-flow calculations, pro forma DSCR, debt schedule, a bank-to-accounting reconciliation and evidence-linked findings.
+- [Consumer assessment](/downloads/risk-package-consumer-example.json): independently verified gross/net income and pro forma debt-to-income, with missing affordability inputs explicit.
+- [Signal assessment](/downloads/risk-package-signal-example.json): the same result structure with a monitoring run, exact deal snapshot and comparable baseline changes.
+- [Machine-readable metric catalog](/downloads/underwriting-metric-catalog.json): all definitions and calculation versions.
+
+A package does not imply a bureau report, collateral valuation, benchmark percentile or calibrated risk model exists for every borrower. Those analyses require applicable evidence and entitlement. Their sections explain why a result is unavailable instead of fabricating one.

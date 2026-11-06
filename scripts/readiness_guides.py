@@ -349,7 +349,7 @@ Use these resources with the [runnable walkthrough](/api-reference/runnable-exam
  consumer=deepcopy_value(inputs)
  consumer['CreateBorrower']={'type':'person','person':{'given_name':'Synthetic','family_name':'Borrower','residence_country':'CA','client_reference':'CONSUMER-SYNTHETIC'}}
  consumer['LendingProductInput'].update(borrower_type='person',external_id='consumer-term',name='Synthetic consumer term loan')
- consumer['RiskPolicyInput'].update(borrower_type='person',external_id='consumer-policy',name='Synthetic consumer policy; not a recommended threshold',rules=[{'id':'dti-test','dimension_key':'debt_to_income','operator':'lte','threshold':'0.40','unit':'ratio','on_missing':'review','on_fail':'review'}])
+ consumer['RiskPolicyInput'].update(borrower_type='person',external_id='consumer-policy',name='Synthetic consumer policy; not a recommended threshold',rules=[{'id':'dti-test','dimension_key':'debt_to_income','calculation_version':'amlok-debt_to_income-1','operator':'lte','threshold':'0.40','unit':'ratio','on_missing':'review','on_fail':'review'}])
  consumer['CreateOrigination']['application'].update(application_schema_id='consumer_app_schema_synthetic',declared_data={'gross_monthly_income':'6000.00','monthly_debt_payments':'1200.00'})
  (ROOT/'downloads/consumer-journey-inputs.json').write_text(json.dumps(consumer,indent=2)+'\n')
 
