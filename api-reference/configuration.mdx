@@ -2,14 +2,14 @@
 title: "Lending products, policies and configuration"
 sidebarTitle: "Lending configuration"
 description: "Lending products, policies and configuration for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Use `GET /v2/configuration` to discover the schemas, integration IDs, embedding versions and monitoring cadences approved for your key. The catalog of supported providers does not itself grant access to every integration or field.
+Use `GET /v1/configuration` to discover the schemas, integration IDs, embedding versions and monitoring cadences approved for your key. The catalog of supported providers does not itself grant access to every integration or field.
 
 ## Lending-product catalog
 
-`POST /v2/lending-product-versions` records one immutable lending-product revision. It captures borrower type, market, currency, amount and term bounds, repayment frequency, pricing and source documents. `pricing` must validate against the returned `pricing_schema_id`. Include the fees, rate and amortization inputs required for repayment analysis; AMLOK does not infer missing economics.
+`POST /v1/lending-product-versions` records one immutable lending-product revision. It captures borrower type, market, currency, amount and term bounds, repayment frequency, pricing and source documents. `pricing` must validate against the returned `pricing_schema_id`. Include the fees, rate and amortization inputs required for repayment analysis; AMLOK does not infer missing economics.
 
 ```json
 {
@@ -46,7 +46,7 @@ Read or list versions using the same resource. Create a new version when terms c
 
 ## Risk policies
 
-`POST /v2/risk-policy-versions` records approved typed rules and supporting policy documents. The rule language supports scalar comparisons (`gt`, `gte`, `lt`, `lte`, `eq`) against configured metric keys with matching units. Missing data routes to review. Policy documents provide context and are not automatically executable rules.
+`POST /v1/risk-policy-versions` records approved typed rules and supporting policy documents. The rule language supports scalar comparisons (`gt`, `gte`, `lt`, `lte`, `eq`) against configured metric keys with matching units. Missing data routes to review. Policy documents provide context and are not automatically executable rules.
 
 ```json
 {

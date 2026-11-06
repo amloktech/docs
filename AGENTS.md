@@ -47,17 +47,16 @@
 
 ## API reference
 
-- API 2.0.0 (`/v2`) is the primary documented contract, explicitly authorized by the AMLOK team on November 6, 2026. Do not regenerate the old 192-operation contract as the primary reference or describe v2 as a separate proposal.
-- `scripts/current_api.py`, `scripts/product_api_review.py` and `scripts/current_api_guides.py` generate the contract, examples, reference and guides. The normal build commands below generate all 45 v2 operations. Preserve the original source snapshot, `openapi/amlok-v1.json`, and the labeled legacy reference for migration.
-- Run `python scripts/validate-api-reference.py`, `python scripts/test-product-api-review.py` and `python scripts/test-api-examples.py`. These validate the documentation contract, not a backend deployment. No backend rollout or v1 retirement date is established by publishing docs.
-- Legacy SDK archives target v1.4.2. Keep their compatibility explicit until new packaged clients are generated and tested; current integration examples and Postman must use v2.
+- AMLOK publishes one product API: 45 operations under `/v1`, with `openapi/amlok.json` as the only public contract. The user explicitly rejected a parallel legacy API or migration reference on November 6, 2026. Do not restore archived endpoints or SDK downloads.
+- `scripts/product_api_review.py`, `scripts/current_api.py` and `scripts/current_api_guides.py` are the sole public API generators. `data/normalized-schema-source.json` supplies normalized data definitions, not another route catalog. Keep the console Data Lookup import synchronized with this contract.
+- Validate with `scripts/validate-api-reference.py`, `scripts/test-product-api-review.py` and `scripts/test-api-examples.py`. These test contract structure and examples, not a backend deployment.
+- Only distribute clients and examples generated from the current contract. SDK source archives from the superseded design have been removed.
 
 - Source snapshot: `data/api-contract-source.json`. Keep the original Google workbook unchanged.
 - Generate the OpenAPI contract, endpoint pages, Postman collection, and navigation with `python scripts/build-api-reference.py`, then regenerate the guides with `python scripts/write-api-guides.py`.
 - Validate schemas and examples with `python scripts/validate-api-reference.py` (requires `jsonschema` and `openapi-spec-validator`). Run `python scripts/test-api-examples.py` with Node.js on PATH to check both webhook verifiers and code samples.
 - Use `AMLOK_API_BASE_URL` for institution-issued origins in examples. Keep the playground in simple mode and do not invent a production or sandbox hostname.
 - Preserve the read-only source snapshot and internal design refinements. Do not invent production quotas, service commitments, credentials, or verification results. Keep integration availability and Beta labels as explicitly approved by the AMLOK team.
-- Billing and wallet extensions live in `scripts/wallet_contract.py`; the API build imports them without changing the source workbook. Preserve existing operation IDs when extending this module.
 - Credit policy: each workspace has one shared CAD credit balance across products. Paid and promotional top-ups have no consumption priority. Used credits are non-refundable; all unused credits, including promotional top-ups, are refunded on final cancellation. No on-demand withdrawals or transfers.
 - Signal billing: count each active borrower/business once per workspace per month, regardless of monitoring configurations, checks, facilities, or data connections. The combined workload determines the tier. Cancellation immediately stops further processing and usage deductions; do not introduce post-cancellation charges.
 - Client portal: customers manage card or bank-account payment methods, automatic top-up thresholds (minimum CAD 200), top-up amounts (minimum CAD 500 for customer-funded top-ups), and cancellation requests. Enterprise clients may also request cancellation through their dedicated account manager. At least one saved portal bank account is required for refunds, even when funding by card.
@@ -68,21 +67,17 @@
 - Funding: quote a monthly minimum (at least CAD 1,000), paid for 12 months at signing and each annual renewal. No scheduled monthly payment. Monthly Signal usage deductions are not monthly funding payments.
 - Signal includes monitoring and change-driven reassessment, without another Insights charge. A separately requested full underwriting is Insights.
 - Monetary billing amounts and rates have two decimals. Decimal half-up round the effective unit rate first, then each quantity-times-rate charge. Totals sum rounded lines; preserve higher precision for non-monetary source ratios.
-- Each API key is bound to exactly one workspace, institution and environment, with no caller-controlled workspace override. Read-only baseline discovery lives in scripts/baseline_contract.py.
+- Each API key is bound to exactly one workspace, institution and environment, with no caller-controlled workspace override.
 - Calculator volumes start at 50; deselect unused tiers. Monthly minimum starts at CAD 1,000, auto-pay trigger at CAD 200, and top-ups at CAD 500.
 - Support retains the approved uptime and response targets, including 24/7 P1 coverage and a one-hour human response target. There is no standard compensation formula or automatic SLA credit; any remedy is discretionary and expressly agreed.
 - Internal supplemental verification and registry providers are not customer integrations. Do not reintroduce their named pages, provider-coverage sections or field mappings. Preserve generic jurisdiction/regulatory terminology and the original source snapshot.
 
-- The v1 wallet regression script tests the historical contract. Validate current monetary/reporting changes with the v2 contract suite and preserved report schemas. These checks validate the documentation contract and examples; they do not execute a backend or payment rail. Keep payment-provider enablement, custody, settlement expectations and regulatory disclosures tied to onboarding rather than inventing a production arrangement.
-
 - Assessment boundary: AMLOK identifies risk and intervention signals. Do not expose servicing cases, tasks, borrower communications, payment promises, or their approval/send workflows. Institution staff handle outreach and intervention in their own systems. Apply scripts/public_api_scope.py when generating from the original workbook. Preserve loan and repayment data as read-only evidence.
 
 - Signal charges the full monthly rate at 00:00 UTC on the first calendar day, or immediately on first activation mid-month without proration. No duplicate charge within a paid borrower/business/workspace/month. Unfunded monitoring pauses without debt; fund only the current period on resume.
-- Only Insights and Signal are paid products. Verification, lien searches, calculations and investigations are included stages managed internally; v2 clients do not supply a processing_context. Do not add standalone service prices.
-- Enterprise contract refinements live in scripts/enterprise_contract.py and scripts/enterprise_guides.py. Regenerate both through the standard build and guide commands. Preserve report export schemas and CSV/JSON examples.
+- Only Insights and Signal are paid products. Verification, lien searches, calculations and investigations are included stages managed internally; API clients do not supply a processing_context. Do not add standalone service prices.
 - Insights completion checks and deducts credits atomically with output publication. No reservation model. A concurrent insufficient balance leaves the accepted run waiting_for_credits without publishing or charging.
 - Use explicit manifest versions, workload reports, checkpoint-backed bootstrap and durable change-feed resume cursors. Errors and enum transitions must match the narrative guides.
-- Integration recovery refinements live in `scripts/integration_contract.py` and `scripts/integration_guides.py`. Keep generated endpoint pages, OpenAPI, Postman and runnable sandbox journeys synchronized through the standard generators. Run `scripts/test-integration-readiness.py` after changes; its controlled client tests do not execute a live backend.
 - Authorized administrators create API keys in the client portal. The account manager provides portal access information and environment details. Preserve one workspace and environment per key. Portal webhook administration includes destination settings and signing-secret rotation; these controls do not add financial mutation APIs.
 - Related-person KYC may use an active subject association inside the parent business product. Keep the business as the billing/workload subject and do not introduce standalone verification charges. Other stage types remain same-subject.
 - Accepted commands retain durable recovery receipts until workspace deletion while full-response idempotent replay remains 24 hours. Do not rerun an accepted command merely because its full response expired. Sandbox scenario controls cannot affect production or real funds.

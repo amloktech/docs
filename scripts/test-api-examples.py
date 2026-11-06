@@ -77,7 +77,7 @@ for (const c of cases) {
         elif language in ['python','Python']: ast.parse(code)
         elif language=='json': json.loads(code)
 
-    spec=json.loads((ROOT/'openapi/amlok-v2.json').read_text())
+    spec=json.loads((ROOT/'openapi/amlok.json').read_text())
     for methods in spec['paths'].values():
         for operation in methods.values():
             for sample in operation['x-codeSamples']: check_sample(sample['lang'],sample['source'])

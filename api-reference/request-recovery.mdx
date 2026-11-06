@@ -2,14 +2,14 @@
 title: "Recover a timed-out request"
 sidebarTitle: "Request recovery"
 description: "Recover a timed-out request for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 A timeout can occur after AMLOK accepted your command. Save the operation ID, exact payload and idempotency key before sending it. Use the same values during retries.
 
 ```bash
 curl --request GET --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042" \
+  "${AMLOK_API_BASE_URL}/v1/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json'
 ```

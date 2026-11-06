@@ -2,14 +2,14 @@
 title: "Troubleshoot and replay webhook delivery"
 sidebarTitle: "Delivery recovery"
 description: "Troubleshoot and replay webhook delivery for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Use `GET /v2/webhook-deliveries` to inspect attempts by `event_id` or `endpoint_id`. Each row has attempt number, delivery state, attempt time and HTTP status. Destination creation, subscriptions and secret rotation are console configuration.
+Use `GET /v1/webhook-deliveries` to inspect attempts by `event_id` or `endpoint_id`. Each row has attempt number, delivery state, attempt time and HTTP status. Destination creation, subscriptions and secret rotation are console configuration.
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/webhook-replays" \
+  "${AMLOK_API_BASE_URL}/v1/webhook-replays" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: replayEvent-synthetic-0042' \
@@ -19,4 +19,4 @@ curl --request POST --fail-with-body --max-time 30 \
 
 A replay targets an existing authorized endpoint. It creates another delivery attempt for the same event, so receivers must deduplicate. It does not create another assessment, change an alert, refresh source data or deduct usage credits.
 
-Use the durable `GET /v2/events` feed to reconcile gaps. Do not infer missing business events merely from failed webhook deliveries. Store the last processed resume cursor and each accepted event ID.
+Use the durable `GET /v1/events` feed to reconcile gaps. Do not infer missing business events merely from failed webhook deliveries. Store the last processed resume cursor and each accepted event ID.

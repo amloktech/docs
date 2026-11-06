@@ -2,12 +2,12 @@
 title: "Idempotency and accepted commands"
 sidebarTitle: "Idempotency"
 description: "Idempotency and accepted commands for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Every POST requires `Idempotency-Key`, including uploads, downloads and delivery replays. Generate one key for each intended command, retain it with the exact request and reuse both for retries. Keys are scoped to the operation, workspace and environment. Reusing a key with a different payload returns `409 idempotency_conflict`. The fingerprint includes the resolved target path and payload; a key cannot be reused for a different target.
 
-Full-response replay lasts 24 hours. After it expires, repeating an accepted command returns `409 idempotency_result_expired` without executing it again. Accepted-command receipts survive that response cache until workspace deletion. After a timeout, recover the original command with `GET /v2/request-receipts/lookup?operation_id=...&idempotency_key=...`, then retrieve its resource. Never use a fresh key merely because the cached response expired.
+Full-response replay lasts 24 hours. After it expires, repeating an accepted command returns `409 idempotency_result_expired` without executing it again. Accepted-command receipts survive that response cache until workspace deletion. After a timeout, recover the original command with `GET /v1/request-receipts/lookup?operation_id=...&idempotency_key=...`, then retrieve its resource. Never use a fresh key merely because the cached response expired.
 
 A rejected unfunded request does not produce a debit. An already accepted Origination can enter `waiting_for_credits`; continue following that ID rather than creating another assessment.
 

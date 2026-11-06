@@ -2,7 +2,7 @@
 title: "Pagination and event recovery"
 sidebarTitle: "Pagination"
 description: "Pagination and event recovery for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Collection endpoints accept `limit` from 1 to 100 (default 25) and an opaque `cursor`. Follow `page.next_cursor` while `page.has_more` is true. Keep the original filters unchanged. Normal collection cursors bind authorization and a stable snapshot, identified by `page.snapshot_id`.
@@ -13,6 +13,6 @@ Never construct cursors, reuse them across workspaces or interpret a cursor-expi
 
 Events use a durable feed position instead of collection snapshot metadata. `page.resume_cursor` is present even on an empty page. Commit it only after processing and durably recording the batch.
 
-For initial bootstrap, call `GET /v2/events?start=now` to capture a position before reading collections. Bootstrap collection snapshots, then resume the event feed using that position to reconcile changes that occurred during bootstrap. Do not combine `start` and `cursor`.
+For initial bootstrap, call `GET /v1/events?start=now` to capture a position before reading collections. Bootstrap collection snapshots, then resume the event feed using that position to reconcile changes that occurred during bootstrap. Do not combine `start` and `cursor`.
 
 Webhook notifications may be duplicated or out of order. Deduplicate by event ID and compare resource versions when applying updates. A webhook destination failure does not erase the event or justify rerunning an assessment.

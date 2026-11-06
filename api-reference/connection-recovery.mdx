@@ -2,10 +2,10 @@
 title: "Recover source connections"
 sidebarTitle: "Connection recovery"
 description: "Recover source connections for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Inspect `GET /v2/connections` for source status, consent, last successful sync, source-as-of time and coverage. Connection health and data freshness are different: a connected account can still have stale or incomplete evidence.
+Inspect `GET /v1/connections` for source status, consent, last successful sync, source-as-of time and coverage. Connection health and data freshness are different: a connected account can still have stale or incomplete evidence.
 
 When a source requires authorization again, create an embedding session with `purpose: reauthorize` and the `connection_id`. Use the same borrower and a compatible published embedding version. Send the new short-lived launch URL to that borrower and verify completion server-side.
 
@@ -21,4 +21,4 @@ When a source requires authorization again, create an embedding session with `pu
 
 Complete Origination requirements through the indicated connection or document action. AMLOK resumes collection and assessment when dependencies permit. Do not start a provider sync or retry an internal workflow.
 
-Revoke authorization with `POST /v2/consents/{id}/revoke` when appropriate. Revocation stops future collection under that consent and does not rewrite previous assessments or bypass retention policy.
+Revoke authorization with `POST /v1/consents/{id}/revoke` when appropriate. Revocation stops future collection under that consent and does not rewrite previous assessments or bypass retention policy.

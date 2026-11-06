@@ -1,4 +1,4 @@
-"""Authoritative v2 contract and exhaustive v1 migration inventory.
+"""The single authoritative AMLOK product API contract.
 
 Documentation publication does not deploy the product backend.
 """
@@ -11,7 +11,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = '2.0.0'
+VERSION = '1.0.0'
 STATUS = 'published_contract'
 
 
@@ -39,12 +39,12 @@ def nullable(schema):
     return {'anyOf': [schema, {'type': 'null'}]}
 
 
-def build_schemas(legacy):
+def build_schemas(source):
     schemas = {}
-    def legacy_schema(value):
+    def normalized_schema(value):
         if isinstance(value, dict):
-            return {key: ('#/components/schemas/Legacy' + child.rsplit('/', 1)[-1] if key == '$ref' else legacy_schema(child)) for key, child in value.items()}
-        if isinstance(value, list): return [legacy_schema(child) for child in value]
+            return {key: ('#/components/schemas/Normalized' + child.rsplit('/', 1)[-1] if key == '$ref' else normalized_schema(child)) for key, child in value.items()}
+        if isinstance(value, list): return [normalized_schema(child) for child in value]
         return value
     stamp = text(format='date-time')
     decimal = text(pattern=r'^-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?$')
@@ -57,8 +57,8 @@ def build_schemas(legacy):
     schemas['Meta'] = obj({'request_id': identifier, 'schema_version': text(), 'environment': enum('sandbox', 'live')})
     schemas['Page'] = obj({'next_cursor': nullable(text()), 'has_more': {'type': 'boolean'}, 'snapshot_id': identifier}, description='Opaque cursor binds filters, authorization and a stable snapshot. Expired cursors return 410; never silently restart.')
     schemas['Error'] = obj({'code': enum('validation_error', 'unauthenticated', 'forbidden', 'not_found', 'invalid_state', 'idempotency_conflict', 'insufficient_credits', 'precondition_failed', 'cursor_expired', 'rate_limited', 'temporarily_unavailable'), 'message': text(), 'retryable': {'type': 'boolean'}, 'request_id': identifier, 'field': nullable(text())})
-    schemas['BusinessInput'] = legacy_schema(legacy['EP135Request'])
-    schemas['PersonInput'] = legacy_schema(legacy['EP136Request'])
+    schemas['BusinessInput'] = normalized_schema(source['EP135Request'])
+    schemas['PersonInput'] = normalized_schema(source['EP136Request'])
     schemas['CreateBorrower'] = {'oneOf': [
         obj({'type': {'const': 'business'}, 'business': ref('BusinessInput')}),
         obj({'type': {'const': 'person'}, 'person': ref('PersonInput')})]}
@@ -117,8 +117,8 @@ def build_schemas(legacy):
     schemas['RiskPackage']['allOf']=[{'if':{'properties':{'policy_results':{'contains':{'properties':{'result':{'const':'unavailable'}},'required':['result']}}}},'then':{'properties':{'assessment':{'properties':{'recommendation':{'const':'review_required'}}}}}}]
     schemas['EvidenceSummary'] = obj({'id': identifier, 'evidence_set_id': identifier, 'resource_type': text(), 'resource_id': identifier, 'record_version': {'type': 'integer', 'minimum': 1}, 'kind': enum('normalized_record', 'provider_report', 'document'), 'source_id': text(), 'observed_at': nullable(stamp), 'sha256': text(pattern='^[a-f0-9]{64}$'), 'access': enum('available', 'restricted', 'deleted'), 'access_reason': nullable(text()), 'document_id': nullable(identifier)})
     # Keep the existing typed normalized dictionary, not 63 collection APIs.
-    normalized = [name for name in legacy if name.endswith('Read') and name[:-4] in legacy]
-    schemas['Evidence'] = obj({'record': ref('EvidenceSummary'), 'normalized': nullable({'oneOf': [ref('Legacy'+name) for name in normalized]}), 'provider_report_document_id': nullable(identifier)}, description='Read the frozen evidence version, never the latest replacement. Licensed provider reports and original files use controlled document downloads. Restricted evidence returns metadata and an explicit reason, never secret or unlicensed content.')
+    normalized = [name for name in source if name.endswith('Read') and name[:-4] in source]
+    schemas['Evidence'] = obj({'record': ref('EvidenceSummary'), 'normalized': nullable({'oneOf': [ref('Normalized'+name) for name in normalized]}), 'provider_report_document_id': nullable(identifier)}, description='Read the frozen evidence version, never the latest replacement. Licensed provider reports and original files use controlled document downloads. Restricted evidence returns metadata and an explicit reason, never secret or unlicensed content.')
     schemas['Evidence']['allOf']=[{'if':{'properties':{'record':{'properties':{'access':{'enum':['restricted','deleted']}}}}},'then':{'properties':{'normalized':{'type':'null'},'provider_report_document_id':{'type':'null'},'record':{'properties':{'access_reason':text()}}}}}]
     schemas['Deal'] = obj({'institution_reference': text(), 'funded_amount': ref('Money'), 'outstanding_amount': ref('Money'), 'funded_at': stamp, 'maturity_date': text(format='date'), 'repayment_frequency': enum('daily', 'weekly', 'biweekly', 'monthly', 'at_maturity', 'variable'), 'terms_document_ids': ids}, description='Read-only snapshot of institution-supplied exposure terms. Changes arrive through the authorized lender integration as new versions; this API does not service the loan.')
     schemas['BaselineInput'] = {'oneOf': [obj({'risk_package_id': identifier}), obj({'portfolio_onboarding_reference': text('Approved onboarding reference, resolved and validated by AMLOK. Does not imply an Insights purchase.')})]}
@@ -147,8 +147,8 @@ def build_schemas(legacy):
         if isinstance(value, dict):
             name = value.get('$ref', '').split('/')[-1]
             if name and name not in schemas:
-                assert name.startswith('Legacy'), name
-                schemas[name] = legacy_schema(legacy[name[len('Legacy'):]]); collect(schemas[name])
+                assert name.startswith('Normalized'), name
+                schemas[name] = normalized_schema(source[name[len('Normalized'):]]); collect(schemas[name])
             for child in value.values(): collect(child)
         elif isinstance(value, list):
             for child in value: collect(child)
@@ -160,7 +160,7 @@ def operations():
     # name, method, relative path, group, response, request, list response, scope.
     rows = []
     def add(name, method, path, group, response, request=None, many=False, scope=None):
-        rows.append(dict(id=name, method=method, path='/v2/'+path, group=group, response=response, request=request, many=many, scope=scope or group.lower().replace(' ', '-')+(':write' if method in ('POST','PATCH') else ':read')))
+        rows.append(dict(id=name, method=method, path='/v1/'+path, group=group, response=response, request=request, many=many, scope=scope or group.lower().replace(' ', '-')+(':write' if method in ('POST','PATCH') else ':read')))
     def collection(path, singular, group, request):
         add('create'+singular, 'POST', path, group, singular, request)
         add('list'+singular, 'GET', path, group, singular, many=True)
@@ -203,9 +203,9 @@ def operations():
     return rows
 
 
-def build_spec(legacy):
-    schemas = build_schemas(legacy['components']['schemas'])
-    spec = {'openapi':'3.1.0', 'info': {'title': 'AMLOK API', 'version': VERSION, 'description': 'AMLOK API 2.0.0: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use your institution-issued API origin. Environment enablement is separate from publication of this contract; see the versioning guide.'}, 'x-availability': STATUS, 'security':[{'BearerAuth':[]}], 'paths':{}, 'components': {'schemas':schemas, 'securitySchemes':{'BearerAuth':deepcopy(legacy['components']['securitySchemes']['BearerAuth'])}}}
+def build_spec(source):
+    schemas = build_schemas(source['components']['schemas'])
+    spec = {'openapi':'3.1.0', 'info': {'title': 'AMLOK API', 'version': VERSION, 'description': 'AMLOK API: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use your institution-issued API origin.'}, 'x-availability': STATUS, 'security':[{'BearerAuth':[]}], 'paths':{}, 'components': {'schemas':schemas, 'securitySchemes':{'BearerAuth':deepcopy(source['components']['securitySchemes']['BearerAuth'])}}}
     def param(name, where='query', required=False, schema=None, description=''):
         return {'name':name,'in':where,'required':required,'schema':schema or text(), 'description':description or name.replace('_',' ')}
     for op in operations():
@@ -238,73 +238,12 @@ def build_spec(legacy):
     return spec
 
 
-def disposition(op):
-    """Every existing operation gets exactly one explicit target disposition."""
-    p, oid = op['path'], op['id']
-    if p in ['/v1/healthcheck','/v1/service-status']: return 'retain', p.replace('/v1/','/v2/'), 'Operational availability stays separate from borrower outcomes.'
-    if p.startswith('/v1/billing') or p.startswith('/v1/workloads'):
-        return 'consolidate', '/v2/billing/summary; /v2/billing/transactions; /v2/exports', 'Read-only financial summary, immutable transactions and typed billing exports; preserve historical rates, funding, statements and workload reconciliation.'
-    if oid in ['EP135','EP136','EP007','EP008','EP009','EP010']:
-        return 'consolidate','/v2/borrowers','One discriminated business/person borrower boundary; preserve existing subject identifiers and associations.'
-    if p.startswith('/v1/applications'):
-        return 'consolidate','/v2/originations','Submit the application together with exact lending-product and risk-policy versions; distinguish institution reference from AMLOK origination ID.'
-    if p.startswith('/v1/risk-snapshots') or p.startswith('/v1/decisions') or p.startswith('/v1/attributes'):
-        return 'consolidate','/v2/risk-packages/{id}; /v2/evidence','One immutable result with dimensions, policy evaluations, reasons and evidence links. The institution makes the final decision.'
-    if p.startswith('/v1/monitors'):
-        return 'retain','/v2/monitors','Keep monitoring configuration; accept a deal and resolve its baseline internally. PATCH changes future configuration only.'
-    if p.startswith('/v1/alerts'): return 'retain','/v2/alerts','Keep read-only risk conditions and their baseline/current evidence; separate from delivery attempts.'
-    if p.startswith('/v1/documents'): return 'consolidate','/v2/documents; /v2/evidence','Keep uploads and controlled exact-version downloads. Discover files through evidence rather than another independent collection.'
-    if oid in ['EP137','EP139','IR001']:
-        return 'internalize','/v2/embedding-sessions','The borrower session handles authorization and provider connection creation. Institutions never manufacture consent or handle provider credentials.'
-    if p.startswith('/v1/consents'): return 'consolidate','/v2/consents/{id}; /v2/consents/{id}/revoke','Keep authorization visibility and revocation. Discover consent IDs through sessions and connections.'
-    if oid in ['EP001','EP002']: return 'retain','/v2/connections','Keep connection health, coverage and reauthorization visibility.'
-    if oid in ['EP140','EP141'] or p.startswith('/v1/sync-jobs'):
-        return 'internalize','/v2/embedding-sessions; /v2/consents/{id}/revoke; /v2/monitoring-runs','AMLOK schedules collection; expose customer action requirements and per-integration run results, not jobs that clients must orchestrate.'
-    if p.startswith('/v1/subject-associations'):
-        return 'consolidate','/v2/originations','Related borrowers are application inputs; AMLOK validates identity relationships and included KYB/KYC context.'
-    if p.startswith('/v1/webhook-endpoints') and oid in ['EP158','EP159']:
-        return 'console','/v2/configuration','Manage destinations and signing-secret rotation in Dev Tools. Preserve existing clients until replacement and deprecation are agreed.'
-    if oid=='EP160': return 'retain','/v2/webhook-replays','Replay delivery without rerunning underwriting, monitoring or billing.'
-    if p.startswith('/v1/webhook-deliveries'): return 'retain','/v2/webhook-deliveries','Retain delivery troubleshooting as read-only attempts.'
-    if p.startswith('/v1/webhook-events') or p.startswith('/v1/changes'):
-        return 'consolidate','/v2/events','One durable cursor-based event feed plus signed notifications; bootstrap through snapshot-bound collection reads.'
-    if p.startswith('/v1/request-receipts'): return 'retain','/v2/request-receipts/lookup','Keep durable recovery for accepted commands independently from cached response expiry.'
-    if p.startswith('/v1/configuration') or p.startswith('/v1/providers'):
-        return 'consolidate','/v2/configuration','Discover approved products, schemas, integration coverage and configuration IDs in one place.'
-    if p.startswith('/v1/sandbox/scenarios'):
-        return 'console','Sandbox tooling','Keep test controls outside the production product API. Preserve runnable v1 test journeys during migration.'
-    if p.startswith('/v1/audit-events'):
-        return 'console','Console audit log','Keep organization and configuration audit history available to authorized owners in the console. Product evidence retains assessment lineage; do not misclassify administrative audit events as borrower evidence.'
-    internal = ['/v1/workflow-runs','/v1/attribute-calculations','/v1/input-manifests','/v1/monitoring-baselines','/v1/monitoring-periods','/v1/sync-checkpoints','/v1/subjects/','/v1/requirements']
-    if any(p.startswith(prefix) for prefix in internal) or (op['method']=='POST' and p in ['/v1/verifications','/v1/lien-searches']):
-        return 'internalize','/v2/originations; /v2/risk-packages/{id}; /v2/monitoring-runs','AMLOK owns execution, evidence freezing, included checks and baseline preparation. Preserve useful results, requirements and traceability in product outputs.'
-    return 'evidence','/v2/evidence; /v2/exports','Preserve this typed normalized resource, its exact version and authorized original files through a unified evidence surface; remove collection-per-table navigation from the replacement API.'
-
 
 def generate():
-    legacy=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
-    index=json.loads((ROOT/'legacy/v1/data/api-reference-index.json').read_text())
-    spec=build_spec(legacy)
-    def save(path,value):
-        (ROOT/path).parent.mkdir(parents=True,exist_ok=True)
-        (ROOT/path).write_text(json.dumps(value,indent=2)+'\n')
-    save('openapi/amlok-v2.json',spec)
-    from product_api_examples import examples
-    fixtures=examples()
-    save('downloads/risk-package-example.json',fixtures['RiskPackage'])
-    save('data/product-api-examples.json',fixtures)
-    rows=[]
-    for op in index:
-        action,target,reason=disposition(op)
-        rows.append({'operation_id':op['id'],'method':op['method'],'path':op['path'],'group':op['group'],'disposition':action,'target':target,'reason':reason})
-    counts=dict(Counter(r['disposition'] for r in rows))
-    audit={'reviewed_at':'2026-11-06','availability':STATUS,'legacy_version':legacy['info']['version'],'published_version':VERSION,'legacy_operation_count':len(rows),'current_operation_count':len(operations()),'target_operation_count':len(operations()),'dispositions':counts,'operations':rows}
-    save('data/api-surface-review.json',audit)
-    out=io.StringIO(); writer=csv.DictWriter(out,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
-    (ROOT/'downloads/api-endpoint-migration.csv').write_text(out.getvalue())
-    save('downloads/api-product-index.json',{'version':VERSION,'operations':operations()})
+    audit={'reviewed_at':'2026-11-06','availability':STATUS,'operation_count':len(operations()),'contract':'openapi/amlok.json'}
+    (ROOT/'data/api-surface-review.json').write_text(json.dumps(audit,indent=2)+'\n')
+    (ROOT/'downloads/api-product-index.json').write_text(json.dumps({'version':VERSION,'operations':operations()},indent=2)+'\n')
     return audit
-
 
 if __name__=='__main__':
     from current_api import build

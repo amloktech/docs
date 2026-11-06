@@ -1,26 +1,3 @@
----
-searchable: false
-title: "Webhooks and signatures"
-description: "Verify raw-body signatures and consume events with durable deduplication."
----
-
-<Warning>Legacy API 1.4.2. For the current contract, use the [v2 API reference](/api-reference/overview).</Warning>
-
-
-## Register an event destination
-
-Use [webhook endpoint registration](/api-reference/endpoints/webhooks/create-webhook-endpoint) with an institution-approved HTTPS URL and event keys from the [event catalog](/legacy/v1/api-reference/event-catalog).
-
-```json
-{
-  "url": "https://client.example.com/amlok-events",
-  "event_types": ["sync.completed", "sync.failed", "verification.completed"],
-  "description": "Application evidence events"
-}
-```
-
-The creation response includes a signing secret once. Store it immediately in a secret manager with the destination, workspace, institution, and environment. Destination list responses do not return it. Never use the API key as the webhook secret.
-
 ## Signature contract
 
 ```text
@@ -39,7 +16,7 @@ The following helpers implement the signature format. They validate the signatur
 ```javascript
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-// AMLOK v1.4.2 signature contract. Does not acknowledge or deduplicate.
+// AMLOK signature contract. Does not acknowledge or deduplicate.
 // rawBody must be the exact received bytes, before JSON parsing or reserialization.
 export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(Date.now() / 1000)) {
   if (!Buffer.isBuffer(rawBody) || typeof header !== 'string' || typeof secret !== 'string' || !secret) {
@@ -81,7 +58,7 @@ export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(D
 <Tab title="Python">
 
 ```python
-"""Verify the AMLOK v1.4.2 signature against exact raw request bytes."""
+"""Verify the AMLOK signature against exact raw request bytes."""
 import hashlib
 import hmac
 import json
@@ -142,8 +119,8 @@ Do not mark an event complete before its effects are durably committed. A worker
 
 Delivery is at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
 
-The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. Terminal failures require [delivery review and reconciliation](/legacy/v1/api-reference/webhook-operations). List retained events to discover missing IDs and delivery attempts to inspect failures.
+The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. Terminal failures require [delivery review and reconciliation](/api-reference/webhook-operations). List retained events to discover missing IDs and delivery attempts to inspect failures.
 
-[Replay](/api-reference/endpoints/webhooks/replay-webhook-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Read configured overlap, retention and delivery timeouts from `GET /v1/configuration`. Authorized administrators manage URLs, subscriptions, enablement and secret rotation in the client portal; follow the [webhook operations procedure](/legacy/v1/api-reference/webhook-operations).
+[Replay](/api-reference/endpoints/events/replay-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Read configured overlap, retention and delivery timeouts in the console delivery settings. Authorized administrators manage URLs, subscriptions, enablement and secret rotation in the client portal; follow the [webhook operations procedure](/api-reference/webhook-operations).
 
 Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.

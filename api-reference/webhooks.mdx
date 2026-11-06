@@ -2,7 +2,7 @@
 title: "Webhooks and signatures"
 sidebarTitle: "Webhooks and signatures"
 description: "Webhooks and signatures for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Configure HTTPS destinations and signing-secret rotation in **Dev Tools** in the console. Subscribe to the [event catalog](/api-reference/event-catalog). Store the signing secret in your server secret manager; it is different from your institution API key.
@@ -27,7 +27,7 @@ The following helpers implement the signature format. They validate the signatur
 ```javascript
 import { createHmac, timingSafeEqual } from 'node:crypto';
 
-// AMLOK v2 signature contract. Does not acknowledge or deduplicate.
+// AMLOK signature contract. Does not acknowledge or deduplicate.
 // rawBody must be the exact received bytes, before JSON parsing or reserialization.
 export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(Date.now() / 1000)) {
   if (!Buffer.isBuffer(rawBody) || typeof header !== 'string' || typeof secret !== 'string' || !secret) {
@@ -69,7 +69,7 @@ export function verifyWebhook(rawBody, header, secret, nowSeconds = Math.floor(D
 <Tab title="Python">
 
 ```python
-"""Verify the AMLOK v2 signature against exact raw request bytes."""
+"""Verify the AMLOK signature against exact raw request bytes."""
 import hashlib
 import hmac
 import json

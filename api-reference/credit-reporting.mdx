@@ -2,12 +2,12 @@
 title: "Shared wallet and billing reports"
 sidebarTitle: "Wallet and billing"
 description: "Shared wallet and billing reports for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Each workspace has one CAD wallet shared by Insights and Signal. The organization owns the billing profile, payment methods and Owner permissions. Sandbox credits are isolated from Live funds.
 
-Use `GET /v2/billing/summary` for `available_credits`, cumulative `spent_credits` and a stable reporting snapshot. Read immutable movements with `GET /v2/billing/transactions`; filter by snapshot to reconcile related reads. An adjustment is a linked new entry, not an edit to history.
+Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits` and a stable reporting snapshot. Read immutable movements with `GET /v1/billing/transactions`; filter by snapshot to reconcile related reads. An adjustment is a linked new entry, not an edit to history.
 
 There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 

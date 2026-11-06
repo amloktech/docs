@@ -2,20 +2,20 @@
 title: "Products and endpoint responsibilities"
 sidebarTitle: "Products and endpoint responsibilities"
 description: "Products and endpoint responsibilities for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Insights and Signal are the two paid products. Insights evaluates an Origination and returns its risk package. Signal monitors funded exposure and includes change-driven reassessment. Borrower verification, liens, calculations and other checks are included processing stages, not separate paid APIs.
 
 | Capability | Primary endpoints |
 | --- | --- |
-| Borrower identity | `/v2/borrowers` |
-| Borrower connection journey | `/v2/embedding-sessions`, `/v2/connections`, `/v2/consents/{id}` |
-| Lending context | `/v2/lending-product-versions`, `/v2/risk-policy-versions`, `/v2/configuration` |
-| Underwriting | `/v2/originations`, `/v2/risk-packages/{id}` |
-| Monitoring | `/v2/monitors`, `/v2/monitoring-runs`, `/v2/alerts` |
-| Data and files | `/v2/evidence`, `/v2/documents`, `/v2/exports` |
-| Notifications | `/v2/events`, `/v2/webhook-deliveries`, `/v2/webhook-replays` |
-| Financial reporting | `/v2/billing/summary`, `/v2/billing/transactions`, billing exports |
+| Borrower identity | `/v1/borrowers` |
+| Borrower connection journey | `/v1/embedding-sessions`, `/v1/connections`, `/v1/consents/{id}` |
+| Lending context | `/v1/lending-product-versions`, `/v1/risk-policy-versions`, `/v1/configuration` |
+| Underwriting | `/v1/originations`, `/v1/risk-packages/{id}` |
+| Monitoring | `/v1/monitors`, `/v1/monitoring-runs`, `/v1/alerts` |
+| Data and files | `/v1/evidence`, `/v1/documents`, `/v1/exports` |
+| Notifications | `/v1/events`, `/v1/webhook-deliveries`, `/v1/webhook-replays` |
+| Financial reporting | `/v1/billing/summary`, `/v1/billing/transactions`, billing exports |
 
 The API does not service loans, manage collection cases, contact borrowers, record payment promises or make the institution's final lending decision. Organization settings, user permissions, API keys, webhook destinations and payment settings are managed through the authorized console.

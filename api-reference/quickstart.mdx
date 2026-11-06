@@ -2,7 +2,7 @@
 title: "Connect a borrower and request underwriting"
 sidebarTitle: "Quickstart"
 description: "Connect a borrower and request underwriting for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Use your backend to create a borrower, launch an Integrations Hub session and submit an Origination. The examples use synthetic identifiers; replace them with returned values. Provisioned product, policy, application-schema and embedding-version IDs come from your workspace.
@@ -14,13 +14,13 @@ export AMLOK_API_BASE_URL="<your-institution-api-origin>"
 export AMLOK_API_KEY="<your-workspace-api-key>"
 ```
 
-The origin excludes `/v2`. Keep the key on your server. Confirm v2 enablement for that origin, then retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
+The origin excludes `/v1`. Keep the key on your server. Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
 
 ## 2. Register the borrower
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/borrowers" \
+  "${AMLOK_API_BASE_URL}/v1/borrowers" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createBorrower-synthetic-0042' \
@@ -34,7 +34,7 @@ Save `data.id` as your borrower ID. A business or person profile records supplie
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/embedding-sessions" \
+  "${AMLOK_API_BASE_URL}/v1/embedding-sessions" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createEmbeddingSession-synthetic-0042' \
@@ -54,7 +54,7 @@ Create immutable [lending-product versions](/api-reference/endpoints/configurati
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/originations" \
+  "${AMLOK_API_BASE_URL}/v1/originations" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createOrigination-synthetic-0042' \
@@ -66,8 +66,8 @@ Expect `202 Accepted`, with an Origination ID and `status: accepted`. Retain the
 
 ## 6. Read the result
 
-Retrieve `GET /v2/originations/{id}` or handle `origination.completed`. If `requires_action`, complete the returned connection or document requirements. `waiting_for_credits` is accepted work waiting for funding, not a reason to resubmit.
+Retrieve `GET /v1/originations/{id}` or handle `origination.completed`. If `requires_action`, complete the returned connection or document requirements. `waiting_for_credits` is accepted work waiting for funding, not a reason to resubmit.
 
-Once completed, use its `risk_package_id` with `GET /v2/risk-packages/{id}`. Read dimensions, policy results, source coverage and limitations. Use `GET /v2/evidence?evidence_set_id=...` for the supporting records and document references. Your institution makes the final decision.
+Once completed, use its `risk_package_id` with `GET /v1/risk-packages/{id}`. Read dimensions, policy results, source coverage and limitations. Use `GET /v1/evidence?evidence_set_id=...` for the supporting records and document references. Your institution makes the final decision.
 
 After funding, [create a Signal monitor](/api-reference/monitoring-design) with the deal terms and the baseline risk package.
