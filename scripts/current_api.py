@@ -230,8 +230,11 @@ def build():
     f['RiskPackage']['evidence_set']['count']+=1
     f['RiskPackage']['document_ids'].append('doc_registry_synthetic')
     spec=enrich(base_spec,f)
+    from scale_contract import extend as scale_contract
+    spec=scale_contract(spec,f)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations():
+        if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
         entry=spec['paths'][op['path']][op['method'].lower()]
         entry['x-codeSamples']=code_samples(op,entry,f)
         page='api-reference/endpoints/'+slug(op['group'])+'/'+slug(op['id'])
@@ -267,6 +270,8 @@ def build():
     risk_guides(spec, f, index)
     from verification_guides import write_guides as verification_guides
     verification_guides(spec, f, index)
+    from scale_guides import write_guides as scale_guides
+    scale_guides(spec, f, index)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()

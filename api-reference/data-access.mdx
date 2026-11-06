@@ -58,3 +58,7 @@ Data Lookup imports these same schemas. Choose Amlok API to explore the full con
 ## Verification assessments
 
 Use `resource_type=verification_assessment` to retrieve authorized KYC/KYB results. The typed object at `normalized.assessment` is the same [verification structure](/api-reference/verification) used in risk packages. Related parties, coverage and reports retain their exact source versions. This derived resource can have null connection and integration IDs because it combines multiple sources.
+
+## Large-record recovery
+
+Collections are bounded by both items and bytes. An oversized indivisible record returns a typed export source; it is never skipped. Bootstrap errors preserve an atomic data checkpoint. See [large results](/api-reference/large-results).

@@ -49,3 +49,7 @@ No export silently truncates records. Download metadata includes expiration and 
 The data kind accepts data_snapshot_id and json/csv format. JSON uses DataExport: schema_version, snapshot_id and rows of DataRecord. CSV uses id,borrower_id,connection_id,integration_id,resource_type,resource_id,record_version,ingested_at,source_as_of,access,access_reason,normalized_json,source_payload_json,document_ids_json. Nested values are compact JSON; use the same quoting, null and formula-escaping rules as financial CSV. No silent truncation is permitted.
 
 All export kinds and financial report schemas are declared in the canonical OpenAPI x-export-schemas map. The console's Data Lookup shows the typed downloaded content beneath the download-link response as reference material; these fields are not included inline in the HTTP download-link response.
+
+## Transfer layout
+
+Completed exports expose `artifact` metadata. Request a link for each `part_number` and concatenate verified bytes in order; individual parts are not standalone JSON or CSV. See [resumable transfers](/api-reference/large-results) for hashes, Range handling, renewal, access changes and byte limits.

@@ -36,3 +36,7 @@ Snapshots bind workspace, environment, caller authorization and filters. Cursor 
 The example profile accepts PDF, PNG, JPEG and WebP. Check allowed_document_mime_types for the types supported by your environment. Password-protected/encrypted files and archives are not accepted by this contract. Detected type mismatch returns 415 unsupported_media_type. If discovered after asynchronous acceptance, the document becomes rejected with failure.code document_rejected and a safe explanation. Infected, corrupt, empty or unreadable files never become available. Re-upload a corrected file as a new immutable record.
 
 Client-side checks improve feedback; AMLOK validates size, content type and authorization for every upload. Uploads are not fetched from arbitrary customer URLs. Downloads use short-lived HTTPS capabilities with MIME type and SHA-256; verify integrity after transfer and avoid logging URLs.
+
+## Concurrency, deadlines and transfer limits
+
+`capacity` defines shared HTTP concurrency, bounded workload queues and processing targets. `max_response_bytes`, `max_export_bytes`, `export_part_bytes` and `max_page_items` define transport limits. Follow [enterprise operation](/api-reference/enterprise-operation) and [large results](/api-reference/large-results).

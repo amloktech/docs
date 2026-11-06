@@ -36,3 +36,7 @@ The `normalized` member of `Evidence` uses a typed resource variant selected by 
 ## Notifications
 
 Use the `Event` schema and [event catalog](/api-reference/event-catalog) for both webhooks and the event feed. Notifications carry resource references; retrieve sensitive evidence through authorized API reads. Verify signatures against the [exact raw body](/api-reference/webhooks).
+
+## Source precision and large results
+
+`Money` is the two-decimal application/deal type. `NormalizedMoney` and source-normalized amount fields retain the precision allowed by their field schema; these are different types. Billing values use the billing rounding policy. `RiskPackageSummary`, typed `RiskPackageSection` variants, `ExportArtifact` and `ExportDownloadLink` support [bounded retrieval](/api-reference/large-results). Detailed KYC/KYB fields use the [verification dictionary](/api-reference/verification-fields).
