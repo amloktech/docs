@@ -22,11 +22,11 @@ For detailed usage, credit movements, statements, funding, rates or workload, cr
 | Read operation | What it explains |
 | --- | --- |
 | [GET /v1/billing/payments](/api-reference/endpoints/billing/list-billing-payments) | Every initial funding, renewal and top-up payment attempt, including pending and failed attempts |
-| [GET /v1/billing/payments/{id}](/api-reference/endpoints/billing/get-billing-payment) | Payment amount, masked method, settlement/failure/refund state and linked ledger entries |
+| [`GET /v1/billing/payments/{id}`](/api-reference/endpoints/billing/get-billing-payment) | Payment amount, masked method, settlement/failure/refund state and linked ledger entries |
 | GET /v1/billing/transactions | Actual posted changes to the wallet, in sequence order |
-| [GET /v1/billing/transactions/{id}](/api-reference/endpoints/billing/get-billing-transaction) | One movement with historical balance and payment/usage/correction links |
+| [`GET /v1/billing/transactions/{id}`](/api-reference/endpoints/billing/get-billing-transaction) | One movement with historical balance and payment/usage/correction links |
 | [GET /v1/billing/usage](/api-reference/endpoints/billing/list-billing-usage) | Product charges with borrower, period, historical rate, tier and workload |
-| [GET /v1/billing/usage/{id}](/api-reference/endpoints/billing/get-billing-usage) | One charge linked to its origination or monitored deals, result and wallet transaction |
+| [`GET /v1/billing/usage/{id}`](/api-reference/endpoints/billing/get-billing-usage) | One charge linked to its origination or monitored deals, result and wallet transaction |
 
 Read billing summary first and pass its snapshot_id to related list/detail calls to reconcile one as-of state. Preserve filters across pages. New payments or charges after that snapshot belong to a later report; an expired snapshot returns 410 rather than silently changing the balance. Date filters use inclusive from and exclusive to UTC timestamps. Lists return all matching rows through pagination, not only the latest entries.
 
