@@ -39,3 +39,7 @@ Record the environment, contract SHA-256/revision, operational profile ID/versio
 Run the example to completion, interrupt it after command acceptance, and resume it with the same state. Independently reconcile its package, evidence, monitor, deal snapshot and billing entries. Verify both a business and a consumer fixture; applicability and missing values must remain explicit rather than forcing a business metric into consumer underwriting.
 
 Use two distinct Sandbox workspaces to test isolation. Check that your application selects the intended environment and never reuses Sandbox IDs or test controls in Live. Use separate Owner, Dev and Analyst users for console permission checks, and independently scoped API keys for programmatic checks. UI visibility never substitutes for server authorization.
+
+## Volume and compatibility exercises
+
+Run your agreed sustained and burst workload with representative business/consumer data. Verify bounded workers, 429 admission recovery, queue deadlines, every risk-section cursor, oversized records, multipart transfer interruption and authorization revocation. Reconcile exact input/output counts, hashes and charges. Record achieved throughput, p95/p99 latency and recovery time against your effective profile. Test additive response fields and explicit handling of unknown states. Keep source-provider latency separate from AMLOK queue/processing time. The [enterprise guide](/api-reference/enterprise-operation) defines these behaviors.

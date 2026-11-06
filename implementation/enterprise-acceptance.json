@@ -1,0 +1,19 @@
+{
+  "contract_revision": "2026-11-06.enterprise.1",
+  "evidence_status": "not_run",
+  "required_environment_fields": ["environment", "api_origin", "contract_sha256", "operational_profile_id", "operational_profile_version", "started_at", "finished_at"],
+  "required_cases": [
+    "sustained_throughput", "burst_admission", "shared_key_limits", "idempotency_under_saturation",
+    "queue_deadline", "processing_deadline", "paused_job_timer", "signal_capacity_visibility",
+    "million_record_bootstrap", "changes_during_bootstrap", "expired_cursor_reconciliation",
+    "risk_section_pagination", "oversized_first_record_checkpoint", "oversized_nested_item",
+    "multipart_interruption", "range_response_validation", "part_and_artifact_integrity",
+    "export_retention", "export_access_revocation", "export_size_limit",
+    "tenant_isolation", "scope_and_role_enforcement", "billing_exactly_once",
+    "provider_mapping_fixtures", "unknown_provider_status", "additive_response_fields",
+    "event_duplicate_and_reordering", "event_gap_recovery", "worker_crash_recovery", "database_failover"
+  ],
+  "metrics_required": ["admitted_requests", "completed_jobs", "failed_jobs", "throttled_requests", "elapsed_seconds", "throughput_per_second", "latency_p95_ms", "latency_p99_ms", "recovery_seconds", "missing_records", "duplicate_charges", "cross_tenant_disclosures"],
+  "zero_tolerance_metrics": ["missing_records", "duplicate_charges", "cross_tenant_disclosures"],
+  "notes": "Define institution-specific volume, burst duration, recovery objectives and target attainment before executing. Attach actual redacted measurements and logs for each case. Offline schema/example validation is not runtime evidence. No benchmark is recorded by this file."
+}

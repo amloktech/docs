@@ -1,0 +1,39 @@
+---
+title: "Maintain client compatibility"
+sidebarTitle: "Maintain client compatibility"
+description: "Maintain client compatibility with bounded capacity, explicit contracts and recoverable client behavior."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+AMLOK exposes one public API under `/v1`. `configuration.contract.revision` identifies the published contract; `meta.schema_version` identifies a response's schema revision. These values are diagnostic and do not select a second API or a legacy endpoint set. File-format, normalized-definition, metric-catalog, calculation and record versions have separate meanings.
+
+## Safe client behavior
+
+Parse fields you use, preserve exact decimal strings and opaque IDs, and ignore additional response object fields. Validate known fields and their documented types. Do not reject an otherwise valid response merely because an additive field appears. An older schema's `additionalProperties: false` describes that exact published revision, not a rule to reject future additive response fields in a long-lived client. Use the current OpenAPI for strict conformance checks in CI.
+
+Requests remain strict. Send only documented fields; unknown request properties produce validation errors. New request fields are optional and retain existing behavior when omitted. New response fields do not change the meanings of existing fields or make an old request invalid.
+
+Enums are closed within this contract. New enum values, new union/discriminator variants, changed units, removed fields, new required request fields, changed null semantics and altered existing calculations are not additive changes. They require explicit institution coordination before activation. In particular, do not silently add a verification outcome, event type or new section value and assume generated clients will accept it. Keep unknown values in diagnostic storage and route them to review; never coerce an unknown state to approved, complete or no-hit.
+
+## Change communication
+
+Compatible field additions are published in the canonical OpenAPI and reflected in Data Lookup and examples together. Record the contract revision in integration diagnostics and compare the current contract during your release checks. The [contract compatibility check](/downloads/check-contract-compatibility.py) detects wire removals, changed constraints and enum/union changes. It deliberately requires review of semantic changes; a passing structural diff is not proof that field meaning stayed the same.
+
+Disruptive behavior, schema or operational allocation changes require notice to registered technical contacts at least `configuration.contract.change_notice_days` before their agreed activation. Use the actual configured agreement value; the example value is synthetic. Never replace an institution's active incompatible contract without coordinated acceptance. Credential revocation, consent withdrawal and urgent security containment can take effect immediately. This policy does not weaken authorization or extend retained data past cancellation.
+
+Historical risk packages, source records, pinned policies/calculations and export artifacts remain immutable. Corrections create new versions or linked records; they never rewrite an older result. Adding a new calculated metric requires a new catalog/calculation definition, applicability rules, evidence, and coordinated client acceptance if it changes a closed key set.
+
+## Version responsibilities
+
+| Value | Meaning |
+| --- | --- |
+| `/v1` | Single public routing contract |
+| `configuration.contract.revision` | Published contract identity for diagnostics and release review |
+| `meta.schema_version` | Response-envelope schema revision |
+| `operational_profile.id/version` | Effective allocation, deadlines and retention interpretation |
+| `record_version` | Resource state or immutable source-record revision |
+| `catalog_version` / calculation version | Exact metric definitions and computations used |
+| Verification `definition_version` | Normalized KYC/KYB field definitions |
+| Export `schema_version` and artifact hash | Downloaded file interpretation and integrity |
+
+The institution remains responsible for testing its client against changed fields and the [integration checklist](/api-reference/integration-acceptance) before enabling new behavior.

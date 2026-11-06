@@ -12,3 +12,7 @@ Prefer events to frequent polling for Origination completion, monitoring changes
 Preserve an operation's idempotency key during transport retries. Rate limits do not change source-provider freshness, monitoring cadence or evidence completeness.
 
 Read configuration.operational_profile.rate_limits for effective shared workspace/environment budgets and the polling interval fields. The [profile guide](/api-reference/operating-profile) defines grouping, rolling windows and timeout handling. Use the returned values for your environment rather than the example profile.
+
+## Admission pressure
+
+Every 429 includes Retry-After. `capacity_exceeded` and `queue_full` include typed capacity details. All keys share the allocation. See [capacity and queue behavior](/api-reference/enterprise-operation).

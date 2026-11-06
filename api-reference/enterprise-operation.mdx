@@ -1,0 +1,44 @@
+---
+title: "Operate at enterprise volume"
+sidebarTitle: "Operate at enterprise volume"
+description: "Operate at enterprise volume with bounded capacity, explicit contracts and recoverable client behavior."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+Read `GET /v1/configuration` before starting workers. Its `operational_profile` contains the effective request, concurrency, queue, payload, export and retention limits for your workspace and environment. All keys share those limits. The [downloadable profile](/downloads/development-profile.json) contains synthetic test values; it is not your production allocation.
+
+## Separate HTTP requests from background processing
+
+| Limit | What it controls | At capacity |
+| --- | --- | --- |
+| `rate_limits` | Requests per rolling window, grouped into reads, commands and uploads | `429 rate_limited` |
+| `capacity.max_in_flight_requests` | Simultaneous HTTP requests across all keys | `429 capacity_exceeded` |
+| `capacity.workloads[].max_running` | Executing Origination, monitoring or export work | Ready work enters the bounded queue |
+| `capacity.workloads[].max_queued` | Accepted ready jobs waiting for execution in that group | New commands receive `429 queue_full` before acceptance |
+| `max_queue_wait_seconds` | Cumulative time an admitted job spends ready but waiting | That job fails with `queue_wait_exceeded` |
+| `max_processing_seconds` | Cumulative running wall time including provider waits and internal retries | That job fails with `processing_deadline_exceeded` |
+
+Every `429` includes `Retry-After` in whole seconds. Capacity errors also identify the group, reason, effective limit and profile revision. Back off for at least that delay, add jitter, and retain the same payload and idempotency key. Do not increase concurrency in response to throttling. Global service overload returns retryable `503` and does not establish acceptance.
+
+Admission, durable command receipt and queue reservation are atomic. Resolve an existing idempotent receipt before applying fresh admission limits: an already accepted command remains the same resource during saturation. A rejected new command creates no resource, receipt or debit. A timeout is ambiguous; follow [request recovery](/api-reference/request-recovery) before submitting anything else.
+
+Queue and running timers pause only while the resource is explicitly waiting for borrower action or credits. They do not restart on internal retry. On resumption, work re-enters the ready queue under its original accepted profile and remaining timer budgets. Existing ready work is not displaced by a later capacity reduction. No partial risk package is published as a successful result after a processing timeout. Insights charges only on atomic result publication. Signal's existing monthly charge is not a per-run charge and its billing rules remain unchanged.
+
+For scheduled Signal work, record a monitoring run even when admission fails. A capacity-blocked scheduled evaluation is a `skipped` run with a structured capacity failure and a normal run notification; it cannot silently advance successful-sync timestamps. Future permitted evaluations continue on the configured cadence. Monitor enrollment uses the monitoring capacity group; source collection required by an Origination is part of its Origination job. Export work uses the export group. Limits apply independently to each group.
+
+## Plan a portfolio import
+
+1. Read the profile and choose a shared, bounded worker pool. Coordinate workers across application replicas and API keys.
+2. Persist a durable institution work queue before sending commands. One intended action has one stable idempotency key.
+3. Keep HTTP concurrency below `max_in_flight_requests` and request rates below each rolling budget. Leave capacity for status, receipt, event and billing reconciliation reads.
+4. Consume completion events and periodically reconcile the durable feed. Poll only within the configured intervals.
+5. Use snapshot exports for history and incremental data changes for ongoing updates. Do not repeatedly redownload a borrower's complete history.
+6. Track throttled requests, queue failures, oldest unfinished work, cursor expiry and source freshness independently.
+
+For a page size of 100, one million records require at least 10,000 collection reads before any detail fetches. This is arithmetic, not a throughput promise. Exports reduce HTTP request volume and [byte-part downloads](/api-reference/large-results) bound transfer memory.
+
+## Processing targets and changes
+
+`capacity.targets` supplies environment-specific p95 and/or p99 elapsed-time targets and the measurement window. Exactly one capacity entry exists for each workload group; target pairs of group and percentile are unique. Targets cover admitted ready work from first queue entry to terminal state, excluding explicit credit/action pauses and including provider waiting while running. Timeouts and processing failures count as misses; they are never removed to improve a percentile. These are configured objectives, not observed latency measurements or guarantees that every provider completes.
+
+Capture profile ID/version when commands are accepted. Queue deadlines and artifact part sizes remain bound to that profile. Request budgets use the currently effective profile. An administrator coordinates disruptive allocation changes through your registered technical contacts using the notice period returned in `configuration.contract`. Immediate authorization revocation and security containment take precedence. The [SLA](/support/sla) defines availability and support obligations separately.

@@ -1,0 +1,33 @@
+name: API contract
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: python -m pip install -r scripts/requirements-contract.txt
+      - name: Regenerate the single public contract
+        run: |
+          python scripts/build-api-reference.py
+          git diff --exit-code -- openapi downloads api-reference data-model docs.json data/api-reference-index.json data/product-api-examples.json
+      - name: Validate contracts and examples
+        run: |
+          python scripts/validate-api-reference.py
+          python scripts/test-product-api-review.py
+          python scripts/test-risk-package.py
+          python scripts/test-verification.py
+          python scripts/test-api-examples.py
+          node --test scripts/test-integration-client.mjs
+          python scripts/test-readiness-contract.py
+          python scripts/test-enterprise-scale.py

@@ -8,7 +8,7 @@ description: "957 field definitions, organized by domain and resource."
 
 Open a resource to inspect its fields. **Required** describes a valid resource when it exists; it does not guarantee that a provider supplies the value. Examples are illustrative. A blank source example is shown as “Not specified.”
 
-Resource prefixes are documentation context. For example, `bank_transaction.amount.amount` means `data.amount.amount` in a bank transaction record. Common metadata is inherited at the same object level.
+Resource prefixes are documentation context. For example, `bank_transaction.amount.amount` means `data.normalized.amount.amount` in a Get data record response. Common metadata is inherited at the same object level.
 
 ## Platform
 
@@ -13709,3 +13709,6 @@ Description of changed fields without sensitive raw values.
 
 </AccordionGroup>
 
+## Complete model references
+
+This page documents the original 957 source-field definitions. The additional 860 detailed KYC/KYB fields are in the [verification dictionary](/api-reference/verification-fields). Read the [model index](/data-model/start-here) for their relationship to DataRecord, Evidence and RiskPackage. Resource prefixes identify the normalized object: a bank transaction amount is `data.normalized.amount.amount` on Get data record, or `data[].normalized.amount.amount` on List data records.

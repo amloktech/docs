@@ -1,0 +1,57 @@
+---
+title: "Retrieve large results and exports"
+sidebarTitle: "Retrieve large results and exports"
+description: "Retrieve large results and exports with bounded capacity, explicit contracts and recoverable client behavior."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+Use `GET /v1/risk-packages/{id}` with the representation that fits your task. These views are part of the same endpoint and describe the same immutable package.
+
+| Request | Response |
+| --- | --- |
+| No `view`, or `view=full` | Complete `RiskPackage` under `data`, subject to the JSON byte limit |
+| `view=summary` | `RiskPackageSummary`: IDs, completeness, evidence-set ID, section names/counts and export source |
+| `view=section&section=verification.screenings&limit=100` | Typed section items, complete section metadata and ordinary `page` metadata |
+
+`section`, `cursor` and `limit` are valid only with `view=section`; section is required in that view. Unsupported names or parameter combinations return `400 validation_error`. Use the section names returned in the summary. The OpenAPI declares the exact item schema for every section, including financial analyses, policy results, sources and KYC/KYB observations.
+
+```bash
+curl --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/risk-packages/${RISK_PACKAGE_ID}?view=section&section=verification.screenings&limit=100" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}"
+```
+
+Persist `page.next_cursor` only after committing that page. Keep the package and section unchanged. `page.has_more` determines completion; a short page does not. Cursors expire at `page.expires_at`, bind authorization and freeze array order at package publication. After `410`, restart that section and deduplicate by package/section and original item identity or array position. No item is added, replaced or omitted because a newer assessment exists.
+
+For structured sections, `section_metadata` contains the original status, coverage and limitations with only `items` separated for pagination. For plain arrays it is null. `total_items` is the complete section count. An empty array is not a successful verification: read its status and coverage. A summary does not contain a lending recommendation or substitute for reviewing required actions and limitations. Full-only objects such as submitted application/product/policy definitions remain in the complete package or export.
+
+## Byte limits and exact oversized records
+
+`max_response_bytes` limits uncompressed UTF-8 JSON, including its envelope. Collection and section pages may contain fewer items than requested to fit that limit. They must make progress or fail explicitly. The server does not replace populated fields with null, truncate arrays, or skip an oversized record.
+
+If a full package or one indivisible record cannot fit, the response is `413 response_too_large`. Its `error.recovery.export_request` is a typed request for `POST /v1/exports`. The recovery object identifies an exact immutable package/record, evidence set or frozen data snapshot. `snapshot_expires_at` tells you when to submit a snapshot-based export; null means the source is an immutable record/package rather than a collection cursor. Exporting requires the existing export scopes and underlying source permissions. A large response never grants broader access.
+
+For collected-data bootstrapping, begin with `limit=1` to capture the snapshot and its change cursor, then export that snapshot and consume changes after ingestion. If even the first record exceeds the limit, the 413 recovery also supplies `data_checkpoint` with snapshot ID, as-of time, changes cursor and expiry. Persist it before exporting. The change cursor represents the same atomic snapshot boundary, so no changes are missed.
+
+The API also accepts `kind: data` with `data_record_id` instead of `data_snapshot_id` for an exact oversized record. Use exactly one. JSON retains the DataExport envelope with one row; `snapshot_id` identifies the immutable export snapshot. No request reruns underwriting or recollects data.
+
+## Complete, resumable exports
+
+After export completion, `Export.artifact` identifies one complete immutable file:
+
+- `total_bytes`, `sha256`, `mime_type` and `schema_version` describe the full file.
+- `part_size_bytes` and `part_count` define its byte layout. `part_count = ceil(total_bytes / part_size_bytes)`.
+- `row_count` counts top-level exported records; it is one for a risk package.
+- `source_snapshot_id` identifies a pinned collection/report snapshot, or is null for a single immutable package/record.
+
+Request `POST /v1/exports/{id}/download-links` with `purpose` and a one-based `part_number`. Omit the number only to retrieve part 1. The response adds artifact ID, part number, byte offset, byte length and a strong ETag. Its SHA-256 covers that part. Every non-final part has `part_size_bytes`; the final part contains the remaining bytes.
+
+Download parts in order to a file or streaming parser and verify each hash and the complete artifact hash. Parts are byte segments, not independently parseable JSON/CSV/PDF files. Boundaries can split Unicode sequences or CSV rows. Preserve decoder/parser state across parts; never load the complete export into memory just to join it.
+
+Each signed HTTPS URL supports a single `Range: bytes=<offset>-` within that part and `If-Match` with the returned ETag. Expect `206`, validate `Content-Range`, and append only matching bytes. A full `200` must restart that part rather than append. `412` means the ETag does not match; `416` means the requested range is outside the part. Use `Accept-Encoding: identity` so offsets and hashes describe the transferred bytes. Do not send the AMLOK API key to signed download URLs or follow redirects to another host.
+
+Renew expired links using the same export and part number with a new idempotency key for each intentional link issuance. Retrying one issuance keeps its key. The artifact ID, layout and hashes remain unchanged. Authorization is rechecked for every link and transfer; revocation can invalidate previously issued links. After export retention ends, link issuance returns `410 export_expired`. An out-of-range part returns `422 invalid_export_part`.
+
+The server freezes authorized source membership at acceptance and retains that snapshot through export construction. An access change before publication fails the export instead of silently changing its row count. Download authorization still applies to completed files. `max_export_bytes` caps the complete file; larger jobs fail with `export_too_large` and never report a partial artifact as completed. Reduce scope using connection/resource filters on a new data snapshot, a narrower billing window, or exact-record exports. No export failure incurs an additional product charge.
+
+The [reference transfer helper](/downloads/enterprise-client.py) validates page progress, resume state, offsets and file integrity. Its [synthetic fixtures](/downloads/enterprise-examples.json) illustrate summary, section, capacity and multipart responses.

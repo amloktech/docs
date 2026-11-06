@@ -43,7 +43,7 @@ for(const kind of ['business','person'])test(kind+' complete journey uses schema
   const d=clone(fixtures[op.response]);
   if(op.id==='createBorrower'){d.profile=request;d.client_reference=request[kind].client_reference;}
   if(op.id==='createEmbeddingSession'||op.id==='getEmbeddingSession'){d.expires_at=new Date(Date.now()+900000).toISOString();d.status=sessionCompleted?'completed':'created';d.connection_ids=sessionCompleted?['con_synthetic']:[];}
-  if(op.id==='createExport'||op.id==='getExport'){d.status='completed';d.expires_at=new Date(Date.now()+86400000).toISOString();}
+  if(op.id==='createExport'||op.id==='getExport'){d.status='completed';d.expires_at=new Date(Date.now()+86400000).toISOString();d.artifact=clone(spec.paths['/v1/exports/{id}'].get.responses['200'].content['application/json']['x-response-views'].completed.example.data.artifact);}
   const definition=spec.paths[op.path][op.method.toLowerCase()];
   const [status,response]=Object.entries(definition.responses).find(([code])=>code.startsWith('2'));
   const out=clone(response.content['application/json'].example);out.data=op.many?[d]:d;

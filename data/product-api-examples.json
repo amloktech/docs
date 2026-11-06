@@ -6609,7 +6609,8 @@
     },
     "failure": null,
     "record_version": 1,
-    "expires_at": null
+    "expires_at": null,
+    "artifact": null
   },
   "Delivery": {
     "id": "del_synthetic",
@@ -10823,7 +10824,7 @@
     ],
     "operational_profile": {
       "id": "development-example",
-      "version": "1",
+      "version": "2",
       "max_json_bytes": 1048576,
       "max_upload_bytes": 20971520,
       "max_document_pages": 200,
@@ -10870,7 +10871,60 @@
           "requests": 10,
           "window_seconds": 60
         }
-      ]
+      ],
+      "max_response_bytes": 2097152,
+      "max_export_bytes": 68719476736,
+      "export_part_bytes": 8388608,
+      "max_page_items": 100,
+      "capacity": {
+        "max_in_flight_requests": 16,
+        "workloads": [
+          {
+            "group": "origination",
+            "max_running": 4,
+            "max_queued": 100,
+            "max_queue_wait_seconds": 600,
+            "max_processing_seconds": 1800
+          },
+          {
+            "group": "monitoring",
+            "max_running": 8,
+            "max_queued": 200,
+            "max_queue_wait_seconds": 600,
+            "max_processing_seconds": 1800
+          },
+          {
+            "group": "export",
+            "max_running": 2,
+            "max_queued": 20,
+            "max_queue_wait_seconds": 600,
+            "max_processing_seconds": 1800
+          }
+        ],
+        "targets": [
+          {
+            "group": "origination",
+            "percentile": 95,
+            "elapsed_seconds": 300,
+            "population": "admitted_ready_work",
+            "window_seconds": 2592000
+          },
+          {
+            "group": "monitoring",
+            "percentile": 95,
+            "elapsed_seconds": 300,
+            "population": "admitted_ready_work",
+            "window_seconds": 2592000
+          },
+          {
+            "group": "export",
+            "percentile": 95,
+            "elapsed_seconds": 300,
+            "population": "admitted_ready_work",
+            "window_seconds": 2592000
+          }
+        ]
+      }
     },
     "embedding_versions": [
       {
@@ -10907,7 +10961,16 @@
       ],
       "test_integration_id": "bank_synthetic"
     },
-    "risk_catalog_version": "2026-11-06.1"
+    "risk_catalog_version": "2026-11-06.1",
+    "contract": {
+      "revision": "2026-11-06.enterprise.1",
+      "schema_version": "1.0.0",
+      "compatibility": "additive_fields_only",
+      "enum_policy": "closed_within_v1",
+      "change_notice_days": 30,
+      "notice_channel": "registered_technical_contacts",
+      "documentation_url": "https://docs.amlok.io/api-reference/client-compatibility"
+    }
   },
   "DataRecord": {
     "id": "dr_synthetic_v1",
@@ -11066,5 +11129,19 @@
       "terms_document_ids": []
     },
     "performance": null
+  },
+  "ExportDownloadLink": {
+    "url": "https://downloads.example.com/synthetic",
+    "expires_at": "2026-11-06T12:05:00Z",
+    "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+    "mime_type": "application/json",
+    "artifact_id": "artifact_synthetic",
+    "part_number": 1,
+    "byte_offset": 0,
+    "byte_length": 4096,
+    "etag": "\"part_synthetic\""
+  },
+  "ExportDownloadPurpose": {
+    "purpose": "Institution underwriting review"
   }
 }

@@ -60,3 +60,7 @@ Amounts and financial ratios use decimal strings. Do not convert money to binary
 Null explicitly means absent or unavailable according to that field's definition, not zero or an empty result. Metrics and restricted evidence include reasons. Mutable operational resources expose a monotonic record version; historical packages, records and accounting entries remain immutable.
 
 Errors contain an `error` object with `code`, `message`, `retryable`, `request_id` and nullable `field`. Use the request ID when troubleshooting, without sending credentials or unredacted financial payloads.
+
+## Evolving clients
+
+Ignore additional response object fields while validating known fields and types. Request objects remain strict and enums remain closed. See [client compatibility](/api-reference/client-compatibility).
