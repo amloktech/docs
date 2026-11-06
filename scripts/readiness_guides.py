@@ -14,8 +14,6 @@ def write_guides(spec,f,index):
   'operating-profile':'Discover upload sizes, supported file types, request budgets, polling intervals and resource expiry through your environment configuration.',
   'processing-lifecycle':'Handle Insights and Signal states, resolve missing inputs and authorization, recover accepted requests and reconcile completion or failure.',
   'sandbox-journeys':'Test underwriting, monitoring, consent recovery, document requests and billing with deterministic Sandbox scenarios and synthetic borrower data.',
-  'versioning':'Understand AMLOK API revisions, additive and breaking changes, event compatibility and preservation of historical result and billing versions.',
-  'contract-changelog':'Track AMLOK API changes to lender snapshots, borrower authorization, monitoring recovery, events, operating limits and integration examples.',
   'event-catalog':'Find every AMLOK event type, its referenced resource and required permission, then reconcile versions and recover missed webhook notifications.'
  }
  def api(name,title,body):
@@ -224,37 +222,6 @@ Sandbox funding controls are labeled as simulations, apply only to the selected 
 
 The [scenario manifest](/downloads/sandbox-scenarios.json) supplies stable IDs and expected states for automated integration tests. Use the scenario IDs and test integration returned by your Sandbox configuration.
 ''')
- api('versioning','API compatibility and release rules','''
-AMLOK publishes one `/v1` API. The OpenAPI info.version and response meta.schema_version identify the contract revision. Use the revision returned by your environment when recording diagnostics and validating responses.
-
-The API reference, downloadable examples, Postman collection and console Data Lookup follow the same OpenAPI contract. Review the [integration checklist](/api-reference/integration-acceptance) when connecting your application or adopting a contract change.
-
-## Compatible changes
-
-Within a major API version, adding an optional response field or a new independent operation is additive. Clients must ignore unknown response fields, preserve opaque IDs/cursors and tolerate additional event types by safely recording or ignoring unknown events without crashing. Requests remain strict: reject unsupported input fields with 422 rather than silently discarding them.
-
-Removing/renaming fields or operations, adding required request fields, changing units/semantics, changing nullability to invalidate accepted values, or adding states to a closed status enum are breaking changes. They require an explicit contract review and a published adoption plan before deployment. Do not silently change a released contract or introduce an undocumented alternative API.
-
-Review the [contract change log](/api-reference/contract-changelog) and test your integration when adopting changes. AMLOK notifies institution technical contacts before an affected release. Security revocation and entitlement changes still take effect when required; they do not authorize changing historical evidence or billing entries.
-
-Published packages and financial records preserve their original schema/calculation/rate versions. A new metric calculation version affects new results only. Provider-specific coverage changes must remain visible as data availability information.
-''')
- api('contract-changelog','Contract change log','''
-This change log tracks the AMLOK `/v1` API, including request and response schemas, events and integration behavior.
-
-## November 6, 2026: monitoring inputs and integration tools
-
-- Correct field-description contamination in generated schemas and Data Lookup.
-- Add three deal-snapshot operations for immutable lender updates; 57 operations total.
-- Define explicit Hub consent purposes, parent-origin checks, browser messages, redirects and requirement resolution.
-- Replace undocumented portfolio onboarding references with typed portfolio baseline inputs.
-- Add structured monitor requirements/failures and resource versions for event reconciliation.
-- Unify the public event catalog with typed resource mappings, including deal_snapshot.created.
-- Expose effective operational profiles, cursor expirations and document validation rules.
-- Add reproducible Sandbox scenarios, runnable business and consumer examples, and an integration checklist.
-
-See [API compatibility](/api-reference/versioning) for handling contract changes in your integration.
-''')
  # Generate the only event catalog and replace the stale Data Model vocabulary.
  rows=[]
  for event,(resource,operation,scope) in EVENT_RESOURCES.items():
@@ -333,8 +300,7 @@ Use these resources with the [runnable walkthrough](/api-reference/runnable-exam
  tab['groups'][0]['pages'].insert(2,'api-reference/runnable-example')
  tab['groups'][1]['pages'].insert(5,'api-reference/deal-inputs')
  tab['groups'][3]['pages']+=['api-reference/operating-profile','api-reference/integration-acceptance']
- tab['groups'][-1]['pages'].append('api-reference/contract-changelog')
- for source in ['/api-reference/implementation-status','/api-reference/api-review']:
+ for source in ['/api-reference/implementation-status','/api-reference/api-review','/api-reference/versioning','/api-reference/contract-changelog']:
   redirects=nav.setdefault('redirects',[])
   redirects[:]=[r for r in redirects if r['source']!=source]
   redirects.append({'source':source,'destination':'/api-reference/overview'})
