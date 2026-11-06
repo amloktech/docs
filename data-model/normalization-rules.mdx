@@ -3,6 +3,10 @@ title: "Normalization rules"
 description: "Rules for evidence, missing values, money, identity, and normalized data."
 ---
 
+{/* BEGIN API MODEL ALIGNMENT */}
+Read the current [source dictionary](/data-model/field-dictionary) for exact presence and nullability. The retained normalized-definition revision is distinct from `meta.schema_version` and the public contract revision. Source records are available through both [Data](/api-reference/data-access) and [Evidence](/api-reference/evidence-traceability). Source-derived observations, aggregate verification and risk-package metrics have different typed representations; use [API correspondence](/data-model/api-alignment).
+{/* END API MODEL ALIGNMENT */}
+
 <Note>The API exposes these retained normalized evidence definitions through [evidence retrieval](/api-reference/evidence-traceability). Calculation and record revisions identify the exact evidence used; internal processing identifiers are read-only provenance. For current request envelopes and product resources, use the [OpenAPI contract](/openapi/amlok.json).</Note>
 
 
@@ -10,7 +14,7 @@ The normalization rules below are drawn from the workbook’s **Normalization & 
 
 ## Version
 
-This data reference retains normalized definition version **1.4.2**, accessed through the evidence endpoints. Use the [OpenAPI specification](/overview/openapi-spec) for the current schemas and the [risk-package methodology](/api-reference/risk-package-methodology) for calculation rules.
+This data reference retains normalized definition version **1.4.2**, accessed through Data and Evidence endpoints. Use the [OpenAPI specification](/overview/openapi-spec) for the current schemas and the [risk-package methodology](/api-reference/risk-package-methodology) for calculation rules.
 
 ## Scope
 
@@ -32,13 +36,13 @@ Required source IDs must be resolved or the record is quarantined.
 
 ## Shared metadata
 
-Every top-level resource inherits common fields. Resource-name prefixes in Field Dictionary are documentation context; response data contains the relative field names.
+The 63 source-normalized variants inherit common fields. The verification aggregate defines its own metadata. Resource-name prefixes in Field Dictionary are documentation context; response data contains the relative field names.
 
-Shared Types expands every reusable nested object.
+OpenAPI defines every reusable nested object. Shared Types links the source helper schemas and product response types.
 
 ## Null semantics
 
-Use null for known missing/unavailable optional values and include missing\_fields reasons. Zero and false require evidence. An empty array means the requested collection was queried and is known empty.
+Use null for known missing/unavailable optional values and include missing\_fields reasons. Zero and false require evidence. An empty array alone does not prove a completed query or no-hit result. Interpret it with data_status, missing_fields, source coverage and, for verification, the section status.
 
 Denied sensitive fields are omitted; missing\_fields may explain redaction without exposing values.
 

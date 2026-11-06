@@ -5,17 +5,21 @@ description: "Find the complete source, financial and KYC/KYB model and understa
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
+{/* BEGIN API MODEL ALIGNMENT */}
+Use [API correspondence](/data-model/api-alignment) to follow integration capabilities, normalized records, product responses and research definitions without confusing their identifiers or statuses.
+{/* END API MODEL ALIGNMENT */}
+
 The API exposes one model through three related representations: current collected data, frozen assessment evidence, and the underwriting or monitoring risk package. The [OpenAPI contract](/openapi/amlok.json) defines wire types; the references below explain meaning and provenance.
 
 | Reference | What you retrieve | Dictionary |
 | --- | --- | --- |
-| Collected integration records | `DataRecord.normalized`, selected by `resource_type` and `normalized.object` | [Source field dictionary](/data-model/field-dictionary): 957 field definitions |
+| Collected integration records | `DataRecord.normalized`, selected by `resource_type` and `normalized.object` | [Source field dictionary](/data-model/field-dictionary): 961 field definitions |
 | Detailed KYC/KYB assessment | `RiskPackage.verification` or `normalized.assessment` for `verification_assessment` | [Verification field dictionary](/api-reference/verification-fields): 860 field definitions across 25 observation sections |
 | Financial assessment | `RiskPackage.dimensions`, `analyses`, policies, findings and required actions | [Underwriting dimensions](/api-reference/underwriting-dimensions): 24 families and 149 metrics |
 | Frozen assessment input | `Evidence.normalized` and exact data-record/document references | [Evidence traceability](/api-reference/evidence-traceability) |
 | Shared transport and monetary types | Envelopes, errors, cursor pages, amounts and exports | [Shared types](/data-model/shared-types) |
 
-The source and verification dictionaries contain **1,817 separately identified field definitions**. This is a dictionary count, not a count of populated fields on every borrower. Shared structures, optional observations and source entitlements determine each response. The 860 verification definitions supplement the original source dictionary; they are not another API. Console **Data Lookup** uses these same definitions and the same operation schemas.
+The source and verification dictionaries contain **1,821 separately identified field definitions**. This is a dictionary count, not a count of populated fields on every borrower. Shared structures, optional observations and source entitlements determine each response. The 860 verification definitions supplement the source dictionary; they are not another API. Console **Data Lookup** uses these same definitions and the same operation schemas.
 
 ## Follow the relationships
 

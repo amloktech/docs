@@ -232,6 +232,8 @@ def build():
     spec=enrich(base_spec,f)
     from scale_contract import extend as scale_contract
     spec=scale_contract(spec,f)
+    from data_model_alignment import annotate_fields
+    annotate_fields(spec)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations():
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
@@ -272,6 +274,8 @@ def build():
     verification_guides(spec, f, index)
     from scale_guides import write_guides as scale_guides
     scale_guides(spec, f, index)
+    from data_model_alignment import write_guides as model_guides
+    model_guides(spec)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()

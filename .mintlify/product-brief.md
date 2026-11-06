@@ -35,3 +35,7 @@ The user requested a complete implementation specification before building the b
 ## Enterprise operating contract
 
 The November 6 follow-up authorizes closing enterprise-volume documentation gaps. Preserve one API and its 57 operations. Define capacity discovery, bounded result representations, resumable complete exports, coordinated schema evolution and a unified data-model entry point. Keep environment-specific targets distinct from measured results and from the approved availability SLA. Runtime acceptance requires actual environment evidence recorded internally.
+
+## Model correspondence
+
+The Data Model distinguishes 63 source-normalized variants, the detailed verification aggregate, product responses and research-only representations. Source fields, state enums, catalog counts and schema pointers are generated and checked against the public contract; console Data Lookup imports the same field catalog. Capability associations for the full integration inventory do not change Active/In Review, Beta, markets or contractual entitlements. Research links explain correspondence without turning study labels, training manifests or measured population results into API fields or borrower-level findings.

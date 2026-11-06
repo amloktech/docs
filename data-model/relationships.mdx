@@ -3,6 +3,10 @@ title: "Relationships"
 description: "How resources connect, including cardinality and integrity rules."
 ---
 
+{/* BEGIN API MODEL ALIGNMENT */}
+These joins describe normalized source records. Resolve API-facing relationships through `Borrower.subject_id`, `DataRecord.resource_id` plus `record_version`, and `Evidence.record.data_record_id`. Do not substitute `DataRecord.id` for a normalized logical ID. A shared name such as `monitor`, `connection` or `document` does not make its source schema identical to the product resource. See [API correspondence](/data-model/api-alignment).
+{/* END API MODEL ALIGNMENT */}
+
 ## `business`
 
 <Accordion title="business → relationship" id="business-relationship">
