@@ -4976,7 +4976,7 @@
   "evidence_set": {
     "id": "es_comprehensive_synthetic",
     "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-    "count": 3
+    "count": 4
   },
   "versions": {
     "schema": "1.0.0",
@@ -4987,11 +4987,1460 @@
   "billing_usage_id": "usage_synthetic",
   "document_ids": [
     "doc_capacity_synthetic",
-    "doc_debt_synthetic"
+    "doc_debt_synthetic",
+    "doc_registry_synthetic"
   ],
   "record_version": 1,
   "deal_snapshot_id": "ds_synthetic",
   "catalog_version": "2026-11-06.1",
+  "verification": {
+    "id": "verify_business_synthetic",
+    "borrower_id": "bor_synthetic",
+    "subject_id": "biz_synthetic",
+    "definition_version": "2026-11-06.1",
+    "as_of": "2026-11-06T12:00:00Z",
+    "status": "partial",
+    "outcome": "review_required",
+    "summary": "Synthetic business has a selected registry record. Required related-party checks and ownership resolution remain incomplete; an active registration is not a verified pass.",
+    "sources": [
+      {
+        "id": "src_verification_synthetic",
+        "kind": "business_verification",
+        "display_name": "Synthetic licensed registry source",
+        "jurisdictions": [
+          "CA-AB"
+        ],
+        "reference": "report_synthetic",
+        "reported_status": "not_verified",
+        "requested_at": "2026-11-06T12:00:00Z",
+        "completed_at": "2026-11-06T12:00:00Z",
+        "as_of": "2026-11-06T12:00:00Z",
+        "coverage": {
+          "status": "partial",
+          "requested_scopes": [
+            "business_registry",
+            "licence_registry",
+            "related_people"
+          ],
+          "completed_scopes": [],
+          "limitations": [
+            "This example does not establish complete coverage."
+          ]
+        },
+        "document_ids": [
+          "doc_registry_synthetic"
+        ],
+        "warnings": [
+          "Required people not supplied."
+        ],
+        "errors": []
+      }
+    ],
+    "ownership_resolution": {
+      "status": "partial",
+      "reason": "Corporate shareholder chain and remaining voting interests are unresolved.",
+      "unresolved_subject_ids": [
+        "owner_company_synthetic"
+      ],
+      "ownership_basis": "voting",
+      "known_share": "0.65",
+      "unknown_share": "0.35"
+    },
+    "documents": [
+      {
+        "document_id": "doc_registry_synthetic",
+        "kind": "registry_report",
+        "access": "available",
+        "reason": null,
+        "source_id": "src_verification_synthetic"
+      }
+    ],
+    "checks": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "check_registry_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/original_provider_status",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/method",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/policy_version",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/expires_at",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/override",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "business_registration",
+          "state": "completed",
+          "outcome": "review_required",
+          "provider_status": "not_verified",
+          "original_provider_status": null,
+          "reason_codes": [],
+          "summary": "Registry found; required people have not been submitted.",
+          "method": null,
+          "required": true,
+          "policy_version": null,
+          "completed_at": "2026-11-06T12:00:00Z",
+          "expires_at": null,
+          "item_ids": [
+            "business_selected_synthetic",
+            "compare_people_synthetic"
+          ],
+          "override": null
+        }
+      ]
+    },
+    "businesses": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "business_selected_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 1
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/good_standing",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/website",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/email",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/phone",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/registered_capital",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/source_url",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "resolution": "selected",
+          "legal_name": "Synthetic Example Manufacturing Inc.",
+          "alternate_names": [],
+          "entity_type": "corporation",
+          "country": "CA",
+          "jurisdiction": "CA-AB",
+          "identifiers": [
+            {
+              "scheme": "corporation_number",
+              "value": "SYNTHETIC-CA-001",
+              "masked_value": null,
+              "country": "CA",
+              "jurisdiction": null,
+              "disclosure": "full",
+              "reason": null
+            }
+          ],
+          "incorporation_date": "2018-04-10",
+          "nature_of_business": "Synthetic manufacturing business",
+          "registry_status": "Active",
+          "good_standing": null,
+          "address_ids": [
+            "address_registered_synthetic",
+            "address_records_synthetic"
+          ],
+          "relationship_ids": [],
+          "industry_codes": [],
+          "website": null,
+          "email": null,
+          "phone": null,
+          "registered_capital": null,
+          "financial_highlights": [],
+          "match_score": {
+            "value": 100,
+            "scale_min": 0,
+            "scale_max": 100,
+            "direction": "higher_is_stronger_match",
+            "label": "Synthetic similarity only",
+            "method": "synthetic-method-1"
+          },
+          "source_url": null
+        }
+      ]
+    },
+    "persons": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "registrations": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "registration_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 4
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/registration_type",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/standing",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/registered_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/inactive_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/dissolved_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/registered_agent_relationship_id",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "authority": "Synthetic provincial registry",
+          "registration_number": "SYNTHETIC-CA-001",
+          "country": "CA",
+          "jurisdiction": "CA-AB",
+          "registration_type": null,
+          "registered_name": "Synthetic Example Manufacturing Inc.",
+          "status": "Active",
+          "standing": null,
+          "registered_on": null,
+          "inactive_on": null,
+          "dissolved_on": null,
+          "last_annual_return_year": 2024,
+          "last_annual_return_filed_on": "2025-03-01",
+          "annual_return_status": "overdue",
+          "outstanding_return_years": [
+            2025
+          ],
+          "registered_agent_relationship_id": null,
+          "document_ids": [
+            "doc_registry_synthetic"
+          ]
+        }
+      ]
+    },
+    "addresses": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "address_registered_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 1
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/raw",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/formatted",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/deliverable",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/classification",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/is_cmra",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/is_virtual",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/is_registered_agent",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/match_score",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "roles": [
+            "registered_office"
+          ],
+          "raw": null,
+          "street": "100 Synthetic Example Street",
+          "unit": "Suite 3",
+          "city": "Calgary",
+          "region": "AB",
+          "postal_code": "T2P 1J9",
+          "country": "CA",
+          "formatted": null,
+          "validation": "not_validated",
+          "deliverable": null,
+          "classification": null,
+          "is_cmra": null,
+          "is_virtual": null,
+          "is_registered_agent": null,
+          "match_score": null
+        },
+        {
+          "id": "address_records_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 1
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/raw",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/formatted",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/deliverable",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/classification",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/is_cmra",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/is_virtual",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/is_registered_agent",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/match_score",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "roles": [
+            "records_office"
+          ],
+          "raw": null,
+          "street": "100 Synthetic Example Street",
+          "unit": "Suite 3",
+          "city": "Calgary",
+          "region": "AB",
+          "postal_code": "T2P 1J9",
+          "country": "CA",
+          "formatted": null,
+          "validation": "not_validated",
+          "deliverable": null,
+          "classification": null,
+          "is_cmra": null,
+          "is_virtual": null,
+          "is_registered_agent": null,
+          "match_score": null
+        }
+      ]
+    },
+    "relationships": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "relationship_owner_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 3
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/position",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/appointed_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/ended_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/active",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/authority",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/skip_reason",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "related_subject_id": "owner_company_synthetic",
+          "related_entity_type": "business",
+          "name": "Synthetic Holding Company Inc.",
+          "roles": [
+            "shareholder"
+          ],
+          "role_labels": [
+            "Voting shareholder"
+          ],
+          "position": null,
+          "appointed_on": null,
+          "ended_on": null,
+          "active": null,
+          "authority": null,
+          "address_ids": [],
+          "registration_identifiers": [],
+          "verification_check_ids": [],
+          "verification_required": true,
+          "verification_state": "pending",
+          "skip_reason": null
+        },
+        {
+          "id": "relationship_agent_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 1
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/position",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/appointed_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/ended_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/active",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/authority",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/verification_required",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/skip_reason",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "related_subject_id": "agent_synthetic",
+          "related_entity_type": "person",
+          "name": "Synthetic Service Agent",
+          "roles": [
+            "agent_for_service"
+          ],
+          "role_labels": [
+            "Primary agent for service"
+          ],
+          "position": null,
+          "appointed_on": null,
+          "ended_on": null,
+          "active": null,
+          "authority": null,
+          "address_ids": [],
+          "registration_identifiers": [],
+          "verification_check_ids": [],
+          "verification_required": null,
+          "verification_state": "not_requested",
+          "skip_reason": null
+        }
+      ]
+    },
+    "ownership": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "ownership_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 3
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/economic_share",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/economic_share_min",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/economic_share_max",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/voting_share_min",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/voting_share_max",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/effective_share",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/share_class",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/share_count",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/nominal_value",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/total_value",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/basis_date",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "owner_subject_id": "owner_company_synthetic",
+          "owned_subject_id": "biz_synthetic",
+          "interest_type": "voting",
+          "economic_share": null,
+          "voting_share": "0.65",
+          "economic_share_min": null,
+          "economic_share_max": null,
+          "voting_share_min": null,
+          "voting_share_max": null,
+          "effective_share": null,
+          "share_class": null,
+          "share_count": null,
+          "nominal_value": null,
+          "total_value": null,
+          "nature_of_control": [],
+          "chain_subject_ids": [
+            "owner_company_synthetic",
+            "biz_synthetic"
+          ],
+          "chain_complete": false,
+          "unresolved_reason": "No source establishes the corporate owner ultimate beneficial owners.",
+          "reported_interest": "65% of Voting Shares",
+          "basis_date": null
+        }
+      ]
+    },
+    "identity_documents": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "biometrics": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "screenings": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "tax_checks": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "tax_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/authority",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/provided_name",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/registered_name",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/registered_address_id",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/checked_at",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "identifier": {
+            "scheme": "BN",
+            "value": null,
+            "masked_value": "*****0001",
+            "country": "CA",
+            "jurisdiction": null,
+            "disclosure": "masked",
+            "reason": "Synthetic example masks the taxpayer identifier."
+          },
+          "authority": null,
+          "result": "unavailable",
+          "provided_name": null,
+          "registered_name": null,
+          "registered_address_id": null,
+          "checked_at": null,
+          "unavailable_reason": "Registry identifier reported; no tax-authority validation result supplied."
+        }
+      ]
+    },
+    "licences": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "licence_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [],
+          "supplemental_facts": [],
+          "registry": "Synthetic municipal business licence registry",
+          "authority": "Synthetic municipality",
+          "country": "CA",
+          "jurisdiction": "CA-AB",
+          "identifier": "SYNTHETIC-LIC-1",
+          "legal_name": "Synthetic Example Manufacturing Inc.",
+          "licence_types": [
+            "Manufacturing"
+          ],
+          "status": "Renewal licensed",
+          "issued_on": "2018-04-10",
+          "expires_on": "2027-04-10",
+          "address_ids": [],
+          "conditions": [],
+          "classification_codes": [],
+          "match_score": {
+            "value": 100,
+            "scale_min": 0,
+            "scale_max": 100,
+            "direction": "higher_is_stronger_match",
+            "label": "Synthetic similarity only",
+            "method": "synthetic-method-1"
+          }
+        }
+      ]
+    },
+    "filings": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "filing_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 4
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/effective_on",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/reference",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "Annual return",
+          "filed_on": "2025-03-01",
+          "effective_on": null,
+          "period_year": 2024,
+          "status": "Filed",
+          "reference": null,
+          "document_ids": [
+            "doc_registry_synthetic"
+          ]
+        }
+      ]
+    },
+    "corporate_structure": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "structure_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": "doc_registry_synthetic",
+                "page": 4
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [],
+          "supplemental_facts": [],
+          "share_classes": [
+            {
+              "name": "Synthetic Class A",
+              "description": "Common voting shares",
+              "authorized_quantity": null,
+              "unlimited": true,
+              "issued_quantity": null,
+              "voting_rights": "One vote per share",
+              "votes_per_share": "1",
+              "nominal_value": null,
+              "dividend_rights": "As declared, subject to senior rights.",
+              "liquidation_rights": null,
+              "redemption_terms": null,
+              "evidence": [
+                {
+                  "evidence_id": "ev_verification_synthetic",
+                  "data_record_id": "dr_verification_source_synthetic",
+                  "source_path": null,
+                  "document_id": "doc_registry_synthetic",
+                  "page": 6
+                }
+              ]
+            }
+          ],
+          "share_transfer_restrictions": [
+            "See the source articles schedule."
+          ],
+          "minimum_directors": 1,
+          "maximum_directors": 10,
+          "permitted_activities": [],
+          "prohibited_activities": [],
+          "other_provisions": [],
+          "document_ids": [
+            "doc_registry_synthetic"
+          ]
+        }
+      ]
+    },
+    "public_records": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "online_presence": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "contact_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "device_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "document_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "bank_account_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "questionnaires": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "signatures": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "field_comparisons": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "compare_name_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [],
+          "supplemental_facts": [],
+          "field": "business.legal_name",
+          "provided": "SYNTHETIC EXAMPLE MANUFACTURING INC.",
+          "observed": "Synthetic Example Manufacturing Inc.",
+          "normalized_provided": "SYNTHETIC EXAMPLE MANUFACTURING INC",
+          "normalized_observed": "SYNTHETIC EXAMPLE MANUFACTURING INC",
+          "result": "matched",
+          "score": {
+            "value": 100,
+            "scale_min": 0,
+            "scale_max": 100,
+            "direction": "higher_is_stronger_match",
+            "label": "Synthetic similarity only",
+            "method": "synthetic-method-1"
+          },
+          "threshold": 95,
+          "required": true,
+          "affects_outcome": true,
+          "normalization": "Case and terminal punctuation folded; source names retained."
+        },
+        {
+          "id": "compare_people_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/provided",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/observed",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/normalized_provided",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/normalized_observed",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/score",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/threshold",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/normalization",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "field": "business.related_people",
+          "provided": null,
+          "observed": null,
+          "normalized_provided": null,
+          "normalized_observed": null,
+          "result": "not_submitted",
+          "score": null,
+          "threshold": null,
+          "required": true,
+          "affects_outcome": true,
+          "normalization": null
+        }
+      ]
+    },
+    "source_scores": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "score_synthetic",
+          "subject_id": "biz_synthetic",
+          "provenance": {
+            "basis": "registry",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [],
+          "supplemental_facts": [],
+          "kind": "entity_match",
+          "score": {
+            "value": 100,
+            "scale_min": 0,
+            "scale_max": 100,
+            "direction": "higher_is_stronger_match",
+            "label": "Synthetic similarity only",
+            "method": "synthetic-method-1"
+          },
+          "reason_codes": [],
+          "limitations": [
+            "Similarity is not an AMLOK credit score or a verified beneficial-owner conclusion."
+          ]
+        }
+      ]
+    },
+    "duplicate_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    }
+  },
   "scope": {
     "borrower_type": "business",
     "market": "CA",

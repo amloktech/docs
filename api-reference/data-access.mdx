@@ -54,3 +54,7 @@ The [risk package](/api-reference/risk-package) contains assessment-level enrich
 For a bulk download, create an export with kind data, data_snapshot_id from the list response, and format json or csv. The snapshot preserves the selected borrower and filters. Expired snapshots return 410; do not substitute a newer snapshot without the caller requesting it. Export access requires data:read and source authorization at creation, retrieval and download in addition to export scope.
 
 Data Lookup imports these same schemas. Choose Amlok API to explore the full contract, or a provider to view its applicable data/evidence schemas and the documented upstream field mappings.
+
+## Verification assessments
+
+Use `resource_type=verification_assessment` to retrieve authorized KYC/KYB results. The typed object at `normalized.assessment` is the same [verification structure](/api-reference/verification) used in risk packages. Related parties, coverage and reports retain their exact source versions. This derived resource can have null connection and integration IDs because it combines multiple sources.

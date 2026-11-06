@@ -224,7 +224,12 @@ def code_samples(op, entry, f):
 def build():
     review()
     f=fixtures(); source=json.loads((ROOT/'data/normalized-schema-source.json').read_text())
-    spec=enrich(build_spec(source),f)
+    base_spec=build_spec(source)
+    from verification_examples import examples as verification_examples
+    f['RiskPackage']['verification']=verification_examples(base_spec['components']['schemas'])['business']
+    f['RiskPackage']['evidence_set']['count']+=1
+    f['RiskPackage']['document_ids'].append('doc_registry_synthetic')
+    spec=enrich(base_spec,f)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations():
         entry=spec['paths'][op['path']][op['method'].lower()]
@@ -260,6 +265,8 @@ def build():
     readiness_guides(spec, f, index)
     from risk_package_guides import write_guides as risk_guides
     risk_guides(spec, f, index)
+    from verification_guides import write_guides as verification_guides
+    verification_guides(spec, f, index)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()
