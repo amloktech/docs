@@ -146,6 +146,8 @@ def build_schemas(source):
     extend_schemas(schemas)
     from readiness_contract import extend_schemas as readiness_schemas
     readiness_schemas(schemas)
+    from risk_package_contract import extend_schemas as risk_schemas
+    risk_schemas(schemas)
     # Resolve and retain only normalized dictionary dependencies used by the current contract.
     def collect(value):
         if isinstance(value, dict):

@@ -1,0 +1,66 @@
+---
+title: "Risk-package methodology"
+description: "Interpret financial metrics, missing data, forecasts, policy results and source evidence."
+---
+
+## Assessment boundaries
+
+Read the package's borrower type, market, period, reporting currency, account/entity scope and exact product/policy versions before consuming its results. The scope is either the sources observed or the declared sources reconciled against evidence; neither claims visibility into unknown external accounts. Consolidated assessments eliminate supported inter-account and intercompany transfers without deleting the original records. Joint or related-party assessments require authorized borrower relationships and explicit allocation.
+
+Every catalog metric appears exactly once in its assigned dimension. All 24 dimension families appear exactly once. Every metric and every analysis section states availability. A dimension is `available` when all applicable metrics are available, `partial` when some are available, `unavailable` when no applicable metric is available, and `not_applicable` when no metric applies. Completeness counts reconcile to the emitted metrics. A section with an empty list and no explanation does not represent a clean assessment.
+
+## Values, units and periods
+
+- Monetary values are decimal strings with an explicit ISO currency; ratios are fractions, not percentage points. Preserve precision in storage. Round displayed ratios to at most six decimal places, with half-even rounding; do not round inputs before calculations or policy comparisons.
+- Sum amounts only on the same currency basis. Currency conversion records the positive rate, source, timestamp and evidence. The reported metric uses the package reporting currency; original amounts remain in source records.
+- A window is a UTC interval `[start, end)`. Point-in-time metrics carry an `as_of` date. Record actual observation coverage, missing days, accounting basis and consolidation. Never assume missing bank days have zero transactions.
+- `analysis_basis` distinguishes historical, pro forma and scenario results. Pro forma repayment capacity can compare historical eligible cash flow with prospective debt service only for equal-length periods, with both periods and the unchanged-cash-flow assumption explicit. It is not a forecast. A historical DSCR uses cash flow and debt service from the same period.
+- Compare growth only across compatible populations and periods. Year-over-year needs the comparable prior-year window, not a shorter interval annualized without disclosure. Volatility specifies complete periods and uses population standard deviation. Seasonal or irregular data does not silently become recurring income.
+- Daily balance metrics require reliable daily balances or a reconciled reconstruction. A point balance does not establish a full history. Per-account negative days are combined as a union for an all-account day count.
+- A zero or invalid denominator produces `unavailable` with `invalid_denominator`, not infinity, 999 or an automatic policy pass. A nonpositive EBITDA or equity denominator is not a healthy leverage ratio. Negative cash flow and losses remain negative where the definition permits them.
+
+## Missingness and quality
+
+Metric `reason_code` identifies missing source, insufficient history, stale source, incomplete coverage, restricted source, invalid denominator, conflicting evidence, unsupported scope, not applicable, not evaluated, no comparable baseline or model ineligibility. `missing_reason` explains the specific cause and required input.
+
+An available metric has non-null input values, evidence IDs and exact calculation/definition versions. Its evidence IDs match the union of its input evidence references. Declared, observed, derived and estimated bases remain distinct. An estimated result includes its assumptions and cannot be described as verified. An unavailable metric has a null value and a reason; a genuine measured zero retains evidence and an available status.
+
+Missing or stale data does not prove financial distress or fraud. It can require review or prevent a required rule from being evaluated. Do not turn source coverage into a creditworthiness score. A missing mandatory policy input always produces `review_required`.
+
+## Cash flow and accounting
+
+Retain original transactions and normalized records. Calculation populations use posted, deduplicated records. Pending transactions, duplicates, transfers, financing proceeds, owner injections, refunds, taxes, processor fees and capital expenditures have explicit treatments appropriate to each metric. Gross deposits, cash sales, accrual revenue, gross profit, EBITDA and free cash flow are different quantities.
+
+Reconciliations compare aligned populations, currencies and dates. The bridge is `adjusted_left_total = left_total + signed adjustments` and `residual = adjusted_left_total - right_total`. A matched result requires complete comparable populations and an absolute residual within the documented nonnegative tolerance. Timing, refunds, tax, fees and FX adjustments require evidence. A mismatch alone is not fraud.
+
+Statements preserve line hierarchy and sourced adjustments. Do not add both subtotal lines and their children. EBITDA addbacks are itemized and justified, not automatically approved because a borrower supplied them. Receivable/payable aging uses due dates and allocated settlements; net working capital and cash-conversion-cycle calculations use comparable statement periods. HHI uses squared fractional shares and identifies unallocated exposure; unknown counterparties cannot silently disappear.
+
+## Repayment and affordability
+
+DSCR uses eligible cash flow and complete existing plus proposed required debt service over comparable periods. Include principal, interest, fees, balloon obligations and variable-payment assumptions. Do not substitute arbitrary bank debits for a complete debt schedule. Recurring payments can suggest an obligation while principal, rate or maturity remain unknown. Distinguish observed, declared and inferred obligations.
+
+Consumer DTI uses supported gross income and monthly required existing plus proposed debt payments. Net deposits alone do not establish gross income. Payroll/tax evidence identifies gross, deductions and net amounts. Weekly income converts by `52/12`, biweekly by `26/12`, semimonthly by `2`; irregular income needs its own supported observation window and method. Include housing exactly once. Residual income uses net income less nonoverlapping essential expenses, housing and debt service. Household allocation requires authorized joint scope; do not infer household liabilities from co-location.
+
+Each policy rule pins its calculation version from configuration discovery. A calculation change requires a new immutable policy version. A policy result refers to the exact metric key, value, window, unit and pinned calculation version. Missing inputs cannot pass a rule. Approved product/policy definitions determine the comparison; the public examples' thresholds are illustrative, not universal credit standards. An institution decision, offer, adverse-action notice or regulatory finding is not implied by an AMLOK recommendation.
+
+## Evidence and verification
+
+Every finding cites immutable evidence in the package evidence set. A JSON pointer identifies a source field; document evidence identifies a document and one-based page. Preserve provider name, observation date, identity matching status and permitted report access. KYB/KYC or account ownership checks cannot establish financial capacity, and a suspected document anomaly is not a confirmed fraud finding.
+
+A source restriction can permit a derived attribute while preventing redistribution of an underlying licensed report. Return the permitted result with its lineage and explicit access restriction. Retrieve raw/source values, normalized records, documents and provider reports using the data/evidence endpoints under the same workspace, environment, consent and license boundaries. Never expose provider credentials, unrelated borrowers or unlicensed reports.
+
+## Projections, stress and benchmarks
+
+Baseline forecasts and stress scenarios state their model version, future horizon, starting balances, assumptions, shock units and limitations. Typical supported parameters include revenue/income changes, collection delays, cost changes, interest-rate resets and customer loss, when the necessary source data exists. Output series retain their dates, units, currency and evidence. Deterministic stress results are conditional arithmetic, not calibrated probabilities. A statistical interval states its level, method and calibration reference; its bounds must be ordered and its level between zero and one.
+
+Benchmarks require an eligible, entitled cohort with market, industry when relevant, borrower type, size band when relevant, time period, sample size, source and methodology. Percentiles are fractions from zero to one. If those conditions are not established, return an unavailable benchmark section; do not manufacture industry percentiles.
+
+PD, LGD, expected loss and provider scores require an applicable validated model, target definition, horizon, population, market, version, calibration date, reason codes and limitations. A provider score retains its original scale. A heuristic score, missing-data count or stress DSCR is not a default probability. No model output is returned as available solely because the schema supports it.
+
+Use authorized financial evidence and purpose-appropriate identity checks. Protected personal characteristics and inferred sensitive merchant/behavioral attributes are not underwriting metric inputs. Regulatory eligibility, provider licensing and institutional model governance determine which analyses can be returned in the relevant market; availability in one market does not imply availability in another.
+
+## Signal and change detection
+
+Signal uses the same dimensions and definitions, linked to an exact monitoring run and lender deal snapshot. Each change identifies its baseline package, current value, previous value and comparability. The absolute delta is current minus previous. The relative delta uses a positive previous value; otherwise it is null. Incompatible units, currency, account scope, periods, calculation versions or source quality make numeric deltas null with an explanation.
+
+An unavailable sync is not evidence that an alert condition resolved. Only fresh comparable evidence can support a resolved condition. A re-evaluation appends a new package and evidence set; it never rewrites prior findings, policy results, loan snapshots or billing usage.

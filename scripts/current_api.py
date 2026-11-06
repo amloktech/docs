@@ -59,7 +59,9 @@ def fixtures():
     from institution_api import extend_fixtures
     extend_fixtures(f)
     from readiness_contract import extend_fixtures as readiness_fixtures
-    return readiness_fixtures(f)
+    readiness_fixtures(f)
+    from risk_package_contract import extend_fixtures as risk_fixtures
+    return risk_fixtures(f)
 
 
 PURPOSE = {
@@ -256,6 +258,8 @@ def build():
     navigation(groups)
     from readiness_guides import write_guides as readiness_guides
     readiness_guides(spec, f, index)
+    from risk_package_guides import write_guides as risk_guides
+    risk_guides(spec, f, index)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()
