@@ -4633,7 +4633,7 @@
   "evidence_set": {
     "id": "es_consumer_synthetic",
     "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-    "count": 2
+    "count": 3
   },
   "versions": {
     "schema": "1.0.0",
@@ -4649,6 +4649,959 @@
   "record_version": 1,
   "deal_snapshot_id": null,
   "catalog_version": "2026-11-06.1",
+  "verification": {
+    "id": "verify_person_synthetic",
+    "borrower_id": "bor_synthetic",
+    "subject_id": "person_synthetic",
+    "definition_version": "2026-11-06.1",
+    "as_of": "2026-11-06T12:00:00Z",
+    "status": "partial",
+    "outcome": "review_required",
+    "summary": "Synthetic identity document matched; a screening candidate remains unreviewed. No lender decision is made.",
+    "sources": [
+      {
+        "id": "src_verification_synthetic",
+        "kind": "identity_verification",
+        "display_name": "Synthetic identity source",
+        "jurisdictions": [
+          "CA-AB"
+        ],
+        "reference": "report_synthetic",
+        "reported_status": "in_review",
+        "requested_at": "2026-11-06T12:00:00Z",
+        "completed_at": "2026-11-06T12:00:00Z",
+        "as_of": "2026-11-06T12:00:00Z",
+        "coverage": {
+          "status": "complete",
+          "requested_scopes": [
+            "identity",
+            "sanctions"
+          ],
+          "completed_scopes": [
+            "identity",
+            "sanctions"
+          ],
+          "limitations": []
+        },
+        "document_ids": [],
+        "warnings": [
+          "Required people not supplied."
+        ],
+        "errors": []
+      }
+    ],
+    "ownership_resolution": {
+      "status": "not_applicable",
+      "reason": "Individual borrower; ownership is not required for this example.",
+      "unresolved_subject_ids": [],
+      "ownership_basis": "unknown",
+      "known_share": null,
+      "unknown_share": null
+    },
+    "documents": [],
+    "checks": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "check_id_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/original_provider_status",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/method",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/required",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/policy_version",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/expires_at",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/override",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "identity",
+          "state": "completed",
+          "outcome": "passed",
+          "provider_status": "approved",
+          "original_provider_status": null,
+          "reason_codes": [],
+          "summary": "Synthetic document comparison completed.",
+          "method": null,
+          "required": null,
+          "policy_version": null,
+          "completed_at": "2026-11-06T12:00:00Z",
+          "expires_at": null,
+          "item_ids": [
+            "id_document_synthetic"
+          ],
+          "override": null
+        },
+        {
+          "id": "check_aml_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/original_provider_status",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/method",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/required",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/policy_version",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/expires_at",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/override",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "sanctions",
+          "state": "completed",
+          "outcome": "review_required",
+          "provider_status": "in_review",
+          "original_provider_status": null,
+          "reason_codes": [],
+          "summary": "A candidate match requires review.",
+          "method": null,
+          "required": null,
+          "policy_version": null,
+          "completed_at": "2026-11-06T12:00:00Z",
+          "expires_at": null,
+          "item_ids": [
+            "screening_synthetic"
+          ],
+          "override": null
+        }
+      ]
+    },
+    "businesses": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "persons": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "person_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "document_extracted",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/middle_names",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/date_of_birth",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/country_of_birth",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "full_name": "Synthetic Example Person",
+          "given_names": "Synthetic",
+          "middle_names": null,
+          "family_name": "Person",
+          "aliases": [],
+          "date_of_birth": null,
+          "nationalities": [],
+          "country_of_birth": null,
+          "identifiers": [],
+          "address_ids": [],
+          "identity_check_ids": [
+            "check_id_synthetic"
+          ],
+          "identity_assurance": "documentary"
+        }
+      ]
+    },
+    "registrations": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "addresses": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "relationships": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "ownership": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "identity_documents": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "id_document_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/document_subtype",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/nfc",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/wallet",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/document_id",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "document_type": "Passport",
+          "document_subtype": null,
+          "identifier": {
+            "scheme": "passport",
+            "value": null,
+            "masked_value": "*****0123",
+            "country": "CA",
+            "jurisdiction": null,
+            "disclosure": "masked",
+            "reason": "Personal document identifiers are minimized."
+          },
+          "issuing_country": "CA",
+          "issued_on": "2024-01-01",
+          "expires_on": "2034-01-01",
+          "holder_subject_id": "person_synthetic",
+          "method": "document",
+          "assurance": "documentary",
+          "authenticity": "passed",
+          "extracted_fields": [],
+          "quality_scores": [],
+          "nfc": null,
+          "wallet": null,
+          "document_id": null,
+          "reason_codes": []
+        }
+      ]
+    },
+    "biometrics": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "liveness_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/consent_reference",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "liveness",
+          "method": "passive",
+          "outcome": "passed",
+          "score": {
+            "value": 96,
+            "scale_min": 0,
+            "scale_max": 100,
+            "direction": "higher_is_more_assurance",
+            "label": "Synthetic similarity only",
+            "method": "synthetic-method-1"
+          },
+          "threshold": 80,
+          "reason_codes": [],
+          "comparison_subject_ids": [],
+          "consent_reference": null
+        }
+      ]
+    },
+    "screenings": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "screening_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/dataset_updated_at",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/ongoing_monitoring",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/last_rescreened_at",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "sanctions",
+          "state": "completed",
+          "result": "potential_match",
+          "coverage": {
+            "status": "complete",
+            "requested_scopes": [
+              "synthetic_sanctions_dataset"
+            ],
+            "completed_scopes": [
+              "synthetic_sanctions_dataset"
+            ],
+            "limitations": []
+          },
+          "screened_values": [],
+          "hits": [
+            {
+              "id": "hit_synthetic",
+              "category": "sanctions",
+              "matched_name": "Synthetic Similar Name",
+              "aliases": [],
+              "list_name": "Synthetic screening dataset",
+              "list_authority": null,
+              "source_record_reference": "source_hit_synthetic",
+              "source_url": null,
+              "match_score": {
+                "value": 82,
+                "scale_min": 0,
+                "scale_max": 100,
+                "direction": "higher_is_stronger_match",
+                "label": "Synthetic similarity only",
+                "method": "synthetic-method-1"
+              },
+              "risk_score": null,
+              "disposition": "unreviewed",
+              "reviewed_at": null,
+              "review_reason": null,
+              "first_seen_at": null,
+              "last_seen_at": null,
+              "properties": [],
+              "evidence": [
+                {
+                  "evidence_id": "ev_verification_synthetic",
+                  "data_record_id": "dr_verification_source_synthetic",
+                  "source_path": "/aml_screenings/0/hits/0",
+                  "document_id": null,
+                  "page": null
+                }
+              ]
+            }
+          ],
+          "reported_hit_count": 1,
+          "returned_hit_count": 1,
+          "screened_at": "2026-11-06T12:00:00Z",
+          "dataset_updated_at": null,
+          "ongoing_monitoring": null,
+          "last_rescreened_at": null
+        }
+      ]
+    },
+    "tax_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "licences": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "filings": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "corporate_structure": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "public_records": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "online_presence": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "contact_checks": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "contact_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/disposable",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/virtual",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/free_domain",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/carrier",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/carrier_type",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/country",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/ported",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/recently_ported",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/breached",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/breach_count",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "kind": "email",
+          "value": "synthetic@example.com",
+          "method": "otp",
+          "outcome": "passed",
+          "verified_at": "2026-11-06T12:00:00Z",
+          "attempts": 1,
+          "deliverable": true,
+          "disposable": null,
+          "virtual": null,
+          "free_domain": null,
+          "carrier": null,
+          "carrier_type": null,
+          "country": null,
+          "ported": null,
+          "recently_ported": null,
+          "breached": null,
+          "breach_count": null,
+          "reason_codes": []
+        }
+      ]
+    },
+    "device_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "document_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "bank_account_checks": {
+      "status": "available",
+      "reason": null,
+      "explanation": "Synthetic observations; availability does not mean a passing result.",
+      "coverage": {
+        "status": "complete",
+        "requested_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "completed_scopes": [
+          "synthetic_requested_scope"
+        ],
+        "limitations": []
+      },
+      "items": [
+        {
+          "id": "bank_owner_synthetic",
+          "subject_id": "person_synthetic",
+          "provenance": {
+            "basis": "provider_verified",
+            "source_id": "src_verification_synthetic",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "evidence": [
+              {
+                "evidence_id": "ev_verification_synthetic",
+                "data_record_id": "dr_verification_source_synthetic",
+                "source_path": null,
+                "document_id": null,
+                "page": null
+              }
+            ],
+            "field_evidence": []
+          },
+          "missing_fields": [
+            {
+              "path": "/account_reference",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            },
+            {
+              "path": "/match_score",
+              "reason": "not_provided",
+              "description": "This synthetic source does not supply this field."
+            }
+          ],
+          "supplemental_facts": [],
+          "account_reference": null,
+          "masked_account_number": "*****0123",
+          "institution_name": "Synthetic Bank",
+          "country": "CA",
+          "holder_names": [
+            "Synthetic Example Person"
+          ],
+          "reference_identity_name": "Synthetic Example Person",
+          "method": "account_check",
+          "result": "matched",
+          "match_score": null,
+          "verified_at": "2026-11-06T12:00:00Z",
+          "reason_codes": []
+        }
+      ]
+    },
+    "questionnaires": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "signatures": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "field_comparisons": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "source_scores": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    },
+    "duplicate_checks": {
+      "status": "unavailable",
+      "reason": "not_requested",
+      "explanation": "No result included in this synthetic example.",
+      "coverage": {
+        "status": "not_requested",
+        "requested_scopes": [],
+        "completed_scopes": [],
+        "limitations": [
+          "No completed check is claimed."
+        ]
+      },
+      "items": []
+    }
+  },
   "scope": {
     "borrower_type": "person",
     "market": "CA",

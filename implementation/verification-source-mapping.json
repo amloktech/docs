@@ -1,0 +1,536 @@
+{
+  "reviewed_on": "2026-11-06",
+  "status": "contract_mapping_not_executed_adapters",
+  "sources": {
+    "Didit": [
+      "https://docs.didit.me/reference/data-models",
+      "https://docs.didit.me/sessions-api/retrieve-session"
+    ],
+    "Baselayer": [
+      "https://docs.baselayer.com/api-reference/search/post-search",
+      "https://docs.baselayer.com/api-reference/openapi.json"
+    ],
+    "Current": [
+      "User-supplied 01-search.json",
+      "User-supplied 02-verify.json",
+      "User-supplied corporate-profile-report.pdf",
+      "User-supplied search.pdf",
+      "User-supplied verification.pdf"
+    ]
+  },
+  "mappings": [
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: status, status_override, reviews, created_at, expires_at",
+      "targets": [
+        "VerificationResult.provider_status",
+        "VerificationResult.original_provider_status",
+        "VerificationResult.override",
+        "VerificationSource.completed_at"
+      ],
+      "normalization": "Preserve execution and original/overridden decisions independently. Approval is identity/compliance scope only. Each attempt or changed source version remains separately evidenced.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: id_verifications[]",
+      "targets": [
+        "VerificationPerson.full_name",
+        "VerificationPerson.date_of_birth",
+        "VerificationPerson.identifiers",
+        "VerificationIdentityDocument.extracted_fields",
+        "VerificationIdentityDocument.quality_scores"
+      ],
+      "normalization": "Preserve text, normalized name/identifier and permitted OCR/MRZ/barcode facts with source pointers. Convert verified alpha-3 countries to alpha-2. Mask personal identifiers; never infer complete dates from partial dates.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: nfc_verifications[], nfc_skip_reason",
+      "targets": [
+        "VerificationIdentityDocument.nfc",
+        "VerificationIdentityDocument.method"
+      ],
+      "normalization": "Return chip/authentication results and skipped reason, not chip dumps, portraits or biometric templates.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: liveness_checks[], face_matches[]",
+      "targets": [
+        "VerificationBiometric.kind",
+        "VerificationBiometric.score",
+        "VerificationBiometric.threshold"
+      ],
+      "normalization": "Maintain original score scale, method, result, warnings and actual configured threshold; do not turn similarity into calibrated identity certainty.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "Data models: Face search, Biometric authentication",
+      "targets": [
+        "VerificationDuplicateCheck.authorized_matches",
+        "VerificationDuplicateCheck.reported_match_count"
+      ],
+      "normalization": "Only same-workspace authorized references; external customer/session identities and biometric vectors are excluded. A hidden match cannot be claimed as a visible verified person.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: aml_screenings[]",
+      "targets": [
+        "VerificationScreening.hits",
+        "VerificationScreening.coverage",
+        "VerificationScreening.screened_at",
+        "VerificationScreeningHit.properties"
+      ],
+      "normalization": "Preserve candidate aliases, datasets, original scores, attributes, list sources and review disposition. Zero returned hits is clean only with completed explicitly requested coverage. Ongoing subscription billing dates are not screening dates.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: phone_verifications[], email_verifications[]",
+      "targets": [
+        "VerificationContactCheck.value",
+        "VerificationContactCheck.method",
+        "VerificationContactCheck.carrier",
+        "VerificationContactCheck.breached",
+        "VerificationContactCheck.supplemental_facts"
+      ],
+      "normalization": "Control proof, deliverability, disposable/virtual, porting and exposure signals retain their source meaning and period. Personal private social-account activity, inferred affluence and contact content are excluded by default.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: poa_verifications[]",
+      "targets": [
+        "VerificationAddress.roles",
+        "VerificationAddress.validation",
+        "VerificationDocumentCheck.extracted_fields",
+        "VerificationFieldComparison.result"
+      ],
+      "normalization": "Separate the supplied address, extracted address, validation result and supporting file. Preserve street numbers and units and exact document/page evidence.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: ip_analyses[], geolocation_checks[], geolocation_attempts[]",
+      "targets": [
+        "VerificationDeviceCheck.country",
+        "VerificationDeviceCheck.location_permission",
+        "VerificationDeviceCheck.location_integrity",
+        "VerificationDeviceCheck.document_location_consistent"
+      ],
+      "normalization": "Expose authorized coarse consistency and network-risk results. Retain failures and permission denial. Default responses exclude exact coordinates, stable device fingerprints and raw IP identifiers.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: database_validations[], database_validation_not_performed_reason",
+      "targets": [
+        "VerificationResult.kind",
+        "VerificationFieldComparison.field",
+        "VerificationFieldComparison.result"
+      ],
+      "normalization": "Represent each attempted database check and each provided/observed comparison. Not performed or source unavailable is distinct from mismatch.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: questionnaire_responses[]",
+      "targets": [
+        "VerificationQuestionnaire.version",
+        "VerificationQuestionnaire.answers"
+      ],
+      "normalization": "Flatten repeated answer instances with their original pointer; retain question, type, required flag, chosen values and document IDs. Answers stay declared. Layout and hidden nodes are not missing answers. File URLs are ingested into controlled documents.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: document_ai_documents[], document_verifications[]",
+      "targets": [
+        "VerificationDocumentCheck.extracted_fields",
+        "VerificationDocumentCheck.document_metadata",
+        "VerificationDocumentCheck.tamper_result"
+      ],
+      "normalization": "Preserve document type/group, source status, permitted OCR/classification and cross-checks. Source extraction is not registry verification. All material additional fields use typed facts and source pointers.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: bank_verifications[]",
+      "targets": [
+        "VerificationBankAccountCheck.masked_account_number",
+        "VerificationBankAccountCheck.holder_names",
+        "VerificationBankAccountCheck.result"
+      ],
+      "normalization": "Separate account-holder match from successful consent and from the existing financial transaction resources. Retain institution and match result without exposing credentials.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: signatures[]",
+      "targets": [
+        "VerificationSignature.fields",
+        "VerificationSignature.document_ids",
+        "VerificationSignature.validation"
+      ],
+      "normalization": "Retain signer, capacity, consent/signing time, certificate and timestamp checks, signed values and controlled files. A valid signature does not itself prove authority or legal enforceability.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: registry_checks[] / KYBRegistryData",
+      "targets": [
+        "VerificationBusiness.legal_name",
+        "VerificationBusiness.industry_codes",
+        "VerificationBusiness.financial_highlights",
+        "VerificationRegistration.status"
+      ],
+      "normalization": "Retain selected/candidate resolution, registration identifiers, legal form, dates, capital and registry financial periods. Manual data_resolved is not an independent verified result; registry status is not session status.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "KYBRegistryAddress, KYBRegistryGroupCompany, KYBRegistryOwnership, KYBRegistryShareholding",
+      "targets": [
+        "VerificationAddress.roles",
+        "VerificationRelationship.roles",
+        "VerificationOwnership.economic_share",
+        "VerificationOwnership.voting_share",
+        "VerificationOwnership.nature_of_control"
+      ],
+      "normalization": "Keep direct/indirect holdings, corporate shareholders, related entities and roles. Parse percentage bases explicitly and retain original value; unknown equity cannot be inferred from voting rights.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "KYBRegistryUboResolution, KYBOwnershipStructureOwner",
+      "targets": [
+        "VerificationAssessment.ownership_resolution",
+        "VerificationOwnership.chain_subject_ids",
+        "VerificationOwnership.chain_complete"
+      ],
+      "normalization": "Maintain incomplete upstream parent chains and unresolved parties. Compute indirect equity only from complete sourced chains; no automatic redistribution to 100%.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: key_people_checks[]",
+      "targets": [
+        "VerificationRelationship.verification_state",
+        "VerificationRelationship.skip_reason",
+        "VerificationPerson.identity_assurance",
+        "VerificationResult.item_ids"
+      ],
+      "normalization": "Link child person checks to the parent business and authorized subject; preserve skipped/failed/pending states and actual source policy.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Didit",
+      "source": "SessionDecision: investigator, decision_trace, fraud_check",
+      "targets": [
+        "VerificationResult.summary",
+        "VerificationResult.reason_codes",
+        "VerificationSourceScore.score",
+        "VerificationFact.source_path"
+      ],
+      "normalization": "Keep attributable permitted findings, warnings and automated assessments separate from observed facts. Never promote generated narrative to verified evidence; source scores retain their meaning.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.GetBusinessSearchResponse: state, verified, warnings, error, reason_codes",
+      "targets": [
+        "VerificationResult.state",
+        "VerificationResult.provider_status",
+        "VerificationResult.reason_codes",
+        "VerificationSource.errors"
+      ],
+      "normalization": "Preserve searched, selected and verified separately, including partial results and orderable-but-unordered products.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.GetBusinessSearchResponse: business_*_match, registered_agent_match, scores",
+      "targets": [
+        "VerificationFieldComparison.result",
+        "VerificationSourceScore.kind",
+        "VerificationSourceScore.score"
+      ],
+      "normalization": "Original comparison outcomes and fraud/risk/KYB scales remain distinct. Never assume scores are 0-100, calibrated probabilities or AMLOK scores.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.GetBusinessSearchResponse: tin, tin_matched, tin_match_type, tin_potential_match",
+      "targets": [
+        "VerificationTaxCheck.identifier",
+        "VerificationTaxCheck.result",
+        "VerificationTaxCheck.registered_name",
+        "VerificationTaxCheck.unavailable_reason"
+      ],
+      "normalization": "Null IRS/TIN response can be an outage; do not coerce it to false. Identifier match does not prove taxes paid; retain source match type and potential name as permitted facts.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.BusinessResponse: name, structure, alternative_names, incorporation_*, ein, sec_registrations",
+      "targets": [
+        "VerificationBusiness.legal_name",
+        "VerificationBusiness.identifiers",
+        "VerificationBusiness.incorporation_date",
+        "VerificationRegistration.registration_type"
+      ],
+      "normalization": "Use each distinct registry/identifier scheme; source business age is a fact with an as-of basis, not a substitute for a known incorporation date.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.BusinessResponse: addresses, primary_address; address validation",
+      "targets": [
+        "VerificationAddress.deliverable",
+        "VerificationAddress.classification",
+        "VerificationAddress.is_cmra"
+      ],
+      "normalization": "Preserve address types, validation level, CMRA and delivery information; never infer commercial legitimacy from a postal match.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.BusinessResponse: registrations, business_officers",
+      "targets": [
+        "VerificationRegistration.standing",
+        "VerificationRegistration.inactive_on",
+        "VerificationRegistration.dissolved_on",
+        "VerificationRelationship.roles"
+      ],
+      "normalization": "Keep domestic/foreign registrations, current/previous statuses, registered agents and officers separate, with authority and filing provenance.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.BusinessResponse: website, social_profiles, reviews, directory_listings, predicted_naics, revenue",
+      "targets": [
+        "VerificationOnlinePresence.kind",
+        "VerificationOnlinePresence.review_count",
+        "VerificationBusiness.industry_codes",
+        "VerificationBusiness.financial_highlights"
+      ],
+      "normalization": "Only public business presence; ratings keep original scale and predicted industry stays predicted. Revenue retains time, unit and source basis and is not automatically verified cash flow.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.InternationalBusinessResponse / v1.InternationalBeneficialOwner",
+      "targets": [
+        "VerificationBusiness.registered_capital",
+        "VerificationPerson.date_of_birth",
+        "VerificationRelationship.position",
+        "VerificationOwnership.nature_of_control",
+        "VerificationCorporateStructure.share_classes"
+      ],
+      "normalization": "International enhanced details depend on the actual ordered jurisdiction product. Identity attributes are purpose-limited. Retain shareholder/UBO roles and reported control wording without manufacturing percentages.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.PersonResponse",
+      "targets": [
+        "VerificationPerson.given_names",
+        "VerificationPerson.family_name",
+        "VerificationPerson.identifiers",
+        "VerificationPerson.date_of_birth"
+      ],
+      "normalization": "Only associated person identity and licensed legal/screening facts; SSN masked by default. Gender and marital status are not default underwriting response attributes.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.WatchlistHitResponse / v1.WatchlistSearchResponse / v1.WatchlistSearchMatch",
+      "targets": [
+        "VerificationScreening.hits",
+        "VerificationScreeningHit.list_name",
+        "VerificationScreeningHit.match_score"
+      ],
+      "normalization": "Return all authorized candidates and explicit review status. A name hit, PEP or adverse article is not misconduct or a sanctions conclusion.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.LienFilingResponse",
+      "targets": [
+        "VerificationPublicRecord.kind",
+        "VerificationPublicRecord.collateral",
+        "VerificationPublicRecord.amendments",
+        "VerificationPublicRecord.amount"
+      ],
+      "normalization": "Preserve UCC/PPSA category, filing and lapse dates, parties, collateral, amendments, document IDs and source amount/currency; do not infer lien balance from filing presence.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.DocketResponse",
+      "targets": [
+        "VerificationPublicRecord.record_type",
+        "VerificationPublicRecord.parties",
+        "VerificationPublicRecord.events",
+        "VerificationPublicRecord.document_ids"
+      ],
+      "normalization": "Retain court, docket, case/bankruptcy type, status, dates and parties with match confidence. Distinguish allegation, open case, judgment and closure.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.WebsiteAnalysisDetails / v2.WebsiteAnalysisDetails",
+      "targets": [
+        "VerificationOnlinePresence.redirects",
+        "VerificationOnlinePresence.parked",
+        "VerificationOnlinePresence.domain_registered_on",
+        "VerificationOnlinePresence.ssl_valid"
+      ],
+      "normalization": "Preserve public site consistency, domain/SSL observations, stated activity and controlled screenshots. Unsupported native extras remain allowlisted, typed and traceable.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Baselayer",
+      "source": "v1.ConsortiumMatch",
+      "targets": [
+        "VerificationPublicRecord.consortium_observation",
+        "VerificationPublicRecord.match_status"
+      ],
+      "normalization": "Licensed attributed reporting only; retain product, lifecycle, default/charge-off and match fields. A report is not an independently proven fraud finding; minimize reporter identity and respect sharing entitlement.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "01-search.json: meta; businesses[].legalName, match, matchId",
+      "targets": [
+        "VerificationSource.reference",
+        "VerificationBusiness.resolution",
+        "VerificationBusiness.match_score",
+        "VerificationFieldComparison.score"
+      ],
+      "normalization": "Treat search results as candidates until selected and assessed. Keep matching field scores and required policy thresholds without treating match confidence as successful KYB.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "01-search.json: businesses[].registrationNumbers, jurisdiction, entityType, addresses, people",
+      "targets": [
+        "VerificationBusiness.identifiers",
+        "VerificationBusiness.jurisdiction",
+        "VerificationAddress.roles",
+        "VerificationRelationship.roles"
+      ],
+      "normalization": "Normalize country/region only when established; each registration label remains its identifier scheme. Preserve multiple address and role observations.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "01-search.json: calgaryBusinessLicences[].details",
+      "targets": [
+        "VerificationLicence.identifier",
+        "VerificationLicence.licence_types",
+        "VerificationLicence.status",
+        "VerificationLicence.issued_on",
+        "VerificationLicence.expires_on"
+      ],
+      "normalization": "Top-level status may be null while details.status is supplied. Record the exact selected pointer and preserve both observations when conflicting. Community district is a typed supplemental fact.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "01-search.json: other regulatory arrays; sanctionsScreening; websiteAnalysis",
+      "targets": [
+        "VerificationSource.coverage",
+        "VerificationLicence.registry",
+        "VerificationScreening.coverage",
+        "VerificationOnlinePresence.summary"
+      ],
+      "normalization": "The supplied sample has empty regulatory arrays and null screening/website results. Their non-empty response shapes and completion semantics are unverified: do not invent fields or clean results.",
+      "availability": "Sample proves dataset names, not full field schemas or successful searches for these branches."
+    },
+    {
+      "provider": "Current",
+      "source": "02-verify.json: meta.submitted; results.fields; results.address; results.people",
+      "targets": [
+        "VerificationFieldComparison.provided",
+        "VerificationFieldComparison.observed",
+        "VerificationFieldComparison.threshold",
+        "VerificationFieldComparison.affects_outcome"
+      ],
+      "normalization": "Preserve provided, registry and normalized values and matching-policy thresholds. Required people missing is not evidence of a match or a mismatch against a person.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "02-verify.json: results.status; analystSummary; registryData",
+      "targets": [
+        "VerificationResult.provider_status",
+        "VerificationResult.summary",
+        "VerificationBusiness.good_standing",
+        "VerificationRegistration.annual_return_status"
+      ],
+      "normalization": "Registry found plus active status may still be not_verified. Unknown good standing remains null; keep annual-return overdue distinct from inactive status.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "02-verify.json: registryData.people[].roles, roleDetails, categoryLabel, sharesHeld",
+      "targets": [
+        "VerificationRelationship.role_labels",
+        "VerificationOwnership.reported_interest",
+        "VerificationOwnership.voting_share"
+      ],
+      "normalization": "Separate service agents, directors and corporate/individual shareholders. A string stating voting percentage maps to voting_share /100 only; economic_share remains null without evidence.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "02-verify.json: registryData.filingHistory, yearOfLastAnnualReturn",
+      "targets": [
+        "VerificationFiling.kind",
+        "VerificationFiling.filed_on",
+        "VerificationRegistration.last_annual_return_year"
+      ],
+      "normalization": "Annual-return year and filing date are distinct. Preserve all event records and source labels.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "corporate-profile-report.pdf: pages 1-5, schedules pages 6-22",
+      "targets": [
+        "VerificationCorporateStructure.share_classes",
+        "VerificationCorporateStructure.minimum_directors",
+        "VerificationCorporateStructure.other_provisions",
+        "VerificationEvidence.page"
+      ],
+      "normalization": "PDF-only office roles, agent capacity, share-class rights, director limits and governing schedules require document extraction with exact page evidence. Preserve conflicts with condensed JSON; never silently drop unit/street information or convert agents into directors.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "Current",
+      "source": "search.pdf, verification.pdf; registryData.reportUrl and reportUrlExpiresAt",
+      "targets": [
+        "VerificationAssessment.documents",
+        "VerificationDocumentCheck.document_id",
+        "VerificationEvidence.document_id"
+      ],
+      "normalization": "Ingest reports into controlled AMLOK documents; deliver through existing authorized download endpoints, not by copying signed provider URLs. Record source retrieval and expiry internally; report availability does not imply verification success.",
+      "availability": "Only when the source actually returns the authorized result."
+    },
+    {
+      "provider": "All",
+      "source": "Source-specific material scalar fields not covered above",
+      "targets": [
+        "VerificationFact.key",
+        "VerificationFact.value",
+        "VerificationFact.unit",
+        "VerificationFact.source_path"
+      ],
+      "normalization": "Require a reviewed namespaced key, meaning, units and exact pointer. Structured native detail stays in the permitted DataRecord.source_payload rather than an untyped top-level verification object.",
+      "availability": "Only when the source actually returns the authorized result."
+    }
+  ]
+}

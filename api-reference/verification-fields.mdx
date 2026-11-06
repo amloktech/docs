@@ -1,0 +1,5742 @@
+---
+title: "Verification field dictionary"
+sidebarTitle: "Verification field dictionary"
+description: "Types, meanings, normalization and evidence rules for KYC and KYB response fields."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+These definitions describe `risk_package.verification` and the same assessment at `normalized.assessment` when `normalized.object` is `verification_assessment`. The [KYC and KYB guide](/api-reference/verification) explains retrieval, status, evidence and authorization. Every section is present even when no result is available.
+
+All values in the [business example](/downloads/verification-business-example.json) and [consumer example](/downloads/verification-consumer-example.json) are synthetic. The [machine-readable dictionary](/downloads/verification-field-catalog.json) uses the exact field IDs imported by console Data Lookup.
+
+## VerificationCheck
+
+Provider and observation context remain visible. Inconclusive, not checked and no matching record must never become a verified pass.
+
+### VerificationCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCheck-check
+
+`check` · `string` · Required · Nullable: No
+
+Check. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `identity`, `account_ownership`, `business_registration`, `beneficial_ownership`, `document_authenticity`, `income_verification`, `credit_report_match`, `lien`, `tax_filing`.
+
+### VerificationCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCheck-result
+
+`result` · `string` · Required · Nullable: No
+
+Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `matched`, `not_matched`, `inconclusive`, `not_checked`.
+
+### VerificationCheck-provider
+
+`provider` · `string | null` · Required · Nullable: Yes
+
+Provider. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCheck-observed_at
+
+`observed_at` · `string | null` · Required · Nullable: Yes
+
+Observed at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCheck-explanation
+
+`explanation` · `string` · Required · Nullable: No
+
+Explanation. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCheck-evidence
+
+`evidence` · `EvidenceLocation[]` · Required · Nullable: No
+
+Exact evidence records and source-document locations.
+
+## VerificationCheckSection
+
+Coverage and results for verifications. Empty unavailable/not_applicable sections carry an explicit reason. Partial results must identify their limitation; an empty list alone never means a clean assessment.
+
+### VerificationCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationCheckSection-reason
+
+`reason` · `string | null` · Required · Nullable: Yes
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationCheckSection-evidence_ids
+
+`evidence_ids` · `string[]` · Required · Nullable: No
+
+Evidence ids. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCheckSection-items
+
+`items` · `VerificationCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationEvidence
+
+Typed verification response object.
+
+### VerificationEvidence-evidence_id
+
+`evidence_id` · `string | null` · Required · Nullable: Yes
+
+Exact frozen evidence ID; null only when a DataRecord reference provides provenance.
+
+### VerificationEvidence-data_record_id
+
+`data_record_id` · `string | null` · Required · Nullable: Yes
+
+Exact immutable data-record version; not a mutable logical resource ID.
+
+### VerificationEvidence-source_path
+
+`source_path` · `string | null` · Required · Nullable: Yes
+
+RFC 6901 pointer into the permitted source payload, preserving its original field path.
+
+### VerificationEvidence-document_id
+
+`document_id` · `string | null` · Required · Nullable: Yes
+
+AMLOK document ID for an authorized source report or file.
+
+### VerificationEvidence-page
+
+`page` · `integer | null` · Required · Nullable: Yes
+
+One-based source PDF page; requires document_id.
+
+## VerificationProvenance
+
+Preserve conflicting source observations as separate items. Field evidence overrides item evidence only for the named path.
+
+### VerificationProvenance-basis
+
+`basis` · `string` · Required · Nullable: No
+
+How this observation was established. A declaration or extracted text is not verification.
+
+Allowed values: `registry`, `provider_verified`, `document_extracted`, `declared`, `derived`.
+
+### VerificationProvenance-source_id
+
+`source_id` · `string` · Required · Nullable: No
+
+Opaque source identifier from assessment.sources, authorized for this workspace.
+
+### VerificationProvenance-observed_at
+
+`observed_at` · `string | null` · Required · Nullable: Yes
+
+Time the source observed the fact, null when unknown.
+
+### VerificationProvenance-retrieved_at
+
+`retrieved_at` · `string` · Required · Nullable: No
+
+UTC time AMLOK retrieved this source version.
+
+Format: `date-time`.
+
+### VerificationProvenance-evidence
+
+`evidence` · `VerificationEvidence[]` · Required · Nullable: No
+
+Exact records or document pages supporting the observation; at least one.
+
+### VerificationProvenance-field_evidence
+
+`field_evidence` · `object[]` · Required · Nullable: No
+
+Field-specific provenance for values that differ from the item-level source.
+
+### VerificationProvenance-field_evidence-path
+
+`field_evidence[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item for a field with different provenance.
+
+### VerificationProvenance-field_evidence-basis
+
+`field_evidence[].basis` · `string` · Required · Nullable: No
+
+Basis. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `registry`, `provider_verified`, `document_extracted`, `declared`, `derived`.
+
+### VerificationProvenance-field_evidence-evidence
+
+`field_evidence[].evidence` · `VerificationEvidence[]` · Required · Nullable: No
+
+Exact evidence records and source-document locations.
+
+## VerificationScore
+
+No conversion to creditworthiness, default probability or a cross-provider score.
+
+### VerificationScore-value
+
+`value` · `number | null` · Required · Nullable: Yes
+
+Original numeric value; null if only a rating was supplied.
+
+### VerificationScore-scale_min
+
+`scale_min` · `number | null` · Required · Nullable: Yes
+
+Documented lower scale bound; null when the source does not define one.
+
+### VerificationScore-scale_max
+
+`scale_max` · `number | null` · Required · Nullable: Yes
+
+Documented upper scale bound; never assume 0-100.
+
+### VerificationScore-direction
+
+`direction` · `string` · Required · Nullable: No
+
+Meaning of increasing values, not a credit-decision direction.
+
+Allowed values: `higher_is_stronger_match`, `higher_is_more_risk`, `higher_is_more_assurance`, `provider_defined`, `unknown`.
+
+### VerificationScore-label
+
+`label` · `string | null` · Required · Nullable: Yes
+
+Original provider label or qualitative rating.
+
+### VerificationScore-method
+
+`method` · `string | null` · Required · Nullable: Yes
+
+Provider method or model version when supplied.
+
+## VerificationIdentifier
+
+Typed verification response object.
+
+### VerificationIdentifier-scheme
+
+`scheme` · `string` · Required · Nullable: No
+
+Identifier scheme, for example corporation_number, EIN, BN, LEI, VAT or passport.
+
+### VerificationIdentifier-value
+
+`value` · `string | null` · Required · Nullable: Yes
+
+Permitted identifier value; null when masked, restricted or unavailable.
+
+### VerificationIdentifier-masked_value
+
+`masked_value` · `string | null` · Required · Nullable: Yes
+
+Masked representation when full disclosure is not permitted.
+
+### VerificationIdentifier-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+ISO 3166-1 alpha-2 issuing country.
+
+### VerificationIdentifier-jurisdiction
+
+`jurisdiction` · `string | null` · Required · Nullable: Yes
+
+ISO 3166-2 subdivision where known, otherwise source jurisdiction label.
+
+### VerificationIdentifier-disclosure
+
+`disclosure` · `string` · Required · Nullable: No
+
+Disclosure. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `full`, `masked`, `unavailable`.
+
+### VerificationIdentifier-reason
+
+`reason` · `string | null` · Required · Nullable: Yes
+
+Reason for masking or unavailability.
+
+## VerificationFact
+
+Allowlisted underwriting-relevant facts. No credentials, raw biometrics, unrelated persons, or unreviewed sensitive attributes.
+
+### VerificationFact-key
+
+`key` · `string` · Required · Nullable: No
+
+Stable, namespaced supplemental field name.
+
+### VerificationFact-value
+
+`value` · `string | number | boolean | null` · Required · Nullable: Yes
+
+Authorized scalar source value. Structured extras use named scalar facts, not undocumented nested payloads.
+
+### VerificationFact-unit
+
+`unit` · `string | null` · Required · Nullable: Yes
+
+Original unit where relevant.
+
+### VerificationFact-description
+
+`description` · `string` · Required · Nullable: No
+
+Meaning of the source-specific fact.
+
+### VerificationFact-source_path
+
+`source_path` · `string | null` · Required · Nullable: Yes
+
+Original source field pointer.
+
+### VerificationFact-reason
+
+`reason` · `string | null` · Required · Nullable: Yes
+
+Required explanation when the value is unavailable.
+
+## VerificationCoverage
+
+Complete applies only to the requested scopes; never implies worldwide coverage.
+
+### VerificationCoverage-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `complete`, `partial`, `unavailable`, `not_requested`, `not_applicable`.
+
+### VerificationCoverage-requested_scopes
+
+`requested_scopes` · `string[]` · Required · Nullable: No
+
+Requested countries, registries, datasets or checks.
+
+### VerificationCoverage-completed_scopes
+
+`completed_scopes` · `string[]` · Required · Nullable: No
+
+Scopes actually completed; a subset of requested scopes.
+
+### VerificationCoverage-limitations
+
+`limitations` · `string[]` · Required · Nullable: No
+
+Unsearched jurisdictions, failed datasets, licence restrictions and unresolved identities.
+
+## VerificationSource
+
+Typed verification response object.
+
+### VerificationSource-id
+
+`id` · `string` · Required · Nullable: No
+
+Opaque ID referenced by item provenance.
+
+### VerificationSource-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `identity_verification`, `business_verification`, `registry`, `regulatory_registry`, `screening`, `document`, `institution`.
+
+### VerificationSource-display_name
+
+`display_name` · `string` · Required · Nullable: No
+
+Source label permitted for disclosure.
+
+### VerificationSource-jurisdictions
+
+`jurisdictions` · `string[]` · Required · Nullable: No
+
+Actual source jurisdictions.
+
+### VerificationSource-reference
+
+`reference` · `string | null` · Required · Nullable: Yes
+
+Permitted source report reference, excluding management URLs and secret session tokens.
+
+### VerificationSource-reported_status
+
+`reported_status` · `string | null` · Required · Nullable: Yes
+
+Original source status; not silently mapped to verified.
+
+### VerificationSource-requested_at
+
+`requested_at` · `string | null` · Required · Nullable: Yes
+
+UTC request time.
+
+### VerificationSource-completed_at
+
+`completed_at` · `string | null` · Required · Nullable: Yes
+
+UTC completion time; null for pending/unknown.
+
+### VerificationSource-as_of
+
+`as_of` · `string | null` · Required · Nullable: Yes
+
+Source snapshot time; retrieval time is not a substitute.
+
+### VerificationSource-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationSource-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+AMLOK document IDs for authorized reports.
+
+### VerificationSource-warnings
+
+`warnings` · `string[]` · Required · Nullable: No
+
+Permitted source warnings.
+
+### VerificationSource-errors
+
+`errors` · `string[]` · Required · Nullable: No
+
+Permitted source error codes or explanations; no stack traces or secrets.
+
+## VerificationResult
+
+A completed check is distinct from a passing check and from an institution lending decision.
+
+### VerificationResult-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationResult-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationResult-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationResult-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationResult-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationResult-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationResult-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationResult-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationResult-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `identity`, `document_authenticity`, `liveness`, `face_match`, `duplicate_identity`, `proof_of_address`, `database`, `business_registration`, `good_standing`, `ownership`, `sanctions`, `pep`, `adverse_media`, `watchlist`, `tax_identifier`, `licence`, `public_records`, `contact`, `device`, `bank_ownership`, `signature`, `other`.
+
+### VerificationResult-state
+
+`state` · `string` · Required · Nullable: No
+
+State. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `pending`, `in_progress`, `completed`, `failed`, `not_requested`, `not_applicable`.
+
+### VerificationResult-outcome
+
+`outcome` · `string` · Required · Nullable: No
+
+Verification/compliance result, not a lending decision.
+
+Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_performed`.
+
+### VerificationResult-provider_status
+
+`provider_status` · `string | null` · Required · Nullable: Yes
+
+Original provider decision or result.
+
+### VerificationResult-original_provider_status
+
+`original_provider_status` · `string | null` · Required · Nullable: Yes
+
+Provider decision before an override, when supplied.
+
+### VerificationResult-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Normalized/source reason codes with explanations in summary.
+
+### VerificationResult-summary
+
+`summary` · `string` · Required · Nullable: No
+
+Human-readable explanation of what was established and what remains unresolved.
+
+### VerificationResult-method
+
+`method` · `string | null` · Required · Nullable: Yes
+
+Verification method or assurance mechanism.
+
+### VerificationResult-required
+
+`required` · `boolean | null` · Required · Nullable: Yes
+
+Whether the effective verification policy required this check.
+
+### VerificationResult-policy_version
+
+`policy_version` · `string | null` · Required · Nullable: Yes
+
+Version or reference of the matching/verification policy actually used.
+
+### VerificationResult-completed_at
+
+`completed_at` · `string | null` · Required · Nullable: Yes
+
+Completion timestamp; null when not completed.
+
+### VerificationResult-expires_at
+
+`expires_at` · `string | null` · Required · Nullable: Yes
+
+Explicit result expiry, not an inferred expiry.
+
+### VerificationResult-item_ids
+
+`item_ids` · `string[]` · Required · Nullable: No
+
+IDs of detailed observations supporting this check.
+
+### VerificationResult-override
+
+`override` · `object | null` · Required · Nullable: Yes
+
+Authorized override with auditable reason; retains original result.
+
+### VerificationResult-override-outcome
+
+`override.outcome` · `string` · Required · Nullable: No
+
+Verification/compliance result, not a lending decision.
+
+Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_performed`.
+
+### VerificationResult-override-reason
+
+`override.reason` · `string` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationResult-override-decided_at
+
+`override.decided_at` · `string` · Required · Nullable: No
+
+Decided at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Format: `date-time`.
+
+### VerificationResult-override-actor_reference
+
+`override.actor_reference` · `string` · Required · Nullable: No
+
+Actor reference. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+## VerificationBusiness
+
+A candidate or registry observation is not an automatically verified borrower.
+
+### VerificationBusiness-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationBusiness-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationBusiness-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationBusiness-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationBusiness-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationBusiness-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationBusiness-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationBusiness-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationBusiness-resolution
+
+`resolution` · `string` · Required · Nullable: No
+
+Resolution. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `candidate`, `selected`, `unresolved`.
+
+### VerificationBusiness-legal_name
+
+`legal_name` · `string | null` · Required · Nullable: Yes
+
+Observed legal name.
+
+### VerificationBusiness-alternate_names
+
+`alternate_names` · `string[]` · Required · Nullable: No
+
+Trade, former and alternative names, without discarding the source spelling.
+
+### VerificationBusiness-entity_type
+
+`entity_type` · `string | null` · Required · Nullable: Yes
+
+Normalized legal form; source wording may be retained in supplemental facts.
+
+### VerificationBusiness-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+Country of incorporation.
+
+### VerificationBusiness-jurisdiction
+
+`jurisdiction` · `string | null` · Required · Nullable: Yes
+
+Registration subdivision or jurisdiction.
+
+### VerificationBusiness-identifiers
+
+`identifiers` · `VerificationIdentifier[]` · Required · Nullable: No
+
+Registration, business, tax, LEI and securities identifiers.
+
+### VerificationBusiness-incorporation_date
+
+`incorporation_date` · `string | null` · Required · Nullable: Yes
+
+Date established or incorporated, with distinct registration dates in registrations.
+
+### VerificationBusiness-nature_of_business
+
+`nature_of_business` · `string | null` · Required · Nullable: Yes
+
+Reported business activities.
+
+### VerificationBusiness-registry_status
+
+`registry_status` · `string | null` · Required · Nullable: Yes
+
+Status exactly as reported by the registry.
+
+### VerificationBusiness-good_standing
+
+`good_standing` · `boolean | null` · Required · Nullable: Yes
+
+Explicit registry standing; active status does not prove good standing.
+
+### VerificationBusiness-address_ids
+
+`address_ids` · `string[]` · Required · Nullable: No
+
+IDs in addresses.
+
+### VerificationBusiness-relationship_ids
+
+`relationship_ids` · `string[]` · Required · Nullable: No
+
+IDs in relationships.
+
+### VerificationBusiness-industry_codes
+
+`industry_codes` · `object[]` · Required · Nullable: No
+
+Industry codes. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationBusiness-industry_codes-scheme
+
+`industry_codes[].scheme` · `string` · Required · Nullable: No
+
+Scheme. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationBusiness-industry_codes-code
+
+`industry_codes[].code` · `string` · Required · Nullable: No
+
+Code. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationBusiness-industry_codes-label
+
+`industry_codes[].label` · `string | null` · Required · Nullable: Yes
+
+Label. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationBusiness-industry_codes-basis
+
+`industry_codes[].basis` · `string` · Required · Nullable: No
+
+Basis. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `declared`, `registry`, `predicted`.
+
+### VerificationBusiness-industry_codes-confidence
+
+`industry_codes[].confidence` · `VerificationScore | null` · Required · Nullable: Yes
+
+Confidence. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationBusiness-website
+
+`website` · `string | null` · Required · Nullable: Yes
+
+Observed public business website.
+
+### VerificationBusiness-email
+
+`email` · `string | null` · Required · Nullable: Yes
+
+Observed public business email.
+
+### VerificationBusiness-phone
+
+`phone` · `string | null` · Required · Nullable: Yes
+
+Observed public business phone.
+
+### VerificationBusiness-registered_capital
+
+`registered_capital` · `Money | null` · Required · Nullable: Yes
+
+Capital amount only if amount and currency are both known.
+
+### VerificationBusiness-financial_highlights
+
+`financial_highlights` · `VerificationFact[]` · Required · Nullable: No
+
+Source registry financial highlights, each with an explicit period and unit in its description.
+
+### VerificationBusiness-match_score
+
+`match_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Candidate similarity; never identity proof.
+
+### VerificationBusiness-source_url
+
+`source_url` · `string | null` · Required · Nullable: Yes
+
+Public registry URL only, without credentials or access tokens.
+
+## VerificationPerson
+
+Identity details only for authorized borrowers and associated people; not credit-scoring attributes.
+
+### VerificationPerson-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationPerson-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationPerson-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationPerson-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationPerson-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationPerson-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationPerson-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationPerson-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationPerson-full_name
+
+`full_name` · `string | null` · Required · Nullable: Yes
+
+Observed full name.
+
+### VerificationPerson-given_names
+
+`given_names` · `string | null` · Required · Nullable: Yes
+
+Given names.
+
+### VerificationPerson-middle_names
+
+`middle_names` · `string | null` · Required · Nullable: Yes
+
+Middle names.
+
+### VerificationPerson-family_name
+
+`family_name` · `string | null` · Required · Nullable: Yes
+
+Family name.
+
+### VerificationPerson-aliases
+
+`aliases` · `string[]` · Required · Nullable: No
+
+Observed aliases or former names.
+
+### VerificationPerson-date_of_birth
+
+`date_of_birth` · `string | null` · Required · Nullable: Yes
+
+Date of birth when disclosure and verification purpose permit.
+
+### VerificationPerson-nationalities
+
+`nationalities` · `string[]` · Required · Nullable: No
+
+ISO alpha-2 countries when known; identity/compliance context only.
+
+### VerificationPerson-country_of_birth
+
+`country_of_birth` · `string | null` · Required · Nullable: Yes
+
+Country of birth for authorized identity disambiguation only.
+
+### VerificationPerson-identifiers
+
+`identifiers` · `VerificationIdentifier[]` · Required · Nullable: No
+
+Masked personal identifiers by default.
+
+### VerificationPerson-address_ids
+
+`address_ids` · `string[]` · Required · Nullable: No
+
+Authorized address references.
+
+### VerificationPerson-identity_check_ids
+
+`identity_check_ids` · `string[]` · Required · Nullable: No
+
+Detailed verification check IDs.
+
+### VerificationPerson-identity_assurance
+
+`identity_assurance` · `string` · Required · Nullable: No
+
+Identity assurance. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `unverified`, `documentary`, `database_match`, `cryptographic`, `unknown`.
+
+## VerificationRegistration
+
+One registry registration, including extra-provincial or foreign registrations.
+
+### VerificationRegistration-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationRegistration-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationRegistration-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationRegistration-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationRegistration-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationRegistration-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationRegistration-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationRegistration-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationRegistration-authority
+
+`authority` · `string | null` · Required · Nullable: Yes
+
+Registry or authority name.
+
+### VerificationRegistration-registration_number
+
+`registration_number` · `string | null` · Required · Nullable: Yes
+
+Public corporate filing identifier, not a personal identifier.
+
+### VerificationRegistration-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+Registration country.
+
+### VerificationRegistration-jurisdiction
+
+`jurisdiction` · `string | null` · Required · Nullable: Yes
+
+Registration subdivision.
+
+### VerificationRegistration-registration_type
+
+`registration_type` · `string | null` · Required · Nullable: Yes
+
+Domestic, foreign, corporation, partnership or source classification.
+
+### VerificationRegistration-registered_name
+
+`registered_name` · `string | null` · Required · Nullable: Yes
+
+Name recorded in this registration.
+
+### VerificationRegistration-status
+
+`status` · `string | null` · Required · Nullable: Yes
+
+Registry status.
+
+### VerificationRegistration-standing
+
+`standing` · `string | null` · Required · Nullable: Yes
+
+Original good-standing/compliance wording.
+
+### VerificationRegistration-registered_on
+
+`registered_on` · `string | null` · Required · Nullable: Yes
+
+Registration date.
+
+### VerificationRegistration-inactive_on
+
+`inactive_on` · `string | null` · Required · Nullable: Yes
+
+Recorded inactivity date.
+
+### VerificationRegistration-dissolved_on
+
+`dissolved_on` · `string | null` · Required · Nullable: Yes
+
+Recorded dissolution date.
+
+### VerificationRegistration-last_annual_return_year
+
+`last_annual_return_year` · `integer | null` · Required · Nullable: Yes
+
+Most recent return year; not a date or a completed current-year return.
+
+### VerificationRegistration-last_annual_return_filed_on
+
+`last_annual_return_filed_on` · `string | null` · Required · Nullable: Yes
+
+Filing date for the most recent annual return.
+
+### VerificationRegistration-annual_return_status
+
+`annual_return_status` · `string` · Required · Nullable: No
+
+Annual return status. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `current`, `overdue`, `unknown`, `not_applicable`.
+
+### VerificationRegistration-outstanding_return_years
+
+`outstanding_return_years` · `integer[]` · Required · Nullable: No
+
+Outstanding return years. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationRegistration-registered_agent_relationship_id
+
+`registered_agent_relationship_id` · `string | null` · Required · Nullable: Yes
+
+Relationship ID for an individual or corporate service agent.
+
+### VerificationRegistration-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+Associated source report and registry document IDs.
+
+## VerificationAddress
+
+Keep distinct address roles even when their physical addresses match.
+
+### VerificationAddress-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationAddress-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationAddress-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationAddress-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationAddress-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationAddress-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationAddress-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationAddress-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationAddress-roles
+
+`roles` · `string[]` · Required · Nullable: No
+
+Registered office, records office, operating, service, mailing, residential or other source role.
+
+### VerificationAddress-raw
+
+`raw` · `string | null` · Required · Nullable: Yes
+
+Original address string, subject to permission.
+
+### VerificationAddress-street
+
+`street` · `string | null` · Required · Nullable: Yes
+
+Street including number.
+
+### VerificationAddress-unit
+
+`unit` · `string | null` · Required · Nullable: Yes
+
+Unit, suite or floor; do not silently discard it.
+
+### VerificationAddress-city
+
+`city` · `string | null` · Required · Nullable: Yes
+
+City.
+
+### VerificationAddress-region
+
+`region` · `string | null` · Required · Nullable: Yes
+
+Normalized province/state code where known.
+
+### VerificationAddress-postal_code
+
+`postal_code` · `string | null` · Required · Nullable: Yes
+
+Postal/ZIP code, stored as text.
+
+### VerificationAddress-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+ISO alpha-2 country.
+
+### VerificationAddress-formatted
+
+`formatted` · `string | null` · Required · Nullable: Yes
+
+Formatted address.
+
+### VerificationAddress-validation
+
+`validation` · `string` · Required · Nullable: No
+
+Validation. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `validated`, `partial`, `not_validated`, `unknown`.
+
+### VerificationAddress-deliverable
+
+`deliverable` · `boolean | null` · Required · Nullable: Yes
+
+Postal deliverability from a source check.
+
+### VerificationAddress-classification
+
+`classification` · `string | null` · Required · Nullable: Yes
+
+Residential, commercial, mixed, PO box, CMRA, virtual office or original classification.
+
+### VerificationAddress-is_cmra
+
+`is_cmra` · `boolean | null` · Required · Nullable: Yes
+
+Source-reported commercial mail receiving agency indicator.
+
+### VerificationAddress-is_virtual
+
+`is_virtual` · `boolean | null` · Required · Nullable: Yes
+
+Source-reported virtual address indicator.
+
+### VerificationAddress-is_registered_agent
+
+`is_registered_agent` · `boolean | null` · Required · Nullable: Yes
+
+Whether this is a registered-agent address.
+
+### VerificationAddress-match_score
+
+`match_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Address comparison score when actually supplied.
+
+## VerificationRelationship
+
+A role does not establish ownership, control or successful KYC.
+
+### VerificationRelationship-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationRelationship-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationRelationship-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationRelationship-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationRelationship-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationRelationship-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationRelationship-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationRelationship-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationRelationship-related_subject_id
+
+`related_subject_id` · `string` · Required · Nullable: No
+
+Related person or business subject ID.
+
+### VerificationRelationship-related_entity_type
+
+`related_entity_type` · `string` · Required · Nullable: No
+
+Related entity type. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `person`, `business`, `unknown`.
+
+### VerificationRelationship-name
+
+`name` · `string | null` · Required · Nullable: Yes
+
+Observed related-party name.
+
+### VerificationRelationship-roles
+
+`roles` · `string[]` · Required · Nullable: No
+
+Director, officer, shareholder, beneficial_owner, agent_for_service, authorized_signatory, parent or other sourced roles.
+
+### VerificationRelationship-role_labels
+
+`role_labels` · `string[]` · Required · Nullable: No
+
+Unmodified source role labels, preserving distinctions.
+
+### VerificationRelationship-position
+
+`position` · `string | null` · Required · Nullable: Yes
+
+Reported job title/designation.
+
+### VerificationRelationship-appointed_on
+
+`appointed_on` · `string | null` · Required · Nullable: Yes
+
+Appointment/start date.
+
+### VerificationRelationship-ended_on
+
+`ended_on` · `string | null` · Required · Nullable: Yes
+
+Termination/end date.
+
+### VerificationRelationship-active
+
+`active` · `boolean | null` · Required · Nullable: Yes
+
+Source-confirmed current role.
+
+### VerificationRelationship-authority
+
+`authority` · `string | null` · Required · Nullable: Yes
+
+Documented authority or powers; null when unverified.
+
+### VerificationRelationship-address_ids
+
+`address_ids` · `string[]` · Required · Nullable: No
+
+Related party addresses.
+
+### VerificationRelationship-registration_identifiers
+
+`registration_identifiers` · `VerificationIdentifier[]` · Required · Nullable: No
+
+Public identifiers for corporate related parties.
+
+### VerificationRelationship-verification_check_ids
+
+`verification_check_ids` · `string[]` · Required · Nullable: No
+
+Checks performed on this related subject.
+
+### VerificationRelationship-verification_required
+
+`verification_required` · `boolean | null` · Required · Nullable: Yes
+
+Whether this party requires verification under effective policy.
+
+### VerificationRelationship-verification_state
+
+`verification_state` · `string` · Required · Nullable: No
+
+Verification state. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `completed`, `pending`, `not_requested`, `skipped`, `unavailable`.
+
+### VerificationRelationship-skip_reason
+
+`skip_reason` · `string | null` · Required · Nullable: Yes
+
+Explicit reason a required party was not verified.
+
+## VerificationOwnership
+
+Economic ownership, voting control and indirect beneficial ownership remain distinct.
+
+### VerificationOwnership-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationOwnership-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationOwnership-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationOwnership-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationOwnership-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationOwnership-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationOwnership-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationOwnership-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationOwnership-owner_subject_id
+
+`owner_subject_id` · `string` · Required · Nullable: No
+
+Person or corporate owner ID.
+
+### VerificationOwnership-owned_subject_id
+
+`owned_subject_id` · `string` · Required · Nullable: No
+
+Owned entity ID.
+
+### VerificationOwnership-interest_type
+
+`interest_type` · `string` · Required · Nullable: No
+
+Interest type. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `direct`, `indirect`, `beneficial`, `voting`, `unknown`.
+
+### VerificationOwnership-economic_share
+
+`economic_share` · `string | null` · Required · Nullable: Yes
+
+Fraction 0-1 of economic equity; 0.25 means 25%.
+
+### VerificationOwnership-voting_share
+
+`voting_share` · `string | null` · Required · Nullable: Yes
+
+Fraction 0-1 of voting rights. Voting percentage does not establish economic equity.
+
+### VerificationOwnership-economic_share_min
+
+`economic_share_min` · `string | null` · Required · Nullable: Yes
+
+Lower bound when source reports a range.
+
+### VerificationOwnership-economic_share_max
+
+`economic_share_max` · `string | null` · Required · Nullable: Yes
+
+Upper bound when source reports a range.
+
+### VerificationOwnership-voting_share_min
+
+`voting_share_min` · `string | null` · Required · Nullable: Yes
+
+Lower voting fraction bound.
+
+### VerificationOwnership-voting_share_max
+
+`voting_share_max` · `string | null` · Required · Nullable: Yes
+
+Upper voting fraction bound.
+
+### VerificationOwnership-effective_share
+
+`effective_share` · `string | null` · Required · Nullable: Yes
+
+Indirect economic fraction only when a complete, evidenced chain supports it.
+
+### VerificationOwnership-share_class
+
+`share_class` · `string | null` · Required · Nullable: Yes
+
+Class of shares or interest.
+
+### VerificationOwnership-share_count
+
+`share_count` · `string | null` · Required · Nullable: Yes
+
+Number of shares where supplied, not a percentage.
+
+### VerificationOwnership-nominal_value
+
+`nominal_value` · `Money | null` · Required · Nullable: Yes
+
+Nominal value with source currency.
+
+### VerificationOwnership-total_value
+
+`total_value` · `Money | null` · Required · Nullable: Yes
+
+Total stated holding value with source currency.
+
+### VerificationOwnership-nature_of_control
+
+`nature_of_control` · `string[]` · Required · Nullable: No
+
+Source-described control mechanisms.
+
+### VerificationOwnership-chain_subject_ids
+
+`chain_subject_ids` · `string[]` · Required · Nullable: No
+
+Ordered ownership chain from owner to assessed entity.
+
+### VerificationOwnership-chain_complete
+
+`chain_complete` · `boolean` · Required · Nullable: No
+
+True only when all intermediate interests are evidenced.
+
+### VerificationOwnership-unresolved_reason
+
+`unresolved_reason` · `string | null` · Required · Nullable: Yes
+
+Missing intermediate owner, uncertain basis, incomplete coverage or other limitation.
+
+### VerificationOwnership-reported_interest
+
+`reported_interest` · `string | null` · Required · Nullable: Yes
+
+Original sharesHeld or ownership wording, retained for audit.
+
+### VerificationOwnership-basis_date
+
+`basis_date` · `string | null` · Required · Nullable: Yes
+
+Date the interest was reported or effective.
+
+## VerificationIdentityDocument
+
+Document observations and verification results without capture media or raw biometric templates.
+
+### VerificationIdentityDocument-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationIdentityDocument-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationIdentityDocument-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationIdentityDocument-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationIdentityDocument-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationIdentityDocument-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationIdentityDocument-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationIdentityDocument-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationIdentityDocument-document_type
+
+`document_type` · `string | null` · Required · Nullable: Yes
+
+Passport, national identity, driving licence or source document class.
+
+### VerificationIdentityDocument-document_subtype
+
+`document_subtype` · `string | null` · Required · Nullable: Yes
+
+Jurisdiction-specific subtype.
+
+### VerificationIdentityDocument-identifier
+
+`identifier` · `VerificationIdentifier | null` · Required · Nullable: Yes
+
+Masked document number unless full disclosure is specifically permitted.
+
+### VerificationIdentityDocument-issuing_country
+
+`issuing_country` · `string | null` · Required · Nullable: Yes
+
+Alpha-2 issuing country; retain alpha-3 source code only in provenance.
+
+### VerificationIdentityDocument-issued_on
+
+`issued_on` · `string | null` · Required · Nullable: Yes
+
+Issue date.
+
+### VerificationIdentityDocument-expires_on
+
+`expires_on` · `string | null` · Required · Nullable: Yes
+
+Expiry date.
+
+### VerificationIdentityDocument-holder_subject_id
+
+`holder_subject_id` · `string` · Required · Nullable: No
+
+Person whose identity is on the document.
+
+### VerificationIdentityDocument-method
+
+`method` · `string` · Required · Nullable: No
+
+Method. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `document`, `database`, `wallet`, `nfc`, `unknown`.
+
+### VerificationIdentityDocument-assurance
+
+`assurance` · `string | null` · Required · Nullable: Yes
+
+Documentary, data match or cryptographic assurance as supported by evidence.
+
+### VerificationIdentityDocument-authenticity
+
+`authenticity` · `string` · Required · Nullable: No
+
+Authenticity. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `passed`, `failed`, `inconclusive`, `not_checked`.
+
+### VerificationIdentityDocument-extracted_fields
+
+`extracted_fields` · `VerificationFact[]` · Required · Nullable: No
+
+Allowlisted identity fields and extraction confidence/quality facts.
+
+### VerificationIdentityDocument-quality_scores
+
+`quality_scores` · `VerificationScore[]` · Required · Nullable: No
+
+Quality scores. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationIdentityDocument-nfc
+
+`nfc` · `object | null` · Required · Nullable: Yes
+
+NFC check results only; no chip dumps or biometric portraits.
+
+### VerificationIdentityDocument-nfc-chip_read
+
+`nfc.chip_read` · `boolean | null` · Required · Nullable: Yes
+
+Whether the NFC chip was successfully read; this alone does not prove authenticity.
+
+### VerificationIdentityDocument-nfc-passive_authentication
+
+`nfc.passive_authentication` · `boolean | null` · Required · Nullable: Yes
+
+Whether the chip data signature passed passive authentication.
+
+### VerificationIdentityDocument-nfc-active_authentication
+
+`nfc.active_authentication` · `boolean | null` · Required · Nullable: Yes
+
+Whether active authentication passed the chip challenge-response check.
+
+### VerificationIdentityDocument-nfc-chip_authentication
+
+`nfc.chip_authentication` · `boolean | null` · Required · Nullable: Yes
+
+Whether cryptographic chip authentication passed.
+
+### VerificationIdentityDocument-nfc-data_integrity
+
+`nfc.data_integrity` · `boolean | null` · Required · Nullable: Yes
+
+Whether the reported chip data-integrity checks passed.
+
+### VerificationIdentityDocument-nfc-certificate_valid
+
+`nfc.certificate_valid` · `boolean | null` · Required · Nullable: Yes
+
+Whether the relevant certificate passed the source validation checks.
+
+### VerificationIdentityDocument-nfc-protocol
+
+`nfc.protocol` · `string | null` · Required · Nullable: Yes
+
+Reported chip authentication or communication protocol.
+
+### VerificationIdentityDocument-nfc-skipped_reason
+
+`nfc.skipped_reason` · `string | null` · Required · Nullable: Yes
+
+Explicit reason this check was skipped; do not infer a passing outcome.
+
+### VerificationIdentityDocument-wallet
+
+`wallet` · `object | null` · Required · Nullable: Yes
+
+Verified digital credential attributes; no access tokens.
+
+### VerificationIdentityDocument-wallet-issuer
+
+`wallet.issuer` · `string | null` · Required · Nullable: Yes
+
+Issuer. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationIdentityDocument-wallet-country
+
+`wallet.country` · `string | null` · Required · Nullable: Yes
+
+Country. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationIdentityDocument-wallet-credential_type
+
+`wallet.credential_type` · `string | null` · Required · Nullable: Yes
+
+Type of verified digital credential.
+
+### VerificationIdentityDocument-wallet-assurance_level
+
+`wallet.assurance_level` · `string | null` · Required · Nullable: Yes
+
+Assurance level stated by the credential issuer or verification source.
+
+### VerificationIdentityDocument-wallet-signature_valid
+
+`wallet.signature_valid` · `boolean | null` · Required · Nullable: Yes
+
+Whether the credential signature passed source validation.
+
+### VerificationIdentityDocument-wallet-verified_at
+
+`wallet.verified_at` · `string | null` · Required · Nullable: Yes
+
+Verified at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationIdentityDocument-document_id
+
+`document_id` · `string | null` · Required · Nullable: Yes
+
+Authorized document reference; subject to evidence access at download time.
+
+### VerificationIdentityDocument-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Expired, tampered, unsupported, missing or other source findings.
+
+## VerificationBiometric
+
+Verification outputs for identity assurance, never borrower capacity or character scoring.
+
+### VerificationBiometric-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationBiometric-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationBiometric-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationBiometric-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationBiometric-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationBiometric-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationBiometric-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationBiometric-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationBiometric-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `liveness`, `face_match`, `document_selfie_match`.
+
+### VerificationBiometric-method
+
+`method` · `string | null` · Required · Nullable: Yes
+
+Passive, active, document-to-selfie or other source method.
+
+### VerificationBiometric-outcome
+
+`outcome` · `string` · Required · Nullable: No
+
+Verification/compliance result, not a lending decision.
+
+Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_performed`.
+
+### VerificationBiometric-score
+
+`score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Original assurance or similarity score.
+
+### VerificationBiometric-threshold
+
+`threshold` · `number | null` · Required · Nullable: Yes
+
+Actual configured source threshold, null when not disclosed.
+
+### VerificationBiometric-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Source spoofing, quality or comparison findings.
+
+### VerificationBiometric-comparison_subject_ids
+
+`comparison_subject_ids` · `string[]` · Required · Nullable: No
+
+Authorized same-workspace subject references; never cross-customer identities.
+
+### VerificationBiometric-consent_reference
+
+`consent_reference` · `string | null` · Required · Nullable: Yes
+
+Reference to authorization governing this check; not raw consent biometrics.
+
+## VerificationScreeningHit
+
+Potential name match until disposition is confirmed. News allegations and PEP status are not findings of misconduct.
+
+### VerificationScreeningHit-id
+
+`id` · `string` · Required · Nullable: No
+
+Id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationScreeningHit-category
+
+`category` · `string` · Required · Nullable: No
+
+Category. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `sanctions`, `pep`, `adverse_media`, `watchlist`, `other`.
+
+### VerificationScreeningHit-matched_name
+
+`matched_name` · `string | null` · Required · Nullable: Yes
+
+Candidate subject name returned by screening, not a confirmed identity match.
+
+### VerificationScreeningHit-aliases
+
+`aliases` · `string[]` · Required · Nullable: No
+
+Aliases. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationScreeningHit-list_name
+
+`list_name` · `string | null` · Required · Nullable: Yes
+
+Screening list or dataset name actually returned for the candidate.
+
+### VerificationScreeningHit-list_authority
+
+`list_authority` · `string | null` · Required · Nullable: Yes
+
+Authority publishing the screening list, when identified by the source.
+
+### VerificationScreeningHit-source_record_reference
+
+`source_record_reference` · `string | null` · Required · Nullable: Yes
+
+Permitted native screening record identifier used to trace this candidate.
+
+### VerificationScreeningHit-source_url
+
+`source_url` · `string | null` · Required · Nullable: Yes
+
+Source url. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationScreeningHit-match_score
+
+`match_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Match score. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationScreeningHit-risk_score
+
+`risk_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Risk score. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationScreeningHit-disposition
+
+`disposition` · `string` · Required · Nullable: No
+
+Review state; unreviewed candidates are not confirmed matches.
+
+Allowed values: `unreviewed`, `confirmed`, `false_positive`, `inconclusive`.
+
+### VerificationScreeningHit-reviewed_at
+
+`reviewed_at` · `string | null` · Required · Nullable: Yes
+
+UTC time the hit disposition was reviewed; null means no completed review is recorded.
+
+### VerificationScreeningHit-review_reason
+
+`review_reason` · `string | null` · Required · Nullable: Yes
+
+Reason supporting the documented match disposition.
+
+### VerificationScreeningHit-first_seen_at
+
+`first_seen_at` · `string | null` · Required · Nullable: Yes
+
+UTC time this source first recorded the candidate, when known.
+
+### VerificationScreeningHit-last_seen_at
+
+`last_seen_at` · `string | null` · Required · Nullable: Yes
+
+UTC time this source last recorded the candidate, when known.
+
+### VerificationScreeningHit-properties
+
+`properties` · `VerificationFact[]` · Required · Nullable: No
+
+Properties. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationScreeningHit-evidence
+
+`evidence` · `VerificationEvidence[]` · Required · Nullable: No
+
+Exact evidence records and source-document locations.
+
+## VerificationScreening
+
+No-match is valid only for a completed search with known, complete requested coverage.
+
+### VerificationScreening-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationScreening-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationScreening-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationScreening-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationScreening-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationScreening-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationScreening-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationScreening-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationScreening-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `sanctions`, `pep`, `adverse_media`, `watchlist`, `combined`.
+
+### VerificationScreening-state
+
+`state` · `string` · Required · Nullable: No
+
+State. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `completed`, `pending`, `failed`, `not_requested`.
+
+### VerificationScreening-result
+
+`result` · `string` · Required · Nullable: No
+
+Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `no_match`, `potential_match`, `confirmed_match`, `inconclusive`, `not_screened`.
+
+### VerificationScreening-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationScreening-screened_values
+
+`screened_values` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted identity attributes actually submitted, identifiers masked.
+
+### VerificationScreening-hits
+
+`hits` · `VerificationScreeningHit[]` · Required · Nullable: No
+
+All returned authorized candidates, not only confirmed matches.
+
+### VerificationScreening-reported_hit_count
+
+`reported_hit_count` · `integer | null` · Required · Nullable: Yes
+
+Provider total, null when unavailable.
+
+### VerificationScreening-returned_hit_count
+
+`returned_hit_count` · `integer` · Required · Nullable: No
+
+Count of hits returned in this item.
+
+### VerificationScreening-screened_at
+
+`screened_at` · `string | null` · Required · Nullable: Yes
+
+Actual screening time.
+
+### VerificationScreening-dataset_updated_at
+
+`dataset_updated_at` · `string | null` · Required · Nullable: Yes
+
+Provider-reported dataset freshness; do not infer it.
+
+### VerificationScreening-ongoing_monitoring
+
+`ongoing_monitoring` · `boolean | null` · Required · Nullable: Yes
+
+Whether the source actually has ongoing screening enabled.
+
+### VerificationScreening-last_rescreened_at
+
+`last_rescreened_at` · `string | null` · Required · Nullable: Yes
+
+Actual last completed rescreening; never a billing date.
+
+## VerificationTaxCheck
+
+Identifier/name validation does not establish taxes paid or absence of tax debt.
+
+### VerificationTaxCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationTaxCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationTaxCheck-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationTaxCheck-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationTaxCheck-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationTaxCheck-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationTaxCheck-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationTaxCheck-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationTaxCheck-identifier
+
+`identifier` · `VerificationIdentifier` · Required · Nullable: No
+
+Identifier. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+See [VerificationIdentifier](#verificationidentifier).
+
+### VerificationTaxCheck-authority
+
+`authority` · `string | null` · Required · Nullable: Yes
+
+Source authority or registry used for validation.
+
+### VerificationTaxCheck-result
+
+`result` · `string` · Required · Nullable: No
+
+Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `matched`, `not_matched`, `partial_match`, `format_valid`, `invalid_format`, `unavailable`, `not_checked`.
+
+### VerificationTaxCheck-provided_name
+
+`provided_name` · `string | null` · Required · Nullable: Yes
+
+Submitted taxpayer name.
+
+### VerificationTaxCheck-registered_name
+
+`registered_name` · `string | null` · Required · Nullable: Yes
+
+Permitted authority-returned name.
+
+### VerificationTaxCheck-registered_address_id
+
+`registered_address_id` · `string | null` · Required · Nullable: Yes
+
+Address ID returned by the authority.
+
+### VerificationTaxCheck-checked_at
+
+`checked_at` · `string | null` · Required · Nullable: Yes
+
+Time the tax-ID check completed.
+
+### VerificationTaxCheck-unavailable_reason
+
+`unavailable_reason` · `string | null` · Required · Nullable: Yes
+
+Outage, country not supported, not submitted, entitlement or other reason.
+
+## VerificationLicence
+
+A licence observation is scoped to its authority and matching entity.
+
+### VerificationLicence-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationLicence-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationLicence-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationLicence-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationLicence-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationLicence-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationLicence-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationLicence-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationLicence-registry
+
+`registry` · `string` · Required · Nullable: No
+
+Name of regulatory registry.
+
+### VerificationLicence-authority
+
+`authority` · `string | null` · Required · Nullable: Yes
+
+Issuing or supervising authority.
+
+### VerificationLicence-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+Country.
+
+### VerificationLicence-jurisdiction
+
+`jurisdiction` · `string | null` · Required · Nullable: Yes
+
+Province/state/municipality.
+
+### VerificationLicence-identifier
+
+`identifier` · `string | null` · Required · Nullable: Yes
+
+Licence or regulatory registration number.
+
+### VerificationLicence-legal_name
+
+`legal_name` · `string | null` · Required · Nullable: Yes
+
+Licensed entity name.
+
+### VerificationLicence-licence_types
+
+`licence_types` · `string[]` · Required · Nullable: No
+
+Reported permit classes or activities.
+
+### VerificationLicence-status
+
+`status` · `string | null` · Required · Nullable: Yes
+
+Original status, including renewal or suspension distinctions.
+
+### VerificationLicence-issued_on
+
+`issued_on` · `string | null` · Required · Nullable: Yes
+
+First issue date.
+
+### VerificationLicence-expires_on
+
+`expires_on` · `string | null` · Required · Nullable: Yes
+
+Reported expiry date.
+
+### VerificationLicence-address_ids
+
+`address_ids` · `string[]` · Required · Nullable: No
+
+Licensed premises addresses.
+
+### VerificationLicence-conditions
+
+`conditions` · `string[]` · Required · Nullable: No
+
+Explicit licence restrictions or conditions.
+
+### VerificationLicence-classification_codes
+
+`classification_codes` · `string[]` · Required · Nullable: No
+
+Registry classifications, such as WSIB classes; preserve source scheme.
+
+### VerificationLicence-match_score
+
+`match_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Registry candidate similarity only.
+
+## VerificationFiling
+
+Corporate filing events and missing annual returns retain their dates and evidence.
+
+### VerificationFiling-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationFiling-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationFiling-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationFiling-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationFiling-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationFiling-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationFiling-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationFiling-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationFiling-kind
+
+`kind` · `string | null` · Required · Nullable: Yes
+
+Incorporation, name/structure change, annual return, director change or source event type.
+
+### VerificationFiling-filed_on
+
+`filed_on` · `string | null` · Required · Nullable: Yes
+
+Filing date.
+
+### VerificationFiling-effective_on
+
+`effective_on` · `string | null` · Required · Nullable: Yes
+
+Effective date if different.
+
+### VerificationFiling-period_year
+
+`period_year` · `integer | null` · Required · Nullable: Yes
+
+Year covered by the filing, not the filing calendar year.
+
+### VerificationFiling-status
+
+`status` · `string | null` · Required · Nullable: Yes
+
+Filed, outstanding or source status.
+
+### VerificationFiling-reference
+
+`reference` · `string | null` · Required · Nullable: Yes
+
+Filing number or source attachment barcode.
+
+### VerificationFiling-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+Controlled references to report pages and original attachments.
+
+## VerificationCorporateStructure
+
+Governing articles and capital structure; extracted provisions are not legal conclusions.
+
+### VerificationCorporateStructure-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationCorporateStructure-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationCorporateStructure-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationCorporateStructure-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationCorporateStructure-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationCorporateStructure-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationCorporateStructure-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationCorporateStructure-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationCorporateStructure-share_classes
+
+`share_classes` · `object[]` · Required · Nullable: No
+
+Share classes. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCorporateStructure-share_classes-name
+
+`share_classes[].name` · `string` · Required · Nullable: No
+
+Name. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCorporateStructure-share_classes-description
+
+`share_classes[].description` · `string | null` · Required · Nullable: Yes
+
+Description. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCorporateStructure-share_classes-authorized_quantity
+
+`share_classes[].authorized_quantity` · `string | null` · Required · Nullable: Yes
+
+Authorized number of shares in this class; null for unquantified or unknown amounts.
+
+### VerificationCorporateStructure-share_classes-unlimited
+
+`share_classes[].unlimited` · `boolean | null` · Required · Nullable: Yes
+
+Whether the governing articles explicitly authorize an unlimited number of this share class.
+
+### VerificationCorporateStructure-share_classes-issued_quantity
+
+`share_classes[].issued_quantity` · `string | null` · Required · Nullable: Yes
+
+Number of this class reported as issued, not inferred from authorized capital.
+
+### VerificationCorporateStructure-share_classes-voting_rights
+
+`share_classes[].voting_rights` · `string | null` · Required · Nullable: Yes
+
+Source wording describing voting rights attached to this share class.
+
+### VerificationCorporateStructure-share_classes-votes_per_share
+
+`share_classes[].votes_per_share` · `string | null` · Required · Nullable: Yes
+
+Number of votes per share in this class, represented as a decimal string.
+
+### VerificationCorporateStructure-share_classes-nominal_value
+
+`share_classes[].nominal_value` · `Money | null` · Required · Nullable: Yes
+
+Nominal value. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationCorporateStructure-share_classes-dividend_rights
+
+`share_classes[].dividend_rights` · `string | null` · Required · Nullable: Yes
+
+Source wording describing dividend rights and priorities.
+
+### VerificationCorporateStructure-share_classes-liquidation_rights
+
+`share_classes[].liquidation_rights` · `string | null` · Required · Nullable: Yes
+
+Source wording describing distribution priorities on liquidation.
+
+### VerificationCorporateStructure-share_classes-redemption_terms
+
+`share_classes[].redemption_terms` · `string | null` · Required · Nullable: Yes
+
+Source wording describing redemption rights or obligations.
+
+### VerificationCorporateStructure-share_classes-evidence
+
+`share_classes[].evidence` · `VerificationEvidence[]` · Required · Nullable: No
+
+Exact evidence records and source-document locations.
+
+### VerificationCorporateStructure-share_transfer_restrictions
+
+`share_transfer_restrictions` · `string[]` · Required · Nullable: No
+
+Source restrictions, with evidence; not inferred from legal form.
+
+### VerificationCorporateStructure-minimum_directors
+
+`minimum_directors` · `integer | null` · Required · Nullable: Yes
+
+Minimum allowed directors.
+
+### VerificationCorporateStructure-maximum_directors
+
+`maximum_directors` · `integer | null` · Required · Nullable: Yes
+
+Maximum allowed directors.
+
+### VerificationCorporateStructure-permitted_activities
+
+`permitted_activities` · `string[]` · Required · Nullable: No
+
+Expressly permitted/restricted-to business activities.
+
+### VerificationCorporateStructure-prohibited_activities
+
+`prohibited_activities` · `string[]` · Required · Nullable: No
+
+Expressly prohibited/restricted-from activities.
+
+### VerificationCorporateStructure-other_provisions
+
+`other_provisions` · `string[]` · Required · Nullable: No
+
+Material sourced governing provisions.
+
+### VerificationCorporateStructure-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+Articles, schedules, amendments and source report references.
+
+## VerificationPublicRecord
+
+Sourced legal records and licensed fraud-consortium observations; candidates are not findings of liability or fraud.
+
+### VerificationPublicRecord-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationPublicRecord-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationPublicRecord-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationPublicRecord-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationPublicRecord-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationPublicRecord-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationPublicRecord-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationPublicRecord-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationPublicRecord-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `lien`, `judgment`, `litigation`, `bankruptcy`, `fraud_consortium`, `regulatory_action`, `other`.
+
+### VerificationPublicRecord-match_status
+
+`match_status` · `string` · Required · Nullable: No
+
+Match status. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `candidate`, `confirmed`, `excluded`, `unresolved`.
+
+### VerificationPublicRecord-match_score
+
+`match_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Provider match confidence, not a default probability.
+
+### VerificationPublicRecord-reference
+
+`reference` · `string | null` · Required · Nullable: Yes
+
+Filing, case, docket or source report identifier.
+
+### VerificationPublicRecord-jurisdiction
+
+`jurisdiction` · `string | null` · Required · Nullable: Yes
+
+Search/result jurisdiction.
+
+### VerificationPublicRecord-authority
+
+`authority` · `string | null` · Required · Nullable: Yes
+
+Court, registry or reporting authority.
+
+### VerificationPublicRecord-title
+
+`title` · `string | null` · Required · Nullable: Yes
+
+Case or filing title.
+
+### VerificationPublicRecord-status
+
+`status` · `string | null` · Required · Nullable: Yes
+
+Original current record status.
+
+### VerificationPublicRecord-normalized_status
+
+`normalized_status` · `string | null` · Required · Nullable: Yes
+
+Normalized lifecycle state with source meaning preserved.
+
+### VerificationPublicRecord-filed_on
+
+`filed_on` · `string | null` · Required · Nullable: Yes
+
+Filing date.
+
+### VerificationPublicRecord-closed_on
+
+`closed_on` · `string | null` · Required · Nullable: Yes
+
+Closure date.
+
+### VerificationPublicRecord-lapses_on
+
+`lapses_on` · `string | null` · Required · Nullable: Yes
+
+Lien lapse/expiry date.
+
+### VerificationPublicRecord-record_type
+
+`record_type` · `string | null` · Required · Nullable: Yes
+
+UCC/PPSA lien type, bankruptcy chapter or case type.
+
+### VerificationPublicRecord-parties
+
+`parties` · `object[]` · Required · Nullable: No
+
+Parties. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-parties-name
+
+`parties[].name` · `string` · Required · Nullable: No
+
+Name. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-parties-role
+
+`parties[].role` · `string | null` · Required · Nullable: Yes
+
+Role. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-parties-subject_id
+
+`parties[].subject_id` · `string | null` · Required · Nullable: Yes
+
+Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-parties-address_id
+
+`parties[].address_id` · `string | null` · Required · Nullable: Yes
+
+Address id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-amount
+
+`amount` · `Money | null` · Required · Nullable: Yes
+
+Supported claim or lien amount; null if amount or currency is unknown.
+
+### VerificationPublicRecord-collateral
+
+`collateral` · `string[]` · Required · Nullable: No
+
+Original collateral descriptions and classifications.
+
+### VerificationPublicRecord-amendments
+
+`amendments` · `object[]` · Required · Nullable: No
+
+Amendments. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-amendments-reference
+
+`amendments[].reference` · `string` · Required · Nullable: No
+
+Reference. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-amendments-kind
+
+`amendments[].kind` · `string | null` · Required · Nullable: Yes
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-amendments-filed_on
+
+`amendments[].filed_on` · `string | null` · Required · Nullable: Yes
+
+Filed on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-amendments-document_ids
+
+`amendments[].document_ids` · `string[]` · Required · Nullable: No
+
+Document ids. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-events
+
+`events` · `object[]` · Required · Nullable: No
+
+Events. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-events-date
+
+`events[].date` · `string | null` · Required · Nullable: Yes
+
+Date. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-events-description
+
+`events[].description` · `string` · Required · Nullable: No
+
+Description. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-events-document_ids
+
+`events[].document_ids` · `string[]` · Required · Nullable: No
+
+Document ids. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation
+
+`consortium_observation` · `object | null` · Required · Nullable: Yes
+
+Licensed attributed report, not independently established fraud.
+
+### VerificationPublicRecord-consortium_observation-reported_on
+
+`consortium_observation.reported_on` · `string | null` · Required · Nullable: Yes
+
+Reported on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-product_type
+
+`consortium_observation.product_type` · `string | null` · Required · Nullable: Yes
+
+Product type. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-opened_on
+
+`consortium_observation.opened_on` · `string | null` · Required · Nullable: Yes
+
+Opened on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-closed_on
+
+`consortium_observation.closed_on` · `string | null` · Required · Nullable: Yes
+
+Closed on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-closure_reason
+
+`consortium_observation.closure_reason` · `string | null` · Required · Nullable: Yes
+
+Closure reason. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-first_payment_default
+
+`consortium_observation.first_payment_default` · `boolean | null` · Required · Nullable: Yes
+
+First payment default. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-original_amount
+
+`consortium_observation.original_amount` · `Money | null` · Required · Nullable: Yes
+
+Original amount. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-consortium_observation-charge_off_amount
+
+`consortium_observation.charge_off_amount` · `Money | null` · Required · Nullable: Yes
+
+Charge off amount. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationPublicRecord-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+Controlled filing, docket, exhibit and certificate references.
+
+## VerificationOnlinePresence
+
+Business presence and observed inconsistencies; never private personal social profiling.
+
+### VerificationOnlinePresence-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationOnlinePresence-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationOnlinePresence-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationOnlinePresence-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationOnlinePresence-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationOnlinePresence-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationOnlinePresence-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationOnlinePresence-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationOnlinePresence-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `website`, `directory`, `review_profile`, `business_social`.
+
+### VerificationOnlinePresence-url
+
+`url` · `string | null` · Required · Nullable: Yes
+
+Public business source URL.
+
+### VerificationOnlinePresence-platform
+
+`platform` · `string | null` · Required · Nullable: Yes
+
+Source directory, review platform or business social service.
+
+### VerificationOnlinePresence-name
+
+`name` · `string | null` · Required · Nullable: Yes
+
+Business name or account handle.
+
+### VerificationOnlinePresence-summary
+
+`summary` · `string | null` · Required · Nullable: Yes
+
+Source description and stated limitations.
+
+### VerificationOnlinePresence-match
+
+`match` · `string` · Required · Nullable: No
+
+Match. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `matched`, `partial`, `not_matched`, `unresolved`.
+
+### VerificationOnlinePresence-confidence
+
+`confidence` · `VerificationScore | null` · Required · Nullable: Yes
+
+Source confidence in entity association.
+
+### VerificationOnlinePresence-redirects
+
+`redirects` · `string[]` · Required · Nullable: No
+
+Observed redirect URLs.
+
+### VerificationOnlinePresence-parked
+
+`parked` · `boolean | null` · Required · Nullable: Yes
+
+Whether the source classified the site as parked.
+
+### VerificationOnlinePresence-ssl_valid
+
+`ssl_valid` · `boolean | null` · Required · Nullable: Yes
+
+Observed TLS validity, not proof of a legitimate business.
+
+### VerificationOnlinePresence-domain_registered_on
+
+`domain_registered_on` · `string | null` · Required · Nullable: Yes
+
+Domain creation date when reported.
+
+### VerificationOnlinePresence-domain_expires_on
+
+`domain_expires_on` · `string | null` · Required · Nullable: Yes
+
+Domain expiry date.
+
+### VerificationOnlinePresence-domain_registrar
+
+`domain_registrar` · `string | null` · Required · Nullable: Yes
+
+Reported registrar.
+
+### VerificationOnlinePresence-operating_status
+
+`operating_status` · `string | null` · Required · Nullable: Yes
+
+Reported open/closed/build status.
+
+### VerificationOnlinePresence-rating
+
+`rating` · `number | null` · Required · Nullable: Yes
+
+Original review rating; interpretation uses rating_scale_max.
+
+### VerificationOnlinePresence-rating_scale_max
+
+`rating_scale_max` · `number | null` · Required · Nullable: Yes
+
+Known maximum rating scale; null when unspecified.
+
+### VerificationOnlinePresence-review_count
+
+`review_count` · `integer | null` · Required · Nullable: Yes
+
+Number of reviews returned/reported by the source.
+
+### VerificationOnlinePresence-business_contacts
+
+`business_contacts` · `VerificationFact[]` · Required · Nullable: No
+
+Public contact and directory facts for consistency checks.
+
+### VerificationOnlinePresence-industry_predictions
+
+`industry_predictions` · `VerificationFact[]` · Required · Nullable: No
+
+Inferred industry scheme/code and confidence; never overwrite registry classification.
+
+### VerificationOnlinePresence-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+Authorized screenshots or reports stored as documents.
+
+## VerificationContactCheck
+
+Contact validation and security signals; an OTP proves control at that time, not identity by itself.
+
+### VerificationContactCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationContactCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationContactCheck-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationContactCheck-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationContactCheck-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationContactCheck-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationContactCheck-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationContactCheck-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationContactCheck-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `email`, `phone`.
+
+### VerificationContactCheck-value
+
+`value` · `string | null` · Required · Nullable: Yes
+
+Permitted email or phone, masked when required.
+
+### VerificationContactCheck-method
+
+`method` · `string | null` · Required · Nullable: Yes
+
+OTP, silent network, database, syntax or deliverability method.
+
+### VerificationContactCheck-outcome
+
+`outcome` · `string` · Required · Nullable: No
+
+Verification/compliance result, not a lending decision.
+
+Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_performed`.
+
+### VerificationContactCheck-verified_at
+
+`verified_at` · `string | null` · Required · Nullable: Yes
+
+Actual control-verification timestamp.
+
+### VerificationContactCheck-attempts
+
+`attempts` · `integer | null` · Required · Nullable: Yes
+
+Completed verification attempts.
+
+### VerificationContactCheck-deliverable
+
+`deliverable` · `boolean | null` · Required · Nullable: Yes
+
+Source deliverability result.
+
+### VerificationContactCheck-disposable
+
+`disposable` · `boolean | null` · Required · Nullable: Yes
+
+Disposable contact indicator.
+
+### VerificationContactCheck-virtual
+
+`virtual` · `boolean | null` · Required · Nullable: Yes
+
+Virtual/VoIP phone indicator.
+
+### VerificationContactCheck-free_domain
+
+`free_domain` · `boolean | null` · Required · Nullable: Yes
+
+Free email-domain indicator.
+
+### VerificationContactCheck-carrier
+
+`carrier` · `string | null` · Required · Nullable: Yes
+
+Phone carrier.
+
+### VerificationContactCheck-carrier_type
+
+`carrier_type` · `string | null` · Required · Nullable: Yes
+
+Mobile, landline, VoIP or source type.
+
+### VerificationContactCheck-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+Phone country.
+
+### VerificationContactCheck-ported
+
+`ported` · `boolean | null` · Required · Nullable: Yes
+
+Source porting signal.
+
+### VerificationContactCheck-recently_ported
+
+`recently_ported` · `boolean | null` · Required · Nullable: Yes
+
+Recent porting signal with source period in supplemental facts.
+
+### VerificationContactCheck-breached
+
+`breached` · `boolean | null` · Required · Nullable: Yes
+
+Exposure signal; not evidence the borrower committed fraud.
+
+### VerificationContactCheck-breach_count
+
+`breach_count` · `integer | null` · Required · Nullable: Yes
+
+Source-reported exposure count.
+
+### VerificationContactCheck-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Source reasons and limitations.
+
+## VerificationDeviceCheck
+
+Coarse security and location signals for consistency; no precise device coordinates or stable fingerprint in default responses.
+
+### VerificationDeviceCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationDeviceCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationDeviceCheck-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationDeviceCheck-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationDeviceCheck-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationDeviceCheck-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationDeviceCheck-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationDeviceCheck-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationDeviceCheck-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+Observed coarse country.
+
+### VerificationDeviceCheck-region
+
+`region` · `string | null` · Required · Nullable: Yes
+
+Observed coarse region.
+
+### VerificationDeviceCheck-city
+
+`city` · `string | null` · Required · Nullable: Yes
+
+Observed city when disclosure is permitted.
+
+### VerificationDeviceCheck-device_class
+
+`device_class` · `string | null` · Required · Nullable: Yes
+
+Device/platform class.
+
+### VerificationDeviceCheck-browser_family
+
+`browser_family` · `string | null` · Required · Nullable: Yes
+
+Browser family.
+
+### VerificationDeviceCheck-os_family
+
+`os_family` · `string | null` · Required · Nullable: Yes
+
+Operating-system family.
+
+### VerificationDeviceCheck-network_organization
+
+`network_organization` · `string | null` · Required · Nullable: Yes
+
+Source network/ISP organization.
+
+### VerificationDeviceCheck-vpn_or_tor
+
+`vpn_or_tor` · `boolean | null` · Required · Nullable: Yes
+
+Anonymizer signal.
+
+### VerificationDeviceCheck-data_center
+
+`data_center` · `boolean | null` · Required · Nullable: Yes
+
+Hosting/data-center network signal.
+
+### VerificationDeviceCheck-location_permission
+
+`location_permission` · `string | null` · Required · Nullable: Yes
+
+Consent/permission outcome, separate from location outcome.
+
+### VerificationDeviceCheck-location_integrity
+
+`location_integrity` · `string | null` · Required · Nullable: Yes
+
+Source-reported integrity state.
+
+### VerificationDeviceCheck-document_location_consistent
+
+`document_location_consistent` · `boolean | null` · Required · Nullable: Yes
+
+Reported location consistency with identity/address evidence.
+
+### VerificationDeviceCheck-ip_location_consistent
+
+`ip_location_consistent` · `boolean | null` · Required · Nullable: Yes
+
+Reported device/IP consistency.
+
+### VerificationDeviceCheck-geofence_result
+
+`geofence_result` · `string | null` · Required · Nullable: Yes
+
+Result against an explicitly configured permitted area.
+
+### VerificationDeviceCheck-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Original source warning codes.
+
+## VerificationDocumentCheck
+
+Source fields extracted from supporting documents with page evidence and verification results.
+
+### VerificationDocumentCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationDocumentCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationDocumentCheck-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationDocumentCheck-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationDocumentCheck-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationDocumentCheck-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationDocumentCheck-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationDocumentCheck-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationDocumentCheck-document_id
+
+`document_id` · `string` · Required · Nullable: No
+
+AMLOK document ID.
+
+### VerificationDocumentCheck-document_type
+
+`document_type` · `string | null` · Required · Nullable: Yes
+
+Normalized document class.
+
+### VerificationDocumentCheck-document_group
+
+`document_group` · `string | null` · Required · Nullable: Yes
+
+Required document group such as incorporation, ownership or address.
+
+### VerificationDocumentCheck-issuer
+
+`issuer` · `string | null` · Required · Nullable: Yes
+
+Observed issuing entity.
+
+### VerificationDocumentCheck-language
+
+`language` · `string | null` · Required · Nullable: Yes
+
+Detected language.
+
+### VerificationDocumentCheck-issued_on
+
+`issued_on` · `string | null` · Required · Nullable: Yes
+
+Document issue date.
+
+### VerificationDocumentCheck-expires_on
+
+`expires_on` · `string | null` · Required · Nullable: Yes
+
+Document expiry date.
+
+### VerificationDocumentCheck-required
+
+`required` · `boolean | null` · Required · Nullable: Yes
+
+Whether a configured requirement required this document.
+
+### VerificationDocumentCheck-outcome
+
+`outcome` · `string` · Required · Nullable: No
+
+Verification/compliance result, not a lending decision.
+
+Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_performed`.
+
+### VerificationDocumentCheck-tamper_result
+
+`tamper_result` · `string` · Required · Nullable: No
+
+Tamper result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `not_detected`, `suspected`, `inconclusive`, `not_checked`.
+
+### VerificationDocumentCheck-name_comparison_ids
+
+`name_comparison_ids` · `string[]` · Required · Nullable: No
+
+Related field-comparison IDs.
+
+### VerificationDocumentCheck-extracted_fields
+
+`extracted_fields` · `VerificationFact[]` · Required · Nullable: No
+
+Allowlisted extracted values; page/field provenance must be preserved.
+
+### VerificationDocumentCheck-cross_checks
+
+`cross_checks` · `string[]` · Required · Nullable: No
+
+Comparisons with registry, supplied and other document evidence.
+
+### VerificationDocumentCheck-document_metadata
+
+`document_metadata` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted format, page, file and quality facts.
+
+### VerificationDocumentCheck-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Source extraction, tamper or validation reasons.
+
+## VerificationBankAccountCheck
+
+Account ownership output uses masked identifiers; financial data remains in its existing normalized resources.
+
+### VerificationBankAccountCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationBankAccountCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationBankAccountCheck-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationBankAccountCheck-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationBankAccountCheck-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationBankAccountCheck-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationBankAccountCheck-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationBankAccountCheck-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationBankAccountCheck-account_reference
+
+`account_reference` · `string | null` · Required · Nullable: Yes
+
+AMLOK bank-account ID when resolved.
+
+### VerificationBankAccountCheck-masked_account_number
+
+`masked_account_number` · `string | null` · Required · Nullable: Yes
+
+Masked account identifier.
+
+### VerificationBankAccountCheck-institution_name
+
+`institution_name` · `string | null` · Required · Nullable: Yes
+
+Observed institution.
+
+### VerificationBankAccountCheck-country
+
+`country` · `string | null` · Required · Nullable: Yes
+
+Account country.
+
+### VerificationBankAccountCheck-holder_names
+
+`holder_names` · `string[]` · Required · Nullable: No
+
+Permitted account-holder names.
+
+### VerificationBankAccountCheck-reference_identity_name
+
+`reference_identity_name` · `string | null` · Required · Nullable: Yes
+
+Name compared with the account owner.
+
+### VerificationBankAccountCheck-method
+
+`method` · `string | null` · Required · Nullable: Yes
+
+Open banking, account check or source verification method.
+
+### VerificationBankAccountCheck-result
+
+`result` · `string` · Required · Nullable: No
+
+Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `matched`, `partial_match`, `not_matched`, `unavailable`, `not_checked`.
+
+### VerificationBankAccountCheck-match_score
+
+`match_score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Original account-holder comparison score.
+
+### VerificationBankAccountCheck-verified_at
+
+`verified_at` · `string | null` · Required · Nullable: Yes
+
+Actual verification timestamp.
+
+### VerificationBankAccountCheck-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Coverage, abandonment, mismatch or other limitations.
+
+## VerificationQuestionnaire
+
+Borrower declarations remain declared even when the form or source session is approved.
+
+### VerificationQuestionnaire-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationQuestionnaire-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationQuestionnaire-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationQuestionnaire-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationQuestionnaire-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationQuestionnaire-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationQuestionnaire-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationQuestionnaire-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationQuestionnaire-questionnaire_reference
+
+`questionnaire_reference` · `string` · Required · Nullable: No
+
+Source questionnaire identifier.
+
+### VerificationQuestionnaire-version
+
+`version` · `string | null` · Required · Nullable: Yes
+
+Exact template version used for these answers.
+
+### VerificationQuestionnaire-group_reference
+
+`group_reference` · `string | null` · Required · Nullable: Yes
+
+Stable identifier shared by questionnaire versions.
+
+### VerificationQuestionnaire-title
+
+`title` · `string` · Required · Nullable: No
+
+Questionnaire title.
+
+### VerificationQuestionnaire-language
+
+`language` · `string | null` · Required · Nullable: Yes
+
+Language of the returned labels/answers.
+
+### VerificationQuestionnaire-provider_status
+
+`provider_status` · `string | null` · Required · Nullable: Yes
+
+Original questionnaire status; not proof that its answers were independently verified.
+
+### VerificationQuestionnaire-submitted_at
+
+`submitted_at` · `string | null` · Required · Nullable: Yes
+
+Actual submission time when supplied.
+
+### VerificationQuestionnaire-answers
+
+`answers` · `object[]` · Required · Nullable: No
+
+Answers. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationQuestionnaire-answers-question_id
+
+`answers[].question_id` · `string` · Required · Nullable: No
+
+Stable source question ID.
+
+### VerificationQuestionnaire-answers-title
+
+`answers[].title` · `string` · Required · Nullable: No
+
+Source question label.
+
+### VerificationQuestionnaire-answers-answer_type
+
+`answers[].answer_type` · `string` · Required · Nullable: No
+
+Source element type, such as text, choice, multi-choice or file.
+
+### VerificationQuestionnaire-answers-required
+
+`answers[].required` · `boolean | null` · Required · Nullable: Yes
+
+Whether this field or check was required under the effective source policy; null means not established.
+
+### VerificationQuestionnaire-answers-instance_path
+
+`answers[].instance_path` · `string` · Required · Nullable: No
+
+Source pointer identifying this repeatable/group answer instance.
+
+### VerificationQuestionnaire-answers-value
+
+`answers[].value` · `string | number | boolean | null` · Required · Nullable: Yes
+
+Single permitted answer; null for unanswered, multi-value or file answers.
+
+### VerificationQuestionnaire-answers-values
+
+`answers[].values` · `string | number | boolean | null[]` · Required · Nullable: No
+
+Permitted multiple-choice/repeatable scalar values in source order.
+
+### VerificationQuestionnaire-answers-document_ids
+
+`answers[].document_ids` · `string[]` · Required · Nullable: No
+
+Authorized uploaded files, converted to AMLOK document IDs; no presigned source URLs.
+
+### VerificationQuestionnaire-answers-missing_reason
+
+`answers[].missing_reason` · `string | null` · Required · Nullable: Yes
+
+Required reason for an unanswered question; an omitted layout element is not a missing answer.
+
+### VerificationQuestionnaire-answers-evidence
+
+`answers[].evidence` · `VerificationEvidence[]` · Required · Nullable: No
+
+Exact evidence records and source-document locations.
+
+## VerificationSignature
+
+Signature and authority evidence, not an AMLOK conclusion about legal enforceability.
+
+### VerificationSignature-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationSignature-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationSignature-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationSignature-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationSignature-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationSignature-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationSignature-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationSignature-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationSignature-signer_subject_id
+
+`signer_subject_id` · `string` · Required · Nullable: No
+
+Authorized signer identity reference.
+
+### VerificationSignature-capacity
+
+`capacity` · `string | null` · Required · Nullable: Yes
+
+Self, company or source capacity.
+
+### VerificationSignature-roles
+
+`roles` · `string[]` · Required · Nullable: No
+
+Signing roles.
+
+### VerificationSignature-status
+
+`status` · `string | null` · Required · Nullable: Yes
+
+Signing lifecycle status.
+
+### VerificationSignature-validation
+
+`validation` · `string` · Required · Nullable: No
+
+Validation. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `valid`, `invalid`, `indeterminate`, `not_checked`.
+
+### VerificationSignature-signature_level
+
+`signature_level` · `string | null` · Required · Nullable: Yes
+
+Source signature level/profile.
+
+### VerificationSignature-signed_at
+
+`signed_at` · `string | null` · Required · Nullable: Yes
+
+Signature time.
+
+### VerificationSignature-consented_at
+
+`consented_at` · `string | null` · Required · Nullable: Yes
+
+Electronic-signature consent time.
+
+### VerificationSignature-certificate_issuer
+
+`certificate_issuer` · `string | null` · Required · Nullable: Yes
+
+Signing certificate issuer.
+
+### VerificationSignature-certificate_valid
+
+`certificate_valid` · `boolean | null` · Required · Nullable: Yes
+
+Certificate validation result.
+
+### VerificationSignature-timestamp_valid
+
+`timestamp_valid` · `boolean | null` · Required · Nullable: Yes
+
+Trusted timestamp verification.
+
+### VerificationSignature-document_ids
+
+`document_ids` · `string[]` · Required · Nullable: No
+
+Signed documents and validation/evidence reports.
+
+### VerificationSignature-fields
+
+`fields` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted signed values, labels and page references.
+
+### VerificationSignature-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Validation warnings and reasons.
+
+## VerificationFieldComparison
+
+Preserves not-submitted, not-checked and source-unavailable distinctly from mismatch.
+
+### VerificationFieldComparison-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationFieldComparison-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationFieldComparison-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationFieldComparison-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationFieldComparison-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationFieldComparison-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationFieldComparison-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationFieldComparison-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationFieldComparison-field
+
+`field` · `string` · Required · Nullable: No
+
+Normalized field being compared, for example business.legal_name or person.date_of_birth.
+
+### VerificationFieldComparison-provided
+
+`provided` · `string | number | boolean | null` · Required · Nullable: Yes
+
+Authorized scalar source value. Structured extras use named scalar facts, not undocumented nested payloads.
+
+### VerificationFieldComparison-observed
+
+`observed` · `string | number | boolean | null` · Required · Nullable: Yes
+
+Authorized scalar source value. Structured extras use named scalar facts, not undocumented nested payloads.
+
+### VerificationFieldComparison-normalized_provided
+
+`normalized_provided` · `string | number | boolean | null` · Required · Nullable: Yes
+
+Authorized scalar source value. Structured extras use named scalar facts, not undocumented nested payloads.
+
+### VerificationFieldComparison-normalized_observed
+
+`normalized_observed` · `string | number | boolean | null` · Required · Nullable: Yes
+
+Authorized scalar source value. Structured extras use named scalar facts, not undocumented nested payloads.
+
+### VerificationFieldComparison-result
+
+`result` · `string` · Required · Nullable: No
+
+Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `matched`, `partial_match`, `not_matched`, `not_submitted`, `not_checked`, `source_unavailable`, `inconclusive`.
+
+### VerificationFieldComparison-score
+
+`score` · `VerificationScore | null` · Required · Nullable: Yes
+
+Original comparison scale.
+
+### VerificationFieldComparison-threshold
+
+`threshold` · `number | null` · Required · Nullable: Yes
+
+Effective source threshold in the score scale.
+
+### VerificationFieldComparison-required
+
+`required` · `boolean | null` · Required · Nullable: Yes
+
+Whether this field was required by the effective check policy.
+
+### VerificationFieldComparison-affects_outcome
+
+`affects_outcome` · `boolean | null` · Required · Nullable: Yes
+
+Whether this comparison affected the provider verification outcome.
+
+### VerificationFieldComparison-normalization
+
+`normalization` · `string | null` · Required · Nullable: Yes
+
+Comparison transformation, such as punctuation/case folding; no silent transliteration assumption.
+
+## VerificationSourceScore
+
+Original provider rating with source-defined scope and scale, separate from AMLOK metric calculations.
+
+### VerificationSourceScore-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationSourceScore-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationSourceScore-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationSourceScore-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationSourceScore-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationSourceScore-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationSourceScore-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationSourceScore-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationSourceScore-kind
+
+`kind` · `string | null` · Required · Nullable: Yes
+
+Provider score category, such as identity_match, fraud, KYB or risk.
+
+### VerificationSourceScore-score
+
+`score` · `VerificationScore` · Required · Nullable: No
+
+Score. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+See [VerificationScore](#verificationscore).
+
+### VerificationSourceScore-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Returned score drivers or codes.
+
+### VerificationSourceScore-limitations
+
+`limitations` · `string[]` · Required · Nullable: No
+
+Meaning, calibration and comparability limitations.
+
+## VerificationDuplicateCheck
+
+Only permitted same-workspace duplicate signals; never cross-tenant identity disclosures.
+
+### VerificationDuplicateCheck-id
+
+`id` · `string` · Required · Nullable: No
+
+Stable AMLOK item ID within this assessment.
+
+### VerificationDuplicateCheck-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Authorized business/person subject ID, as returned on the borrower or an active related-party association; not the borrower resource ID.
+
+### VerificationDuplicateCheck-provenance
+
+`provenance` · `VerificationProvenance` · Required · Nullable: No
+
+Exact source, time, basis and evidence for this observation.
+
+See [VerificationProvenance](#verificationprovenance).
+
+### VerificationDuplicateCheck-missing_fields
+
+`missing_fields` · `object[]` · Required · Nullable: No
+
+Every absent or null required fact is explained by a pointer and a missing-data reason.
+
+### VerificationDuplicateCheck-missing_fields-path
+
+`missing_fields[].path` · `string` · Required · Nullable: No
+
+RFC 6901 pointer relative to this item.
+
+### VerificationDuplicateCheck-missing_fields-reason
+
+`missing_fields[].reason` · `VerificationReason` · Required · Nullable: No
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationDuplicateCheck-missing_fields-description
+
+`missing_fields[].description` · `string` · Required · Nullable: No
+
+Why this field is absent or null.
+
+### VerificationDuplicateCheck-supplemental_facts
+
+`supplemental_facts` · `VerificationFact[]` · Required · Nullable: No
+
+Permitted source-specific facts that do not have a canonical field.
+
+### VerificationDuplicateCheck-kind
+
+`kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `document`, `face`, `email`, `phone`, `entity`.
+
+### VerificationDuplicateCheck-outcome
+
+`outcome` · `string` · Required · Nullable: No
+
+Verification/compliance result, not a lending decision.
+
+Allowed values: `no_match`, `potential_match`, `inconclusive`, `not_checked`.
+
+### VerificationDuplicateCheck-reported_match_count
+
+`reported_match_count` · `integer | null` · Required · Nullable: Yes
+
+Provider total when known.
+
+### VerificationDuplicateCheck-authorized_matches
+
+`authorized_matches` · `object[]` · Required · Nullable: No
+
+Authorized matches. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationDuplicateCheck-authorized_matches-subject_id
+
+`authorized_matches[].subject_id` · `string` · Required · Nullable: No
+
+Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationDuplicateCheck-authorized_matches-assessment_id
+
+`authorized_matches[].assessment_id` · `string | null` · Required · Nullable: Yes
+
+Assessment id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationDuplicateCheck-authorized_matches-similarity
+
+`authorized_matches[].similarity` · `VerificationScore | null` · Required · Nullable: Yes
+
+Similarity. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationDuplicateCheck-authorized_matches-observed_at
+
+`authorized_matches[].observed_at` · `string | null` · Required · Nullable: Yes
+
+Observed at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationDuplicateCheck-authorized_matches-list_disposition
+
+`authorized_matches[].list_disposition` · `string` · Required · Nullable: No
+
+List disposition. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `none`, `allowlisted`, `blocklisted`, `unknown`.
+
+### VerificationDuplicateCheck-withheld_match_count
+
+`withheld_match_count` · `integer | null` · Required · Nullable: Yes
+
+Count of matches withheld by authorization, if permitted to disclose.
+
+### VerificationDuplicateCheck-reason_codes
+
+`reason_codes` · `string[]` · Required · Nullable: No
+
+Match and coverage limitations.
+
+## VerificationResultSection
+
+Execution, result, reasons and provider decisions for every requested check.
+
+### VerificationResultSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationResultSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationResultSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationResultSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationResultSection-items
+
+`items` · `VerificationResult[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationBusinessSection
+
+Candidates and resolved legal entities, without equating a search hit with verification.
+
+### VerificationBusinessSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationBusinessSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationBusinessSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationBusinessSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationBusinessSection-items
+
+`items` · `VerificationBusiness[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationPersonSection
+
+Authorized borrower and related-person identity attributes.
+
+### VerificationPersonSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationPersonSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationPersonSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationPersonSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationPersonSection-items
+
+`items` · `VerificationPerson[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationRegistrationSection
+
+Legal status, good standing, registration authorities and annual-return compliance.
+
+### VerificationRegistrationSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationRegistrationSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationRegistrationSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationRegistrationSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationRegistrationSection-items
+
+`items` · `VerificationRegistration[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationAddressSection
+
+Registered, records, operating, service and residential addresses and validation.
+
+### VerificationAddressSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationAddressSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationAddressSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationAddressSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationAddressSection-items
+
+`items` · `VerificationAddress[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationRelationshipSection
+
+Directors, officers, agents, signatories, parent entities and guarantors.
+
+### VerificationRelationshipSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationRelationshipSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationRelationshipSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationRelationshipSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationRelationshipSection-items
+
+`items` · `VerificationRelationship[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationOwnershipSection
+
+Direct, indirect, economic and voting interests, with unresolved ownership explicit.
+
+### VerificationOwnershipSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationOwnershipSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationOwnershipSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationOwnershipSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationOwnershipSection-items
+
+`items` · `VerificationOwnership[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationIdentityDocumentSection
+
+Document identity, authenticity, expiry, NFC and wallet assurance.
+
+### VerificationIdentityDocumentSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationIdentityDocumentSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationIdentityDocumentSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationIdentityDocumentSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationIdentityDocumentSection-items
+
+`items` · `VerificationIdentityDocument[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationBiometricSection
+
+Liveness and face comparison results without biometric media or templates.
+
+### VerificationBiometricSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationBiometricSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationBiometricSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationBiometricSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationBiometricSection-items
+
+`items` · `VerificationBiometric[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationScreeningSection
+
+Sanctions, PEP, watchlists and adverse-media candidates with review disposition.
+
+### VerificationScreeningSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationScreeningSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationScreeningSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationScreeningSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationScreeningSection-items
+
+`items` · `VerificationScreening[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationTaxCheckSection
+
+TIN, EIN, BN and VAT validation, distinct from tax payment compliance.
+
+### VerificationTaxCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationTaxCheckSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationTaxCheckSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationTaxCheckSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationTaxCheckSection-items
+
+`items` · `VerificationTaxCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationLicenceSection
+
+Jurisdiction-specific licences, authorizations, classifications and registration status.
+
+### VerificationLicenceSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationLicenceSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationLicenceSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationLicenceSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationLicenceSection-items
+
+`items` · `VerificationLicence[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationFilingSection
+
+Dated corporate events, annual returns and document references.
+
+### VerificationFilingSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationFilingSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationFilingSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationFilingSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationFilingSection-items
+
+`items` · `VerificationFiling[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationCorporateStructureSection
+
+Share classes, voting rights, restrictions, capital and governing provisions.
+
+### VerificationCorporateStructureSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationCorporateStructureSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationCorporateStructureSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationCorporateStructureSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationCorporateStructureSection-items
+
+`items` · `VerificationCorporateStructure[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationPublicRecordSection
+
+Liens, judgments, litigation, bankruptcy and licensed consortium observations.
+
+### VerificationPublicRecordSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationPublicRecordSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationPublicRecordSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationPublicRecordSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationPublicRecordSection-items
+
+`items` · `VerificationPublicRecord[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationOnlinePresenceSection
+
+Business websites, directories, reviews and business social profiles.
+
+### VerificationOnlinePresenceSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationOnlinePresenceSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationOnlinePresenceSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationOnlinePresenceSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationOnlinePresenceSection-items
+
+`items` · `VerificationOnlinePresence[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationContactCheckSection
+
+Email and phone verification, deliverability, carrier and fraud signals.
+
+### VerificationContactCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationContactCheckSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationContactCheckSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationContactCheckSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationContactCheckSection-items
+
+`items` · `VerificationContactCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationDeviceCheckSection
+
+Coarse location, network integrity and consistency observations.
+
+### VerificationDeviceCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationDeviceCheckSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationDeviceCheckSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationDeviceCheckSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationDeviceCheckSection-items
+
+`items` · `VerificationDeviceCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationDocumentCheckSection
+
+Document extraction, tamper and cross-document consistency results.
+
+### VerificationDocumentCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationDocumentCheckSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationDocumentCheckSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationDocumentCheckSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationDocumentCheckSection-items
+
+`items` · `VerificationDocumentCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationBankAccountCheckSection
+
+Account-holder matching and verification method, separate from financial analysis.
+
+### VerificationBankAccountCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationBankAccountCheckSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationBankAccountCheckSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationBankAccountCheckSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationBankAccountCheckSection-items
+
+`items` · `VerificationBankAccountCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationQuestionnaireSection
+
+Versioned borrower declarations, repeatable answers and file references with declared provenance.
+
+### VerificationQuestionnaireSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationQuestionnaireSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationQuestionnaireSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationQuestionnaireSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationQuestionnaireSection-items
+
+`items` · `VerificationQuestionnaire[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationSignatureSection
+
+Signer identity, authority, consent and signature validation evidence.
+
+### VerificationSignatureSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationSignatureSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationSignatureSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationSignatureSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationSignatureSection-items
+
+`items` · `VerificationSignature[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationFieldComparisonSection
+
+Submitted versus observed values, thresholds and exact matching outcomes.
+
+### VerificationFieldComparisonSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationFieldComparisonSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationFieldComparisonSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationFieldComparisonSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationFieldComparisonSection-items
+
+`items` · `VerificationFieldComparison[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationSourceScoreSection
+
+Original provider scales, ratings and reason codes; never an AMLOK credit probability.
+
+### VerificationSourceScoreSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationSourceScoreSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationSourceScoreSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationSourceScoreSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationSourceScoreSection-items
+
+`items` · `VerificationSourceScore[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationDuplicateCheckSection
+
+Authorized same-workspace matches with identifiers minimized.
+
+### VerificationDuplicateCheckSection-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `available`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationDuplicateCheckSection-reason
+
+`reason` · `VerificationReason | null` · Required · Nullable: Yes
+
+Machine-readable reason for incomplete or inapplicable results.
+
+### VerificationDuplicateCheckSection-explanation
+
+`explanation` · `string | null` · Required · Nullable: Yes
+
+Human-readable scope or missing-data explanation.
+
+### VerificationDuplicateCheckSection-coverage
+
+`coverage` · `VerificationCoverage` · Required · Nullable: No
+
+Actual requested and completed source scope with limitations.
+
+See [VerificationCoverage](#verificationcoverage).
+
+### VerificationDuplicateCheckSection-items
+
+`items` · `VerificationDuplicateCheck[]` · Required · Nullable: No
+
+All authorized observations in this section, including distinct source observations.
+
+## VerificationAssessment
+
+Complete normalized KYC/KYB assessment from authorized sources. Empty or unavailable checks never imply a pass. All sections are present; coverage and missing-field reasons explain withheld or absent information.
+
+### VerificationAssessment-id
+
+`id` · `string` · Required · Nullable: No
+
+Immutable assessment ID.
+
+### VerificationAssessment-borrower_id
+
+`borrower_id` · `string` · Required · Nullable: No
+
+Borrower assessed; related subjects remain explicitly associated.
+
+### VerificationAssessment-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+The business/person subject_id returned by Get borrower. This is distinct from the borrower resource ID.
+
+### VerificationAssessment-definition_version
+
+`definition_version` · `string` · Required · Nullable: No
+
+Version of the normalized verification field definitions.
+
+### VerificationAssessment-as_of
+
+`as_of` · `string` · Required · Nullable: No
+
+UTC cutoff for this assessment.
+
+Format: `date-time`.
+
+### VerificationAssessment-status
+
+`status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `complete`, `partial`, `unavailable`.
+
+### VerificationAssessment-outcome
+
+`outcome` · `string` · Required · Nullable: No
+
+Identity/compliance assessment outcome, not a lending decision.
+
+Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_performed`.
+
+### VerificationAssessment-summary
+
+`summary` · `string` · Required · Nullable: No
+
+Human-readable scope, findings and unresolved requirements.
+
+### VerificationAssessment-sources
+
+`sources` · `VerificationSource[]` · Required · Nullable: No
+
+Sources consulted with actual requested/completed coverage.
+
+### VerificationAssessment-ownership_resolution
+
+`ownership_resolution` · `object` · Required · Nullable: No
+
+Whether ownership chains and the stated denominator are fully evidenced.
+
+### VerificationAssessment-ownership_resolution-status
+
+`ownership_resolution.status` · `string` · Required · Nullable: No
+
+State of this specific result; separate from entity legal status and lending decisions.
+
+Allowed values: `complete`, `partial`, `unavailable`, `not_applicable`.
+
+### VerificationAssessment-ownership_resolution-reason
+
+`ownership_resolution.reason` · `string | null` · Required · Nullable: Yes
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationAssessment-ownership_resolution-unresolved_subject_ids
+
+`ownership_resolution.unresolved_subject_ids` · `string[]` · Required · Nullable: No
+
+Related subjects whose identity or ownership chains remain unresolved.
+
+### VerificationAssessment-ownership_resolution-ownership_basis
+
+`ownership_resolution.ownership_basis` · `string` · Required · Nullable: No
+
+Whether coverage refers to economic equity, voting rights, mixed interests or an unknown basis.
+
+Allowed values: `economic`, `voting`, `mixed`, `unknown`.
+
+### VerificationAssessment-ownership_resolution-known_share
+
+`ownership_resolution.known_share` · `string | null` · Required · Nullable: Yes
+
+Evidenced fraction of the stated ownership denominator, 0 to 1; null if the denominator is unsupported.
+
+### VerificationAssessment-ownership_resolution-unknown_share
+
+`ownership_resolution.unknown_share` · `string | null` · Required · Nullable: Yes
+
+Unresolved fraction of the same ownership denominator, 0 to 1; null if unsupported.
+
+### VerificationAssessment-documents
+
+`documents` · `object[]` · Required · Nullable: No
+
+Source files accessible through existing document endpoints with authorization rechecked.
+
+### VerificationAssessment-documents-document_id
+
+`documents[].document_id` · `string` · Required · Nullable: No
+
+Document id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationAssessment-documents-kind
+
+`documents[].kind` · `string` · Required · Nullable: No
+
+Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `identity`, `registry_report`, `verification_report`, `search_report`, `articles`, `filing`, `licence`, `court`, `signed_document`, `other`.
+
+### VerificationAssessment-documents-access
+
+`documents[].access` · `string` · Required · Nullable: No
+
+Access. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Allowed values: `available`, `restricted`, `not_retained`.
+
+### VerificationAssessment-documents-reason
+
+`documents[].reason` · `string | null` · Required · Nullable: Yes
+
+Explicit explanation code when no complete usable value is available.
+
+### VerificationAssessment-documents-source_id
+
+`documents[].source_id` · `string` · Required · Nullable: No
+
+Source id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### VerificationAssessment-checks
+
+`checks` · `VerificationResultSection` · Required · Nullable: No
+
+Execution, result, reasons and provider decisions for every requested check.
+
+See [VerificationResultSection](#verificationresultsection).
+
+### VerificationAssessment-businesses
+
+`businesses` · `VerificationBusinessSection` · Required · Nullable: No
+
+Candidates and resolved legal entities, without equating a search hit with verification.
+
+See [VerificationBusinessSection](#verificationbusinesssection).
+
+### VerificationAssessment-persons
+
+`persons` · `VerificationPersonSection` · Required · Nullable: No
+
+Authorized borrower and related-person identity attributes.
+
+See [VerificationPersonSection](#verificationpersonsection).
+
+### VerificationAssessment-registrations
+
+`registrations` · `VerificationRegistrationSection` · Required · Nullable: No
+
+Legal status, good standing, registration authorities and annual-return compliance.
+
+See [VerificationRegistrationSection](#verificationregistrationsection).
+
+### VerificationAssessment-addresses
+
+`addresses` · `VerificationAddressSection` · Required · Nullable: No
+
+Registered, records, operating, service and residential addresses and validation.
+
+See [VerificationAddressSection](#verificationaddresssection).
+
+### VerificationAssessment-relationships
+
+`relationships` · `VerificationRelationshipSection` · Required · Nullable: No
+
+Directors, officers, agents, signatories, parent entities and guarantors.
+
+See [VerificationRelationshipSection](#verificationrelationshipsection).
+
+### VerificationAssessment-ownership
+
+`ownership` · `VerificationOwnershipSection` · Required · Nullable: No
+
+Direct, indirect, economic and voting interests, with unresolved ownership explicit.
+
+See [VerificationOwnershipSection](#verificationownershipsection).
+
+### VerificationAssessment-identity_documents
+
+`identity_documents` · `VerificationIdentityDocumentSection` · Required · Nullable: No
+
+Document identity, authenticity, expiry, NFC and wallet assurance.
+
+See [VerificationIdentityDocumentSection](#verificationidentitydocumentsection).
+
+### VerificationAssessment-biometrics
+
+`biometrics` · `VerificationBiometricSection` · Required · Nullable: No
+
+Liveness and face comparison results without biometric media or templates.
+
+See [VerificationBiometricSection](#verificationbiometricsection).
+
+### VerificationAssessment-screenings
+
+`screenings` · `VerificationScreeningSection` · Required · Nullable: No
+
+Sanctions, PEP, watchlists and adverse-media candidates with review disposition.
+
+See [VerificationScreeningSection](#verificationscreeningsection).
+
+### VerificationAssessment-tax_checks
+
+`tax_checks` · `VerificationTaxCheckSection` · Required · Nullable: No
+
+TIN, EIN, BN and VAT validation, distinct from tax payment compliance.
+
+See [VerificationTaxCheckSection](#verificationtaxchecksection).
+
+### VerificationAssessment-licences
+
+`licences` · `VerificationLicenceSection` · Required · Nullable: No
+
+Jurisdiction-specific licences, authorizations, classifications and registration status.
+
+See [VerificationLicenceSection](#verificationlicencesection).
+
+### VerificationAssessment-filings
+
+`filings` · `VerificationFilingSection` · Required · Nullable: No
+
+Dated corporate events, annual returns and document references.
+
+See [VerificationFilingSection](#verificationfilingsection).
+
+### VerificationAssessment-corporate_structure
+
+`corporate_structure` · `VerificationCorporateStructureSection` · Required · Nullable: No
+
+Share classes, voting rights, restrictions, capital and governing provisions.
+
+See [VerificationCorporateStructureSection](#verificationcorporatestructuresection).
+
+### VerificationAssessment-public_records
+
+`public_records` · `VerificationPublicRecordSection` · Required · Nullable: No
+
+Liens, judgments, litigation, bankruptcy and licensed consortium observations.
+
+See [VerificationPublicRecordSection](#verificationpublicrecordsection).
+
+### VerificationAssessment-online_presence
+
+`online_presence` · `VerificationOnlinePresenceSection` · Required · Nullable: No
+
+Business websites, directories, reviews and business social profiles.
+
+See [VerificationOnlinePresenceSection](#verificationonlinepresencesection).
+
+### VerificationAssessment-contact_checks
+
+`contact_checks` · `VerificationContactCheckSection` · Required · Nullable: No
+
+Email and phone verification, deliverability, carrier and fraud signals.
+
+See [VerificationContactCheckSection](#verificationcontactchecksection).
+
+### VerificationAssessment-device_checks
+
+`device_checks` · `VerificationDeviceCheckSection` · Required · Nullable: No
+
+Coarse location, network integrity and consistency observations.
+
+See [VerificationDeviceCheckSection](#verificationdevicechecksection).
+
+### VerificationAssessment-document_checks
+
+`document_checks` · `VerificationDocumentCheckSection` · Required · Nullable: No
+
+Document extraction, tamper and cross-document consistency results.
+
+See [VerificationDocumentCheckSection](#verificationdocumentchecksection).
+
+### VerificationAssessment-bank_account_checks
+
+`bank_account_checks` · `VerificationBankAccountCheckSection` · Required · Nullable: No
+
+Account-holder matching and verification method, separate from financial analysis.
+
+See [VerificationBankAccountCheckSection](#verificationbankaccountchecksection).
+
+### VerificationAssessment-questionnaires
+
+`questionnaires` · `VerificationQuestionnaireSection` · Required · Nullable: No
+
+Versioned borrower declarations, repeatable answers and file references with declared provenance.
+
+See [VerificationQuestionnaireSection](#verificationquestionnairesection).
+
+### VerificationAssessment-signatures
+
+`signatures` · `VerificationSignatureSection` · Required · Nullable: No
+
+Signer identity, authority, consent and signature validation evidence.
+
+See [VerificationSignatureSection](#verificationsignaturesection).
+
+### VerificationAssessment-field_comparisons
+
+`field_comparisons` · `VerificationFieldComparisonSection` · Required · Nullable: No
+
+Submitted versus observed values, thresholds and exact matching outcomes.
+
+See [VerificationFieldComparisonSection](#verificationfieldcomparisonsection).
+
+### VerificationAssessment-source_scores
+
+`source_scores` · `VerificationSourceScoreSection` · Required · Nullable: No
+
+Original provider scales, ratings and reason codes; never an AMLOK credit probability.
+
+See [VerificationSourceScoreSection](#verificationsourcescoresection).
+
+### VerificationAssessment-duplicate_checks
+
+`duplicate_checks` · `VerificationDuplicateCheckSection` · Required · Nullable: No
+
+Authorized same-workspace matches with identifiers minimized.
+
+See [VerificationDuplicateCheckSection](#verificationduplicatechecksection).
+
+## NormalizedVerificationAssessment
+
+One immutable version of an authorized KYC/KYB assessment, available through data records and frozen evidence. ID/version must agree with the surrounding DataRecord or EvidenceSummary.
+
+### NormalizedVerificationAssessment-id
+
+`id` · `string` · Required · Nullable: No
+
+Id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### NormalizedVerificationAssessment-object
+
+`object` · `string` · Required · Nullable: No
+
+Object. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### NormalizedVerificationAssessment-subject_id
+
+`subject_id` · `string` · Required · Nullable: No
+
+Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### NormalizedVerificationAssessment-record_version
+
+`record_version` · `integer` · Required · Nullable: No
+
+Record version. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### NormalizedVerificationAssessment-created_at
+
+`created_at` · `string` · Required · Nullable: No
+
+Created at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Format: `date-time`.
+
+### NormalizedVerificationAssessment-updated_at
+
+`updated_at` · `string` · Required · Nullable: No
+
+Updated at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Format: `date-time`.
+
+### NormalizedVerificationAssessment-observed_at
+
+`observed_at` · `string` · Required · Nullable: No
+
+Observed at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+Format: `date-time`.
+
+### NormalizedVerificationAssessment-schema_version
+
+`schema_version` · `string` · Required · Nullable: No
+
+Schema version. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+### NormalizedVerificationAssessment-assessment
+
+`assessment` · `VerificationAssessment` · Required · Nullable: No
+
+Assessment. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+
+See [VerificationAssessment](#verificationassessment).

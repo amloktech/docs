@@ -75,6 +75,8 @@ def metric(m,package,borrower_type):
 
 def decorate(package,borrower_type='business'):
  p=deepcopy(package);c=catalog();p['catalog_version']=VERSION
+ from verification_contract import empty_assessment
+ p['verification']=empty_assessment(p['borrower_id'],p['as_of'],borrower_type)
  p['scope']={'borrower_type':borrower_type,'market':p['lending_product']['definition']['market'],'reporting_currency':p['lending_product']['definition']['currency'],'window':deepcopy(p['sources'][0]['window']),'account_ids':['acct_synthetic'],'entity_ids':[p['borrower_id']],'consolidation':'single_entity' if borrower_type=='business' else 'individual','accounting_basis':'mixed','coverage_basis':'observed_sources','excluded_sources':[],'fx_rates':[]}
  p['dimensions']=[{'key':d['key'],'status':'unavailable','summary':'See individual metric availability and reasons.','metrics':[metric(m,p,borrower_type) for m in c['metrics'] if m['dimension_key']==d['key']],'evidence_ids':[]} for d in c['dimensions']]
  p['analyses']={key:{'status':'unavailable','reason':'Necessary supporting evidence is not included in this synthetic example.','evidence_ids':[],'items':[]} for key in ['verifications','financial_statements','obligations','income_streams','reconciliations','concentrations','projections','benchmarks','model_outputs','changes','collateral','relationships','credit_reports','tax_obligations']}

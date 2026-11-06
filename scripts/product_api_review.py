@@ -148,6 +148,8 @@ def build_schemas(source):
     readiness_schemas(schemas)
     from risk_package_contract import extend_schemas as risk_schemas
     risk_schemas(schemas)
+    from verification_contract import extend_schemas as verification_schemas
+    verification_schemas(schemas)
     # Resolve and retain only normalized dictionary dependencies used by the current contract.
     def collect(value):
         if isinstance(value, dict):
