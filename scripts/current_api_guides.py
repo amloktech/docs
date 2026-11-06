@@ -613,7 +613,7 @@ No packaged SDK is currently distributed. All published client examples and down
 def navigation(groups):
     path=ROOT/'docs.json';config=json.loads(path.read_text())
     tab=next(t for t in config['navigation']['tabs'] if t['tab'].lower()=='api reference')
-    icons={'Borrowers':'users','Connections':'plug','Configuration':'sliders','Insights':'files','Results':'file-search','Data':'database','Evidence':'database','Signal':'activity','Events':'webhook','Exports':'download','Billing':'wallet','Reliability':'shield-check'}
+    icons={'Borrowers':'users','Connections':'plug','Configuration':'sliders-horizontal','Insights':'files','Results':'file-search','Data':'database','Evidence':'database','Signal':'activity','Events':'webhook','Exports':'download','Billing':'wallet','Reliability':'shield-check'}
     tab['groups']=[
         {'group':'Start here','pages':['api-reference/overview','api-reference/quickstart','api-reference/authentication','api-reference/environments','api-reference/downloads']},
         {'group':'Product guides','pages':['api-reference/integration-hub','api-reference/configuration','api-reference/data-access','api-reference/risk-package','api-reference/monitoring-design','api-reference/evidence-traceability','api-reference/documents']},
