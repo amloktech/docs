@@ -1,20 +1,20 @@
 ---
 title: "API compatibility and release rules"
 sidebarTitle: "Versioning"
-description: "Implement api compatibility and release rules using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
+description: "Understand AMLOK API revisions, additive and breaking changes, event compatibility and preservation of historical result and billing versions."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-AMLOK publishes one `/v1` API. The OpenAPI info.version and response meta.schema_version identify the contract revision. There is no separate legacy reference. The current 1.0.0 document is the implementation specification before backend release.
+AMLOK publishes one `/v1` API. The OpenAPI info.version and response meta.schema_version identify the contract revision. Use the revision returned by your environment when recording diagnostics and validating responses.
 
-Before the first backend release, align code, fixtures, guides, generated client artifacts and console Data Lookup to the same contract hash. A deployed environment must expose that revision in responses and pass the acceptance checklist.
+The API reference, downloadable examples, Postman collection and console Data Lookup follow the same OpenAPI contract. Review the [integration checklist](/api-reference/integration-acceptance) when connecting your application or adopting a contract change.
 
-## After release
+## Compatible changes
 
-Within a released major API, adding an optional response field or a new independent operation is additive. Clients must ignore unknown response fields, preserve opaque IDs/cursors and tolerate additional event types by safely recording or ignoring unknown events without crashing. Requests remain strict: reject unsupported input fields with 422 rather than silently discarding them.
+Within a major API version, adding an optional response field or a new independent operation is additive. Clients must ignore unknown response fields, preserve opaque IDs/cursors and tolerate additional event types by safely recording or ignoring unknown events without crashing. Requests remain strict: reject unsupported input fields with 422 rather than silently discarding them.
 
 Removing/renaming fields or operations, adding required request fields, changing units/semantics, changing nullability to invalidate accepted values, or adding states to a closed status enum are breaking changes. They require an explicit contract review and a published adoption plan before deployment. Do not silently change a released contract or introduce an undocumented alternative API.
 
-Record changes in the [contract change log](/api-reference/contract-changelog), notify institution technical contacts before an affected release and test generated consumers. Security revocation and entitlement changes still take effect when required; they do not authorize changing historical evidence or billing entries.
+Review the [contract change log](/api-reference/contract-changelog) and test your integration when adopting changes. AMLOK notifies institution technical contacts before an affected release. Security revocation and entitlement changes still take effect when required; they do not authorize changing historical evidence or billing entries.
 
 Published packages and financial records preserve their original schema/calculation/rate versions. A new metric calculation version affects new results only. Provider-specific coverage changes must remain visible as data availability information.

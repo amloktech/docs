@@ -5,7 +5,7 @@ description: "Run a Sandbox client from Hub authorization through underwriting, 
 keywords: ["AMLOK", "integration", "Sandbox", "Node.js"]
 ---
 
-Use this reference client to exercise the AMLOK contract against an implemented Sandbox. It connects the individual endpoint examples into one journey and retains command identities across interruptions. The backend must implement the contract and Sandbox fixtures first.
+Use this reference client to connect a borrower, submit an origination, retrieve its results, enroll monitoring and reconcile billing in AMLOK Sandbox. It combines the endpoint examples into one journey and preserves command identities across interruptions.
 
 ## Download the example
 
@@ -22,9 +22,9 @@ Use Node.js 22 or newer, which supplies fetch, FormData, Blob and structuredClon
 
 An Owner obtains the API origin, creates a Sandbox key, and publishes a Hub containing configuration.sandbox.test_integration_id. Approve your return URL and both credit_assessment and continuous_monitoring purposes. For this complete example, the Owner key needs borrowers:read/write, connections:read/write, configuration:read/write, insights:read/write, results:read, evidence:read/write, data:read, signal:read/write, billing:read, exports:read/write and reliability:read.
 
-Set AMLOK_BORROWER_TYPE=person and use a fresh state file to run the consumer fixture, which uses gross monthly income, monthly debt payments and a synthetic debt_to_income rule. Both schema variants must be provisioned in configuration.
+Set AMLOK_BORROWER_TYPE=person and use a fresh state file to run the consumer fixture, which uses gross monthly income, monthly debt payments and a synthetic debt_to_income rule. Check configuration for the corresponding application schema and supported policy dimensions.
 
-The default development input file uses a Canadian business, a fixed-rate term loan, annual_revenue application data and a dscr rule. Provision the development application/pricing schemas and metric in configuration. A different environment's schemas require corresponding input changes; the example never bypasses validation.
+The default development input file uses a Canadian business, a fixed-rate term loan, annual_revenue application data and a dscr rule. Match the application schema, pricing schema and metric IDs to those returned by configuration. Update the input file if your environment uses different schemas.
 
 ```bash
 export AMLOK_API_BASE_URL="<institution-issued Sandbox origin>"
@@ -46,7 +46,7 @@ node amlok-journey.mjs complete amlok-journey-state.json
 
 Complete retrieves the authoritative session, uploads the supplied PDF, submits the origination and waits within a bounded interval. It reads the risk package, all evidence and a complete data snapshot, obtains a change-feed checkpoint, enrolls Signal, appends a lender deal snapshot, reads monitoring runs and alerts, prepares a JSON risk-package export and a controlled download capability, and reads payments, usage and transactions against one billing snapshot.
 
-Expected output identifies the origination, package, monitor, deal snapshot and billing snapshot, plus record counts and available credits. IDs and counts come from the backend; no hardcoded success output is presented as an executed result.
+Expected output identifies the origination, package, monitor, deal snapshot and billing snapshot, plus record counts and available credits. IDs and counts come from your API responses.
 
 The journey stops visibly on requires_action, waiting_for_credits or failed. Follow [recovery instructions](/api-reference/processing-lifecycle), then rerun complete with the same state file. Never replace an accepted origination simply because your client timed out. The example uses bounded transport retries and request receipts; production applications should use a transactional database/outbox for durable state instead of a local JSON file.
 
@@ -56,4 +56,4 @@ Use the [browser helper](/downloads/hub-embed.js) and [Hub protocol](/api-refere
 
 ## Test failures deliberately
 
-Set AMLOK_SCENARIO to a documented [Sandbox scenario](/api-reference/sandbox-journeys) and use a new state file. This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Passing syntax or offline fixture tests does not certify a deployed backend.
+Set AMLOK_SCENARIO to a documented [Sandbox scenario](/api-reference/sandbox-journeys) and use a new state file. This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Use the [integration checklist](/api-reference/integration-acceptance) to verify your application's handling of each outcome.

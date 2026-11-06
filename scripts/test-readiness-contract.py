@@ -69,6 +69,8 @@ for call in log:
   assert not errors_,(call['operationId'],[e.message for e in errors_]);checks+=1
 # No generated scope or operation may silently drift from acceptance coverage.
 assert len(index)==57
-assert spec['x-contract-stage']=='backend-implementation-specification'
+assert 'x-contract-stage' not in spec
+assert not (ROOT/'api-reference/implementation-status.mdx').exists()
+assert not (ROOT/'api-reference/api-review.mdx').exists()
 summary={'schema_and_client_checks':checks,'event_types':len(EVENT_RESOURCES),'offline_client_calls':len(log),'backend_execution':'not_run'}
 (ROOT/'artifacts/backend-readiness.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(summary))

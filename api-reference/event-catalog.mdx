@@ -1,7 +1,7 @@
 ---
 title: "Public event catalog"
 sidebarTitle: "Public event catalog"
-description: "Implement public event catalog using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
+description: "Find every AMLOK event type, its referenced resource and required permission, then reconcile versions and recover missed webhook notifications."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
@@ -38,7 +38,7 @@ Every event carries id, type, occurred_at, resource_type, resource_id, resource_
 
 Deduplicate event IDs. Fetch the current resource, not an assumed event-embedded payload. A fetched newer version is expected; a fetched older version must be retried and must not replace newer local state. Billing snapshot reads intentionally represent an older as-of time; use an unpinned payment read when reconciling a new payment event. Event arrival order does not define wallet posting order; use transaction.sequence.
 
-State mutation and event-outbox insertion must commit atomically. Several events may refer to one state change; for example origination.completed and risk_package.created. Their delivery order is not guaranteed. A completed monitoring event includes both completed and partial terminal runs; fetch status and limitations. Failed/skipped runs use monitoring_run.failed with a structured reason.
+A resource update and its event are recorded atomically. Several events may refer to one state change; for example origination.completed and risk_package.created. Their delivery order is not guaranteed. A completed monitoring event includes both completed and partial terminal runs; fetch status and limitations. Failed/skipped runs use monitoring_run.failed with a structured reason.
 
 connection.status_changed also covers collection-state/freshness changes and consent withdrawal. Export readiness, document status changes, payment state changes and snapshot acceptance increment or reference the correct resource version. Events contain no provider credentials, financial records or download URLs.
 
