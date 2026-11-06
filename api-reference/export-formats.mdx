@@ -1,58 +1,45 @@
 ---
-title: "Billing export formats"
-description: "Versioned JSON schemas, CSV columns, file examples and integrity checks."
+title: "Exports and file formats"
+sidebarTitle: "Export formats"
+description: "Exports and file formats for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-Billing reports support `usage`, `ledger`, `statement` and `funding`. Exports are read-only. Their schema version is **1.4.2**. The selected immutable snapshot and filters determine the financial rows; there is no hidden truncation or maximum-row omission. Larger files are generated asynchronously.
+Create exports through `POST /v2/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v2/exports/{id}/download-links` with a purpose.
 
-## JSON
+| Kind | Formats | Content |
+| --- | --- | --- |
+| `risk_package` | JSON, PDF | The complete assessment or human-readable report with evidence references |
+| `evidence` | JSON, CSV | Authorized frozen evidence records and file references |
+| `billing` | JSON, CSV | `usage`, `credits`, `statements`, `funding`, `rates` or `workload` |
 
-JSON files contain `schema_version`, `report_type`, `snapshot_id`, `as_of` and a `rows` array. The row schema matches the corresponding API resource. Empty results use `rows: []`. Amounts remain decimal strings with two digits after the decimal point, and nullable values remain JSON null. Resource IDs and record versions are preserved.
-
-## CSV
-
-CSV files use UTF-8 without a byte-order mark, comma delimiters, CRLF line endings and RFC 4180 quoting. The first row contains the exact ordered headers below. Empty results contain that header row only. Null is an empty cell; an actual empty text value is not permitted for these reporting fields. Dates use the API's UTC representation; amounts use a period decimal separator without currency symbols or thousands separators.
-
-Every data row starts with `export_schema_version`, `export_snapshot_id` and `export_as_of`. Arrays or objects, if present in a future compatible row schema, use compact JSON in a quoted cell. Text beginning with a spreadsheet formula character (`=`, `+`, `-`, `@`, tab or carriage return) is prefixed with a single quote. Validated numeric decimal fields retain their minus sign without escaping. Consumers should treat text cells as data, not evaluate formulas.
-
-## Schemas, samples and columns
-
-The examples share the endpoint fixture: CAD 12,000.00 funded before October, then CAD 5.00 Signal and CAD 8.00 Insights consumption in October. October funding is therefore an empty export. The ledger export contains only the two movements in the selected October window.
-
-### Usage
-
-[JSON Schema](/downloads/report-schemas/usage.schema.json) · [JSON example](/downloads/report-examples/usage.json) · [CSV example](/downloads/report-examples/usage.csv)
-
-```text
-export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,billing_account_id,product,tier,source_resource_id,unit,quantity,unit_rate,currency,amount,entry_type,reverses_usage_id,status,subject_id,workflow_run_id,application_id,input_manifest_id,risk_snapshot_id,monitoring_period_id,occurred_at,posted_at,billing_period_start,billing_period_end,rate_card_id,ledger_entry_id,snapshot_id
+```json
+{
+  "kind": "billing",
+  "billing_report_type": "usage",
+  "window": {
+    "start": "2026-10-01T00:00:00Z",
+    "end": "2026-11-01T00:00:00Z"
+  },
+  "format": "csv"
+}
 ```
 
-### Ledger
+JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `schema_version: 2.0.0`, an `evidence_set_id` and an array of the same `Evidence` records returned by the API. Restricted records preserve metadata/reasons without exposing hidden content. CSV evidence has `evidence_set_id,id,resource_type,resource_id,record_version,kind,source_id,observed_at,sha256,access,access_reason,document_id,normalized_json,provider_report_document_id`; nested normalized values are compact JSON cells.
 
-[JSON Schema](/downloads/report-schemas/ledger.schema.json) · [JSON example](/downloads/report-examples/ledger.json) · [CSV example](/downloads/report-examples/ledger.csv)
+## Financial report compatibility
 
-```text
-export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,billing_account_id,sequence,currency,amount,balance_after,entry_type,movement_id,reverses_entry_id,posted_at,client_reference,snapshot_id
-```
+The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute.
 
-### Statement
+| v2 report type | File schema / example |
+| --- | --- |
+| `usage` | [Usage schema](/downloads/report-schemas/usage.schema.json), [JSON](/downloads/report-examples/usage.json), [CSV](/downloads/report-examples/usage.csv) |
+| `credits` | [Ledger row schema](/downloads/report-schemas/ledger.schema.json), [JSON](/downloads/report-examples/ledger.json), [CSV](/downloads/report-examples/ledger.csv) |
+| `statements` | [Statement schema](/downloads/report-schemas/statement.schema.json), [JSON](/downloads/report-examples/statement.json), [CSV](/downloads/report-examples/statement.csv) |
+| `funding` | [Funding schema](/downloads/report-schemas/funding.schema.json), [JSON](/downloads/report-examples/funding.json), [CSV](/downloads/report-examples/funding.csv) |
+| `rates` | Versioned rate-card definitions and their effective periods; use the rate export schema in the OpenAPI contract |
+| `workload` | Workload report records with versions, counts, tier and provenance; use the workload export schema in the OpenAPI contract |
 
-[JSON Schema](/downloads/report-schemas/statement.schema.json) · [JSON example](/downloads/report-examples/statement.json) · [CSV example](/downloads/report-examples/statement.csv)
+JSON financial reports include schema version, report type, snapshot, as-of time and rows. Empty results use an empty array. CSV uses UTF-8, RFC 4180 quoting, CRLF line endings and a header even for no rows. Null is an empty cell; defined financial text fields do not use an empty string. Decimal strings retain their sign and precision. Formula-like text cells are escaped; consumers must never execute cell contents.
 
-```text
-export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,from,to,billing_account_id,currency,status,revision,supersedes_id,as_of,opening_balance,funding,usage,refunds,closing_balance,adjustments,ledger_sequence_from,ledger_sequence_to,snapshot_id
-```
-
-### Funding
-
-[JSON Schema](/downloads/report-schemas/funding.schema.json) · [JSON example](/downloads/report-examples/funding.json) · [CSV example](/downloads/report-examples/funding.csv)
-
-```text
-export_schema_version,export_snapshot_id,export_as_of,id,object,record_version,created_at,updated_at,workspace_id,billing_account_id,currency,amount,source,payment_method_type,status,initiated_at,settled_at,failure_code,invoice_reference,receipt_reference,ledger_entry_id,client_reference,snapshot_id
-```
-
-## Delivery and verification
-
-Download links require a ready, unexpired report. Verify SHA-256 over the exact downloaded bytes before parsing. Content types are `application/json` or `text/csv; charset=utf-8`; filenames identify report ID, type and extension. A failed generation returns `status: failed` and a safe `failure_code`, not a partial file marked ready.
-
-An expired report requires a new export of the same saved snapshot and filters. Do not silently substitute today's data. File-delivery URLs and job timestamps can change; financial rows and schema remain reproducible. Workspace deletion removes access, so retain required exports before closure.
+No export silently truncates records. Download metadata includes expiration and SHA-256; verify integrity before ingestion. Source entitlements, Owner billing access and workspace/environment checks apply during creation, retrieval and download.

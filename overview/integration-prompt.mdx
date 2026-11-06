@@ -46,7 +46,7 @@ APPLICATION CONTEXT
 
 READ FIRST
 - https://docs.amlok.io/.well-known/skills/amlok-integration/SKILL.md
-- https://docs.amlok.io/openapi/amlok-v1.json
+- https://docs.amlok.io/openapi/amlok-v2.json
 - https://docs.amlok.io/api-reference/products-and-endpoints
 - https://docs.amlok.io/api-reference/authentication
 - https://docs.amlok.io/api-reference/configuration
@@ -67,33 +67,28 @@ ACCESS AND SETUP
    authorized subject access from the application's authenticated user. Do not
    let caller-supplied workspace IDs change the key's scope.
 4. Read environment configuration and provider capabilities. Use returned IDs,
-   approved workflow versions, entitlements, consent scopes, and runtime limits.
-   Obtain real subject authorization before recording consent or connecting
+   approved application and pricing schemas, entitlements, consent scopes, and runtime limits.
+   Use borrower-bound embedding sessions to obtain authorization before connecting
    production data. Use only provisioned synthetic fixtures in sandbox tests.
 
 PRODUCT FLOWS
-- Insights: connect and synchronize authorized sources, check subject readiness,
-  use the ready immutable input manifest, and start a full underwrite workflow
-  with its application and approved version. Persist returned IDs. Follow the
-  accepted run through its requirements and terminal state, then retrieve the
-  risk snapshot, evidence, workload, and usage record. Completion and output
-  publication deduct credits atomically. An accepted run waiting_for_credits
-  must not be replaced with another billable run.
-- Signal: discover an approved monitoring baseline and create monitoring from
-  its returned snapshot ID. Do not automatically run Insights to obtain a missing
-  baseline. Monitoring and change-driven reassessment are included in Signal;
-  do not start or charge another Insights underwriting for a monitoring event.
-  Signal charges once per borrower/business/workspace/calendar month, at 00:00
-  UTC on the first day or immediately on first activation mid-month, with no
-  proration. Several monitors do not multiply the monthly charge. Handle
-  unfunded monitoring as paused, without accruing debt or back-charging months.
-- Verification, lien searches, calculations, and investigations are included
-  stages requiring a validated processing_context. They are not standalone paid
-  services. Follow the documented related-person association rule for owner KYC.
-- Reporting: implement requested credit, consumption, rate-card, workload, and
-  export views. Use the workspace's applicable rates, including negotiated rates.
-  Distinguish available_credits from cumulative spent_credits. Do not introduce
-  held, reserved, or posted-credit buckets.
+- Insights: create a borrower and short-lived embedding session. AMLOK captures
+  consent and handles provider authorization and source collection. Submit an
+  Origination with the application, exact lending-product and risk-policy
+  versions, connections and documents. Follow its status and requirements, then
+  retrieve the risk package and frozen evidence. Do not orchestrate workflow,
+  verification, sync, calculation, manifest or processing-context endpoints.
+- Signal: enroll a funded deal with an existing risk package or approved portfolio
+  onboarding reference. AMLOK handles baselines and collection. Follow monitoring
+  runs, package changes and alerts; use events and delivery attempts for reliable
+  notification. Change-driven reassessment is included in Signal. The monthly
+  borrower/business/workspace charge is not multiplied by several monitors.
+- Reporting: use billing summary, immutable transactions and typed exports for
+  usage, credits, statements, funding, rates and workload. Distinguish available
+  credits from cumulative spent credits. Do not introduce held/reserved buckets.
+- Only Insights and Signal are paid products. KYB/KYC and other checks are included
+  internal stages. Related people are application.related_borrower_ids; the parent
+  business remains the product billing subject.
 
 RELIABILITY AND DATA
 - Persist one idempotency key, operation ID, target path, and intended body for
@@ -110,7 +105,7 @@ RELIABILITY AND DATA
   association, handle resource versions and out-of-order delivery, and persist
   the event before acknowledging. Read the current webhook guide and helpers.
 - Preserve immutable evidence and source coverage. Missing data is unavailable,
-  not zero. Use checkpoint-backed bootstrap and durable change-feed cursors when
+  not zero. Use snapshot-bound collection bootstrap and durable event-feed cursors when
   synchronizing local data. Never treat a requested cadence as source freshness.
 - Insights includes at least 12 months of banking history within the agreed
   record limit. Signal counts new processed record versions in the month; do not
@@ -155,7 +150,7 @@ or mocked validation from a completed live sandbox journey.
 
 Ask your agent to show the implementation, actual test results, and remaining setup steps. A local or mocked test does not prove that a request completed in your sandbox.
 
-Confirm that the integration uses your approved providers and workflows, preserves workspace isolation, and handles duplicate requests and events without duplicate effects. For Signal, confirm that multiple monitors and change-driven reassessment do not create additional monthly product charges.
+Confirm that the integration uses your approved integrations, products and policies, preserves workspace isolation, and handles duplicate requests and events without duplicate effects. For Signal, confirm that multiple monitors and change-driven reassessment do not create additional monthly product charges.
 
 <Columns cols={2}>
   <Card title="OpenAPI specification" icon="file-code" href="/overview/openapi-spec">Inspect the exact request and response schemas.</Card>

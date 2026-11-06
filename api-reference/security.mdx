@@ -1,34 +1,14 @@
 ---
-title: "Security, privacy, and auditability"
-description: "Design your integration around tenant isolation, least privilege, and controlled evidence access."
+title: "API and evidence security"
+sidebarTitle: "API and evidence security"
+description: "API and evidence security for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-Protect your integration with tenant-scoped access, least privilege, and controlled evidence handling. See [Security & Compliance](/security/overview) for AMLOK platform controls and privacy practices.
+Use scoped server-side keys, borrower-bound sessions and HTTPS. Every resource, linked ID, cursor, export and download is authorized within one workspace and environment. A cross-workspace ID must not grant access, including when nested inside an Origination or export request.
 
-## Institution and subject boundaries
+Provider consent and source entitlements apply independently from API scope. Restricted reports return metadata and an explicit reason. Never return credentials, unrestricted signed URLs or unlicensed source files through evidence or events.
 
-Bind requests to the tenant represented by the API key. Check ownership of every referenced subject, document, connection, manifest, and snapshot. A valid ID from another tenant must not become visible through a relationship, filter, download, or event.
+Owners manage organization identity, team permissions and billing. Devs manage authorized integration configuration; Analysts read permitted reporting and product data. All roles are prevented from editing or deleting historical product records. Monitor configuration and new catalog/policy versions affect future processing only.
 
-Grant the smallest useful scopes. Separate service accounts by environment and workload. A read-only analytical service should not hold workflow-execution or configuration-write permissions.
-
-## Evidence and consent
-
-Record the authorized purpose, consent policy version, evidence, and relevant scope. Re-check these constraints when collecting, reading, exporting, or sending data. Revocation stops new collection but does not bypass an applicable retention or legal-hold policy.
-
-Mask or tokenize restricted identifiers by default. Avoid storing unnecessary identity data in your own system. Raw biometric media, PAN, CVV, and provider secrets are not part of the normalized default response.
-
-## Audit trails
-
-Capture institution, service identity, purpose, operation, resource version, correlation ID, and outcome in your restricted audit system. Record the analysis configuration, input versions, and result reviewed. Preserve evidence manifests and immutable decision snapshots.
-
-Redact keys, webhook secrets, signed URLs, raw documents, and sensitive payload fields. Do not rely on broad request/response logging as an audit strategy.
-
-## Webhook and outbound destination controls
-
-Register only institution-controlled HTTPS destinations. Deployment must validate destinations against SSRF, private-network targets, unsafe redirects, and tenant policy. Receivers verify signatures over raw bytes and durably deduplicate events.
-
-## Retention and incident handling
-
-Authorized users manage retention in the AMLOK platform according to applicable compliance frameworks. Completed workspace deletion removes all associated workspace data. Necessary final billing, refund, and bank-return records are retained separately without borrower source data, documents, analysis outputs, or active workspace access. Workspace deletion is managed in the platform, not through a public deletion-request API. Cancellation may be requested at any time without notice through the client portal or a dedicated enterprise account manager. Closure is at the end of the request month, with an immediate full unused-credit refund to the saved bank account. Deletion occurs after that month closes and final information is generated.
-
-Before production, agree data locations, retention rules, encryption/key-management requirements, breach-reporting channels, access reviews, incident contacts, and support escalation. Record these settings during [integration onboarding](/api-reference/onboarding).
+Verify raw webhook bytes, deduplicate events durably and retain exact command identity during retries. Keep credentials and financial payloads out of logs. Follow the institution's retention and cancellation rules for evidence and final financial records.

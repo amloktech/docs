@@ -1,56 +1,51 @@
 ---
 title: "API overview"
-description: "Underwrite borrowers with Insights and monitor funded deals with Signal."
-keywords: ["Insights", "Signal", "risk package", "API design"]
+sidebarTitle: "Overview"
+description: "API overview for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-AMLOK serves financial institutions that underwrite and fund businesses or consumers. Borrowers connect authorized data sources through an embedded Integrations Hub. AMLOK normalizes that evidence and uses it for two products:
+AMLOK helps financial institutions underwrite business and consumer borrowers with **Insights** and monitor funded deals with **Signal**. Borrowers connect their sources through an embedded Integrations Hub. Your institution submits its application, lending product and risk policy; AMLOK returns a risk package and the evidence behind it.
 
-- **Insights:** assess an origination using the institution's application, lending product and risk policy. Return the financial dimensions, findings and evidence needed for the institution's decision.
-- **Signal:** monitor an existing exposure, identify meaningful changes and deliver risk signals with their supporting evidence.
+**API 2.0.0 is the primary reference.** Its 45 operations replace the previous 192-operation public contract. Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok-v2.json).
 
-AMLOK supplies risk intelligence. Your institution makes lending decisions, funds deals and performs servicing in its own systems.
-
-## Choose the correct contract
-
-| Reference | Status | Use |
-| --- | --- | --- |
-| [Current API 1.4.2](/openapi/amlok-v1.json) | Existing published contract, 192 operations | Existing integrations, endpoint pages, SDKs and runnable examples |
-| [Product API design](/api-reference/product-api-design) | Proposed replacement, 45 operations | Implementation planning and contract review; these `/v2` routes are **not available** |
-
-The [API review](/api-reference/api-review) explains the consolidation. Publishing this documentation does not deploy backend routes, remove current endpoints or change existing client behavior. No replacement release date or v1 retirement date is established here.
-
-## The customer journey
+## The integration flow
 
 ```mermaid
 flowchart LR
-    B[Borrower connects sources] --> E[Authorized evidence]
-    A[Application + product + policy] --> I[Insights]
+    B[Borrower] --> H[Embedded Integrations Hub]
+    H --> E[Authorized source data and files]
+    A[Application + product version + policy version] --> I[Insights origination]
     E --> I
     I --> R[Risk package + evidence]
     R --> D[Institution decision and funding]
-    D --> S[Signal monitoring]
+    D --> S[Signal monitor]
     E --> S
-    S --> N[Changes + alerts + updated evidence]
+    S --> N[Monitoring runs + updated packages + alerts]
 ```
 
-The replacement design makes this journey the public boundary. Collection, normalization, KYB/KYC stages, calculations, evidence freezing and orchestration run behind it. Your institution can still inspect every authorized supporting record, licensed report and retained file through a common evidence interface.
+AMLOK handles collection, normalization, KYB/KYC, included checks and calculations. You do not orchestrate provider sync jobs, verification jobs, manifests or workflow runs. You can retrieve authorized normalized records, licensed reports and documents through the evidence and download interfaces.
 
-<CardGroup cols={2}>
-  <Card title="Integrate with the current API" icon="terminal" href="/api-reference/quickstart">Use v1 connection, workflow and monitoring operations.</Card>
-  <Card title="Review the product API" icon="blocks" href="/api-reference/product-api-design">See borrower sessions, Origination inputs and the smaller proposed surface.</Card>
-  <Card title="Understand a risk package" icon="file-search" href="/api-reference/risk-package">Review dimensions, policy results, source coverage and evidence.</Card>
-  <Card title="Understand monitoring" icon="activity" href="/api-reference/monitoring-design">Follow evaluations, risk alerts and reliable delivery.</Card>
-</CardGroup>
+## Public resources
 
-## Workspace and access
+| Resource | What you use it for |
+| --- | --- |
+| Borrowers and embedding sessions | Identify the borrower and launch an authorized connection journey |
+| Connections and consents | Inspect source access, freshness and required borrower actions |
+| Lending-product and risk-policy versions | Supply the exact lending context for each assessment |
+| Originations and risk packages | Request underwriting and retrieve dimensions, findings and evidence |
+| Monitors, monitoring runs and alerts | Follow funded exposures, refreshed evidence and material changes |
+| Evidence, documents and exports | Inspect or download the underlying authorized records and files |
+| Events and webhook deliveries | Receive notifications, recover missed events and troubleshoot delivery |
+| Billing summary and transactions | Read the shared wallet and immutable financial history |
 
-Each server-side key is bound to one institution, workspace and environment. Never place it in borrower-facing code. A resource ID grants no access by itself; all reads, linked records, exports and downloads must enforce the same boundary. Sandbox and Live data remain isolated.
+The organization owns billing identity, payment methods and team roles. Each workspace has a shared CAD wallet and isolated Sandbox and Live environments. API keys are scoped to one workspace and environment. Product records cannot be edited or deleted; authorized configuration changes apply prospectively.
 
-The organization owns its billing profile and team permissions. A workspace has one credit balance shared by Insights and Signal. Billing APIs are read-only reporting; authorized Owners manage funding and payment settings in the console. See [authentication](/api-reference/authentication), [product scope](/api-reference/products-and-endpoints) and [credit reporting](/api-reference/credit-reporting).
+<Columns cols={2}>
+<Card title="Start integrating" icon="terminal" href="/api-reference/quickstart">Connect a borrower and submit an Origination.</Card>
+<Card title="Read a risk package" icon="file-search" href="/api-reference/risk-package">Understand financial dimensions and exact evidence versions.</Card>
+<Card title="Monitor funded deals" icon="activity" href="/api-reference/monitoring-design">Inspect evaluations, alerts and connection health.</Card>
+<Card title="Migrate from v1" icon="route" href="/api-reference/product-api-migration">Map every former operation to its v2 destination.</Card>
+</Columns>
 
-## Availability and versions
-
-The existing reference is **API 1.4.2**, using `/v1`. Configure `AMLOK_API_BASE_URL` with your institution-issued environment URL. The separate design uses `/v2` to make its breaking changes explicit; it does not imply that a v2 service exists.
-
-Provider access and fields depend on the [integration status catalog](/integrations/status), consent, market, enabled products and source entitlements. Missing or restricted evidence must remain explicit. Neither a connection nor a completed assessment guarantees a particular score, approval or data field.
+See [versioning and environment enablement](/api-reference/versioning) before switching an existing integration. The documentation contract and deployment of a backend environment are separate.

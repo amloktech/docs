@@ -1,34 +1,18 @@
 ---
-title: "Asynchronous jobs"
-description: "Distinguish acceptance, progress, partial results, and terminal outcomes."
+title: "Asynchronous product operations"
+sidebarTitle: "Asynchronous product operations"
+description: "Asynchronous product operations for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-A successful HTTP response can indicate acceptance rather than completed work. The source contract uses `202` for most long-running commands and `201` for creation of a verification session whose result arrives later.
+Origination, monitor enrollment, uploads, exports and event replay can return `202 Accepted`. Acceptance confirms a recorded command, not a completed business outcome. Persist the returned ID and idempotency key.
 
-| Command | Acceptance | Observe the result |
-| --- | --- | --- |
-| [Start sync](/api-reference/endpoints/platform/start-connection-sync) | 202, sync job | `GET /v1/sync-jobs/{id}`; `sync.completed` or `sync.failed` |
-| [Start verification](/api-reference/endpoints/identity/start-verification) | 201, verification | `GET /v1/verifications/{id}`; verification events |
-| [Search liens](/api-reference/endpoints/liens/start-lien-search) | 202, search | `GET /v1/lien-searches/{id}`; lien-search events |
-| [Upload document](/api-reference/endpoints/identity/upload-document) | 202, document | `GET /v1/documents/{id}`; `document.processed` |
-| [Run workflow](/api-reference/endpoints/operations/start-workflow-run) | 202, workflow run | `GET /v1/workflow-runs/{id}`; workflow events |
-| [Calculate attributes](/api-reference/endpoints/risk/calculate-attributes) | 202, calculation job | `GET /v1/attribute-calculations/{id}`; `attributes.calculated` |
+| Resource | Completion or follow-up |
+| --- | --- |
+| Origination | Read status and requirements; completed returns a risk-package ID |
+| Monitor | Follow initializing, active, action-required or waiting-for-credits states |
+| Document | Wait for available; inspect rejection or access restrictions |
+| Export | Wait for completed, then request a download link |
+| Replay receipt | Follow the separate webhook-delivery attempts |
 
-The event replay command returns a queued replay receipt. Monitor redelivery through your webhook receiver and the delivery controls configured during onboarding.
-
-## Poll safely
-
-Persist the returned resource or job ID. Poll the documented retrieval route with bounded backoff, respect throttling, and stop at the resource's terminal state or your application deadline. A client polling deadline does not cancel server work.
-
-Sync-style jobs use `queued`, `running`, `completed`, `partial`, `failed`, and `cancelled`. Other resources have their own typed states. Do not assume every job uses the same enum or that a generic cancellation command exists.
-
-## Interpret completion
-
-- `partial` means some requested scope remains unavailable. Inspect errors, missing intervals, completed jurisdictions, and missing-field reasons.
-- Verification completion means a result is available; it can be declined or require review.
-- A completed lien search with no results applies only to the declared completed scope.
-- Attribute calculation can complete with individual values marked `unavailable`.
-- A completed assessment is not authorization to fund a loan or contact a borrower.
-- Account cancellation immediately stops processing, usage deductions, and upcoming top-ups. Pending work is cancelled without a usage debit. Full account closure is at the end of the request month. After that month closes and final information is generated, deletion removes all associated workspace data; there is no public deletion-command API.
-
-Retrieve the authoritative resource after an event. Use `resource_version` to avoid overwriting a newer record with an older delivery. See [webhooks](/api-reference/webhooks).
+AMLOK owns internal provider jobs, verification and calculation stages. You no longer create or retry those jobs. Operational failures expose useful status and requirements on the product resource. An accepted Origination awaiting credits remains the same resource and must not be resubmitted as a new command.

@@ -1,66 +1,16 @@
 ---
-title: "Consumption reporting"
-description: "Reconcile product charges, credit activity, historical rates and reproducible reports."
+title: "Insights and Signal consumption"
+sidebarTitle: "Consumption"
+description: "Insights and Signal consumption for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-Use one immutable billing snapshot to answer what was consumed, what it cost, and how available credits changed. Each API key is bound to one workspace.
+Only Insights and Signal are paid products. Verification, KYB/KYC, liens, calculations and investigations are included stages managed by AMLOK. Clients do not supply a processing context or buy those stages separately.
 
-## Billable usage
+Insights checks available credits and deducts the charge atomically with risk-package publication. If concurrent activity leaves insufficient funds after acceptance, the Origination waits for credits without publishing or charging. Resume the accepted resource rather than submitting another underwriting.
 
-The table shows regular pay-as-you-go rates. Enterprise clients use the negotiated rates in their workspace rate card.
+Signal charges each active borrower/business once per workspace/month, using the combined workload across configurations, deals and sources. The full monthly rate is deducted at 00:00 UTC on the first calendar day, or on first mid-month activation without proration. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
 
-| Product | Unit | Standard | Advanced | Complex | Charge timing |
-| --- | --- | ---: | ---: | ---: | --- |
-| Insights | Completed underwriting | CAD 8.00 | CAD 25.00 | CAD 45.00 | Successful completion and publication of the agreed output |
-| Signal | Active borrower/business per month | CAD 5.00 | CAD 8.00 | CAD 12.00 | Beginning of the UTC calendar month, or full charge at first activation during the month |
+Signal includes change-driven reassessment. A separate full underwriting is a new Insights Origination. Monetary rates and amounts use two-decimal, half-up rounding: round the effective unit rate, then each quantity-times-rate line, and sum the rounded lines.
 
-Signal includes monitoring and reassessment. Multiple monitors, checks or facilities do not create more account-month charges. Included verification, searches, calculations and investigations do not add another AMLOK charge. The monthly consumption unit does not change the monthly minimum's annual payment schedule.
-
-Each usage record identifies its subject, product, tier, billable quantity, rate, amount, period, historical rate-card ID and ledger entry. Insights additionally links the workflow run, application, frozen input manifest and risk snapshot. Signal links the shared monitoring-period record and baseline. See [evidence traceability](/api-reference/evidence-traceability).
-
-Custom quotes retain Standard, Advanced or Complex with negotiated rates and explicit workload limits. The rate card reports the product's counting basis, limits and charge timing. [Workload reports](/api-reference/workload-reporting) show processing counts separately from billable quantities.
-
-## Amounts and corrections
-
-Amounts are CAD decimal strings with two decimals. Round the effective discounted unit rate half up to two decimals first, multiply by the billable quantity, then round the line half up to two decimals. Totals sum those rounded lines. Never apply today's rate card to an earlier charge.
-
-Usage records exist only for actual charges or corrections, with `status: posted`. There is no pending usage credit category. A charge correction creates a negative `reversal` linked by `reverses_usage_id`; the original remains immutable. The ledger reversal has a positive amount and references the original ledger entry. Cumulative reversals cannot exceed that original charge. A replacement charge, when appropriate, is separate.
-
-## Reproduce a report
-
-1. Read [the current billing snapshot](/api-reference/endpoints/billing/retrieve-current-billing-snapshot); save its ID, `as_of` and ledger sequence.
-2. Reuse `snapshot_id` across credits, usage, consumption, funding, rate cards and ledger reads. The response header `X-Billing-Snapshot-ID` also supplies the selected snapshot, including for empty lists.
-3. Preserve the same snapshot and filters across cursor pages and export requests.
-4. Use a statement's own snapshot, exact period and revision to reproduce that statement.
-
-Snapshots freeze financial resource versions and configuration at the cutoff. Later corrections appear only in newer snapshots. Conflicting cursor parameters return `400`; unknown snapshots return `404`. A financial snapshot does not freeze a source-data collection; use [synchronization checkpoints](/api-reference/synchronization) for that purpose.
-
-## Filters and periods
-
-Intervals are UTC and `[from, to)`, with an inclusive start and exclusive end. Usage supports event time (`occurred_at`) or ledger time (`posted_at`); consumption includes only recorded charges and reversals. Product, tier, source resource and historical rate-card filters are supported. Grouping by day or month preserves product, tier and billing unit; it never combines underwritings and account-months into one quantity.
-
-Ledger entries sort by sequence. Other financial collections document their ordering. Default page size is 100, maximum 200. Payment source labels distinguish annual prepayments, top-ups and promotions for audit; they do not create separate credit balances or priorities.
-
-## Reconciliation example
-
-All endpoint examples using `billing_snapshot_example` share this dataset:
-
-| Activity | CAD | Available credits |
-| --- | ---: | ---: |
-| Annual prepayment completed September 30 | +12,000.00 | 12,000.00 |
-| One Standard Signal business charged October 1 | -5.00 | 11,995.00 |
-| One Standard Insights underwriting completed October 23 | -8.00 | 11,987.00 |
-
-October usage and consumption total **CAD 13.00**. The October statement opens at CAD 12,000.00 and closes at CAD 11,987.00. Cumulative spent credits are CAD 13.00. The unfiltered ledger includes all three entries; an October ledger export includes the two October charges. An October funding export is empty because the prepayment completed in September.
-
-`closing = opening + funding - usage - final-cancellation refunds + adjustments`
-
-Funding, usage and refund columns are nonnegative magnitudes. Adjustments are signed. Correcting ledger reversals are included in adjustments and are not counted again as negative statement usage. Consumption summaries, by contrast, expose gross charges, correcting adjustments and net usage explicitly.
-
-## Export and finalize
-
-Create an asynchronous report for `usage`, `ledger`, `statement` or `funding`. Usage supports event or posting time; ledger and statements use `posted_at`; funding uses `initiated_at`. Only usage exports accept usage filters. Poll until ready, then request a short-lived download link. These requests do not change credits.
-
-[Export formats](/api-reference/export-formats) defines JSON schemas, CSV columns, empty results, decimal handling and downloadable examples. Verify the file's SHA-256 and retain its snapshot ID. A repeated export of the same snapshot and filters reproduces the same financial data; job metadata and delivery URLs can differ.
-
-Final statement revisions are immutable. Later corrections create a new revision with `supersedes_id`. On cancellation, processing and deductions stop immediately; unused credits are refunded at month-end closure. No new product charge can post after the cancellation cutoff. Final documents and refund confirmations are supplied through the closure process. Workspace API access ends on deletion; minimal financial/refund records retained separately contain no borrower evidence. See [cancellation and refunds](/pricing/refunds-and-payouts).
+Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, source IDs and correction links remain available in the report.

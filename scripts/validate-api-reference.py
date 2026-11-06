@@ -1,61 +1,59 @@
-"""Validate OpenAPI structure and every documented example without network calls."""
+"""Validate the authoritative OpenAPI, all examples and current reference links."""
 import ast
 import json
 import re
 from pathlib import Path
-from public_api_scope import REMOVED_OPERATION_IDS
 from jsonschema import Draft202012Validator, FormatChecker
-from referencing import Registry, Resource
 from openapi_spec_validator import validate
-
-root = Path(__file__).resolve().parent.parent
-spec = json.loads((root/'openapi/amlok-v1.json').read_text())
+ROOT=Path(__file__).resolve().parent.parent
+spec=json.loads((ROOT/'openapi/amlok-v2.json').read_text())
 validate(spec)
-document = {'$schema':'https://json-schema.org/draft/2020-12/schema',**spec}
-registry = Registry().with_resource('https://contract.example.com/openapi',Resource.from_contents(document))
+counts={'operations':0,'request_examples':0,'response_examples':0,'python_samples':0}
 errors=[]
-counts={'operations':0,'requestExamples':0,'responseExamples':0,'pythonSamples':0}
-
 def check(schema,value,label):
-    wrapped={'$schema':'https://json-schema.org/draft/2020-12/schema',**schema,'components':spec['components']}
-    validator=Draft202012Validator(wrapped,format_checker=FormatChecker())
-    for error in validator.iter_errors(value): errors.append(label+' '+str(list(error.path))+': '+error.message)
-
+    validator=Draft202012Validator({**schema,'components':spec['components']},format_checker=FormatChecker())
+    for e in validator.iter_errors(value):errors.append(label+' '+str(list(e.path))+': '+e.message)
 for path,methods in spec['paths'].items():
-    for method,operation in methods.items():
+    assert path.startswith('/v2/')
+    for method,op in methods.items():
         counts['operations']+=1
-        for media in operation.get('requestBody',{}).get('content',{}).values():
-            check(media['schema'],media['example'],operation['operationId']+' request');counts['requestExamples']+=1
-        for code,response in operation['responses'].items():
-            if '$ref' in response:response=spec['components']['responses'][response['$ref'].split('/')[-1]]
+        for media in op.get('requestBody',{}).get('content',{}).values():
+            check(media['schema'],media['example'],op['operationId']+' request');counts['request_examples']+=1
+        for status,response in op['responses'].items():
             for media in response.get('content',{}).values():
-                for name,example in media.get('examples',{}).items():
-                    check(media['schema'],example['value'],operation['operationId']+' '+code+' '+name);counts['responseExamples']+=1
-        for sample in operation['x-codeSamples']:
-            if sample['lang']=='Python':ast.parse(sample['source']);counts['pythonSamples']+=1
-        if operation.get('requestBody'):
-            assert method in ['post','patch']
-        assert 'x-contract-status' not in operation
-        if path in ['/v1/healthcheck','/v1/service-status']:
-            assert method=='get' and operation['security']==[] and operation['x-required-scopes']==[]
-        else:
-            assert operation['security']==[{'BearerAuth':[]}]
-            assert operation['x-required-scopes']
-
-for name,webhook in spec['webhooks'].items():
-    media=webhook['post']['requestBody']['content']['application/json']
-    check(media['schema'],media['example'],'webhook '+name)
+                assert 'example' in media,(path,status)
+                check(media['schema'],media['example'],op['operationId']+' '+status);counts['response_examples']+=1
+        for sample in op['x-codeSamples']:
+            if sample['lang']=='Python':ast.parse(sample['source']);counts['python_samples']+=1
 for name,schema in spec['components']['schemas'].items():Draft202012Validator.check_schema(schema)
-if errors:
-    print('\n'.join(errors));raise SystemExit(f'{len(errors)} invalid examples')
-index=json.loads((root/'data/api-reference-index.json').read_text())
-reporting_index=json.loads((root/'data/reporting-api-index.json').read_text())
-enterprise=json.loads((root/'data/enterprise-api-index.json').read_text())
-assert counts['operations']==164-len(REMOVED_OPERATION_IDS)+len(reporting_index)+2+len(json.loads((root/'data/baseline-api-index.json').read_text()))+sum(o['group']!='Reporting' for o in enterprise)+len(json.loads((root/'data/integration-api-index.json').read_text()))==len(index)
-assert len({op['operationId'] for methods in spec['paths'].values() for op in methods.values()})==len(index)
-assert spec['servers'][0]['url']=='https://api.example.com'
-assert spec['info']['version']=='1.4.2'
-assert '0.1.0-draft' not in json.dumps(spec)
-assert '\u2014' not in json.dumps(spec,ensure_ascii=False)
-out=root/'artifacts/api-schema-validation.json';out.write_text(json.dumps(counts,indent=2)+'\n')
+webhook=spec['webhooks']['resourceEvent']['post']['requestBody']['content']['application/json']
+check(webhook['schema'],webhook['example'],'webhook')
+index=json.loads((ROOT/'data/api-reference-index.json').read_text())
+assert len(index)==counts['operations']==45
+assert spec['info']['version']=='2.0.0'
+assert spec['x-availability']=='published_contract'
+assert {i['id'] for i in index}=={o['operationId'] for methods in spec['paths'].values() for o in methods.values()}
+for item in index:
+    content=(ROOT/(item['page']+'.mdx')).read_text()
+    assert '/openapi/amlok-v2.json '+item['method']+' '+item['path'] in content
+    assert 'Legacy v1 endpoint' not in content
+# Every endpoint in the primary navigation belongs to v2, exactly once.
+c=json.loads((ROOT/'docs.json').read_text())
+tab=next(t for t in c['navigation']['tabs'] if t['tab'].lower()=='api reference')
+def navpages(value):
+    if isinstance(value,str):yield value
+    elif isinstance(value,list):
+        for x in value:yield from navpages(x)
+    elif isinstance(value,dict):
+        yield from navpages(value.get('pages',[]));yield from navpages(value.get('groups',[]))
+nav=list(navpages(tab));endpoints=[p for p in nav if p.startswith('api-reference/endpoints/')]
+assert len(endpoints)==45 and set(endpoints)=={i['page'] for i in index}
+for p in nav:assert (ROOT/(p+'.mdx')).exists(),p
+for p in (ROOT/'api-reference').glob('*.mdx'):
+    text=p.read_text()
+    assert not re.search(r'`(?:GET|POST|PATCH|DELETE|PUT) /v1/',text),p
+    for link in re.findall(r'\]\((/api-reference/endpoints/[^)#]+)',text):
+        assert link[1:] in endpoints,(p,link)
+if errors:raise SystemExit('\n'.join(errors))
+(ROOT/'artifacts/api-validation.json').write_text(json.dumps(counts,indent=2)+'\n')
 print(json.dumps(counts))

@@ -10,7 +10,7 @@ AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and i
 
 ## Product API boundary
 
-The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. The separate product API design and migration inventory describe a proposed replacement; the current v1.4.2 contract remains intact until backend implementation and a managed release. Do not claim documentation publication makes proposed routes available.
+The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. The product API 2.0.0 is now the primary reference with 45 operations, generated endpoint pages, payload examples and migration mapping. v1.4.2 is retained as a labeled legacy contract. Documentation publication does not deploy backend routes; confirm environment enablement separately.
 
 ## Research evidence boundary
 

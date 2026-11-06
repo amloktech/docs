@@ -1,37 +1,18 @@
 ---
-title: "Credit reporting"
-description: "Read available and spent credits without payment controls."
+title: "Shared wallet and billing reports"
+sidebarTitle: "Wallet and billing"
+description: "Shared wallet and billing reports for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-Each workspace has one CAD credit balance shared by Insights and Signal. Paid and promotional top-ups join the same balance with no consumption priority.
+Each workspace has one CAD wallet shared by Insights and Signal. The organization owns the billing profile, payment methods and Owner permissions. Sandbox credits are isolated from Live funds.
 
-## Available and spent credits
+Use `GET /v2/billing/summary` for `available_credits`, cumulative `spent_credits` and a stable reporting snapshot. Read immutable movements with `GET /v2/billing/transactions`; filter by snapshot to reconcile related reads. An adjustment is a linked new entry, not an edit to history.
 
-| Field | Meaning |
-| --- | --- |
-| `available_credits` | Credits available to spend now. Successful top-ups add credits; actual product charges and final refunds reduce them. |
-| `spent_credits` | Cumulative product charges since the account opened, less corrections that reverse an erroneous charge. |
+There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 
-There are no reserved credits, held balances or separate posted-credit balances. A payment still in progress is visible in funding history, but it becomes credit only after successful completion. An unfinished underwriting has not spent credits. A final cancellation refund is a return of unused credits, not product spend.
+The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. The agreed monthly minimum is at least CAD 1,000, funded for 12 months at signing and annual renewal; this is not a monthly funding schedule.
 
-`available credits = successful funding + corrections - product charges - cancellation refunds`
+Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
 
-Read [the credit balance](/api-reference/endpoints/billing/retrieve-credit-balance) and [consumption reports](/api-reference/consumption-reporting). Transaction timestamps such as `posted_at` identify when a historical entry was recorded; they do not describe another kind of credit.
-
-## Automatic top-ups
-
-The trigger uses **available credits**. With auto-pay enabled, a balance strictly below the configured threshold triggers the selected payment. The threshold is at least **CAD 200.00** and the customer-funded top-up is at least **CAD 500.00**. At exactly the threshold, no below-threshold trigger has occurred.
-
-The [billing account](/api-reference/endpoints/billing/retrieve-billing-account) reports the actual `auto_top_up_enabled`, `auto_top_up_threshold` and `auto_top_up_amount` settings. Only the portal changes them. Payment attempts are deduplicated while the same top-up is in progress; every usage debit must not launch another duplicate collection. Failed collections leave credits unchanged and follow the portal's payment handling, without allowing a negative balance.
-
-Processing can use credits below CAD 200.00 if the balance covers its cost. Read-only reports remain accessible without a new product charge. See [processing lifecycle](/api-reference/processing-lifecycle) for insufficient-credit handling.
-
-## Portal and API responsibilities
-
-The client portal manages card/bank payment methods, top-ups, automatic-payment settings and cancellation. Enterprise clients can also request cancellation through their account manager. The public API provides reports and exports only. There are no wallet-management, payment, top-up, refund-request, transfer or cancellation commands.
-
-## Cancellation
-
-Cancellation immediately stops processing, deductions, and upcoming top-ups. Unfinished work creates no charge. Full account closure occurs at the end of the request month. AMLOK immediately refunds all remaining available credits, including promotional top-ups, to the saved portal bank account. Correctly spent credits are non-refundable. Bank receipt can take 7-10 business days after issuance.
-
-Data is deleted after that month closes and necessary final information is generated. Export needed evidence before deletion. Necessary final billing and refund records are retained separately, without borrower data or continuing workspace API access. See [cancellation and refunds](/pricing/refunds-and-payouts).
+For detailed usage, credit movements, statements, funding, rates or workload, create a typed billing export. Owner authority and `billing:read` are required at every access step.

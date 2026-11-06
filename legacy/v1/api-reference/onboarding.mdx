@@ -1,0 +1,40 @@
+---
+searchable: false
+title: "Integration onboarding"
+description: "Configure your institution, environments, access, and operational settings."
+---
+
+<Warning>Legacy API 1.4.2. For the current contract, use the [v2 API reference](/api-reference/overview).</Warning>
+
+
+Use this checklist to configure an integration with **AMLOK API 1.4.2**. Your account manager supplies client portal access information and the environment details appropriate to your agreement. Authorized administrators create API keys in the client portal. Read [environment configuration](/legacy/v1/api-reference/configuration) for accepted values and limits, then run the [sandbox journeys](/legacy/v1/api-reference/sandbox-journeys).
+
+## Configure your environment
+
+| Area | Configuration |
+| --- | --- |
+| Environments | Production and sandbox origins, one workspace per API key, institution tenant, test-data policy, and network controls. |
+| Credit reporting | Authorized access to credit balances, usage, statements and exports. The portal manages card/bank funding, top-up settings and cancellation. Each key belongs to one workspace. Its shared balance has a CAD 200.00 default auto-pay trigger and CAD 500.00 minimum top-up; requests can continue below the trigger while available credits cover the cost; enterprise clients can also use their account manager. |
+| API keys | Issuance, expiry, rotation, revocation, scopes, and administrator access. |
+| Provider capabilities | Enabled products, resources, markets, account permissions, and field coverage. |
+| Limits | Request quotas, burst and concurrency budgets, job limits, and upload limits. |
+| Support | Support channel, incident contacts, escalation, and service commitments. |
+| Webhooks | Destination, event subscriptions, signing secret, replay retention, and delivery monitoring. |
+| Documents | Allowed file types, size and page limits, storage location, and signed-link expiry. |
+| Evidence and review | Read frozen input manifests and monitoring baselines through the API. Configure authorized reviewers and assessment workflows during onboarding. |
+| Data handling | Retention during active use, residency, month-end workspace deletion, and permitted purposes. |
+
+## Connect and verify
+
+1. Store the environment URL and API key in your server-side configuration.
+2. Grant the smallest set of scopes required by your workflow.
+3. Follow the [quickstart](/legacy/v1/api-reference/quickstart) using your environment's identifiers.
+4. Validate response handling, pagination, and missing-data rules with representative records.
+5. Exercise retries, idempotency, concurrency conflicts, asynchronous outcomes, and webhook verification.
+6. Configure monitoring and the agreed support and incident channels.
+
+Keep sandbox and production credentials and data separate. Confirm source permissions and product scope before enabling assessment processing.
+
+## Keep your integration current
+
+Pin the [OpenAPI reference](/openapi/amlok-v1.json) used by your client. Review schema changes and rerun integration checks when adopting a new version or enabling a provider. See [versioning](/legacy/v1/api-reference/versioning) and [Security & Compliance](/security/overview).
