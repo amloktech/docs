@@ -1,16 +1,14 @@
 # AMLOK documentation
 
-This Mintlify site publishes integration documentation, normalized data definitions, product research and the AMLOK API reference.
+Mintlify source for docs.amlok.io. AMLOK exposes one public product API for borrower connections, Insights origination, evidence and Signal monitoring.
 
-## Current API
+## Authoritative contract
 
-API **2.0.0** is the primary documented contract: **45 operations** for borrower connections, Insights origination and risk packages, Signal monitoring, evidence, events and reporting. The previous 192-operation contract remains in `openapi/amlok-v1.json` and the labeled `legacy/v1` reference for migration.
+`openapi/amlok.json` defines all 45 public operations under `/v1`. Endpoint pages, examples, Postman and the console Data Lookup import use this contract. There is no legacy API or alternate client catalog.
 
-Publishing this repository updates documentation. It does not deploy backend routes, migrate customer records or retire a running v1 environment. The original `data/api-contract-source.json` workbook snapshot is read-only.
+## Regenerate and validate
 
-## Generate and validate
-
-```bash
+```sh
 python scripts/build-api-reference.py
 python scripts/write-api-guides.py
 python scripts/validate-api-reference.py
@@ -20,16 +18,8 @@ mint validate
 mint broken-links
 ```
 
-Python validation requires `jsonschema` and `openapi-spec-validator`. Sample checks also need Node.js. `current_api.py`, `product_api_review.py` and `current_api_guides.py` own the current contract, examples and guides. Do not hand-edit generated endpoint pages or overwrite them with legacy modules.
+Validation needs `jsonschema`, `openapi-spec-validator`, and Node.js for JavaScript examples. The normalized-schema source in `data/` preserves field definitions without publishing another endpoint surface. `data/api-contract-source.json` is the original read-only source inventory, not a client contract.
 
-The validator checks all 45 operations, request/response examples and primary navigation. Migration tests map every v1 operation, enforce immutable product data and exercise invalid payloads. Example tests check cURL/Python/JavaScript syntax and webhook signature handling. These are contract and controlled local checks, not live backend tests.
+After contract changes, regenerate the console catalog with `python3 scripts/import-data-lookup.py --docs-root /path/to/this/repo` from the console repository. The importer rejects a mismatched endpoint index.
 
-The current downloadable artifacts are `openapi/amlok-v2.json`, `downloads/amlok-api.postman_collection.json`, `downloads/api-product-index.json` and `downloads/risk-package-example.json`. Existing seven-language SDK archives and their build scripts target **v1.4.2 only**; their compatibility is explicit on the SDK page. Historical billing report schemas and normalized definition versions remain independent from the API route version.
-
-## Preview and publication
-
-```bash
-mint dev --no-open
-```
-
-The GitHub-connected Mintlify deployment publishes changes merged to `main`. Verify the deployment check and the public page after merging. Follow `AGENTS.md` for billing, evidence, authorization and content boundaries.
+Changes merged to the connected main branch publish through Mintlify. These files describe the API contract; they are not product backend route implementations.

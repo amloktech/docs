@@ -2,7 +2,7 @@
 title: "API simplification review"
 sidebarTitle: "Simplification review"
 description: "API simplification review for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 The public contract has been reduced from **192 to 45 operations**, a reduction of **147 operations (77%)**. The simplified contract is now the main API reference, including endpoint pages, payload schemas, examples, authentication scopes and Postman requests.
@@ -23,6 +23,6 @@ The earlier API exposed internal collections and processing stages directly. Cus
 
 Financial dimensions, normalized source records, KYB/KYC and lien results, authorized provider reports, documents, source freshness, policy evaluation, version provenance, monitoring runs, alerts and financial reconciliation remain accessible. The API simplifies execution responsibilities without replacing useful evidence with opaque scores.
 
-All 192 previous operations are mapped: 13 retain a customer capability, 52 consolidate, 96 become unified evidence access, 26 become internal processing and 5 move to console/test tooling. [Download the complete mapping](/downloads/api-endpoint-migration.csv).
+The public surface contains 45 operations. Source-specific collections are accessed as typed evidence, internal jobs remain inside AMLOK, and organization administration stays in the console.
 
-The previous reference is preserved as [legacy v1](/legacy/v1/index). Product data remains immutable, billing remains read-only through the API, and pricing/credit/retention rules are preserved. This repository changes the contract and documentation; backend route implementation and institution rollout remain separate work.
+Product data remains immutable, billing remains read-only through the API, and pricing, credit and retention rules are preserved. The endpoint reference and client artifacts describe this single API.

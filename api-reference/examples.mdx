@@ -2,16 +2,16 @@
 title: "API request examples"
 sidebarTitle: "API request examples"
 description: "API request examples for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-These examples follow API 2.0.0 and use synthetic values. Configure your institution-issued origin and server-side key, then replace IDs with returned values. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
+These examples follow API 1.0.0 and use synthetic values. Configure your institution-issued origin and server-side key, then replace IDs with returned values. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
 
 ## Start underwriting
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/originations" \
+  "${AMLOK_API_BASE_URL}/v1/originations" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createOrigination-synthetic-0042' \
@@ -23,7 +23,7 @@ curl --request POST --fail-with-body --max-time 30 \
 
 ```bash
 curl --request GET --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/risk-packages/record_synthetic" \
+  "${AMLOK_API_BASE_URL}/v1/risk-packages/record_synthetic" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json'
 ```
@@ -32,7 +32,7 @@ curl --request GET --fail-with-body --max-time 30 \
 
 ```bash
 curl --request GET --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/evidence?evidence_set_id=es_synthetic" \
+  "${AMLOK_API_BASE_URL}/v1/evidence?evidence_set_id=es_synthetic" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json'
 ```
@@ -41,7 +41,7 @@ curl --request GET --fail-with-body --max-time 30 \
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/monitors" \
+  "${AMLOK_API_BASE_URL}/v1/monitors" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createMonitor-synthetic-0042' \
@@ -53,7 +53,7 @@ curl --request POST --fail-with-body --max-time 30 \
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/exports" \
+  "${AMLOK_API_BASE_URL}/v1/exports" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createExport-synthetic-0042' \

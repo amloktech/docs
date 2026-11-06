@@ -2,7 +2,7 @@
 title: "Monitor funded deals with Signal"
 sidebarTitle: "Signal monitoring"
 description: "Monitor funded deals with Signal for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Signal refreshes authorized sources and reassesses funded deals against the institution's policy. You enroll the deal; AMLOK manages collection, normalization, baseline preparation and included calculations.
@@ -11,7 +11,7 @@ Signal refreshes authorized sources and reassesses funded deals against the inst
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/monitors" \
+  "${AMLOK_API_BASE_URL}/v1/monitors" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createMonitor-synthetic-0042' \
@@ -25,7 +25,7 @@ The baseline is either an existing risk-package ID or an approved `portfolio_onb
 
 ## Inspect each evaluation
 
-`GET /v2/monitoring-runs?monitor_id=...` returns the evaluation history. Each run exposes per-integration source freshness, coverage, limitations, its evidence set and the resulting risk-package ID. Drill into evidence for normalized records and authorized provider reports or original files.
+`GET /v1/monitoring-runs?monitor_id=...` returns the evaluation history. Each run exposes per-integration source freshness, coverage, limitations, its evidence set and the resulting risk-package ID. Drill into evidence for normalized records and authorized provider reports or original files.
 
 A partial, failed or skipped sync does not mean the borrower passed a risk check. Read source coverage and package limitations before interpreting an alert or comparison. A Signal package links the previous package for traceable changes.
 
@@ -35,10 +35,10 @@ A partial, failed or skipped sync does not mean the borrower passed a risk check
 - **Event:** a durable notification that an alert, run or other resource changed.
 - **Delivery:** an HTTP attempt to send the event to your configured destination.
 
-Read alerts through `GET /v2/alerts?monitor_id=...`, receive signed events and troubleshoot delivery attempts separately. Replaying a delivery does not rerun monitoring. Your institution performs outreach, collections and case management in its own systems.
+Read alerts through `GET /v1/alerts?monitor_id=...`, receive signed events and troubleshoot delivery attempts separately. Replaying a delivery does not rerun monitoring. Your institution performs outreach, collections and case management in its own systems.
 
 ## Change future configuration
 
-Use `PATCH /v2/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
+Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
 
 Signal includes change-driven reassessment. A separately requested full underwriting is Insights. Signal counts a borrower/business once per workspace/month, using its combined workload; see [consumption reporting](/api-reference/consumption-reporting).

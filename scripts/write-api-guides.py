@@ -3,4 +3,4 @@
 import json
 from current_api import ROOT
 from current_api_guides import write_guides
-write_guides(json.loads((ROOT/'openapi/amlok-v2.json').read_text()),json.loads((ROOT/'data/product-api-examples.json').read_text()),json.loads((ROOT/'data/api-reference-index.json').read_text()))
+write_guides(json.loads((ROOT/'openapi/amlok.json').read_text()),json.loads((ROOT/'data/product-api-examples.json').read_text()),json.loads((ROOT/'data/api-reference-index.json').read_text()))

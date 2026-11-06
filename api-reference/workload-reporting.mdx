@@ -2,7 +2,7 @@
 title: "Workload and complexity reporting"
 sidebarTitle: "Workload"
 description: "Workload and complexity reporting for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 AMLOK determines a workload tier from the highest required dimension: connected bank accounts, business systems and processed records. The underwriting and monitoring APIs expose product outcomes; clients do not construct workload manifests or checkpoints.
@@ -15,4 +15,4 @@ AMLOK determines a workload tier from the highest required dimension: connected 
 
 Insights counts the complete assessment and includes at least 12 months of banking history. Signal counts newly processed records during the month; unchanged baseline history is not counted again. Updated versions count as new records, while retries of the same unchanged version are deduplicated. Negotiated quotes retain an existing tier with explicit limits and rates.
 
-Request `POST /v2/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Workload and billing reports preserve the evidence versions and financial reconciliation identifiers needed to explain the tier without requiring execution of internal stages.
+Request `POST /v1/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Workload and billing reports preserve the evidence versions and financial reconciliation identifiers needed to explain the tier without requiring execution of internal stages.

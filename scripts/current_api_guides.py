@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parent.parent
 def page(path,title,description,body):
     p=ROOT/(path+'.mdx');p.parent.mkdir(parents=True,exist_ok=True)
     short={'overview':'Overview','quickstart':'Quickstart','authentication':'Authentication','environments':'Environments','downloads':'Downloads','configuration':'Lending configuration','risk-package':'Risk packages','monitoring-design':'Signal monitoring','evidence-traceability':'Evidence','documents':'Documents','processing-lifecycle':'Product lifecycle','pagination':'Pagination','idempotency':'Idempotency','request-recovery':'Request recovery','connection-recovery':'Connection recovery','webhook-operations':'Delivery recovery','rate-limits':'Rate limits','sandbox-journeys':'Sandbox journeys','credit-reporting':'Wallet and billing','consumption-reporting':'Consumption','workload-reporting':'Workload','export-formats':'Export formats','versioning':'Versioning','product-api-migration':'Migration','api-review':'Simplification review'}.get(path.split('/')[-1],title)
-    p.write_text('---\ntitle: '+json.dumps(title)+'\nsidebarTitle: '+json.dumps(short)+'\ndescription: '+json.dumps(description)+'\nkeywords: ["AMLOK", "API v2", "Insights", "Signal"]\n---\n\n'+body.strip()+'\n')
+    p.write_text('---\ntitle: '+json.dumps(title)+'\nsidebarTitle: '+json.dumps(short)+'\ndescription: '+json.dumps(description)+'\nkeywords: ["AMLOK", "API", "Insights", "Signal"]\n---\n\n'+body.strip()+'\n')
 
 
 def write_guides(spec,f,index):
@@ -20,7 +20,7 @@ def write_guides(spec,f,index):
     api('overview','API overview','''
 AMLOK helps financial institutions underwrite business and consumer borrowers with **Insights** and monitor funded deals with **Signal**. Borrowers connect their sources through an embedded Integrations Hub. Your institution submits its application, lending product and risk policy; AMLOK returns a risk package and the evidence behind it.
 
-**API 2.0.0 is the primary reference.** Its 45 operations replace the previous 192-operation public contract. Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok-v2.json).
+**One API covers the complete borrower-to-monitoring journey in 45 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
 
 ## The integration flow
 
@@ -58,10 +58,10 @@ The organization owns billing identity, payment methods and team roles. Each wor
 <Card title="Start integrating" icon="terminal" href="/api-reference/quickstart">Connect a borrower and submit an Origination.</Card>
 <Card title="Read a risk package" icon="file-search" href="/api-reference/risk-package">Understand financial dimensions and exact evidence versions.</Card>
 <Card title="Monitor funded deals" icon="activity" href="/api-reference/monitoring-design">Inspect evaluations, alerts and connection health.</Card>
-<Card title="Migrate from v1" icon="route" href="/api-reference/product-api-migration">Map every former operation to its v2 destination.</Card>
+<Card title="Explore the evidence" icon="database" href="/api-reference/evidence-traceability">Retrieve normalized data and authorized source files.</Card>
 </Columns>
 
-See [versioning and environment enablement](/api-reference/versioning) before switching an existing integration. The documentation contract and deployment of a backend environment are separate.
+See [API contract and compatibility](/api-reference/versioning) for source-of-truth and revision rules.
 ''')
     api('quickstart','Connect a borrower and request underwriting','''
 Use your backend to create a borrower, launch an Integrations Hub session and submit an Origination. The examples use synthetic identifiers; replace them with returned values. Provisioned product, policy, application-schema and embedding-version IDs come from your workspace.
@@ -73,7 +73,7 @@ export AMLOK_API_BASE_URL="<your-institution-api-origin>"
 export AMLOK_API_KEY="<your-workspace-api-key>"
 ```
 
-The origin excludes `/v2`. Keep the key on your server. Confirm v2 enablement for that origin, then retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
+The origin excludes `/v1`. Keep the key on your server. Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
 
 ## 2. Register the borrower
 
@@ -101,18 +101,18 @@ Expect `202 Accepted`, with an Origination ID and `status: accepted`. Retain the
 
 ## 6. Read the result
 
-Retrieve `GET /v2/originations/{id}` or handle `origination.completed`. If `requires_action`, complete the returned connection or document requirements. `waiting_for_credits` is accepted work waiting for funding, not a reason to resubmit.
+Retrieve `GET /v1/originations/{id}` or handle `origination.completed`. If `requires_action`, complete the returned connection or document requirements. `waiting_for_credits` is accepted work waiting for funding, not a reason to resubmit.
 
-Once completed, use its `risk_package_id` with `GET /v2/risk-packages/{id}`. Read dimensions, policy results, source coverage and limitations. Use `GET /v2/evidence?evidence_set_id=...` for the supporting records and document references. Your institution makes the final decision.
+Once completed, use its `risk_package_id` with `GET /v1/risk-packages/{id}`. Read dimensions, policy results, source coverage and limitations. Use `GET /v1/evidence?evidence_set_id=...` for the supporting records and document references. Your institution makes the final decision.
 
 After funding, [create a Signal monitor](/api-reference/monitoring-design) with the deal terms and the baseline risk package.
 ''')
     api('configuration','Lending products, policies and configuration','''
-Use `GET /v2/configuration` to discover the schemas, integration IDs, embedding versions and monitoring cadences approved for your key. The catalog of supported providers does not itself grant access to every integration or field.
+Use `GET /v1/configuration` to discover the schemas, integration IDs, embedding versions and monitoring cadences approved for your key. The catalog of supported providers does not itself grant access to every integration or field.
 
 ## Lending-product catalog
 
-`POST /v2/lending-product-versions` records one immutable lending-product revision. It captures borrower type, market, currency, amount and term bounds, repayment frequency, pricing and source documents. `pricing` must validate against the returned `pricing_schema_id`. Include the fees, rate and amortization inputs required for repayment analysis; AMLOK does not infer missing economics.
+`POST /v1/lending-product-versions` records one immutable lending-product revision. It captures borrower type, market, currency, amount and term bounds, repayment frequency, pricing and source documents. `pricing` must validate against the returned `pricing_schema_id`. Include the fees, rate and amortization inputs required for repayment analysis; AMLOK does not infer missing economics.
 
 '''+code(f['LendingProductInput'])+'''
 
@@ -120,7 +120,7 @@ Read or list versions using the same resource. Create a new version when terms c
 
 ## Risk policies
 
-`POST /v2/risk-policy-versions` records approved typed rules and supporting policy documents. The rule language supports scalar comparisons (`gt`, `gte`, `lt`, `lte`, `eq`) against configured metric keys with matching units. Missing data routes to review. Policy documents provide context and are not automatically executable rules.
+`POST /v1/risk-policy-versions` records approved typed rules and supporting policy documents. The rule language supports scalar comparisons (`gt`, `gte`, `lt`, `lte`, `eq`) against configured metric keys with matching units. Missing data routes to review. Policy documents provide context and are not automatically executable rules.
 
 '''+code(f['RiskPolicyInput'])+'''
 
@@ -133,7 +133,7 @@ Every Origination supplies an `application_schema_id` and `declared_data`. Valid
 Owners manage organization/workspace settings and billing; Owners and Devs manage approved integration configuration. Versioned product and policy records are new records, never edits to prior assessment data.
 ''')
     api('risk-package','Read a risk package','''
-A risk package is an immutable, complete assessment result from Insights or Signal. Retrieve it using `GET /v2/risk-packages/{id}`. It contains the institution's exact application context, product and policy versions, evaluated dimensions, source coverage and a frozen evidence set.
+A risk package is an immutable, complete assessment result from Insights or Signal. Retrieve it using `GET /v1/risk-packages/{id}`. It contains the institution's exact application context, product and policy versions, evaluated dimensions, source coverage and a frozen evidence set.
 
 ## What the response contains
 
@@ -180,7 +180,7 @@ The baseline is either an existing risk-package ID or an approved `portfolio_onb
 
 ## Inspect each evaluation
 
-`GET /v2/monitoring-runs?monitor_id=...` returns the evaluation history. Each run exposes per-integration source freshness, coverage, limitations, its evidence set and the resulting risk-package ID. Drill into evidence for normalized records and authorized provider reports or original files.
+`GET /v1/monitoring-runs?monitor_id=...` returns the evaluation history. Each run exposes per-integration source freshness, coverage, limitations, its evidence set and the resulting risk-package ID. Drill into evidence for normalized records and authorized provider reports or original files.
 
 A partial, failed or skipped sync does not mean the borrower passed a risk check. Read source coverage and package limitations before interpreting an alert or comparison. A Signal package links the previous package for traceable changes.
 
@@ -190,20 +190,20 @@ A partial, failed or skipped sync does not mean the borrower passed a risk check
 - **Event:** a durable notification that an alert, run or other resource changed.
 - **Delivery:** an HTTP attempt to send the event to your configured destination.
 
-Read alerts through `GET /v2/alerts?monitor_id=...`, receive signed events and troubleshoot delivery attempts separately. Replaying a delivery does not rerun monitoring. Your institution performs outreach, collections and case management in its own systems.
+Read alerts through `GET /v1/alerts?monitor_id=...`, receive signed events and troubleshoot delivery attempts separately. Replaying a delivery does not rerun monitoring. Your institution performs outreach, collections and case management in its own systems.
 
 ## Change future configuration
 
-Use `PATCH /v2/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
+Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
 
 Signal includes change-driven reassessment. A separately requested full underwriting is Insights. Signal counts a borrower/business once per workspace/month, using its combined workload; see [consumption reporting](/api-reference/consumption-reporting).
 ''')
     api('evidence-traceability','Retrieve records, reports and source files','''
 Use an assessment's evidence set to inspect exactly which records and files support its conclusions. Risk packages and monitoring runs supply `evidence_set_id`; metric and policy-result references identify individual evidence records.
 
-1. Call `GET /v2/evidence?evidence_set_id=...`, optionally with `resource_type`.
+1. Call `GET /v1/evidence?evidence_set_id=...`, optionally with `resource_type`.
 2. Page through summaries using the returned cursor without changing filters.
-3. Call `GET /v2/evidence/{id}` for the exact normalized record version and provenance.
+3. Call `GET /v1/evidence/{id}` for the exact normalized record version and provenance.
 4. Follow `document_id` or `provider_report_document_id` to retrieve file metadata and create a controlled download link.
 
 Evidence retains the typed [normalized resource dictionary](/data-model/field-dictionary). Banks, payments, accounting, commerce, KYB/KYC, liens, lending records and other source families no longer require one collection API per table. Raw provider secrets, credentials and unrelated borrower records are not evidence outputs.
@@ -215,7 +215,7 @@ Risk packages are immutable. Corrected source information becomes a new evidence
 For large datasets, use a typed evidence export. Files and normalized records remain linked, so a human-readable package can be reconciled to the data used to calculate it.
 ''')
     api('documents','Upload and download documents','''
-Upload documents with `POST /v2/documents` using multipart form data. Documents can support a borrower, a lending-product version or a risk-policy version. Every upload creates a new immutable record.
+Upload documents with `POST /v1/documents` using multipart form data. Documents can support a borrower, a lending-product version or a risk-policy version. Every upload creates a new immutable record.
 
 '''+sample('uploadDocument')+'''
 
@@ -223,7 +223,7 @@ Use `context: borrower` with `borrower_id`; add `origination_id` and `requiremen
 
 An upload returns `202` while inspection and processing occur. Retrieve its metadata until available or rejected. The filename, MIME type, byte length and SHA-256 describe the retained file. Metadata access does not imply download permission.
 
-Create a short-lived link with `POST /v2/documents/{id}/download-links`, supplying an authorized purpose. The server checks workspace, environment, borrower authorization, consent and provider entitlement again. Do not log signed links, send them in webhooks or treat an expired link as a missing document. Request a new link when permitted.
+Create a short-lived link with `POST /v1/documents/{id}/download-links`, supplying an authorized purpose. The server checks workspace, environment, borrower authorization, consent and provider entitlement again. Do not log signed links, send them in webhooks or treat an expired link as a missing document. Request a new link when permitted.
 
 Use the original files and provider reports referenced by [evidence](/api-reference/evidence-traceability). There is no update or delete operation for product documents.
 ''')
@@ -254,12 +254,12 @@ Sandbox and Live use separate keys, records, connections and financial balances.
 
 `meta.environment` and event `environment` identify the context. Sandbox examples and simulated credits do not establish production funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live.
 
-Confirm [v2 enablement](/api-reference/versioning) for each environment before moving an existing client. Exercise the borrower connection journey, a completed Origination, missing inputs, expired consent, restricted evidence and monitoring failures. See [Sandbox journeys](/api-reference/sandbox-journeys).
+Exercise the borrower connection journey, a completed Origination, missing inputs, expired consent, restricted evidence and monitoring failures. See [Sandbox journeys](/api-reference/sandbox-journeys).
 ''')
     api('response-format','Response format','''
 Successful responses contain `data` and `meta`. Collections add `page`. Resource fields and schemas are documented on each endpoint.
 
-'''+code({'data':f['Origination'],'meta':{'request_id':'req_synthetic','schema_version':'2.0.0','environment':'sandbox'}})+'''
+'''+code({'data':f['Origination'],'meta':{'request_id':'req_synthetic','schema_version':'1.0.0','environment':'sandbox'}})+'''
 
 Amounts and financial ratios use decimal strings. Do not convert money to binary floating point. Source ratios may retain more precision than two-decimal billing amounts. UTC timestamps use RFC 3339; date-only fields use `YYYY-MM-DD`.
 
@@ -276,14 +276,14 @@ Never construct cursors, reuse them across workspaces or interpret a cursor-expi
 
 Events use a durable feed position instead of collection snapshot metadata. `page.resume_cursor` is present even on an empty page. Commit it only after processing and durably recording the batch.
 
-For initial bootstrap, call `GET /v2/events?start=now` to capture a position before reading collections. Bootstrap collection snapshots, then resume the event feed using that position to reconcile changes that occurred during bootstrap. Do not combine `start` and `cursor`.
+For initial bootstrap, call `GET /v1/events?start=now` to capture a position before reading collections. Bootstrap collection snapshots, then resume the event feed using that position to reconcile changes that occurred during bootstrap. Do not combine `start` and `cursor`.
 
 Webhook notifications may be duplicated or out of order. Deduplicate by event ID and compare resource versions when applying updates. A webhook destination failure does not erase the event or justify rerunning an assessment.
 ''')
     api('idempotency','Idempotency and accepted commands','''
 Every POST requires `Idempotency-Key`, including uploads, downloads and delivery replays. Generate one key for each intended command, retain it with the exact request and reuse both for retries. Keys are scoped to the operation, workspace and environment. Reusing a key with a different payload returns `409 idempotency_conflict`. The fingerprint includes the resolved target path and payload; a key cannot be reused for a different target.
 
-Full-response replay lasts 24 hours. After it expires, repeating an accepted command returns `409 idempotency_result_expired` without executing it again. Accepted-command receipts survive that response cache until workspace deletion. After a timeout, recover the original command with `GET /v2/request-receipts/lookup?operation_id=...&idempotency_key=...`, then retrieve its resource. Never use a fresh key merely because the cached response expired.
+Full-response replay lasts 24 hours. After it expires, repeating an accepted command returns `409 idempotency_result_expired` without executing it again. Accepted-command receipts survive that response cache until workspace deletion. After a timeout, recover the original command with `GET /v1/request-receipts/lookup?operation_id=...&idempotency_key=...`, then retrieve its resource. Never use a fresh key merely because the cached response expired.
 
 A rejected unfunded request does not produce a debit. An already accepted Origination can enter `waiting_for_credits`; continue following that ID rather than creating another assessment.
 
@@ -328,15 +328,7 @@ Origination, monitor enrollment, uploads, exports and event replay can return `2
 
 AMLOK owns internal provider jobs, verification and calculation stages. You no longer create or retry those jobs. Operational failures expose useful status and requirements on the product resource. An accepted Origination awaiting credits remains the same resource and must not be resubmitted as a new command.
 ''')
-    # Retain the tested raw-body signature implementation, replacing only the obsolete setup.
-    old=(ROOT/'legacy/v1/api-reference/webhooks.mdx').read_text()
-    signature=old[old.index('## Signature contract'):]
-    signature=signature.replace('AMLOK v1.4.2','AMLOK v2').replace('/legacy/v1/api-reference/','/api-reference/')
-    # Only the reusable verifier section is retained; v1 delivery examples are replaced.
-    marker=signature.find('\n## ',len('## Signature contract'))
-    # Subsequent headings are inspected by the full-contract stale-reference check.
-    signature=signature.replace('/api-reference/endpoints/webhooks/replay-webhook-event','/api-reference/endpoints/events/replay-event').replace('Read configured overlap, retention and delivery timeouts from `GET /v1/configuration`.', 'Read configured overlap, retention and delivery timeouts in the console delivery settings.')
-    signature=signature.replace('sync.completed','origination.completed').replace('sync.failed','origination.failed').replace('/v1/changes','/v2/events')
+    signature=(ROOT/'data/webhook-signature.md').read_text()
     api('webhooks','Webhooks and signatures','''
 Configure HTTPS destinations and signing-secret rotation in **Dev Tools** in the console. Subscribe to the [event catalog](/api-reference/event-catalog). Store the signing secret in your server secret manager; it is different from your institution API key.
 
@@ -357,18 +349,18 @@ Delivery is at least once and may be out of order. Deduplicate by event ID. Reso
 A run failure and a risk alert describe different problems. Missing data must not be treated as a healthy risk result. Events never contain borrower credentials, complete financial payloads or signed download URLs.
 ''')
     api('webhook-operations','Troubleshoot and replay webhook delivery','''
-Use `GET /v2/webhook-deliveries` to inspect attempts by `event_id` or `endpoint_id`. Each row has attempt number, delivery state, attempt time and HTTP status. Destination creation, subscriptions and secret rotation are console configuration.
+Use `GET /v1/webhook-deliveries` to inspect attempts by `event_id` or `endpoint_id`. Each row has attempt number, delivery state, attempt time and HTTP status. Destination creation, subscriptions and secret rotation are console configuration.
 
 '''+sample('replayEvent')+'''
 
 A replay targets an existing authorized endpoint. It creates another delivery attempt for the same event, so receivers must deduplicate. It does not create another assessment, change an alert, refresh source data or deduct usage credits.
 
-Use the durable `GET /v2/events` feed to reconcile gaps. Do not infer missing business events merely from failed webhook deliveries. Store the last processed resume cursor and each accepted event ID.
+Use the durable `GET /v1/events` feed to reconcile gaps. Do not infer missing business events merely from failed webhook deliveries. Store the last processed resume cursor and each accepted event ID.
 ''')
     api('credit-reporting','Shared wallet and billing reports','''
 Each workspace has one CAD wallet shared by Insights and Signal. The organization owns the billing profile, payment methods and Owner permissions. Sandbox credits are isolated from Live funds.
 
-Use `GET /v2/billing/summary` for `available_credits`, cumulative `spent_credits` and a stable reporting snapshot. Read immutable movements with `GET /v2/billing/transactions`; filter by snapshot to reconcile related reads. An adjustment is a linked new entry, not an edit to history.
+Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits` and a stable reporting snapshot. Read immutable movements with `GET /v1/billing/transactions`; filter by snapshot to reconcile related reads. An adjustment is a linked new entry, not an edit to history.
 
 There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 
@@ -400,10 +392,10 @@ AMLOK determines a workload tier from the highest required dimension: connected 
 
 Insights counts the complete assessment and includes at least 12 months of banking history. Signal counts newly processed records during the month; unchanged baseline history is not counted again. Updated versions count as new records, while retries of the same unchanged version are deduplicated. Negotiated quotes retain an existing tier with explicit limits and rates.
 
-Request `POST /v2/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Workload and billing reports preserve the evidence versions and financial reconciliation identifiers needed to explain the tier without requiring execution of internal stages.
+Request `POST /v1/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Workload and billing reports preserve the evidence versions and financial reconciliation identifiers needed to explain the tier without requiring execution of internal stages.
 ''')
     api('export-formats','Exports and file formats','''
-Create exports through `POST /v2/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v2/exports/{id}/download-links` with a purpose.
+Create exports through `POST /v1/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v1/exports/{id}/download-links` with a purpose.
 
 | Kind | Formats | Content |
 | --- | --- | --- |
@@ -413,13 +405,13 @@ Create exports through `POST /v2/exports`. Use one typed source: a risk-package 
 
 '''+code({'kind':'billing','billing_report_type':'usage','window':{'start':'2026-10-01T00:00:00Z','end':'2026-11-01T00:00:00Z'},'format':'csv'})+'''
 
-JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `schema_version: 2.0.0`, an `evidence_set_id` and an array of the same `Evidence` records returned by the API. Restricted records preserve metadata/reasons without exposing hidden content. CSV evidence has `evidence_set_id,id,resource_type,resource_id,record_version,kind,source_id,observed_at,sha256,access,access_reason,document_id,normalized_json,provider_report_document_id`; nested normalized values are compact JSON cells.
+JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `schema_version: 1.0.0`, an `evidence_set_id` and an array of the same `Evidence` records returned by the API. Restricted records preserve metadata/reasons without exposing hidden content. CSV evidence has `evidence_set_id,id,resource_type,resource_id,record_version,kind,source_id,observed_at,sha256,access,access_reason,document_id,normalized_json,provider_report_document_id`; nested normalized values are compact JSON cells.
 
 ## Financial report compatibility
 
 The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute.
 
-| v2 report type | File schema / example |
+| Report type | File schema / example |
 | --- | --- |
 | `usage` | [Usage schema](/downloads/report-schemas/usage.schema.json), [JSON](/downloads/report-examples/usage.json), [CSV](/downloads/report-examples/usage.csv) |
 | `credits` | [Ledger row schema](/downloads/report-schemas/ledger.schema.json), [JSON](/downloads/report-examples/ledger.json), [CSV](/downloads/report-examples/ledger.csv) |
@@ -433,7 +425,7 @@ JSON financial reports include schema version, report type, snapshot, as-of time
 No export silently truncates records. Download metadata includes expiration and SHA-256; verify integrity before ingestion. Source entitlements, Owner billing access and workspace/environment checks apply during creation, retrieval and download.
 ''')
     api('connection-recovery','Recover source connections','''
-Inspect `GET /v2/connections` for source status, consent, last successful sync, source-as-of time and coverage. Connection health and data freshness are different: a connected account can still have stale or incomplete evidence.
+Inspect `GET /v1/connections` for source status, consent, last successful sync, source-as-of time and coverage. Connection health and data freshness are different: a connected account can still have stale or incomplete evidence.
 
 When a source requires authorization again, create an embedding session with `purpose: reauthorize` and the `connection_id`. Use the same borrower and a compatible published embedding version. Send the new short-lived launch URL to that borrower and verify completion server-side.
 
@@ -441,7 +433,7 @@ When a source requires authorization again, create an embedding session with `pu
 
 Complete Origination requirements through the indicated connection or document action. AMLOK resumes collection and assessment when dependencies permit. Do not start a provider sync or retry an internal workflow.
 
-Revoke authorization with `POST /v2/consents/{id}/revoke` when appropriate. Revocation stops future collection under that consent and does not rewrite previous assessments or bypass retention policy.
+Revoke authorization with `POST /v1/consents/{id}/revoke` when appropriate. Revocation stops future collection under that consent and does not rewrite previous assessments or bypass retention policy.
 ''')
     api('request-recovery','Recover a timed-out request','''
 A timeout can occur after AMLOK accepted your command. Save the operation ID, exact payload and idempotency key before sending it. Use the same values during retries.
@@ -455,7 +447,7 @@ If lookup does not find acceptance, reconcile with your own request log before r
     api('onboarding','Set up an institution integration','''
 Your account manager provides the environment details and console access. An authorized Owner configures organization identity, billing and team roles. Owners and Devs create workspace/environment keys and manage integration tools.
 
-Before submitting product requests, provision approved application/pricing schemas, integration entitlements, embedding versions, monitoring cadences and webhook destinations. Retrieve `GET /v2/configuration` to discover what your key can use. Create immutable lending-product and policy versions for your institution's approved underwriting context.
+Before submitting product requests, provision approved application/pricing schemas, integration entitlements, embedding versions, monitoring cadences and webhook destinations. Retrieve `GET /v1/configuration` to discover what your key can use. Create immutable lending-product and policy versions for your institution's approved underwriting context.
 
 Keep institution credentials on your server. Borrowers interact only with short-lived embedding sessions. Register allowed return URLs, verify webhook signatures and test tenant isolation. Follow the [quickstart](/api-reference/quickstart) and [Sandbox journeys](/api-reference/sandbox-journeys) before Live enablement.
 ''')
@@ -467,7 +459,7 @@ AMLOK validates the relationship and permitted purpose before running included K
 Verification results, provenance and authorized reports appear in the risk package and evidence set. The parent business remains the product billing/workload subject. Do not start a separate verification job or assign a standalone verification charge.
 ''')
     api('synchronization','Source freshness and monitoring cadence','''
-AMLOK collects and normalizes authorized integration data behind Origination and Signal. There is no public start-sync command in v2. Use connections, package source coverage and monitoring runs to understand collection outcomes.
+AMLOK collects and normalizes authorized integration data behind Origination and Signal. There is no public start-sync command in the public API. Use connections, package source coverage and monitoring runs to understand collection outcomes.
 
 `last_successful_sync_at` describes the last successful collection. `source_as_of` describes the data's upstream freshness. Coverage windows describe the actual observation period; retrieval time does not establish that the source data is current.
 
@@ -501,7 +493,7 @@ Owners manage organization identity, team permissions and billing. Devs manage a
 Verify raw webhook bytes, deduplicate events durably and retain exact command identity during retries. Keep credentials and financial payloads out of logs. Follow the institution's retention and cancellation rules for evidence and final financial records.
 ''')
     api('sandbox-journeys','Validate a Sandbox integration','''
-Use an enabled Sandbox environment to exercise the complete v2 journey with approved test data. Synthetic examples in this documentation validate contract shape; they do not establish that a backend operation ran successfully.
+Use an enabled Sandbox environment to exercise the complete product journey with approved test data. Synthetic examples in this documentation validate contract shape; they do not establish that a backend operation ran successfully.
 
 | Journey | Verify |
 | --- | --- |
@@ -518,81 +510,47 @@ Use an enabled Sandbox environment to exercise the complete v2 journey with appr
 
 Test controls are available through authorized Sandbox tooling. They are not public production API commands and cannot affect Live funds or real provider authorizations.
 ''')
-    api('versioning','API versions and environment enablement','''
-The primary documentation contract is **API 2.0.0**, with `/v2` paths and OpenAPI 3.1.0. This is a breaking public API simplification: it changes resource boundaries, payloads and operations. It is not a compatible rename of v1.
+    api('versioning','API contract and compatibility','''
+AMLOK has one public product API. All documented operations use the `/v1` prefix and the [same OpenAPI contract](/openapi/amlok.json). There is no parallel legacy API or separate migration reference.
 
-The documentation repository publishes the contract, endpoint pages, examples and downloads. It does not deploy the product API backend. Confirm that your institution-issued environment supports v2 before sending v2 requests or changing an existing integration. No backend rollout or v1 shutdown date is established by this documentation change.
+The endpoint reference, Postman collection, examples and console Data Lookup are generated from this contract. Use your institution-issued API origin; do not use the console or documentation hostname for API requests.
 
-The [legacy v1.4.2 reference](/legacy/v1/index) is retained for existing contracts and migration. Its endpoint URLs and SDK artifacts are version-specific. Do not combine a v1 SDK or processing-context payload with v2 requests.
-
-API version, normalized record schema version, calculation version, policy/catalog revision and report-file version are independent. Existing normalized definitions and established financial report formats are preserved where compatible; changing the route version does not silently change their historical meaning.
-
-See the [complete migration map](/api-reference/product-api-migration) for every former operation and the [review](/api-reference/api-review) for the rationale.
-''')
-    api('product-api-migration','Migrate from v1 to the simplified API','''
-The primary v2 API has 45 operations, replacing the 192-operation v1 public contract. Migrate by product journey; changing only the path prefix is insufficient.
-
-| Previous integration responsibility | v2 replacement |
-| --- | --- |
-| Separate business and person APIs | Discriminated borrower resource |
-| Consent creation, connection creation and provider authorization orchestration | Borrower-bound embedding session, connection visibility and consent revocation |
-| Application plus manifest and workflow execution | One Origination with application, product version and policy version |
-| Separate decision, attributes and risk snapshot reads | One immutable risk package |
-| Many normalized collection/list/get endpoints | Evidence-set listing, exact-version evidence reads and exports |
-| Manual verification, lien and calculation jobs | Included stages managed inside Insights or Signal |
-| Manual monitoring baseline/manifests/checkpoints | Funded deal plus risk-package or approved portfolio baseline |
-| Change feed and webhook resource families | Durable events, alerts and delivery-attempt resources |
-| Repeated billing/workload/report APIs | Billing summary, transactions and typed exports |
-| Webhook endpoint administration | Console Dev Tools |
-
-[Download all 192 operation mappings](/downloads/api-endpoint-migration.csv). Each row includes original operation ID, method, path, disposition, v2 destination and rationale.
-
-## Migration sequence
-
-1. Confirm v2 support for the target Sandbox environment. Provision key scopes, approved schemas and embedding versions.
-2. Map existing borrower/connection identity with the implementation team. Do not assume v1 IDs can be sent to v2 without a supported mapping.
-3. Create immutable lending-product and policy versions, then migrate one complete Origination journey.
-4. Compare package results and authorized evidence against the original inputs, including missing/restricted data and files.
-5. Migrate monitoring with an approved baseline, preserving history, previously paid borrower-months and policy provenance. Do not activate duplicate chargeable work to migrate.
-6. Update event subscriptions, signature handling, durable cursors, idempotency recovery and financial exports.
-7. Move to Live only after environment validation and agreed cutover. Preserve old records and financial reconciliation references.
-
-There is no implied redirect between v1 and v2 API routes. Documentation publication does not retire a running v1 backend or execute a data migration. Original source definitions and legacy artifacts remain available for comparison.
+Record, calculation, policy and lending-product revisions identify the exact inputs behind an assessment. They are not alternative APIs. Financial export format versions identify file layouts independently of API routing.
 ''')
     api('product-api-design','Product API structure','''
-The product-centered API is now the primary reference, rather than a separate proposal. The [45-operation OpenAPI contract](/openapi/amlok-v2.json) defines its requests, responses, errors and permissions.
+AMLOK exposes one product API for the complete customer journey. The [45-operation OpenAPI contract](/openapi/amlok.json) defines its requests, responses, errors and permissions.
 
 Institutions supply borrowers, applications, lending-product versions and risk-policy versions. Embedding sessions collect borrower authorization and connections. Insights returns an immutable risk package. Signal follows funded deals with evaluation history, updated packages and risk alerts.
 
-Evidence and file access preserve the depth of the normalized data model without requiring institutions to orchestrate backend stages or learn one API per source table. See the [overview](/api-reference/overview), [quickstart](/api-reference/quickstart) and [migration map](/api-reference/product-api-migration).
+Evidence and file access preserve the depth of the normalized data model without requiring institutions to orchestrate backend stages or learn one API per source table. See the [overview](/api-reference/overview), [quickstart](/api-reference/quickstart) and [endpoint reference](/api-reference/endpoints/insights/create-origination).
 ''')
     api('products-and-endpoints','Products and endpoint responsibilities','''
 Insights and Signal are the two paid products. Insights evaluates an Origination and returns its risk package. Signal monitors funded exposure and includes change-driven reassessment. Borrower verification, liens, calculations and other checks are included processing stages, not separate paid APIs.
 
 | Capability | Primary endpoints |
 | --- | --- |
-| Borrower identity | `/v2/borrowers` |
-| Borrower connection journey | `/v2/embedding-sessions`, `/v2/connections`, `/v2/consents/{id}` |
-| Lending context | `/v2/lending-product-versions`, `/v2/risk-policy-versions`, `/v2/configuration` |
-| Underwriting | `/v2/originations`, `/v2/risk-packages/{id}` |
-| Monitoring | `/v2/monitors`, `/v2/monitoring-runs`, `/v2/alerts` |
-| Data and files | `/v2/evidence`, `/v2/documents`, `/v2/exports` |
-| Notifications | `/v2/events`, `/v2/webhook-deliveries`, `/v2/webhook-replays` |
-| Financial reporting | `/v2/billing/summary`, `/v2/billing/transactions`, billing exports |
+| Borrower identity | `/v1/borrowers` |
+| Borrower connection journey | `/v1/embedding-sessions`, `/v1/connections`, `/v1/consents/{id}` |
+| Lending context | `/v1/lending-product-versions`, `/v1/risk-policy-versions`, `/v1/configuration` |
+| Underwriting | `/v1/originations`, `/v1/risk-packages/{id}` |
+| Monitoring | `/v1/monitors`, `/v1/monitoring-runs`, `/v1/alerts` |
+| Data and files | `/v1/evidence`, `/v1/documents`, `/v1/exports` |
+| Notifications | `/v1/events`, `/v1/webhook-deliveries`, `/v1/webhook-replays` |
+| Financial reporting | `/v1/billing/summary`, `/v1/billing/transactions`, billing exports |
 
 The API does not service loans, manage collection cases, contact borrowers, record payment promises or make the institution's final lending decision. Organization settings, user permissions, API keys, webhook destinations and payment settings are managed through the authorized console.
 ''')
     api('workflows','Integrate by product journey','''
 AMLOK manages internal workflows. Your integration follows borrower-facing and product resources rather than choosing workflow versions or starting individual processing jobs.
 
-For underwriting, create a borrower and embedding session, supply the institution's lending-product and policy versions, and submit the application with `POST /v2/originations`. Follow status and action requirements, then retrieve the completed risk package and evidence.
+For underwriting, create a borrower and embedding session, supply the institution's lending-product and policy versions, and submit the application with `POST /v1/originations`. Follow status and action requirements, then retrieve the completed risk package and evidence.
 
-For continuous monitoring, enroll the funded deal with `POST /v2/monitors`. Inspect evaluation runs, package changes and alerts. Receive durable events and troubleshoot delivery attempts without triggering another assessment.
+For continuous monitoring, enroll the funded deal with `POST /v1/monitors`. Inspect evaluation runs, package changes and alerts. Receive durable events and troubleshoot delivery attempts without triggering another assessment.
 
-Use the [quickstart](/api-reference/quickstart), [risk-package guide](/api-reference/risk-package) and [Signal guide](/api-reference/monitoring-design) for the complete sequences. The [legacy workflow reference](/legacy/v1/api-reference/workflows) is retained only for v1 integrations.
+Use the [quickstart](/api-reference/quickstart), [risk-package guide](/api-reference/risk-package) and [Signal guide](/api-reference/monitoring-design) for the complete sequences.
 ''')
     api('examples','API request examples','''
-These examples follow API 2.0.0 and use synthetic values. Configure your institution-issued origin and server-side key, then replace IDs with returned values. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
+These examples follow API 1.0.0 and use synthetic values. Configure your institution-issued origin and server-side key, then replace IDs with returned values. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
 
 ## Start underwriting
 
@@ -617,17 +575,16 @@ These examples follow API 2.0.0 and use synthetic values. Configure your institu
 Use [Postman](/downloads/amlok-api.postman_collection.json) for all 45 operations and the [complete risk-package example](/downloads/risk-package-example.json) for result structure. Requests are not a claim of live backend execution.
 ''')
     api('downloads','Specifications and integration downloads','''
-Use these artifacts for the primary API 2.0.0 contract. Endpoint pages, request/response examples and Postman requests are generated from the same definitions.
+Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/response examples and Postman requests are generated from the same definitions.
 
-- [OpenAPI 3.1 JSON](/openapi/amlok-v2.json)
+- [OpenAPI 3.1 JSON](/openapi/amlok.json)
 - [Postman collection: 45 operations](/downloads/amlok-api.postman_collection.json)
 - [Operation index](/downloads/api-product-index.json)
 - [Complete synthetic risk package](/downloads/risk-package-example.json)
-- [v1-to-v2 operation migration map](/downloads/api-endpoint-migration.csv)
 - [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
 - [Python webhook signature verifier](/downloads/verify_webhook.py)
 
-Set your institution-issued origin and key in a private environment. Keys and secrets are not included. [Versioning](/api-reference/versioning) explains environment enablement and compatibility. [SDK guidance](/overview/sdks) distinguishes the current contract from legacy clients.
+Set your institution-issued origin and key in a private environment. Keys and secrets are not included. [API contract and compatibility](/api-reference/versioning) explains the source of truth. [SDK guidance](/overview/sdks) covers client generation.
 ''')
     api('api-review','API simplification review','''
 The public contract has been reduced from **192 to 45 operations**, a reduction of **147 operations (77%)**. The simplified contract is now the main API reference, including endpoint pages, payload schemas, examples, authentication scopes and Postman requests.
@@ -648,54 +605,30 @@ The earlier API exposed internal collections and processing stages directly. Cus
 
 Financial dimensions, normalized source records, KYB/KYC and lien results, authorized provider reports, documents, source freshness, policy evaluation, version provenance, monitoring runs, alerts and financial reconciliation remain accessible. The API simplifies execution responsibilities without replacing useful evidence with opaque scores.
 
-All 192 previous operations are mapped: 13 retain a customer capability, 52 consolidate, 96 become unified evidence access, 26 become internal processing and 5 move to console/test tooling. [Download the complete mapping](/downloads/api-endpoint-migration.csv).
+The public surface contains 45 operations. Source-specific collections are accessed as typed evidence, internal jobs remain inside AMLOK, and organization administration stays in the console.
 
-The previous reference is preserved as [legacy v1](/legacy/v1/index). Product data remains immutable, billing remains read-only through the API, and pricing/credit/retention rules are preserved. This repository changes the contract and documentation; backend route implementation and institution rollout remain separate work.
+Product data remains immutable, billing remains read-only through the API, and pricing, credit and retention rules are preserved. The endpoint reference and client artifacts describe this single API.
 ''')
-    page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 2.0.0 contract.', '''
-Use the [OpenAPI 3.1 specification](/openapi/amlok-v2.json) as the authoritative machine-readable contract for AMLOK API **2.0.0**. It defines all 45 public operations, typed inputs and outputs, scopes, errors and examples.
+    page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 1.0.0 contract.', '''
+Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 45 public operations, typed inputs and outputs, scopes, errors and examples.
 
-API routes use `/v2`. The origin is supplied during institution onboarding; it is not the documentation or console hostname. Configure the origin explicitly when generating clients or running requests.
+API routes use `/v1`. The origin is supplied during institution onboarding; it is not the documentation or console hostname. Configure the origin explicitly when generating clients or running requests.
 
 The specification contains the typed normalized evidence models so consolidating source-specific endpoints does not remove field definitions. JSON Schema conditionals remain authoritative even when a code generator cannot represent all constraints.
 
-Use the [Postman collection](/downloads/amlok-api.postman_collection.json), [quickstart](/api-reference/quickstart) and [migration guide](/api-reference/product-api-migration). Confirm [environment enablement](/api-reference/versioning) before calling a deployed service. The [legacy v1 specification](/openapi/amlok-v1.json) is retained for comparison and existing integrations.
+Use the [Postman collection](/downloads/amlok-api.postman_collection.json), [quickstart](/api-reference/quickstart) and [API contract guide](/api-reference/versioning).
 ''')
-    page('overview/sdks','SDKs and API clients','Generate clients for the current API and identify legacy SDK compatibility.', '''
-Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok-v2.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 45 v2 operations with typed request and response models.
+    page('overview/sdks','SDKs and API clients','Build a client from the authoritative AMLOK contract.', '''
+Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 45 operations with typed request and response models.
 
 Set your institution-issued API origin explicitly. Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
 
-## Existing SDK downloads
+## Client generation
 
-The previously published seven-language SDK archives are **v1.4.2 clients**. They retain the former operation names and request shapes and must not be used with v2. Their installation instructions and pinned downloads are preserved in the [legacy SDK reference](/legacy/v1/overview/sdks).
+Generate your language's client from this OpenAPI file. The download contains the complete contract, including normalized evidence variants. Use the endpoint examples and Postman collection to check generated requests in your Sandbox. JSON Schema conditionals and source entitlements remain authoritative when a generator cannot express them as language types.
 
-No updated packaged SDK release is implied by publication of this documentation. The v2 specification, endpoint examples and Postman collection are available now; validate generated clients against an enabled Sandbox before Live use. See [versioning](/api-reference/versioning).
+No packaged SDK is currently distributed. All published client examples and downloads use this same contract.
 ''')
-    # An explicit archive entry point, not 192 legacy operations in the main navigation.
-    legacy_index=json.loads((ROOT/'legacy/v1/data/api-reference-index.json').read_text())
-    paths=[]
-    for item in legacy_index:
-        # The legacy index uses slug rather than page in this repository.
-        p=item.get('page') or item.get('pagePath')
-        if not p:
-            matches=list((ROOT/'api-reference/endpoints').rglob(item.get('slug','missing')+'.mdx'))
-            if matches:p=str(matches[0].relative_to(ROOT).with_suffix(''))
-        if p:paths.append('| '+item['method']+' `'+item['path']+'` | ['+item['id']+'](/'+p+') |')
-    page('legacy/v1/index','Legacy API v1.4.2','Historical API contract and migration resources.', '''
-This archive preserves the previous 192-operation contract and its existing client artifacts. It is not the primary integration reference. Use the [v2 API overview](/api-reference/overview) for the simplified contract and the [migration map](/api-reference/product-api-migration) for the replacement of each operation.
-
-- [Legacy OpenAPI](/openapi/amlok-v1.json)
-- [Legacy Postman collection](/legacy/v1/downloads/amlok-api.postman_collection.json)
-- [Legacy quickstart](/legacy/v1/api-reference/quickstart)
-- [Legacy SDKs](/legacy/v1/overview/sdks)
-
-Documentation publication alone does not retire a running v1 environment. Coordinate any backend cutover and ID mapping with the implementation team.
-
-| Previous endpoint | Reference |
-| --- | --- |
-'''+ '\n'.join(paths))
-
 
 def navigation(groups):
     path=ROOT/'docs.json';config=json.loads(path.read_text())
@@ -707,7 +640,7 @@ def navigation(groups):
         {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Evidence','Events','Exports','Billing','Reliability'] for p in [groups[g]]]},
         {'group':'Integration behavior','pages':['api-reference/response-format','api-reference/processing-lifecycle','api-reference/pagination','api-reference/idempotency','api-reference/request-recovery','api-reference/connection-recovery','api-reference/webhooks','api-reference/event-catalog','api-reference/webhook-operations','api-reference/errors','api-reference/rate-limits','api-reference/sandbox-journeys']},
         {'group':'Billing and exports','pages':['api-reference/credit-reporting','api-reference/consumption-reporting','api-reference/workload-reporting','api-reference/export-formats']},
-        {'group':'Versions and migration','pages':['api-reference/versioning','api-reference/api-review','api-reference/product-api-migration','legacy/v1/index']},
+        {'group':'API design','pages':['api-reference/versioning','api-reference/api-review']},
     ]
     config['api']['playground']['display']='simple'
     config['api']['examples']['languages']=['bash','python','javascript']

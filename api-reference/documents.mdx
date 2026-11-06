@@ -2,14 +2,14 @@
 title: "Upload and download documents"
 sidebarTitle: "Documents"
 description: "Upload and download documents for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Upload documents with `POST /v2/documents` using multipart form data. Documents can support a borrower, a lending-product version or a risk-policy version. Every upload creates a new immutable record.
+Upload documents with `POST /v1/documents` using multipart form data. Documents can support a borrower, a lending-product version or a risk-policy version. Every upload creates a new immutable record.
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v2/documents" \
+  "${AMLOK_API_BASE_URL}/v1/documents" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: uploadDocument-synthetic-0042' \
@@ -23,6 +23,6 @@ Use `context: borrower` with `borrower_id`; add `origination_id` and `requiremen
 
 An upload returns `202` while inspection and processing occur. Retrieve its metadata until available or rejected. The filename, MIME type, byte length and SHA-256 describe the retained file. Metadata access does not imply download permission.
 
-Create a short-lived link with `POST /v2/documents/{id}/download-links`, supplying an authorized purpose. The server checks workspace, environment, borrower authorization, consent and provider entitlement again. Do not log signed links, send them in webhooks or treat an expired link as a missing document. Request a new link when permitted.
+Create a short-lived link with `POST /v1/documents/{id}/download-links`, supplying an authorized purpose. The server checks workspace, environment, borrower authorization, consent and provider entitlement again. Do not log signed links, send them in webhooks or treat an expired link as a missing document. Request a new link when permitted.
 
 Use the original files and provider reports referenced by [evidence](/api-reference/evidence-traceability). There is no update or delete operation for product documents.

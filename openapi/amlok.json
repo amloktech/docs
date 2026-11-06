@@ -2,8 +2,8 @@
   "openapi": "3.1.0",
   "info": {
     "title": "AMLOK API",
-    "version": "2.0.0",
-    "description": "AMLOK API 2.0.0: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use your institution-issued API origin. Environment enablement is separate from publication of this contract; see the versioning guide."
+    "version": "1.0.0",
+    "description": "AMLOK API: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use your institution-issued API origin."
   },
   "x-availability": "published_contract",
   "security": [
@@ -12,7 +12,7 @@
     }
   ],
   "paths": {
-    "/v2/borrowers": {
+    "/v1/borrowers": {
       "post": {
         "operationId": "createBorrower",
         "summary": "Create borrower",
@@ -74,7 +74,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -408,15 +408,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/borrowers\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createBorrower-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"type\":\"business\",\"business\":{\"legal_name\":\"Synthetic Borrower Inc.\",\"incorporation_country\":\"CA\",\"client_reference\":\"LOS-B-0042\"}}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/borrowers\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createBorrower-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"type\":\"business\",\"business\":{\"legal_name\":\"Synthetic Borrower Inc.\",\"incorporation_country\":\"CA\",\"client_reference\":\"LOS-B-0042\"}}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createBorrower-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/borrowers', headers=headers, json={'type': 'business', 'business': {'legal_name': 'Synthetic Borrower Inc.', 'incorporation_country': 'CA', 'client_reference': 'LOS-B-0042'}}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createBorrower-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/borrowers', headers=headers, json={'type': 'business', 'business': {'legal_name': 'Synthetic Borrower Inc.', 'incorporation_country': 'CA', 'client_reference': 'LOS-B-0042'}}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createBorrower-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/borrowers\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"type\": \"business\", \"business\": {\"legal_name\": \"Synthetic Borrower Inc.\", \"incorporation_country\": \"CA\", \"client_reference\": \"LOS-B-0042\"}})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createBorrower-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/borrowers\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"type\": \"business\", \"business\": {\"legal_name\": \"Synthetic Borrower Inc.\", \"incorporation_country\": \"CA\", \"client_reference\": \"LOS-B-0042\"}})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -512,7 +512,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -777,20 +777,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/borrowers\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/borrowers\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/borrowers', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/borrowers', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/borrowers\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/borrowers\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/borrowers/{id}": {
+    "/v1/borrowers/{id}": {
       "get": {
         "operationId": "getBorrower",
         "summary": "Get borrower",
@@ -852,7 +852,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -1112,20 +1112,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/borrowers/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/borrowers/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/borrowers/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/borrowers/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/borrowers/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/borrowers/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/embedding-sessions": {
+    "/v1/embedding-sessions": {
       "post": {
         "operationId": "createEmbeddingSession",
         "summary": "Create embedding session",
@@ -1182,7 +1182,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -1514,20 +1514,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/embedding-sessions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createEmbeddingSession-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"borrower_id\":\"bor_synthetic\",\"embedding_version_id\":\"embed_synthetic\",\"purpose\":\"connect\",\"return_url\":\"https://institution.example.com/connected\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/embedding-sessions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createEmbeddingSession-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"borrower_id\":\"bor_synthetic\",\"embedding_version_id\":\"embed_synthetic\",\"purpose\":\"connect\",\"return_url\":\"https://institution.example.com/connected\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createEmbeddingSession-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/embedding-sessions', headers=headers, json={'borrower_id': 'bor_synthetic', 'embedding_version_id': 'embed_synthetic', 'purpose': 'connect', 'return_url': 'https://institution.example.com/connected'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createEmbeddingSession-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/embedding-sessions', headers=headers, json={'borrower_id': 'bor_synthetic', 'embedding_version_id': 'embed_synthetic', 'purpose': 'connect', 'return_url': 'https://institution.example.com/connected'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createEmbeddingSession-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/embedding-sessions\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"borrower_id\": \"bor_synthetic\", \"embedding_version_id\": \"embed_synthetic\", \"purpose\": \"connect\", \"return_url\": \"https://institution.example.com/connected\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createEmbeddingSession-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/embedding-sessions\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"borrower_id\": \"bor_synthetic\", \"embedding_version_id\": \"embed_synthetic\", \"purpose\": \"connect\", \"return_url\": \"https://institution.example.com/connected\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/embedding-sessions/{id}": {
+    "/v1/embedding-sessions/{id}": {
       "get": {
         "operationId": "getEmbeddingSession",
         "summary": "Get embedding session",
@@ -1584,7 +1584,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -1844,20 +1844,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/embedding-sessions/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/embedding-sessions/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/embedding-sessions/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/embedding-sessions/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/embedding-sessions/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/embedding-sessions/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/connections": {
+    "/v1/connections": {
       "get": {
         "operationId": "listConnections",
         "summary": "List connections",
@@ -1950,7 +1950,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -2215,20 +2215,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/connections\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/connections\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/connections', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/connections', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/connections\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/connections\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/connections/{id}": {
+    "/v1/connections/{id}": {
       "get": {
         "operationId": "getConnection",
         "summary": "Get connection",
@@ -2290,7 +2290,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -2550,20 +2550,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/connections/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/connections/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/connections/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/connections/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/connections/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/connections/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/consents/{id}": {
+    "/v1/consents/{id}": {
       "get": {
         "operationId": "getConsent",
         "summary": "Get consent",
@@ -2622,7 +2622,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -2882,20 +2882,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/consents/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/consents/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/consents/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/consents/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/consents/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/consents/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/consents/{id}/revoke": {
+    "/v1/consents/{id}/revoke": {
       "post": {
         "operationId": "revokeConsent",
         "summary": "Revoke consent",
@@ -2964,7 +2964,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -3293,20 +3293,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/consents/record_synthetic/revoke\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: revokeConsent-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"reason\":\"Borrower withdrew authorization.\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/consents/record_synthetic/revoke\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: revokeConsent-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"reason\":\"Borrower withdrew authorization.\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'revokeConsent-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/consents/record_synthetic/revoke', headers=headers, json={'reason': 'Borrower withdrew authorization.'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'revokeConsent-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/consents/record_synthetic/revoke', headers=headers, json={'reason': 'Borrower withdrew authorization.'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"revokeConsent-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/consents/record_synthetic/revoke\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"reason\": \"Borrower withdrew authorization.\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"revokeConsent-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/consents/record_synthetic/revoke\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"reason\": \"Borrower withdrew authorization.\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/documents": {
+    "/v1/documents": {
       "post": {
         "operationId": "uploadDocument",
         "summary": "Upload document",
@@ -3364,7 +3364,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -3696,20 +3696,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/documents\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: uploadDocument-synthetic-0042' \\\n  --form file=@/path/to/financial-statement.pdf \\\n  --form context=borrower \\\n  --form borrower_id=bor_synthetic \\\n  --form document_type=financial_statement"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/documents\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: uploadDocument-synthetic-0042' \\\n  --form file=@/path/to/financial-statement.pdf \\\n  --form context=borrower \\\n  --form borrower_id=bor_synthetic \\\n  --form document_type=financial_statement"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'uploadDocument-synthetic-0042'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nwith open(\"/path/to/financial-statement.pdf\", \"rb\") as upload:\n    response = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/documents', headers=headers, data={'context': 'borrower', 'borrower_id': 'bor_synthetic', 'document_type': 'financial_statement'}, files={\"file\": upload}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'uploadDocument-synthetic-0042'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nwith open(\"/path/to/financial-statement.pdf\", \"rb\") as upload:\n    response = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/documents', headers=headers, data={'context': 'borrower', 'borrower_id': 'bor_synthetic', 'document_type': 'financial_statement'}, files={\"file\": upload}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "import { readFile } from \"node:fs/promises\";\nconst headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"uploadDocument-synthetic-0042\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst form = new FormData();\nform.append(\"file\", new Blob([await readFile(\"/path/to/financial-statement.pdf\")]), \"financial-statement.pdf\");\nform.append(\"context\", \"borrower\");\nform.append(\"borrower_id\", \"bor_synthetic\");\nform.append(\"document_type\", \"financial_statement\");\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/documents\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: form\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "import { readFile } from \"node:fs/promises\";\nconst headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"uploadDocument-synthetic-0042\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst form = new FormData();\nform.append(\"file\", new Blob([await readFile(\"/path/to/financial-statement.pdf\")]), \"financial-statement.pdf\");\nform.append(\"context\", \"borrower\");\nform.append(\"borrower_id\", \"bor_synthetic\");\nform.append(\"document_type\", \"financial_statement\");\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/documents\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: form\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/documents/{id}": {
+    "/v1/documents/{id}": {
       "get": {
         "operationId": "getDocument",
         "summary": "Get document",
@@ -3767,7 +3767,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -4027,20 +4027,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/documents/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/documents/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/documents/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/documents/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/documents/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/documents/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/documents/{id}/download-links": {
+    "/v1/documents/{id}/download-links": {
       "post": {
         "operationId": "downloadDocument",
         "summary": "Download document",
@@ -4103,7 +4103,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -4432,20 +4432,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/documents/record_synthetic/download-links\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: downloadDocument-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"purpose\":\"Institution underwriting review\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/documents/record_synthetic/download-links\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: downloadDocument-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"purpose\":\"Institution underwriting review\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'downloadDocument-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/documents/record_synthetic/download-links', headers=headers, json={'purpose': 'Institution underwriting review'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'downloadDocument-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/documents/record_synthetic/download-links', headers=headers, json={'purpose': 'Institution underwriting review'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"downloadDocument-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/documents/record_synthetic/download-links\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"purpose\": \"Institution underwriting review\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"downloadDocument-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/documents/record_synthetic/download-links\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"purpose\": \"Institution underwriting review\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/lending-product-versions": {
+    "/v1/lending-product-versions": {
       "post": {
         "operationId": "createLendingProductVersion",
         "summary": "Create lending product version",
@@ -4525,7 +4525,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -4879,15 +4879,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/lending-product-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createLendingProductVersion-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"external_id\":\"working-capital\",\"version\":\"1\",\"name\":\"Working capital loan\",\"borrower_type\":\"business\",\"market\":\"CA\",\"currency\":\"CAD\",\"product_type\":\"term_loan\",\"minimum_amount\":{\"amount\":\"10000.00\",\"currency\":\"CAD\"},\"maximum_amount\":{\"amount\":\"100000.00\",\"currency\":\"CAD\"},\"minimum_term_months\":6,\"maximum_term_months\":24,\"repayment_frequency\":\"monthly\",\"pricing_schema_id\":\"pricing_synthetic\",\"pricing\":{\"rate_type\":\"fixed\",\"annual_interest_rate\":\"0.12\",\"amortization_months\":12,\"fees\":[]},\"terms_document_ids\":[]}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/lending-product-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createLendingProductVersion-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"external_id\":\"working-capital\",\"version\":\"1\",\"name\":\"Working capital loan\",\"borrower_type\":\"business\",\"market\":\"CA\",\"currency\":\"CAD\",\"product_type\":\"term_loan\",\"minimum_amount\":{\"amount\":\"10000.00\",\"currency\":\"CAD\"},\"maximum_amount\":{\"amount\":\"100000.00\",\"currency\":\"CAD\"},\"minimum_term_months\":6,\"maximum_term_months\":24,\"repayment_frequency\":\"monthly\",\"pricing_schema_id\":\"pricing_synthetic\",\"pricing\":{\"rate_type\":\"fixed\",\"annual_interest_rate\":\"0.12\",\"amortization_months\":12,\"fees\":[]},\"terms_document_ids\":[]}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createLendingProductVersion-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/lending-product-versions', headers=headers, json={'external_id': 'working-capital', 'version': '1', 'name': 'Working capital loan', 'borrower_type': 'business', 'market': 'CA', 'currency': 'CAD', 'product_type': 'term_loan', 'minimum_amount': {'amount': '10000.00', 'currency': 'CAD'}, 'maximum_amount': {'amount': '100000.00', 'currency': 'CAD'}, 'minimum_term_months': 6, 'maximum_term_months': 24, 'repayment_frequency': 'monthly', 'pricing_schema_id': 'pricing_synthetic', 'pricing': {'rate_type': 'fixed', 'annual_interest_rate': '0.12', 'amortization_months': 12, 'fees': []}, 'terms_document_ids': []}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createLendingProductVersion-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/lending-product-versions', headers=headers, json={'external_id': 'working-capital', 'version': '1', 'name': 'Working capital loan', 'borrower_type': 'business', 'market': 'CA', 'currency': 'CAD', 'product_type': 'term_loan', 'minimum_amount': {'amount': '10000.00', 'currency': 'CAD'}, 'maximum_amount': {'amount': '100000.00', 'currency': 'CAD'}, 'minimum_term_months': 6, 'maximum_term_months': 24, 'repayment_frequency': 'monthly', 'pricing_schema_id': 'pricing_synthetic', 'pricing': {'rate_type': 'fixed', 'annual_interest_rate': '0.12', 'amortization_months': 12, 'fees': []}, 'terms_document_ids': []}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createLendingProductVersion-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/lending-product-versions\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"external_id\": \"working-capital\", \"version\": \"1\", \"name\": \"Working capital loan\", \"borrower_type\": \"business\", \"market\": \"CA\", \"currency\": \"CAD\", \"product_type\": \"term_loan\", \"minimum_amount\": {\"amount\": \"10000.00\", \"currency\": \"CAD\"}, \"maximum_amount\": {\"amount\": \"100000.00\", \"currency\": \"CAD\"}, \"minimum_term_months\": 6, \"maximum_term_months\": 24, \"repayment_frequency\": \"monthly\", \"pricing_schema_id\": \"pricing_synthetic\", \"pricing\": {\"rate_type\": \"fixed\", \"annual_interest_rate\": \"0.12\", \"amortization_months\": 12, \"fees\": []}, \"terms_document_ids\": []})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createLendingProductVersion-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/lending-product-versions\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"external_id\": \"working-capital\", \"version\": \"1\", \"name\": \"Working capital loan\", \"borrower_type\": \"business\", \"market\": \"CA\", \"currency\": \"CAD\", \"product_type\": \"term_loan\", \"minimum_amount\": {\"amount\": \"10000.00\", \"currency\": \"CAD\"}, \"maximum_amount\": {\"amount\": \"100000.00\", \"currency\": \"CAD\"}, \"minimum_term_months\": 6, \"maximum_term_months\": 24, \"repayment_frequency\": \"monthly\", \"pricing_schema_id\": \"pricing_synthetic\", \"pricing\": {\"rate_type\": \"fixed\", \"annual_interest_rate\": \"0.12\", \"amortization_months\": 12, \"fees\": []}, \"terms_document_ids\": []})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -5011,7 +5011,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -5276,20 +5276,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/lending-product-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/lending-product-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/lending-product-versions', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/lending-product-versions', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/lending-product-versions\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/lending-product-versions\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/lending-product-versions/{id}": {
+    "/v1/lending-product-versions/{id}": {
       "get": {
         "operationId": "getLendingProductVersion",
         "summary": "Get lending product version",
@@ -5369,7 +5369,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -5629,20 +5629,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/lending-product-versions/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/lending-product-versions/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/lending-product-versions/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/lending-product-versions/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/lending-product-versions/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/lending-product-versions/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/risk-policy-versions": {
+    "/v1/risk-policy-versions": {
       "post": {
         "operationId": "createRiskPolicyVersion",
         "summary": "Create risk policy version",
@@ -5713,7 +5713,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -6058,15 +6058,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/risk-policy-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createRiskPolicyVersion-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"external_id\":\"working-capital-policy\",\"version\":\"1\",\"name\":\"Illustrative policy, not a recommended threshold\",\"borrower_type\":\"business\",\"market\":\"CA\",\"rules\":[{\"id\":\"dscr-minimum\",\"dimension_key\":\"dscr\",\"operator\":\"gte\",\"threshold\":\"1.25\",\"unit\":\"ratio\",\"on_missing\":\"review\",\"on_fail\":\"review\"}],\"policy_document_ids\":[]}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/risk-policy-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createRiskPolicyVersion-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"external_id\":\"working-capital-policy\",\"version\":\"1\",\"name\":\"Illustrative policy, not a recommended threshold\",\"borrower_type\":\"business\",\"market\":\"CA\",\"rules\":[{\"id\":\"dscr-minimum\",\"dimension_key\":\"dscr\",\"operator\":\"gte\",\"threshold\":\"1.25\",\"unit\":\"ratio\",\"on_missing\":\"review\",\"on_fail\":\"review\"}],\"policy_document_ids\":[]}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createRiskPolicyVersion-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/risk-policy-versions', headers=headers, json={'external_id': 'working-capital-policy', 'version': '1', 'name': 'Illustrative policy, not a recommended threshold', 'borrower_type': 'business', 'market': 'CA', 'rules': [{'id': 'dscr-minimum', 'dimension_key': 'dscr', 'operator': 'gte', 'threshold': '1.25', 'unit': 'ratio', 'on_missing': 'review', 'on_fail': 'review'}], 'policy_document_ids': []}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createRiskPolicyVersion-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/risk-policy-versions', headers=headers, json={'external_id': 'working-capital-policy', 'version': '1', 'name': 'Illustrative policy, not a recommended threshold', 'borrower_type': 'business', 'market': 'CA', 'rules': [{'id': 'dscr-minimum', 'dimension_key': 'dscr', 'operator': 'gte', 'threshold': '1.25', 'unit': 'ratio', 'on_missing': 'review', 'on_fail': 'review'}], 'policy_document_ids': []}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createRiskPolicyVersion-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/risk-policy-versions\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"external_id\": \"working-capital-policy\", \"version\": \"1\", \"name\": \"Illustrative policy, not a recommended threshold\", \"borrower_type\": \"business\", \"market\": \"CA\", \"rules\": [{\"id\": \"dscr-minimum\", \"dimension_key\": \"dscr\", \"operator\": \"gte\", \"threshold\": \"1.25\", \"unit\": \"ratio\", \"on_missing\": \"review\", \"on_fail\": \"review\"}], \"policy_document_ids\": []})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createRiskPolicyVersion-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/risk-policy-versions\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"external_id\": \"working-capital-policy\", \"version\": \"1\", \"name\": \"Illustrative policy, not a recommended threshold\", \"borrower_type\": \"business\", \"market\": \"CA\", \"rules\": [{\"id\": \"dscr-minimum\", \"dimension_key\": \"dscr\", \"operator\": \"gte\", \"threshold\": \"1.25\", \"unit\": \"ratio\", \"on_missing\": \"review\", \"on_fail\": \"review\"}], \"policy_document_ids\": []})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -6181,7 +6181,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -6446,20 +6446,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/risk-policy-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/risk-policy-versions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/risk-policy-versions', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/risk-policy-versions', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/risk-policy-versions\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/risk-policy-versions\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/risk-policy-versions/{id}": {
+    "/v1/risk-policy-versions/{id}": {
       "get": {
         "operationId": "getRiskPolicyVersion",
         "summary": "Get risk policy version",
@@ -6530,7 +6530,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -6790,20 +6790,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/risk-policy-versions/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/risk-policy-versions/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/risk-policy-versions/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/risk-policy-versions/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/risk-policy-versions/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/risk-policy-versions/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/originations": {
+    "/v1/originations": {
       "post": {
         "operationId": "createOrigination",
         "summary": "Create origination",
@@ -6862,7 +6862,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -7210,15 +7210,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/originations\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createOrigination-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"borrower_id\":\"bor_synthetic\",\"application\":{\"institution_reference\":\"LOS-2026-0042\",\"requested_amount\":{\"amount\":\"50000.00\",\"currency\":\"CAD\"},\"requested_term_months\":12,\"purpose\":\"Working capital\",\"application_schema_id\":\"app_schema_synthetic\",\"declared_data\":{\"annual_revenue\":\"600000.00\"}},\"lending_product_version_id\":\"lpv_synthetic\",\"risk_policy_version_id\":\"rpv_synthetic\",\"connection_ids\":[\"con_synthetic\"],\"document_ids\":[]}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/originations\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createOrigination-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"borrower_id\":\"bor_synthetic\",\"application\":{\"institution_reference\":\"LOS-2026-0042\",\"requested_amount\":{\"amount\":\"50000.00\",\"currency\":\"CAD\"},\"requested_term_months\":12,\"purpose\":\"Working capital\",\"application_schema_id\":\"app_schema_synthetic\",\"declared_data\":{\"annual_revenue\":\"600000.00\"}},\"lending_product_version_id\":\"lpv_synthetic\",\"risk_policy_version_id\":\"rpv_synthetic\",\"connection_ids\":[\"con_synthetic\"],\"document_ids\":[]}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createOrigination-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/originations', headers=headers, json={'borrower_id': 'bor_synthetic', 'application': {'institution_reference': 'LOS-2026-0042', 'requested_amount': {'amount': '50000.00', 'currency': 'CAD'}, 'requested_term_months': 12, 'purpose': 'Working capital', 'application_schema_id': 'app_schema_synthetic', 'declared_data': {'annual_revenue': '600000.00'}}, 'lending_product_version_id': 'lpv_synthetic', 'risk_policy_version_id': 'rpv_synthetic', 'connection_ids': ['con_synthetic'], 'document_ids': []}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createOrigination-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/originations', headers=headers, json={'borrower_id': 'bor_synthetic', 'application': {'institution_reference': 'LOS-2026-0042', 'requested_amount': {'amount': '50000.00', 'currency': 'CAD'}, 'requested_term_months': 12, 'purpose': 'Working capital', 'application_schema_id': 'app_schema_synthetic', 'declared_data': {'annual_revenue': '600000.00'}}, 'lending_product_version_id': 'lpv_synthetic', 'risk_policy_version_id': 'rpv_synthetic', 'connection_ids': ['con_synthetic'], 'document_ids': []}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createOrigination-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/originations\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"borrower_id\": \"bor_synthetic\", \"application\": {\"institution_reference\": \"LOS-2026-0042\", \"requested_amount\": {\"amount\": \"50000.00\", \"currency\": \"CAD\"}, \"requested_term_months\": 12, \"purpose\": \"Working capital\", \"application_schema_id\": \"app_schema_synthetic\", \"declared_data\": {\"annual_revenue\": \"600000.00\"}}, \"lending_product_version_id\": \"lpv_synthetic\", \"risk_policy_version_id\": \"rpv_synthetic\", \"connection_ids\": [\"con_synthetic\"], \"document_ids\": []})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createOrigination-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/originations\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"borrower_id\": \"bor_synthetic\", \"application\": {\"institution_reference\": \"LOS-2026-0042\", \"requested_amount\": {\"amount\": \"50000.00\", \"currency\": \"CAD\"}, \"requested_term_months\": 12, \"purpose\": \"Working capital\", \"application_schema_id\": \"app_schema_synthetic\", \"declared_data\": {\"annual_revenue\": \"600000.00\"}}, \"lending_product_version_id\": \"lpv_synthetic\", \"risk_policy_version_id\": \"rpv_synthetic\", \"connection_ids\": [\"con_synthetic\"], \"document_ids\": []})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -7331,7 +7331,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -7596,20 +7596,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/originations\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/originations\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/originations', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/originations', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/originations\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/originations\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/originations/{id}": {
+    "/v1/originations/{id}": {
       "get": {
         "operationId": "getOrigination",
         "summary": "Get origination",
@@ -7668,7 +7668,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -7928,20 +7928,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/originations/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/originations/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/originations/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/originations/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/originations/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/originations/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/risk-packages/{id}": {
+    "/v1/risk-packages/{id}": {
       "get": {
         "operationId": "getRiskPackage",
         "summary": "Get risk package",
@@ -8139,7 +8139,7 @@
                       "count": 1
                     },
                     "versions": {
-                      "schema": "2.0.0",
+                      "schema": "1.0.0",
                       "normalization": "synthetic-v1",
                       "calculation": "synthetic-v1",
                       "model": null
@@ -8148,7 +8148,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -8408,20 +8408,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/risk-packages/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/risk-packages/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/risk-packages/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/risk-packages/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/risk-packages/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/risk-packages/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/evidence": {
+    "/v1/evidence": {
       "get": {
         "operationId": "listEvidence",
         "summary": "List evidence",
@@ -8533,7 +8533,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -8798,20 +8798,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/evidence?evidence_set_id=es_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/evidence?evidence_set_id=es_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/evidence?evidence_set_id=es_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/evidence?evidence_set_id=es_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/evidence?evidence_set_id=es_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/evidence?evidence_set_id=es_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/evidence/{id}": {
+    "/v1/evidence/{id}": {
       "get": {
         "operationId": "getEvidence",
         "summary": "Get evidence",
@@ -8876,7 +8876,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -9136,20 +9136,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/evidence/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/evidence/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/evidence/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/evidence/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/evidence/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/evidence/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/monitors": {
+    "/v1/monitors": {
       "post": {
         "operationId": "createMonitor",
         "summary": "Create monitor",
@@ -9222,7 +9222,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -9583,15 +9583,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/monitors\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createMonitor-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"borrower_id\":\"bor_synthetic\",\"deal\":{\"institution_reference\":\"LOAN-0042\",\"funded_amount\":{\"amount\":\"50000.00\",\"currency\":\"CAD\"},\"outstanding_amount\":{\"amount\":\"50000.00\",\"currency\":\"CAD\"},\"funded_at\":\"2026-11-06T12:00:00Z\",\"maturity_date\":\"2027-11-06\",\"repayment_frequency\":\"monthly\",\"terms_document_ids\":[]},\"baseline\":{\"risk_package_id\":\"rp_synthetic\"},\"risk_policy_version_id\":\"rpv_synthetic\",\"cadence_id\":\"cadence_synthetic\",\"connection_ids\":[\"con_synthetic\"]}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitors\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createMonitor-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"borrower_id\":\"bor_synthetic\",\"deal\":{\"institution_reference\":\"LOAN-0042\",\"funded_amount\":{\"amount\":\"50000.00\",\"currency\":\"CAD\"},\"outstanding_amount\":{\"amount\":\"50000.00\",\"currency\":\"CAD\"},\"funded_at\":\"2026-11-06T12:00:00Z\",\"maturity_date\":\"2027-11-06\",\"repayment_frequency\":\"monthly\",\"terms_document_ids\":[]},\"baseline\":{\"risk_package_id\":\"rp_synthetic\"},\"risk_policy_version_id\":\"rpv_synthetic\",\"cadence_id\":\"cadence_synthetic\",\"connection_ids\":[\"con_synthetic\"]}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createMonitor-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/monitors', headers=headers, json={'borrower_id': 'bor_synthetic', 'deal': {'institution_reference': 'LOAN-0042', 'funded_amount': {'amount': '50000.00', 'currency': 'CAD'}, 'outstanding_amount': {'amount': '50000.00', 'currency': 'CAD'}, 'funded_at': '2026-11-06T12:00:00Z', 'maturity_date': '2027-11-06', 'repayment_frequency': 'monthly', 'terms_document_ids': []}, 'baseline': {'risk_package_id': 'rp_synthetic'}, 'risk_policy_version_id': 'rpv_synthetic', 'cadence_id': 'cadence_synthetic', 'connection_ids': ['con_synthetic']}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createMonitor-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/monitors', headers=headers, json={'borrower_id': 'bor_synthetic', 'deal': {'institution_reference': 'LOAN-0042', 'funded_amount': {'amount': '50000.00', 'currency': 'CAD'}, 'outstanding_amount': {'amount': '50000.00', 'currency': 'CAD'}, 'funded_at': '2026-11-06T12:00:00Z', 'maturity_date': '2027-11-06', 'repayment_frequency': 'monthly', 'terms_document_ids': []}, 'baseline': {'risk_package_id': 'rp_synthetic'}, 'risk_policy_version_id': 'rpv_synthetic', 'cadence_id': 'cadence_synthetic', 'connection_ids': ['con_synthetic']}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createMonitor-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/monitors\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"borrower_id\": \"bor_synthetic\", \"deal\": {\"institution_reference\": \"LOAN-0042\", \"funded_amount\": {\"amount\": \"50000.00\", \"currency\": \"CAD\"}, \"outstanding_amount\": {\"amount\": \"50000.00\", \"currency\": \"CAD\"}, \"funded_at\": \"2026-11-06T12:00:00Z\", \"maturity_date\": \"2027-11-06\", \"repayment_frequency\": \"monthly\", \"terms_document_ids\": []}, \"baseline\": {\"risk_package_id\": \"rp_synthetic\"}, \"risk_policy_version_id\": \"rpv_synthetic\", \"cadence_id\": \"cadence_synthetic\", \"connection_ids\": [\"con_synthetic\"]})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createMonitor-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/monitors\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"borrower_id\": \"bor_synthetic\", \"deal\": {\"institution_reference\": \"LOAN-0042\", \"funded_amount\": {\"amount\": \"50000.00\", \"currency\": \"CAD\"}, \"outstanding_amount\": {\"amount\": \"50000.00\", \"currency\": \"CAD\"}, \"funded_at\": \"2026-11-06T12:00:00Z\", \"maturity_date\": \"2027-11-06\", \"repayment_frequency\": \"monthly\", \"terms_document_ids\": []}, \"baseline\": {\"risk_package_id\": \"rp_synthetic\"}, \"risk_policy_version_id\": \"rpv_synthetic\", \"cadence_id\": \"cadence_synthetic\", \"connection_ids\": [\"con_synthetic\"]})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -9718,7 +9718,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -9983,20 +9983,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/monitors\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitors\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/monitors', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/monitors', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/monitors\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/monitors\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/monitors/{id}": {
+    "/v1/monitors/{id}": {
       "get": {
         "operationId": "getMonitor",
         "summary": "Get monitor",
@@ -10069,7 +10069,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -10338,15 +10338,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/monitors/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitors/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/monitors/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/monitors/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/monitors/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/monitors/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -10432,7 +10432,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -10770,20 +10770,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request PATCH --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/monitors/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'If-Match: \"1\"' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"status\":\"paused\"}'"
+            "source": "curl --request PATCH --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitors/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'If-Match: \"1\"' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"status\":\"paused\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'If-Match': '\"1\"', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('PATCH', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/monitors/record_synthetic', headers=headers, json={'status': 'paused'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'If-Match': '\"1\"', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('PATCH', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/monitors/record_synthetic', headers=headers, json={'status': 'paused'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"If-Match\": \"\\\"1\\\"\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/monitors/record_synthetic\", {\n  method: \"PATCH\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"status\": \"paused\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"If-Match\": \"\\\"1\\\"\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/monitors/record_synthetic\", {\n  method: \"PATCH\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"status\": \"paused\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/monitoring-runs": {
+    "/v1/monitoring-runs": {
       "get": {
         "operationId": "listMonitoringRuns",
         "summary": "List monitoring runs",
@@ -10899,7 +10899,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -11164,20 +11164,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/monitoring-runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitoring-runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/monitoring-runs', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/monitoring-runs', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/monitoring-runs\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/monitoring-runs\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/monitoring-runs/{id}": {
+    "/v1/monitoring-runs/{id}": {
       "get": {
         "operationId": "getMonitoringRun",
         "summary": "Get monitoring run",
@@ -11252,7 +11252,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -11512,20 +11512,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/monitoring-runs/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/monitoring-runs/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/monitoring-runs/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/monitoring-runs/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/monitoring-runs/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/monitoring-runs/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/alerts": {
+    "/v1/alerts": {
       "get": {
         "operationId": "listAlerts",
         "summary": "List alerts",
@@ -11646,7 +11646,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -11911,20 +11911,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/alerts\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/alerts\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/alerts', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/alerts', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/alerts\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/alerts\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/alerts/{id}": {
+    "/v1/alerts/{id}": {
       "get": {
         "operationId": "getAlert",
         "summary": "Get alert",
@@ -11994,7 +11994,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -12254,20 +12254,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/alerts/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/alerts/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/alerts/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/alerts/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/alerts/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/alerts/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/events": {
+    "/v1/events": {
       "get": {
         "operationId": "listEvents",
         "summary": "List events",
@@ -12377,7 +12377,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -12642,20 +12642,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/events\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/events\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/events', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/events', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/events\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/events\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/events/{id}": {
+    "/v1/events/{id}": {
       "get": {
         "operationId": "getEvent",
         "summary": "Get event",
@@ -12712,7 +12712,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -12972,20 +12972,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/events/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/events/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/events/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/events/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/events/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/events/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/exports": {
+    "/v1/exports": {
       "post": {
         "operationId": "createExport",
         "summary": "Create export",
@@ -13045,7 +13045,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -13376,20 +13376,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/exports\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createExport-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"kind\":\"risk_package\",\"risk_package_id\":\"rp_synthetic\",\"format\":\"json\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/exports\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createExport-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"kind\":\"risk_package\",\"risk_package_id\":\"rp_synthetic\",\"format\":\"json\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createExport-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/exports', headers=headers, json={'kind': 'risk_package', 'risk_package_id': 'rp_synthetic', 'format': 'json'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createExport-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/exports', headers=headers, json={'kind': 'risk_package', 'risk_package_id': 'rp_synthetic', 'format': 'json'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createExport-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/exports\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"kind\": \"risk_package\", \"risk_package_id\": \"rp_synthetic\", \"format\": \"json\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createExport-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/exports\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"kind\": \"risk_package\", \"risk_package_id\": \"rp_synthetic\", \"format\": \"json\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/exports/{id}": {
+    "/v1/exports/{id}": {
       "get": {
         "operationId": "getExport",
         "summary": "Get export",
@@ -13449,7 +13449,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -13709,20 +13709,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/exports/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/exports/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/exports/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/exports/record_synthetic', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/exports/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/exports/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/exports/{id}/download-links": {
+    "/v1/exports/{id}/download-links": {
       "post": {
         "operationId": "downloadExport",
         "summary": "Download export",
@@ -13785,7 +13785,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -14114,20 +14114,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/exports/record_synthetic/download-links\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: downloadExport-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"purpose\":\"Institution underwriting review\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/exports/record_synthetic/download-links\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: downloadExport-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"purpose\":\"Institution underwriting review\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'downloadExport-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/exports/record_synthetic/download-links', headers=headers, json={'purpose': 'Institution underwriting review'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'downloadExport-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/exports/record_synthetic/download-links', headers=headers, json={'purpose': 'Institution underwriting review'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"downloadExport-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/exports/record_synthetic/download-links\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"purpose\": \"Institution underwriting review\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"downloadExport-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/exports/record_synthetic/download-links\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"purpose\": \"Institution underwriting review\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/webhook-deliveries": {
+    "/v1/webhook-deliveries": {
       "get": {
         "operationId": "listDeliveries",
         "summary": "List deliveries",
@@ -14224,7 +14224,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -14489,20 +14489,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/webhook-deliveries\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/webhook-deliveries\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/webhook-deliveries', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/webhook-deliveries', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/webhook-deliveries\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/webhook-deliveries\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/webhook-replays": {
+    "/v1/webhook-replays": {
       "post": {
         "operationId": "replayEvent",
         "summary": "Replay event",
@@ -14554,7 +14554,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -14884,20 +14884,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/webhook-replays\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: replayEvent-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"event_id\":\"evt_synthetic\",\"endpoint_id\":\"dest_synthetic\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/webhook-replays\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: replayEvent-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"event_id\":\"evt_synthetic\",\"endpoint_id\":\"dest_synthetic\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'replayEvent-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/webhook-replays', headers=headers, json={'event_id': 'evt_synthetic', 'endpoint_id': 'dest_synthetic'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'replayEvent-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/webhook-replays', headers=headers, json={'event_id': 'evt_synthetic', 'endpoint_id': 'dest_synthetic'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"replayEvent-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/webhook-replays\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"event_id\": \"evt_synthetic\", \"endpoint_id\": \"dest_synthetic\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"replayEvent-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/webhook-replays\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"event_id\": \"evt_synthetic\", \"endpoint_id\": \"dest_synthetic\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/billing/summary": {
+    "/v1/billing/summary": {
       "get": {
         "operationId": "getBillingSummary",
         "summary": "Get billing summary",
@@ -14941,7 +14941,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -15201,20 +15201,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/billing/summary\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/billing/summary\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/billing/summary', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/billing/summary', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/billing/summary\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/billing/summary\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/billing/transactions": {
+    "/v1/billing/transactions": {
       "get": {
         "operationId": "listBillingTransactions",
         "summary": "List billing transactions",
@@ -15304,7 +15304,7 @@
                   ],
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   },
                   "page": {
@@ -15569,20 +15569,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/billing/transactions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/billing/transactions\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/billing/transactions', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/billing/transactions', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/billing/transactions\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/billing/transactions\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/configuration": {
+    "/v1/configuration": {
       "get": {
         "operationId": "getConfiguration",
         "summary": "Get configuration",
@@ -15700,7 +15700,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -15960,20 +15960,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/configuration\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/configuration\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/configuration', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/configuration', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/configuration\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/configuration\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/request-receipts/lookup": {
+    "/v1/request-receipts/lookup": {
       "get": {
         "operationId": "lookupRequestReceipt",
         "summary": "Lookup request receipt",
@@ -16037,7 +16037,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -16297,20 +16297,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/request-receipts/lookup?operation_id=createOrigination&idempotency_key=origination-synthetic-0042\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/healthcheck": {
+    "/v1/healthcheck": {
       "get": {
         "operationId": "healthcheck",
         "summary": "Healthcheck",
@@ -16347,7 +16347,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -16603,20 +16603,20 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/healthcheck\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/healthcheck\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/healthcheck', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/healthcheck', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/healthcheck\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/healthcheck\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
     },
-    "/v2/service-status": {
+    "/v1/service-status": {
       "get": {
         "operationId": "serviceStatus",
         "summary": "Service status",
@@ -16654,7 +16654,7 @@
                   },
                   "meta": {
                     "request_id": "req_synthetic",
-                    "schema_version": "2.0.0",
+                    "schema_version": "1.0.0",
                     "environment": "sandbox"
                   }
                 }
@@ -16910,15 +16910,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v2/service-status\" \\\n  --header 'Accept: application/json'"
+            "source": "curl --request GET --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/service-status\" \\\n  --header 'Accept: application/json'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v2/service-status', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json'}\nresponse = requests.request('GET', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/service-status', headers=headers, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\"};\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v2/service-status\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\"};\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/service-status\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
@@ -47793,7 +47793,7 @@
         ],
         "properties": {
           "schema_version": {
-            "const": "2.0.0"
+            "const": "1.0.0"
           },
           "report_type": {
             "const": "rates"
@@ -47997,7 +47997,7 @@
         ],
         "properties": {
           "schema_version": {
-            "const": "2.0.0"
+            "const": "1.0.0"
           },
           "report_type": {
             "const": "workload"
@@ -48028,7 +48028,7 @@
         ],
         "properties": {
           "schema_version": {
-            "const": "2.0.0"
+            "const": "1.0.0"
           },
           "evidence_set_id": {
             "type": "string",

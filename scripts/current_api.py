@@ -1,4 +1,4 @@
-"""Build the authoritative v2 reference and client artifacts from one contract."""
+"""Build the single authoritative reference and client artifacts from one contract."""
 from collections import OrderedDict
 from copy import deepcopy
 import json
@@ -97,17 +97,10 @@ def enrich(spec, f):
     schemas['BillingTransaction']['required'].append('related_transaction_id')
     f['BillingTransaction']['related_transaction_id']=None
     schemas['Error']['properties']['code']['enum'].append('idempotency_result_expired')
-    # Stable public names for normalized evidence types; these are current v2 data,
-    # not legacy endpoints. Preserve the complete inherited field definitions.
-    def rename(value):
-        if isinstance(value,dict):
-            return {k: (v.replace('#/components/schemas/Legacy','#/components/schemas/Normalized') if k=='$ref' else rename(v)) for k,v in value.items()}
-        if isinstance(value,list):return [rename(v) for v in value]
-        return value
-    spec=rename(spec)
-    spec['components']['schemas']={('Normalized'+k[6:] if k.startswith('Legacy') else k):v for k,v in spec['components']['schemas'].items()}
+    # Stable public names for normalized evidence types; these are product data,
+    # not source endpoints. Preserve the complete inherited field definitions.
     # Declare exact output schemas for report files, without separate report APIs.
-    legacy=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
+    source=json.loads((ROOT/'data/normalized-schema-source.json').read_text())
     def copy_financial(name):
         target='Financial'+name
         if target in spec['components']['schemas']:return target
@@ -121,13 +114,13 @@ def enrich(spec, f):
             if isinstance(v,list):return [rewrite(x) for x in v]
             return v
         spec['components']['schemas'][target]={}
-        spec['components']['schemas'][target]=rewrite(legacy['components']['schemas'][name])
+        spec['components']['schemas'][target]=rewrite(source['components']['schemas'][name])
         return target
     for name,resource in [('RatesExport','BillingRateCard'),('WorkloadExport','WorkloadReport')]:
         resource=copy_financial(resource)
         spec['components']['schemas'][name]={'type':'object','additionalProperties':False,'required':['schema_version','report_type','snapshot_id','as_of','rows'],'properties':{
-            'schema_version':{'const':'2.0.0'},'report_type':{'const':'rates' if name=='RatesExport' else 'workload'},'snapshot_id':{'type':'string','minLength':1},'as_of':{'type':'string','format':'date-time'},'rows':{'type':'array','items':{'$ref':'#/components/schemas/'+resource}}}}
-    spec['components']['schemas']['EvidenceExport']={'type':'object','additionalProperties':False,'required':['schema_version','evidence_set_id','rows'],'properties':{'schema_version':{'const':'2.0.0'},'evidence_set_id':{'type':'string','minLength':1},'rows':{'type':'array','items':{'$ref':'#/components/schemas/Evidence'}}}}
+            'schema_version':{'const':'1.0.0'},'report_type':{'const':'rates' if name=='RatesExport' else 'workload'},'snapshot_id':{'type':'string','minLength':1},'as_of':{'type':'string','format':'date-time'},'rows':{'type':'array','items':{'$ref':'#/components/schemas/'+resource}}}}
+    spec['components']['schemas']['EvidenceExport']={'type':'object','additionalProperties':False,'required':['schema_version','evidence_set_id','rows'],'properties':{'schema_version':{'const':'1.0.0'},'evidence_set_id':{'type':'string','minLength':1},'rows':{'type':'array','items':{'$ref':'#/components/schemas/Evidence'}}}}
     spec['x-export-schemas']={'risk_package':'#/components/schemas/RiskPackage','evidence':'#/components/schemas/EvidenceExport','rates':'#/components/schemas/RatesExport','workload':'#/components/schemas/WorkloadExport'}
     for op in operations():
         entry=spec['paths'][op['path']][op['method'].lower()]
@@ -205,8 +198,8 @@ def code_samples(op, entry, f):
 
 def build():
     review()
-    f=fixtures(); legacy=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
-    spec=enrich(build_spec(legacy),f)
+    f=fixtures(); source=json.loads((ROOT/'data/normalized-schema-source.json').read_text())
+    spec=enrich(build_spec(source),f)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations():
         entry=spec['paths'][op['path']][op['method'].lower()]
@@ -214,7 +207,7 @@ def build():
         page='api-reference/endpoints/'+slug(op['group'])+'/'+slug(op['id'])
         path=ROOT/(page+'.mdx');path.parent.mkdir(parents=True,exist_ok=True)
         scopes='Public endpoint; no API key required.' if op['scope']=='public' else 'Required scope: `'+op['scope']+'`.'
-        path.write_text('---\ntitle: '+json.dumps(entry['summary'])+'\ndescription: '+json.dumps(PURPOSE.get(op['id'],entry['summary']+'.'))+'\nopenapi: '+json.dumps('/openapi/amlok-v2.json '+op['method']+' '+op['path'])+'\n---\n\n'+entry['description']+'\n\nExamples use synthetic IDs. Replace them with values returned by your environment.\n')
+        path.write_text('---\ntitle: '+json.dumps(entry['summary'])+'\ndescription: '+json.dumps(PURPOSE.get(op['id'],entry['summary']+'.'))+'\nopenapi: '+json.dumps('/openapi/amlok.json '+op['method']+' '+op['path'])+'\n---\n\n'+entry['description']+'\n\nExamples use synthetic IDs. Replace them with values returned by your environment.\n')
         groups.setdefault(op['group'],[]).append(page)
         index.append({**op,'page':page})
         headers=[{'key':'Accept','value':'application/json'}]
@@ -230,11 +223,11 @@ def build():
         status,response=next((s,r) for s,r in entry['responses'].items() if s.startswith('2'))
         items.append({'name':entry['summary'],'request':request,'response':[{'name':'Synthetic success','originalRequest':deepcopy(request),'status':'Accepted' if status=='202' else 'OK','code':int(status),'header':[{'key':'Content-Type','value':'application/json'}],'body':json.dumps(response['content']['application/json']['example'],indent=2)}]})
     spec['webhooks']['resourceEvent']['post']['requestBody']['content']['application/json']['example']=f['Event']
-    save('openapi/amlok-v2.json',spec)
+    save('openapi/amlok.json',spec)
     save('data/api-reference-index.json',index)
     save('data/product-api-examples.json',f)
     save('downloads/risk-package-example.json',f['RiskPackage'])
-    save('downloads/amlok-api.postman_collection.json',{'info':{'name':'AMLOK API '+VERSION,'schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':'45-operation v2 contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries.'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':k,'value':v} for k,v in {'base_url':'','api_key':'','record_id':'record_synthetic','record_etag':'"1"','command_reference':'replace-for-each-new-command'}.items()],'item':items})
+    save('downloads/amlok-api.postman_collection.json',{'info':{'name':'AMLOK API '+VERSION,'schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':'45-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries.'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':k,'value':v} for k,v in {'base_url':'','api_key':'','record_id':'record_synthetic','record_etag':'"1"','command_reference':'replace-for-each-new-command'}.items()],'item':items})
     from current_api_guides import write_guides, navigation
     write_guides(spec,f,index)
     navigation(groups)

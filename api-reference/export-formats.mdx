@@ -2,10 +2,10 @@
 title: "Exports and file formats"
 sidebarTitle: "Export formats"
 description: "Exports and file formats for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Create exports through `POST /v2/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v2/exports/{id}/download-links` with a purpose.
+Create exports through `POST /v1/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v1/exports/{id}/download-links` with a purpose.
 
 | Kind | Formats | Content |
 | --- | --- | --- |
@@ -25,13 +25,13 @@ Create exports through `POST /v2/exports`. Use one typed source: a risk-package 
 }
 ```
 
-JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `schema_version: 2.0.0`, an `evidence_set_id` and an array of the same `Evidence` records returned by the API. Restricted records preserve metadata/reasons without exposing hidden content. CSV evidence has `evidence_set_id,id,resource_type,resource_id,record_version,kind,source_id,observed_at,sha256,access,access_reason,document_id,normalized_json,provider_report_document_id`; nested normalized values are compact JSON cells.
+JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `schema_version: 1.0.0`, an `evidence_set_id` and an array of the same `Evidence` records returned by the API. Restricted records preserve metadata/reasons without exposing hidden content. CSV evidence has `evidence_set_id,id,resource_type,resource_id,record_version,kind,source_id,observed_at,sha256,access,access_reason,document_id,normalized_json,provider_report_document_id`; nested normalized values are compact JSON cells.
 
 ## Financial report compatibility
 
 The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute.
 
-| v2 report type | File schema / example |
+| Report type | File schema / example |
 | --- | --- |
 | `usage` | [Usage schema](/downloads/report-schemas/usage.schema.json), [JSON](/downloads/report-examples/usage.json), [CSV](/downloads/report-examples/usage.csv) |
 | `credits` | [Ledger row schema](/downloads/report-schemas/ledger.schema.json), [JSON](/downloads/report-examples/ledger.json), [CSV](/downloads/report-examples/ledger.csv) |

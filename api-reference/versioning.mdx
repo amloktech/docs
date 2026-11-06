@@ -1,16 +1,12 @@
 ---
-title: "API versions and environment enablement"
+title: "API contract and compatibility"
 sidebarTitle: "Versioning"
-description: "API versions and environment enablement for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+description: "API contract and compatibility for the AMLOK product API."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-The primary documentation contract is **API 2.0.0**, with `/v2` paths and OpenAPI 3.1.0. This is a breaking public API simplification: it changes resource boundaries, payloads and operations. It is not a compatible rename of v1.
+AMLOK has one public product API. All documented operations use the `/v1` prefix and the [same OpenAPI contract](/openapi/amlok.json). There is no parallel legacy API or separate migration reference.
 
-The documentation repository publishes the contract, endpoint pages, examples and downloads. It does not deploy the product API backend. Confirm that your institution-issued environment supports v2 before sending v2 requests or changing an existing integration. No backend rollout or v1 shutdown date is established by this documentation change.
+The endpoint reference, Postman collection, examples and console Data Lookup are generated from this contract. Use your institution-issued API origin; do not use the console or documentation hostname for API requests.
 
-The [legacy v1.4.2 reference](/legacy/v1/index) is retained for existing contracts and migration. Its endpoint URLs and SDK artifacts are version-specific. Do not combine a v1 SDK or processing-context payload with v2 requests.
-
-API version, normalized record schema version, calculation version, policy/catalog revision and report-file version are independent. Existing normalized definitions and established financial report formats are preserved where compatible; changing the route version does not silently change their historical meaning.
-
-See the [complete migration map](/api-reference/product-api-migration) for every former operation and the [review](/api-reference/api-review) for the rationale.
+Record, calculation, policy and lending-product revisions identify the exact inputs behind an assessment. They are not alternative APIs. Financial export format versions identify file layouts independently of API routing.

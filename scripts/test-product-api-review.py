@@ -1,4 +1,4 @@
-"""Validate the primary contract and migration completeness; these are not backend tests."""
+"""Validate the single contract and product invariants; these are not backend tests."""
 from copy import deepcopy
 import csv
 import json
@@ -7,28 +7,18 @@ from jsonschema import Draft202012Validator, FormatChecker
 from openapi_spec_validator import validate
 
 ROOT=Path(__file__).resolve().parent.parent
-spec=json.loads((ROOT/'openapi/amlok-v2.json').read_text())
-legacy=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
-audit=json.loads((ROOT/'data/api-surface-review.json').read_text())
+spec=json.loads((ROOT/'openapi/amlok.json').read_text())
 fixtures=json.loads((ROOT/'data/product-api-examples.json').read_text())
 validate(spec)
 assert spec['x-availability']=='published_contract'
-assert legacy['info']['version']=='1.4.2'
-assert all(path.startswith('/v2/') for path in spec['paths'])
-assert all(path.startswith('/v1/') for path in legacy['paths'])
-source_ops={op['operationId']:(method.upper(),path) for path,methods in legacy['paths'].items() for method,op in methods.items()}
-review_ops={op['operation_id']:(op['method'],op['path']) for op in audit['operations']}
-assert source_ops==review_ops and len(audit['operations'])==len(source_ops)==192
-assert sum(audit['dispositions'].values())==192
-csv_rows=list(csv.DictReader((ROOT/'downloads/api-endpoint-migration.csv').open()))
-assert {r['operation_id'] for r in csv_rows}==set(source_ops)
-assert len(csv_rows)==192 and all(r['target'] and r['reason'] for r in csv_rows)
+assert all(path.startswith('/v1/') for path in spec['paths'])
+assert not (ROOT/'legacy').exists()
+assert {p.name for p in (ROOT/'openapi').glob('*.json')}=={'amlok.json'}
 target_ops=[op for methods in spec['paths'].values() for op in methods.values()]
-assert len(target_ops)==audit['target_operation_count']==45
-assert len({o['operationId'] for o in target_ops})==45
+assert len(target_ops)==len({o['operationId'] for o in target_ops})==45
 for path,methods in spec['paths'].items():
     assert not {'put','delete'} & methods.keys(), path
-    if 'patch' in methods: assert path=='/v2/monitors/{id}'
+    if 'patch' in methods: assert path=='/v1/monitors/{id}'
     for method,op in methods.items():
         assert op['x-availability']=='published_contract'
         if method=='post': assert any(p['name']=='Idempotency-Key' and p['required'] for p in op['parameters'])
@@ -81,7 +71,6 @@ assert not valid('CreateMonitor',monitor)
 monitor['baseline']['risk_package_id']='rp_synthetic'
 assert valid('CreateMonitor',monitor)
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
-assert '/v1/' not in json.dumps(collection)
+assert '/v2/' not in json.dumps(collection)
 assert len(collection['item'])==45
-assert not set(source_ops)&{o['operationId'] for o in target_ops}
-print(json.dumps({'current_operations_mapped':192,'primary_operations':45,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
+print(json.dumps({'primary_operations':45,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))

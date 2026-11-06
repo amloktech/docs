@@ -2,14 +2,14 @@
 title: "Retrieve records, reports and source files"
 sidebarTitle: "Evidence"
 description: "Retrieve records, reports and source files for the AMLOK product API."
-keywords: ["AMLOK", "API v2", "Insights", "Signal"]
+keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
 Use an assessment's evidence set to inspect exactly which records and files support its conclusions. Risk packages and monitoring runs supply `evidence_set_id`; metric and policy-result references identify individual evidence records.
 
-1. Call `GET /v2/evidence?evidence_set_id=...`, optionally with `resource_type`.
+1. Call `GET /v1/evidence?evidence_set_id=...`, optionally with `resource_type`.
 2. Page through summaries using the returned cursor without changing filters.
-3. Call `GET /v2/evidence/{id}` for the exact normalized record version and provenance.
+3. Call `GET /v1/evidence/{id}` for the exact normalized record version and provenance.
 4. Follow `document_id` or `provider_report_document_id` to retrieve file metadata and create a controlled download link.
 
 Evidence retains the typed [normalized resource dictionary](/data-model/field-dictionary). Banks, payments, accounting, commerce, KYB/KYC, liens, lending records and other source families no longer require one collection API per table. Raw provider secrets, credentials and unrelated borrower records are not evidence outputs.
