@@ -1,35 +1,16 @@
 ---
-title: "Versioning and compatibility"
-description: "Track API paths, schema versions, record versions, and policy revisions separately."
+title: "API versions and environment enablement"
+sidebarTitle: "Versioning"
+description: "API versions and environment enablement for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-## Version layers
+The primary documentation contract is **API 2.0.0**, with `/v2` paths and OpenAPI 3.1.0. This is a breaking public API simplification: it changes resource boundaries, payloads and operations. It is not a compatible rename of v1.
 
-| Version | Purpose |
-| --- | --- |
-| `/v1` path | Major HTTP interface namespace. |
-| `schema_version` | Serialization contract, currently `1.4.2`. |
-| `record_version` / ETag | Concurrency and change order for one resource. |
-| `workflow_version` / `ruleset_version` | Approved orchestration or policy revision. |
-| `calculation_version` | Definition or model revision behind a derived value. |
-| Provider API version | Upstream evidence schema recorded in provenance where available. |
+The documentation repository publishes the contract, endpoint pages, examples and downloads. It does not deploy the product API backend. Confirm that your institution-issued environment supports v2 before sending v2 requests or changing an existing integration. No backend rollout or v1 shutdown date is established by this documentation change.
 
-Do not use one version as a substitute for another. A newer record can still follow the same schema; a recalculation under a new policy must retain its own provenance.
+The [legacy v1.4.2 reference](/legacy/v1/index) is retained for existing contracts and migration. Its endpoint URLs and SDK artifacts are version-specific. Do not combine a v1 SDK or processing-context payload with v2 requests.
 
-## Breaking changes
+API version, normalized record schema version, calculation version, policy/catalog revision and report-file version are independent. Existing normalized definitions and established financial report formats are preserved where compatible; changing the route version does not silently change their historical meaning.
 
-Changing a field's meaning, type, requiredness, units, sign convention, or calculation requires contract review and versioned client communication. Endpoint removal, changed authorization behavior, and changed idempotency or pagination semantics also require compatibility review.
-
-New optional fields can be additive when existing meanings remain intact. Enum additions must be announced. Retain raw provider statuses and handle normalized `unknown` values where the resource defines them.
-
-## Client guidance
-
-Tolerate new optional response properties. Validate the fields your application relies on and fail safely when a critical contract assumption no longer holds. Do not fabricate a default score, currency, or approval state for an unknown value.
-
-Reject invalid request properties according to the documented request schema. Store schema and calculation versions with evidence used for decisions. Preserve immutable risk snapshots instead of rewriting the original assessment.
-
-## Release lifecycle
-
-This reference documents API version **1.4.2**. Your service agreement defines support windows and deprecation notice periods; follow the migration guidance provided for a version transition.
-
-Download and pin the [OpenAPI contract](/openapi/amlok-v1.json) used by your integration. Review a schema diff and rerun contract tests before adopting a new version.
+See the [complete migration map](/api-reference/product-api-migration) for every former operation and the [review](/api-reference/api-review) for the rationale.

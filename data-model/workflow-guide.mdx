@@ -3,6 +3,8 @@ title: "Workflow Guide"
 description: "How data supports Verify, Underwrite, Fund, Monitor, Investigate, and Re-underwrite."
 ---
 
+The public API follows [Origination](/api-reference/quickstart) and [monitoring](/api-reference/monitoring-design). The stages below explain how evidence supports those products; they are not separate client orchestration APIs.
+
 ## Verify
 
 | Property | Definition |
@@ -20,7 +22,7 @@ description: "How data supports Verify, Underwrite, Fund, Monitor, Investigate, 
 | Trigger | Separately requested full underwriting |
 | Inputs | application; bank records; financial statements; liabilities; collateral |
 | Work performed | Compute supported attributes and apply the institution policy. |
-| Outputs | attribute; risk\_snapshot; decision |
+| Outputs | Immutable risk package, dimensions, policy results and evidence |
 | Decision boundary | Separate recommendation from the institution decision; preserve evidence snapshot. |
 
 ## Fund
@@ -38,9 +40,9 @@ description: "How data supports Verify, Underwrite, Fund, Monitor, Investigate, 
 | Property | Definition |
 | --- | --- |
 | Trigger | Funded borrower or active exposure |
-| Inputs | Baseline snapshot; active connections; consent; monitor rules |
+| Inputs | Funded deal; approved baseline; active connections; consent; risk policy |
 | Work performed | Refresh permitted evidence and compare comparable windows. |
-| Outputs | attribute; risk\_snapshot; alert |
+| Outputs | Monitoring run; risk package; alerts |
 | Decision boundary | Alerts identify changes that may require institution review. Data outages generate coverage/freshness issues, not an assumed improvement. |
 
 ## Investigate
@@ -60,7 +62,7 @@ description: "How data supports Verify, Underwrite, Fund, Monitor, Investigate, 
 | Trigger | Monitor identifies a policy-defined material change |
 | Inputs | Current and baseline snapshots plus updated borrower evidence |
 | Work performed | Signal reassesses risk using the existing baseline and new evidence, preserving the original assessment. This is included in Signal and does not trigger or charge another Insights underwriting. |
-| Outputs | workflow\_run; decision; new risk\_snapshot |
+| Outputs | New Signal risk package, monitoring run and evidence |
 | Decision boundary | Never overwrite the original assessment; credit-limit action remains institution controlled. |
 
 
@@ -70,4 +72,4 @@ AMLOK provides assessments, alerts, and supporting evidence to help your institu
 
 ## Product scope
 
-Verification, lien searches, calculations and investigations are included stages of Insights or Signal. Stage requests require an authorized `processing_context`; they are not independently priced products. A Signal change-driven reassessment stays within its paid monthly period. Read [products and endpoint scope](/api-reference/products-and-endpoints) for the complete mapping.
+Verification, lien searches, calculations and investigations are included stages of Insights or Signal. AMLOK manages their execution internally; v2 clients do not send stage requests or a `processing_context`. They are not independently priced products. A Signal change-driven reassessment stays within its paid monthly period. Read [products and endpoint scope](/api-reference/products-and-endpoints) for the complete mapping.

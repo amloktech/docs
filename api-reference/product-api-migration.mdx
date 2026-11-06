@@ -1,52 +1,35 @@
 ---
-title: "Migration and release gates"
-description: "Move from the v1 resource API to the product API without breaking existing customers."
-keywords: ["Insights", "Signal", "risk package", "API design"]
+title: "Migrate from v1 to the simplified API"
+sidebarTitle: "Migration"
+description: "Migrate from v1 to the simplified API for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-## Current change
+The primary v2 API has 45 operations, replacing the 192-operation v1 public contract. Migrate by product journey; changing only the path prefix is insufficient.
 
-This documentation change introduces the product design, complete migration inventory and machine-readable proposed schemas. The published v1.4.2 specification, operation IDs, Postman collection, SDKs and existing endpoint URLs remain available. There is no declared sunset and no claim that any replacement route works in an institution's environment.
-
-## Implementation sequence
-
-1. **Build the product boundary.** Introduce borrower aliases, embedding sessions, immutable lending-product/policy versions, Origination orchestration and risk-package assembly on top of the existing normalized model. Keep stable source and evidence identifiers.
-2. **Hide orchestration behind the boundary.** The server owns consent validation, collection, required KYB/KYC/lien stages, manifests, calculations, included-processing context and billing publication. Avoid requiring customers to coordinate child jobs.
-3. **Complete monitoring.** Accept funded-deal context, resolve the baseline, expose each evaluation's source coverage, immutable package and risk alerts. Preserve account-month billing and historical policy/evidence versions.
-4. **Provide evidence and exports.** Implement frozen-version queries, licensed document downloads and bounded exports. Reconcile result membership and hashes against the original manifest; preserve typed normalized schemas.
-5. **Run parallel contract checks.** Compare v1 and replacement outputs for the same authorized evidence, product/policy and observation window. Shadow comparisons must not create extra paid processing or duplicate charges.
-6. **Release per institution.** Confirm application/pricing schemas, supported policy operators, provider entitlements, sandbox fixtures, retention and quotas. Issue the correct environment configuration, publish supported replacement SDKs and enable the new API only after backend checks pass.
-7. **Deprecate after adoption.** Measure actual v1 use, publish operation-specific migration instructions, agree notice periods and maintain v1 adapters during the transition. Remove routes only through an announced compatible migration, not by deleting documentation.
-
-## Backend release gates
-
-| Area | Required evidence before availability |
+| Previous integration responsibility | v2 replacement |
 | --- | --- |
-| Tenant isolation | Cross-workspace/environment references, cursors, associations and download IDs fail closed |
-| Embedding sessions | Expired/replayed sessions, unapproved origins/return URLs and forged callbacks cannot authorize sources |
-| Policy and product input | Schema/type/unit/currency/market mismatches rejected; unknown dimension keys cannot execute; accepted versions immutable |
-| Evidence | Every metric/reason/policy result resolves to frozen authorized versions; restricted/deleted originals remain unavailable |
-| Async behavior | Accepted, missing-evidence, retryable failure, permanent failure, cancellation and waiting-for-credits states have deterministic recovery |
-| Money | Insights publication/debit atomic; same command never billed twice; Signal same borrower/month deduplicated; cancellation blocks late publication/charges |
-| Monitoring | Existing-portfolio enrollment works without inventing an origination; source outages do not clear alerts; policy revisions preserve history |
-| Delivery | Raw-body HMAC, duplicate/out-of-order events, cursor gaps, retries and replays tested; no borrower payloads in notifications |
-| Scale | Bounded pages, consistent pagination, large evidence sets and exports verified under the intended workload; no made-up throughput claim |
-| Data science | Metric formulas, coverage rules, population/market validation and model limitations approved separately from schema tests |
+| Separate business and person APIs | Discriminated borrower resource |
+| Consent creation, connection creation and provider authorization orchestration | Borrower-bound embedding session, connection visibility and consent revocation |
+| Application plus manifest and workflow execution | One Origination with application, product version and policy version |
+| Separate decision, attributes and risk snapshot reads | One immutable risk package |
+| Many normalized collection/list/get endpoints | Evidence-set listing, exact-version evidence reads and exports |
+| Manual verification, lien and calculation jobs | Included stages managed inside Insights or Signal |
+| Manual monitoring baseline/manifests/checkpoints | Funded deal plus risk-package or approved portfolio baseline |
+| Change feed and webhook resource families | Durable events, alerts and delivery-attempt resources |
+| Repeated billing/workload/report APIs | Billing summary, transactions and typed exports |
+| Webhook endpoint administration | Console Dev Tools |
 
-## Compatibility details
+[Download all 192 operation mappings](/downloads/api-endpoint-migration.csv). Each row includes original operation ID, method, path, disposition, v2 destination and rationale.
 
-`/v1/products` contains merchant inventory. It must not be redirected to lending-product configuration. Business/person IDs can remain underlying subject IDs while a borrower resource supplies a simpler public identity. Existing applications map to Origination references, and historical workflow/decision/snapshot IDs remain traceable.
+## Migration sequence
 
-Do not rename existing routes simply because the console says **Origination**. Existing clients may use `/v1/applications`; the proposed `/v2/originations` has a different input and output contract, not just a different label.
+1. Confirm v2 support for the target Sandbox environment. Provision key scopes, approved schemas and embedding versions.
+2. Map existing borrower/connection identity with the implementation team. Do not assume v1 IDs can be sent to v2 without a supported mapping.
+3. Create immutable lending-product and policy versions, then migrate one complete Origination journey.
+4. Compare package results and authorized evidence against the original inputs, including missing/restricted data and files.
+5. Migrate monitoring with an approved baseline, preserving history, previously paid borrower-months and policy provenance. Do not activate duplicate chargeable work to migrate.
+6. Update event subscriptions, signature handling, durable cursors, idempotency recovery and financial exports.
+7. Move to Live only after environment validation and agreed cutover. Preserve old records and financial reconciliation references.
 
-The current SDK and Postman downloads stay pinned to v1.4.2. The proposed OpenAPI file is an independent design artifact. A backend release must supply its own tested examples, supported client generation and migration tests before those tools can switch contracts.
-
-## Review artifacts
-
-- [Current OpenAPI](/openapi/amlok-v1.json)
-- [Proposed OpenAPI](/openapi/amlok-product-api-design.json)
-- [Every existing operation and its destination](/downloads/api-endpoint-migration.csv)
-- [Proposed operation index](/downloads/api-product-design-index.json)
-- [Synthetic risk package](/downloads/risk-package-design-example.json)
-
-The generator preserves the source workbook and regenerates this inventory from every current operation. Validation covers schema structure, positive and negative examples, complete endpoint mapping and preservation of the existing contract. These checks do not execute a production backend.
+There is no implied redirect between v1 and v2 API routes. Documentation publication does not retire a running v1 backend or execute a data migration. Original source definitions and legacy artifacts remain available for comparison.

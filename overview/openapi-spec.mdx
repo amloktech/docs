@@ -1,46 +1,14 @@
 ---
 title: "OpenAPI specification"
-sidebarTitle: "OpenAPI Spec"
-description: "Download AMLOK's OpenAPI 3.1 specification to explore API v1.4.2, generate a client, and validate requests for your workspace and environment."
-icon: "file-code"
-keywords: ["OpenAPI", "API specification", "AMLOK API", "client generation"]
+sidebarTitle: "OpenAPI specification"
+description: "Download the primary AMLOK API 2.0.0 contract."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-Use the AMLOK OpenAPI specification to explore endpoints, generate a client for your backend, and validate request and response formats.
+Use the [OpenAPI 3.1 specification](/openapi/amlok-v2.json) as the authoritative machine-readable contract for AMLOK API **2.0.0**. It defines all 45 public operations, typed inputs and outputs, scopes, errors and examples.
 
-<Columns cols={2}>
-  <Card title="Download OpenAPI JSON" icon="download" href="/openapi/amlok-v1.json">OpenAPI 3.1.0 specification for AMLOK API v1.4.2.</Card>
-  <Card title="Browse the API reference" icon="square-terminal" href="/api-reference/overview">Read endpoint descriptions, required scopes, and worked examples.</Card>
-</Columns>
+API routes use `/v2`. The origin is supplied during institution onboarding; it is not the documentation or console hostname. Configure the origin explicitly when generating clients or running requests.
 
-## What the specification includes
+The specification contains the typed normalized evidence models so consolidating source-specific endpoints does not remove field definitions. JSON Schema conditionals remain authoritative even when a code generator cannot represent all constraints.
 
-- Endpoint paths, methods, and stable operation IDs.
-- Request parameters, bodies, resource schemas, and response examples.
-- Bearer authentication and operation-specific permissions.
-- Pagination, asynchronous processing, error responses, and webhook schemas.
-- Insights, Signal, shared data capabilities, and credit and consumption reporting.
-
-API version `1.4.2` identifies the documented API release. `3.1.0` identifies the OpenAPI format. Endpoint paths use the `/v1` prefix.
-
-## Use it in your integration
-
-1. Download the JSON file and save a copy with your integration.
-2. Import it into an OpenAPI-compatible tool or generate a client for your language.
-3. Set `AMLOK_API_BASE_URL` to the environment origin supplied by your account manager, without a trailing `/v1`.
-4. Load `AMLOK_API_KEY` from your server's secret manager. An authorized administrator creates the key in the client portal for one workspace and environment.
-5. Implement the [product workflows](/api-reference/products-and-endpoints), [request recovery](/api-reference/request-recovery), and [webhook handling](/api-reference/webhooks) around your client.
-6. Run the [sandbox journeys](/api-reference/sandbox-journeys) before using your integration in production.
-
-The specification's server entry is a configuration placeholder. Replace it with your issued origin. Example IDs and responses are synthetic; use identifiers returned by your own environment.
-
-## Keep the integration aligned
-
-A generated client provides request and response types. Your application still needs to obtain consent, select enabled providers, persist idempotency keys, handle asynchronous outcomes, and enforce your institution's access controls.
-
-Read [environment configuration](/api-reference/configuration) for approved workflow versions and runtime limits. Read your workspace's [consumption reports and rate cards](/api-reference/consumption-reporting) for applicable rates. Do not treat example quotas, identifiers, or prices as your workspace configuration.
-
-<Columns cols={2}>
-  <Card title="Integration prompt" icon="wand-sparkles" href="/overview/integration-prompt">Give your coding agent a complete AMLOK implementation brief.</Card>
-  <Card title="Examples and downloads" icon="code" href="/api-reference/downloads">Use Postman collections, language examples, and webhook verification helpers.</Card>
-</Columns>
+Use the [Postman collection](/downloads/amlok-api.postman_collection.json), [quickstart](/api-reference/quickstart) and [migration guide](/api-reference/product-api-migration). Confirm [environment enablement](/api-reference/versioning) before calling a deployed service. The [legacy v1 specification](/openapi/amlok-v1.json) is retained for comparison and existing integrations.

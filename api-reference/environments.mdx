@@ -1,40 +1,12 @@
 ---
-title: "Environments and requests"
-description: "Configure the correct API host, transport, and headers before making requests."
+title: "Sandbox and Live"
+sidebarTitle: "Environments"
+description: "Sandbox and Live for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-## Base URL
+Sandbox and Live use separate keys, records, connections and financial balances. Use the institution-issued origin in `AMLOK_API_BASE_URL`, without a version suffix. Do not infer API hostnames from the console or documentation domain.
 
-Set `AMLOK_API_BASE_URL` to the HTTPS origin issued for your institution and environment. Use the matching environment-specific API key.
+`meta.environment` and event `environment` identify the context. Sandbox examples and simulated credits do not establish production funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live.
 
-| Setting | Meaning |
-| --- | --- |
-| `AMLOK_API_BASE_URL` | Approved HTTPS origin, without `/v1` or a trailing slash. |
-| `AMLOK_API_KEY` | Server-side key for that environment and institution. |
-| Webhook destination and secret | Separate endpoint configuration for the same environment. |
-
-Sandbox and production keys, subjects, provider connections, consent records, event destinations, and idempotency records must remain separate. Do not copy production evidence into a sandbox unless your approved data-handling process explicitly allows it.
-
-## Request format
-
-Paths begin `/v1`. JSON writes use `Content-Type: application/json`. JSON reads use `Accept: application/json`. Document uploads use multipart form data with a client-generated boundary.
-
-| Header | When to send it |
-| --- | --- |
-| `Authorization` | Every authenticated financial-data or reporting request. |
-| `Content-Type` | JSON body or multipart upload. Let the HTTP client set the multipart boundary. |
-| `X-Request-ID` | Optional caller correlation ID. Record AMLOK's returned `request_id` separately. |
-| `Idempotency-Key` | Every POST command, including download-link issuance and event replay. |
-| `If-Match` | PATCH configuration with the current quoted ETag. |
-
-Treat IDs as opaque case-sensitive strings. Do not trim leading zeros, infer information from a prefix, or reuse an ID across environments.
-
-## Network behavior
-
-The examples use a 30-second client timeout as an illustration, not a server SLA. Set explicit timeouts suited to your application. A timeout does not prove a command was rejected; retain its idempotency key when retrying.
-
-Do not forward an API credential to a redirected host. Configure the correct origin and reject unexpected redirects. Long-running work returns a resource to poll instead of holding the HTTP connection open.
-
-## Environment configuration
-
-Onboarding must provide the production and sandbox origins, enabled scopes and providers, numeric quotas, network controls, support route, incident contacts, and any contractual service commitments. See [integration onboarding](/api-reference/onboarding).
+Confirm [v2 enablement](/api-reference/versioning) for each environment before moving an existing client. Exercise the borrower connection journey, a completed Origination, missing inputs, expired consent, restricted evidence and monitoring failures. See [Sandbox journeys](/api-reference/sandbox-journeys).

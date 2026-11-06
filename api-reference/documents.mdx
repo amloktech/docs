@@ -1,42 +1,28 @@
 ---
-title: "Document uploads and downloads"
-description: "Upload permitted evidence and retrieve short-lived authorized download links."
+title: "Upload and download documents"
+sidebarTitle: "Documents"
+description: "Upload and download documents for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-## Upload evidence
-
-[POST /v1/documents](/api-reference/endpoints/identity/upload-document) accepts multipart form data with `file`, `subject_id`, and `document_type`. The response is `202` with a document resource.
+Upload documents with `POST /v2/documents` using multipart form data. Documents can support a borrower, a lending-product version or a risk-policy version. Every upload creates a new immutable record.
 
 ```bash
 curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v1/documents" \
+  "${AMLOK_API_BASE_URL}/v2/documents" \
   --header "Authorization: Bearer ${AMLOK_API_KEY}" \
-  --header "Idempotency-Key: statement-upload-1001" \
-  --form "file=@statement-2026-09.pdf;type=application/pdf" \
-  --form "subject_id=biz_example" \
-  --form "document_type=bank_statement" \
-  --form "period_start=2026-09-01" \
-  --form "period_end=2026-09-30"
+  --header 'Accept: application/json' \
+  --header 'Idempotency-Key: uploadDocument-synthetic-0042' \
+  --form file=@/path/to/financial-statement.pdf \
+  --form context=borrower \
+  --form borrower_id=bor_synthetic \
+  --form document_type=financial_statement
 ```
 
-Let the HTTP client construct the multipart `Content-Type` boundary. Do not set `Content-Type: application/json` for this route.
+Use `context: borrower` with `borrower_id`; add `origination_id` and `requirement_id` when satisfying an existing requirement. For `lending_product` or `risk_policy`, omit borrower/origination/requirement fields and reference the returned document ID in the new configuration version.
 
-The upload period records the document's stated evidence period. It is not the exclusive `to` filter used by transaction queries. Poll the document's `extraction_status` or consume `document.processed`; acceptance does not establish a completed or verified extraction.
+An upload returns `202` while inspection and processing occur. Retrieve its metadata until available or rejected. The filename, MIME type, byte length and SHA-256 describe the retained file. Metadata access does not imply download permission.
 
-## File controls
+Create a short-lived link with `POST /v2/documents/{id}/download-links`, supplying an authorized purpose. The server checks workspace, environment, borrower authorization, consent and provider entitlement again. Do not log signed links, send them in webhooks or treat an expired link as a missing document. Request a new link when permitted.
 
-Document processing validates actual file content, allowed types, malware status, tenant ownership, and permitted purpose. Maximum size, page limits, accepted MIME types, scan timeouts, and residency are environment settings. The PDF above is illustrative and is not a universal file-acceptance promise.
-
-Use only authorized evidence. The normalized default response excludes raw biometric media, card PAN/CVV, and provider credentials. Do not place credentials inside uploaded filenames or metadata.
-
-## Authorized download
-
-Send `{"purpose":"credit_assessment"}` to [POST /v1/documents/{id}/download](/api-reference/endpoints/identity/create-document-download-link) with `documents:read` and an idempotency key. The response contains `data.document_id`, `data.url`, and `data.expires_at`.
-
-The URL is a temporary capability. Do not make it public, log it, put it in analytics, or persist it as a permanent asset address. Download it only within its authorized context and expiry. Do not attach an AMLOK API key to the signed storage URL.
-
-Use the expiry and storage domain returned by your environment. Upload documents through the documented multipart endpoint.
-
-## Retention and deletion
-
-Retention is managed by authorized users through workspace configuration in the AMLOK platform and in accordance with applicable compliance frameworks. Consent revocation or connection disconnection stops future collection; it does not itself delete stored evidence. After the cancellation request month closes and final information is generated, workspace deletion removes all associated workspace data. Necessary final billing, refund, and bank-return records are retained separately without borrower source data, documents, analysis outputs, or active workspace access. This API does not expose deletion-request endpoints. See [privacy and data handling](/security/privacy).
+Use the original files and provider reports referenced by [evidence](/api-reference/evidence-traceability). There is no update or delete operation for product documents.

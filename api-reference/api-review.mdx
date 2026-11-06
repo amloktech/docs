@@ -1,61 +1,28 @@
 ---
-title: "API surface review"
-description: "Findings from the complete 192-operation contract and the proposed 45-operation replacement."
-keywords: ["Insights", "Signal", "risk package", "API design"]
+title: "API simplification review"
+sidebarTitle: "Simplification review"
+description: "API simplification review for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-Reviewed **November 6, 2026** against the complete generated OpenAPI contract, all 192 operations, request and response schemas, API guides, normalized resource dictionary, derived attributes, integration coverage, SDK generation and billing rules in the documentation repository. The original source workbook remains unchanged.
+The public contract has been reduced from **192 to 45 operations**, a reduction of **147 operations (77%)**. The simplified contract is now the main API reference, including endpoint pages, payload schemas, examples, authentication scopes and Postman requests.
 
-## Finding
+The earlier API exposed internal collections and processing stages directly. Customers had to understand applications, workflows, manifests, verification jobs, calculations, decisions and snapshots before obtaining one underwriting result. The new boundary follows the institution's actual job: connect a borrower, submit lending context, receive a risk package and monitor funded exposure.
 
-The public boundary follows internal data collections and processing stages more closely than the customer's two product journeys. The problem is not that the underlying data model is too detailed. Financial institutions need that evidence. The problem is making every collection and execution stage a separate integration concern.
+| Finding | Implemented documentation change |
+| --- | --- |
+| Underwriting required orchestration knowledge | One Origination request; AMLOK owns collection and included stages |
+| Risk outputs were scattered | One immutable risk package with dimensions, policy results and supporting evidence |
+| Lending catalog and risk-policy inputs were missing | First-class immutable product and policy versions |
+| Borrower embedding lifecycle was missing | Short-lived borrower-bound embedding sessions |
+| Data access followed separate source tables | One evidence surface retaining typed records and controlled file access |
+| Monitoring enrollment exposed internal mechanics | Funded deal context and an approved baseline |
+| Billing and delivery interfaces repeated patterns | Summary, transactions, typed exports; distinct alerts, events and attempts |
 
-The proposed replacement has **45 operations**, 147 fewer than the current 192 (about **77% fewer**). This is a target contract, not a claim that backend endpoints have been retired.
+## What remains accessible
 
-## What needs to change
+Financial dimensions, normalized source records, KYB/KYC and lien results, authorized provider reports, documents, source freshness, policy evaluation, version provenance, monitoring runs, alerts and financial reconciliation remain accessible. The API simplifies execution responsibilities without replacing useful evidence with opaque scores.
 
-| Finding | Current evidence | Design change |
-| --- | --- | --- |
-| Underwriting requires orchestration knowledge | Create application, discover a manifest, choose workflow version and input IDs, start workflow, resolve separate decision, attributes and snapshot | One Origination submission; AMLOK owns orchestration and returns a risk package |
-| No first-class risk package | `RiskSnapshot` links attributes, manifest and workflow; `Decision` is a separate artifact | One immutable result with dimensions, policy evaluations, versioned input context and evidence links |
-| Lending product catalog is missing | `/v1/products` represents inventory items; application creation supplies only product type and limited requested terms | Explicit immutable lending-product versions, including pricing and repayment terms |
-| Policy input is incomplete | Decisions report policy IDs, but the public contract has no complete policy ingestion/version resource | Versioned validated risk policies supplied or provisioned before underwriting; no arbitrary executable policy code |
-| Borrower embedding lifecycle is missing | Connection authorization exists, but no institution-facing embedding-session resource is documented | Short-lived, borrower-bound sessions tied to a published Integrations Hub configuration |
-| Data access is fragmented | 96 operations can be expressed as evidence reads without losing their typed records | One paginated evidence collection and exact-version record reads, plus exports and controlled file downloads |
-| Internal processing leaks into client code | 26 operations expose job, manifest, baseline or included-stage responsibilities | Keep these internal; expose requirements, useful status, workload reporting and traceability |
-| Monitoring is too technical at enrollment | Monitor creation needs a baseline snapshot, resource types, attribute keys, cadence and ruleset | Accept funded-deal context and approved policy; resolve the baseline and source scope internally |
-| Events, risk conditions and delivery can be confused | Separate webhook, alert, change-feed and job families | Keep business alerts, durable events and HTTP delivery attempts distinct, with clear links |
-| Financial reporting repeats retrieval patterns | 20 billing operations plus 2 workload reads | Read-only summary, immutable transactions and typed exports; preserve all financial detail |
+All 192 previous operations are mapped: 13 retain a customer capability, 52 consolidate, 96 become unified evidence access, 26 become internal processing and 5 move to console/test tooling. [Download the complete mapping](/downloads/api-endpoint-migration.csv).
 
-## Disposition of every current operation
-
-| Disposition | Operations | Meaning |
-| --- | ---: | --- |
-| Retain a customer capability | 13 | Monitoring controls, alerts, connection visibility, recovery and reliability |
-| Consolidate | 52 | Combine related reads and inputs into product resources |
-| Expose through evidence | 96 | Preserve normalized records and source versions behind unified retrieval |
-| Internalize execution | 26 | AMLOK owns collection, included checks, calculations, manifests and orchestration |
-| Manage in the console or test tooling | 5 | Webhook administration, organization audit logs and sandbox controls |
-
-Download the [complete 192-operation migration inventory](/downloads/api-endpoint-migration.csv). Each row includes the stable v1 operation ID, method, path, disposition, destination and reason. No endpoint is dropped from the inventory.
-
-## What should stay
-
-- The typed normalized dictionary and field provenance. Fewer routes must not mean untyped financial blobs.
-- Immutable assessment inputs, outputs and evidence versions; no product-data update or delete commands.
-- Explicit missing, stale, restricted and not-applicable states. Missing values do not become zero or a passing policy result.
-- Workspace and environment isolation, source entitlements, audited downloads, idempotency and accepted-command recovery.
-- Included KYB/KYC, lien, calculation and investigation stages within Insights or Signal, without new standalone product charges.
-- The existing shared-wallet, funding, cancellation, refund and Signal account-month rules. This review does not change pricing or commercial terms.
-
-## Design basis
-
-The report-oriented flow is consistent with [Plaid's Assets pattern](https://plaid.com/docs/assets/): request a report, receive completion notification and retrieve the result. That is an API design reference, not an assertion of equivalent product coverage or licensing. [Stripe's response expansion](https://docs.stripe.com/api/expanding_objects) also illustrates returning related context together instead of requiring a separate request for every object. AMLOK's design uses bounded summaries with paginated evidence rather than unbounded expansion.
-
-For assessment content, [OCC small-business lending guidance](https://www.occ.gov/topics/supervision-and-examination/credit/commercial-credit/small-business-lending.html) emphasizes repayment capacity and current and expected cash flows. [OCC retail lending guidance](https://occ.gov/publications-and-resources/publications/comptrollers-handbook/files/retail-lending/pub-ch-retail-lending.pdf) discusses consumer capacity measures. These inform the dimension taxonomy; they do not establish universal thresholds or certify AMLOK compliance. Business and consumer methods, populations and permitted data must be validated separately.
-
-## Delivery boundary
-
-This repository deploys documentation. It does not contain the product processing backend. The changes publish a smaller, schema-defined design, a clearer entry point and a migration plan while keeping v1.4.2, its operation IDs, source snapshot, SDK inputs and examples intact.
-
-The implementation gates and cutover sequence are in [Migration and release gates](/api-reference/product-api-migration). Backend behavior, live provider access, payment execution and production underwriting accuracy are not verified by documentation tests.
+The previous reference is preserved as [legacy v1](/legacy/v1/index). Product data remains immutable, billing remains read-only through the API, and pricing/credit/retention rules are preserved. This repository changes the contract and documentation; backend route implementation and institution rollout remain separate work.

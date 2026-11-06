@@ -1,7 +1,6 @@
-"""Generate the proposed product boundary and an exhaustive v1 migration inventory.
+"""Authoritative v2 contract and exhaustive v1 migration inventory.
 
-This is a design artifact, not a declaration that a v2 backend exists. The v1
-contract, operation IDs, SDKs, examples and source workbook remain unchanged.
+Documentation publication does not deploy the product backend.
 """
 from collections import Counter
 from copy import deepcopy
@@ -12,8 +11,8 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VERSION = '2.0.0-design.1'
-STATUS = 'design_only_not_available'
+VERSION = '2.0.0'
+STATUS = 'published_contract'
 
 
 def ref(name):
@@ -90,7 +89,7 @@ def build_schemas(legacy):
         'terms_document_ids': ids,
     }, description='An immutable catalog version, not a merchant inventory product. Validate amount currencies, ordered bounds and approved terms before accepting. No modification or deletion of an accepted version.')
     schemas['LendingProductVersion'] = obj({'id': identifier, 'created_at': stamp, 'definition': ref('LendingProductInput'), 'sha256': text(pattern='^[a-f0-9]{64}$')})
-    schemas['PolicyRule'] = obj({'id': text(), 'dimension_key': text('An approved, typed dimension from configuration.'), 'operator': enum('gt', 'gte', 'lt', 'lte', 'eq'), 'threshold': decimal, 'unit': text(), 'on_missing': {'const': 'review'}, 'on_fail': enum('review', 'outside_policy')}, description='Version 1 of this proposed rule language supports scalar comparisons only. Units and types must match the approved dimension. No executable code, arbitrary expressions or inferred pass for missing data.')
+    schemas['PolicyRule'] = obj({'id': text(), 'dimension_key': text('An approved, typed dimension from configuration.'), 'operator': enum('gt', 'gte', 'lt', 'lte', 'eq'), 'threshold': decimal, 'unit': text(), 'on_missing': {'const': 'review'}, 'on_fail': enum('review', 'outside_policy')}, description='This rule language supports scalar comparisons only. Units and types must match the approved dimension. No executable code, arbitrary expressions or inferred pass for missing data.')
     schemas['RiskPolicyInput'] = obj({'external_id': text(), 'version': text(), 'name': text(), 'borrower_type': enum('business', 'person'), 'market': enum('US', 'CA'), 'rules': array(ref('PolicyRule'), minItems=1), 'policy_document_ids': ids}, description='Validated against authorized dimensions and the institution-approved policy before use. Documents provide context; they are not automatically executable policies.')
     schemas['RiskPolicyVersion'] = obj({'id': identifier, 'created_at': stamp, 'definition': ref('RiskPolicyInput'), 'sha256': text(pattern='^[a-f0-9]{64}$')})
     schemas['ApplicationInput'] = obj({'institution_reference': text(), 'requested_amount': ref('Money'), 'requested_term_months': {'type': 'integer', 'minimum': 1}, 'purpose': text(), 'declared_data': {'type': 'object', 'description': 'Institution-defined application fields validated against application_schema_id; additionalProperties here does not bypass that schema.'}, 'application_schema_id': identifier, 'related_borrower_ids': ids}, ['institution_reference', 'requested_amount', 'requested_term_months', 'purpose', 'application_schema_id', 'declared_data'])
@@ -143,7 +142,7 @@ def build_schemas(legacy):
     schemas['RequestReceipt'] = obj({'idempotency_key': text(), 'operation_id': text(), 'resource_id': identifier, 'accepted_at': stamp, 'response_replay_available': {'type': 'boolean'}}, description='Durable acceptance reference survives expiry of the 24-hour response replay. Never execute accepted work again because a cached response expired.')
     schemas['Healthcheck'] = obj({'status': enum('ok', 'degraded')})
     schemas['ServiceStatus'] = obj({'status': enum('operational', 'degraded', 'unavailable'), 'as_of': stamp})
-    # Resolve and retain only normalized dictionary dependencies used by the proposal.
+    # Resolve and retain only normalized dictionary dependencies used by the current contract.
     def collect(value):
         if isinstance(value, dict):
             name = value.get('$ref', '').split('/')[-1]
@@ -206,7 +205,7 @@ def operations():
 
 def build_spec(legacy):
     schemas = build_schemas(legacy['components']['schemas'])
-    spec = {'openapi':'3.1.0', 'info': {'title': 'AMLOK product API design', 'version': VERSION, 'description': 'Proposed replacement boundary reviewed 2026-11-06. NOT an available API. No backend or release date is established by this document. Use the published v1.4.2 reference for existing integrations.'}, 'x-availability': STATUS, 'servers': [{'url':'https://api.example.com', 'description':'Non-operational design placeholder. Do not send credentials here.'}], 'security':[{'BearerAuth':[]}], 'paths':{}, 'components': {'schemas':schemas, 'securitySchemes':{'BearerAuth':deepcopy(legacy['components']['securitySchemes']['BearerAuth'])}}}
+    spec = {'openapi':'3.1.0', 'info': {'title': 'AMLOK API', 'version': VERSION, 'description': 'AMLOK API 2.0.0: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use your institution-issued API origin. Environment enablement is separate from publication of this contract; see the versioning guide.'}, 'x-availability': STATUS, 'security':[{'BearerAuth':[]}], 'paths':{}, 'components': {'schemas':schemas, 'securitySchemes':{'BearerAuth':deepcopy(legacy['components']['securitySchemes']['BearerAuth'])}}}
     def param(name, where='query', required=False, schema=None, description=''):
         return {'name':name,'in':where,'required':required,'schema':schema or text(), 'description':description or name.replace('_',' ')}
     for op in operations():
@@ -223,7 +222,7 @@ def build_spec(legacy):
         if op['method']=='PATCH': params.append(param('If-Match','header',True,description='Required ETag from the monitor. Reject stale values with 412.'))
         code = '202' if op['id'] in ['createOrigination','createMonitor','createExport','replayEvent','uploadDocument'] else ('201' if op['method']=='POST' and op['id'] not in ['revokeConsent','downloadDocument','downloadExport'] else '200')
         summary=re.sub(r'(?<!^)([A-Z])',r' \1',op['id']).capitalize()
-        entry = {'operationId':op['id'], 'summary':summary, 'tags':[op['group']], 'x-availability':STATUS, 'x-required-scopes':[] if op['scope']=='public' else [op['scope']], 'parameters':params, 'responses':{code:{'description':'Design contract only. '+('Accepted asynchronously; inspect status, not just HTTP success.' if code=='202' else 'Successful response.'),'content':{'application/json':{'schema':result}}}}, 'description':'Proposed contract. All referenced IDs, cursor state and downloads require the same authorized workspace/environment. No caller-controlled workspace override.'}
+        entry = {'operationId':op['id'], 'summary':summary, 'tags':[op['group']], 'x-availability':STATUS, 'x-required-scopes':[] if op['scope']=='public' else [op['scope']], 'parameters':params, 'responses':{code:{'description':('Accepted asynchronously; inspect status, not just HTTP success.' if code=='202' else 'Successful response.'),'content':{'application/json':{'schema':result}}}}, 'description':'All referenced IDs, cursor state and downloads require the same authorized workspace/environment. No caller-controlled workspace override.'}
         if op['scope']=='public': entry['security']=[]
         else: entry['security']=[{'BearerAuth':[]}]
         if op['id'] in ['createExport','getExport','downloadExport']:
@@ -235,7 +234,7 @@ def build_spec(legacy):
             media = 'multipart/form-data' if op['request']=='UploadDocument' else 'application/json'
             entry['requestBody']={'required':True,'content':{media:{'schema':ref(op['request'])}}}
         spec['paths'].setdefault(op['path'],{})[op['method'].lower()] = entry
-    spec['webhooks']={'resourceEvent':{'post':{'description':'Proposed event envelope. Apply the existing raw-body HMAC verifier; persist then acknowledge. Delivery may be duplicated or out of order.', 'security':[], 'requestBody':{'required':True,'content':{'application/json':{'schema':ref('Event')}}},'responses':{'200':{'description':'Durably accepted.'}}}}}
+    spec['webhooks']={'resourceEvent':{'post':{'description':'Resource event envelope. Apply the existing raw-body HMAC verifier; persist then acknowledge. Delivery may be duplicated or out of order.', 'security':[], 'requestBody':{'required':True,'content':{'application/json':{'schema':ref('Event')}}},'responses':{'200':{'description':'Durably accepted.'}}}}}
     return spec
 
 
@@ -284,29 +283,29 @@ def disposition(op):
 
 def generate():
     legacy=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
-    index=json.loads((ROOT/'data/api-reference-index.json').read_text())
+    index=json.loads((ROOT/'legacy/v1/data/api-reference-index.json').read_text())
     spec=build_spec(legacy)
     def save(path,value):
         (ROOT/path).parent.mkdir(parents=True,exist_ok=True)
         (ROOT/path).write_text(json.dumps(value,indent=2)+'\n')
-    save('openapi/amlok-product-api-design.json',spec)
+    save('openapi/amlok-v2.json',spec)
     from product_api_examples import examples
     fixtures=examples()
-    save('downloads/risk-package-design-example.json',fixtures['RiskPackage'])
-    save('data/product-api-design-examples.json',fixtures)
+    save('downloads/risk-package-example.json',fixtures['RiskPackage'])
+    save('data/product-api-examples.json',fixtures)
     rows=[]
     for op in index:
         action,target,reason=disposition(op)
         rows.append({'operation_id':op['id'],'method':op['method'],'path':op['path'],'group':op['group'],'disposition':action,'target':target,'reason':reason})
     counts=dict(Counter(r['disposition'] for r in rows))
-    audit={'reviewed_at':'2026-11-06','availability':STATUS,'published_version':legacy['info']['version'],'current_operation_count':len(rows),'target_operation_count':len(operations()),'dispositions':counts,'operations':rows}
+    audit={'reviewed_at':'2026-11-06','availability':STATUS,'legacy_version':legacy['info']['version'],'published_version':VERSION,'legacy_operation_count':len(rows),'current_operation_count':len(operations()),'target_operation_count':len(operations()),'dispositions':counts,'operations':rows}
     save('data/api-surface-review.json',audit)
     out=io.StringIO(); writer=csv.DictWriter(out,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
     (ROOT/'downloads/api-endpoint-migration.csv').write_text(out.getvalue())
-    save('downloads/api-product-design-index.json',{'availability':STATUS,'operations':operations()})
+    save('downloads/api-product-index.json',{'version':VERSION,'operations':operations()})
     return audit
 
 
 if __name__=='__main__':
-    result=generate()
-    print(json.dumps({k:v for k,v in result.items() if k!='operations'}))
+    from current_api import build
+    build()

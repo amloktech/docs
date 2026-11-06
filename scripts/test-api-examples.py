@@ -15,7 +15,7 @@ verifier = importlib.util.module_from_spec(module_spec)
 module_spec.loader.exec_module(verifier)
 NOW = 1792764000
 SECRET = 'whsec_synthetic_test_only'
-BODY = '{"id":"evt_test","type":"sync.completed","resource_id":"sync_test","resource_version":2,"data":{"label":"Café"}}'
+BODY = '{"id":"evt_test","type":"origination.completed","resource_id":"sync_test","resource_version":2,"data":{"label":"Café"}}'
 
 def header(body=BODY, timestamp=NOW, secret=SECRET):
     digest = hmac.new(secret.encode(), (str(timestamp)+'.'+body).encode(), hashlib.sha256).hexdigest()
@@ -39,8 +39,8 @@ case('missing digest', False, signature=f't={NOW}')
 case('malformed header', False, signature='malformed')
 case('signed invalid JSON', False, body='{bad-json')
 case('signed non-object envelope', False, body='[]')
-case('signed missing event ID', False, body='{"type":"sync.completed","resource_id":"sync_test","resource_version":2}')
-case('signed boolean version', False, body='{"id":"evt_test","type":"sync.completed","resource_id":"sync_test","resource_version":true}')
+case('signed missing event ID', False, body='{"type":"origination.completed","resource_id":"sync_test","resource_version":2}')
+case('signed boolean version', False, body='{"id":"evt_test","type":"origination.completed","resource_id":"sync_test","resource_version":true}')
 
 for item in cases:
     accepted = False
@@ -74,10 +74,10 @@ for (const c of cases) {
         elif language in ['Shell','bash']:
             subprocess.run(['bash','-n'],input=code,text=True,check=True,capture_output=True)
             counts['shellSamples']+=1
-        elif language=='python': ast.parse(code)
+        elif language in ['python','Python']: ast.parse(code)
         elif language=='json': json.loads(code)
 
-    spec=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
+    spec=json.loads((ROOT/'openapi/amlok-v2.json').read_text())
     for methods in spec['paths'].values():
         for operation in methods.values():
             for sample in operation['x-codeSamples']: check_sample(sample['lang'],sample['source'])
@@ -88,13 +88,12 @@ for (const c of cases) {
             check_sample(language,code);counts['guideCodeBlocks']+=1
 
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
-assert sum(len(group['item']) for group in collection['item'])==sum(len(methods) for methods in spec['paths'].values())
+assert len(collection['item'])==sum(len(methods) for methods in spec['paths'].values())
 variables={item['key']:item['value'] for item in collection['variable']}
 assert variables['api_key']=='' and variables['base_url']==''
-pages=list((ROOT/'api-reference').rglob('*.mdx'))
+pages=list((ROOT/'api-reference').glob('*.mdx'))
 index=json.loads((ROOT/'data/api-reference-index.json').read_text())
-from product_api_guides import DESIGN_GUIDES
-assert len(pages)==len(index)+33+len(DESIGN_GUIDES)
+assert len(index)==45
 assert all('\u2014' not in page.read_text() for page in pages)
 (ROOT/'artifacts/api-code-validation.json').write_text(json.dumps(counts,indent=2)+'\n')
 print(json.dumps(counts))

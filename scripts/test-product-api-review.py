@@ -1,4 +1,4 @@
-"""Validate the design and review completeness; these are not backend tests."""
+"""Validate the primary contract and migration completeness; these are not backend tests."""
 from copy import deepcopy
 import csv
 import json
@@ -7,12 +7,12 @@ from jsonschema import Draft202012Validator, FormatChecker
 from openapi_spec_validator import validate
 
 ROOT=Path(__file__).resolve().parent.parent
-spec=json.loads((ROOT/'openapi/amlok-product-api-design.json').read_text())
+spec=json.loads((ROOT/'openapi/amlok-v2.json').read_text())
 legacy=json.loads((ROOT/'openapi/amlok-v1.json').read_text())
 audit=json.loads((ROOT/'data/api-surface-review.json').read_text())
-fixtures=json.loads((ROOT/'data/product-api-design-examples.json').read_text())
+fixtures=json.loads((ROOT/'data/product-api-examples.json').read_text())
 validate(spec)
-assert spec['x-availability']=='design_only_not_available'
+assert spec['x-availability']=='published_contract'
 assert legacy['info']['version']=='1.4.2'
 assert all(path.startswith('/v2/') for path in spec['paths'])
 assert all(path.startswith('/v1/') for path in legacy['paths'])
@@ -30,7 +30,7 @@ for path,methods in spec['paths'].items():
     assert not {'put','delete'} & methods.keys(), path
     if 'patch' in methods: assert path=='/v2/monitors/{id}'
     for method,op in methods.items():
-        assert op['x-availability']=='design_only_not_available'
+        assert op['x-availability']=='published_contract'
         if method=='post': assert any(p['name']=='Idempotency-Key' and p['required'] for p in op['parameters'])
         if method=='patch': assert any(p['name']=='If-Match' and p['required'] for p in op['parameters'])
         assert not any(p['name'] in ('workspace_id','environment','tenant_id') for p in op['parameters'])
@@ -81,6 +81,7 @@ assert not valid('CreateMonitor',monitor)
 monitor['baseline']['risk_package_id']='rp_synthetic'
 assert valid('CreateMonitor',monitor)
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
-assert '/v2/' not in json.dumps(collection)
+assert '/v1/' not in json.dumps(collection)
+assert len(collection['item'])==45
 assert not set(source_ops)&{o['operationId'] for o in target_ops}
-print(json.dumps({'current_operations_mapped':192,'proposed_operations':45,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
+print(json.dumps({'current_operations_mapped':192,'primary_operations':45,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))

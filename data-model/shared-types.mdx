@@ -3,6 +3,9 @@ title: "Shared Types"
 description: "Reusable nested fields for addresses, money, provenance, and other shared structures."
 ---
 
+<Note>API v2 exposes these retained normalized evidence definitions through [evidence retrieval](/api-reference/evidence-traceability). Their definition versions are independent of API 2.0.0. Historical workflow, manifest and processing identifiers are provenance, not client commands. For current request envelopes and product resources, use the [v2 OpenAPI contract](/openapi/amlok-v2.json).</Note>
+
+
 ## Address
 
 | Field | Type / presence | Definition | Example |
@@ -270,4 +273,4 @@ description: "Reusable nested fields for addresses, money, provenance, and other
 
 ## Processing and reporting helpers
 
-Calculation jobs also return `processing_context` and nullable `stop_reason`. Product context, monitoring periods, workload reports, frozen manifests and billing records use dedicated schemas in the [OpenAPI download](/openapi/amlok-v1.json). See [product scope](/api-reference/products-and-endpoints), [workload reporting](/api-reference/workload-reporting), and [export formats](/api-reference/export-formats).
+Historical calculation evidence may include `processing_context` and `stop_reason` as provenance. Clients do not create calculation jobs in v2. Current product and reporting resources use the [OpenAPI download](/openapi/amlok-v2.json). See [product scope](/api-reference/products-and-endpoints), [workload reporting](/api-reference/workload-reporting), and [export formats](/api-reference/export-formats).

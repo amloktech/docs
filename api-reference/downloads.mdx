@@ -1,44 +1,18 @@
 ---
-title: "Downloads and developer tools"
-description: "Use the machine-readable contract and runnable verification examples."
+title: "Specifications and integration downloads"
+sidebarTitle: "Downloads"
+description: "Specifications and integration downloads for the AMLOK product API."
+keywords: ["AMLOK", "API v2", "Insights", "Signal"]
 ---
 
-<CardGroup cols={2}>
-  <Card title="OpenAPI 3.1 contract" icon="file-json" href="/openapi/amlok-v1.json">192 operations, resource schemas, authentication, examples, and the webhook envelope.</Card>
-  <Card title="Postman collection" icon="send" href="/downloads/amlok-api.postman_collection.json">Requests grouped by domain with synthetic saved responses.</Card>
-  <Card title="Node.js webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/main/downloads/verify-webhook.mjs">Verify raw-body HMAC signatures using built-in Node.js crypto.</Card>
-  <Card title="Python webhook verifier" icon="file-code" href="https://raw.githubusercontent.com/amloktech/docs/main/downloads/verify_webhook.py">Verify the same signature format using the Python standard library.</Card>
-</CardGroup>
+Use these artifacts for the primary API 2.0.0 contract. Endpoint pages, request/response examples and Postman requests are generated from the same definitions.
 
-The webhook helpers link to the maintained source files for this reference. Save the Node.js helper as `verify-webhook.mjs` and the Python helper as `verify_webhook.py`.
+- [OpenAPI 3.1 JSON](/openapi/amlok-v2.json)
+- [Postman collection: 45 operations](/downloads/amlok-api.postman_collection.json)
+- [Operation index](/downloads/api-product-index.json)
+- [Complete synthetic risk package](/downloads/risk-package-example.json)
+- [v1-to-v2 operation migration map](/downloads/api-endpoint-migration.csv)
+- [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
+- [Python webhook signature verifier](/downloads/verify_webhook.py)
 
-## Import the Postman collection
-
-1. Import the downloaded JSON file.
-2. Set `base_url` to your institution-issued environment URL. The exported `base_url` value is empty so you can configure the appropriate environment.
-3. Store `api_key` locally in a protected environment or vault. The exported collection contains no credential.
-4. Set `idempotency_key` once for one intended POST action. Use a new value for a new action and preserve it for retries of the same action.
-5. Replace synthetic resource IDs and configure the current `record_etag` before a PATCH.
-6. Select a local file before trying the multipart upload request.
-
-Saved responses are examples, not captured production traffic. Do not run every POST as a bulk collection against production: some routes initiate processing or change a monitoring configuration.
-
-## Server SDKs
-
-Download [AMLOK server SDKs](/overview/sdks) for TypeScript/JavaScript, Python, Java, C#/.NET, Go, PHP, and Ruby. Install the versioned source packages locally and use your institution-issued environment and API key.
-
-## Language examples
-
-Endpoint pages provide cURL, Python with `requests`, and Node.js using `fetch`. The examples use a 30-second client timeout and reject unexpected redirects. They are integration examples, not official AMLOK SDK packages.
-
-The webhook helpers have no third-party runtime dependency. They verify signatures and envelope basics only; add durable inbox processing, tenant association, replay handling, and operational monitoring as described in the [webhook guide](/api-reference/webhooks).
-
-## Contract validation
-
-The reference has been checked for OpenAPI structure and generated request/response example validity against JSON Schema. Language samples have been syntax-checked, and both signature helpers have been tested using synthetic signed events, altered bodies, expired/future timestamps, and malformed headers.
-
-Validate your integration with your enabled providers, environment settings, and representative test data before processing live requests.
-
-## Complete product journeys
-
-Use the [sandbox journeys](/api-reference/sandbox-journeys), [Python runner](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-journey.py), and [Postman journey collection](/downloads/amlok-journeys.postman_collection.json) to follow returned identifiers through complete Insights and Signal flows.
+Set your institution-issued origin and key in a private environment. Keys and secrets are not included. [Versioning](/api-reference/versioning) explains environment enablement and compatibility. [SDK guidance](/overview/sdks) distinguishes the current contract from legacy clients.
