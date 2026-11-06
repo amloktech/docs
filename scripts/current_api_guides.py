@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parent.parent
 
 def page(path,title,description,body):
     p=ROOT/(path+'.mdx');p.parent.mkdir(parents=True,exist_ok=True)
-    short={'overview':'Overview','quickstart':'Quickstart','authentication':'Authentication','environments':'Environments','downloads':'Downloads','configuration':'Lending configuration','risk-package':'Risk packages','monitoring-design':'Signal monitoring','evidence-traceability':'Evidence','documents':'Documents','processing-lifecycle':'Product lifecycle','pagination':'Pagination','idempotency':'Idempotency','request-recovery':'Request recovery','connection-recovery':'Connection recovery','webhook-operations':'Delivery recovery','rate-limits':'Rate limits','sandbox-journeys':'Sandbox journeys','credit-reporting':'Wallet and billing','consumption-reporting':'Consumption','workload-reporting':'Workload','export-formats':'Export formats','versioning':'Versioning','product-api-migration':'Migration','api-review':'Simplification review'}.get(path.split('/')[-1],title)
+    short={'overview':'Overview','quickstart':'Quickstart','authentication':'Authentication','environments':'Environments','downloads':'Downloads','configuration':'Lending configuration','risk-package':'Risk packages','monitoring-design':'Signal monitoring','evidence-traceability':'Evidence','documents':'Documents','processing-lifecycle':'Product lifecycle','pagination':'Pagination','idempotency':'Idempotency','request-recovery':'Request recovery','connection-recovery':'Connection recovery','webhook-operations':'Delivery recovery','rate-limits':'Rate limits','sandbox-journeys':'Sandbox journeys','credit-reporting':'Wallet and billing','consumption-reporting':'Consumption','workload-reporting':'Workload','export-formats':'Export formats','product-api-migration':'Migration','api-review':'Simplification review'}.get(path.split('/')[-1],title)
     p.write_text('---\ntitle: '+json.dumps(title)+'\nsidebarTitle: '+json.dumps(short)+'\ndescription: '+json.dumps(description)+'\nkeywords: ["AMLOK", "API", "Insights", "Signal"]\n---\n\n'+body.strip()+'\n')
 
 
@@ -61,7 +61,7 @@ The organization owns billing identity, payment methods and team roles. Each wor
 <Card title="Explore the evidence" icon="database" href="/api-reference/evidence-traceability">Retrieve normalized data and authorized source files.</Card>
 </Columns>
 
-See [API contract and compatibility](/api-reference/versioning) for source-of-truth and revision rules.
+Use the [OpenAPI specification](/overview/openapi-spec) as the authoritative API contract.
 ''')
     api('quickstart','Connect a borrower and request underwriting','''
 Use your backend to create a borrower, launch an Integrations Hub session and submit an Origination. The examples use synthetic identifiers; replace them with returned values. Provisioned product, policy, application-schema and embedding-version IDs come from your workspace.
@@ -510,13 +510,6 @@ Use an enabled Sandbox environment to exercise the complete product journey with
 
 Test controls are available through authorized Sandbox tooling. They are not public production API commands and cannot affect Live funds or real provider authorizations.
 ''')
-    api('versioning','API contract and compatibility','''
-AMLOK has one public product API. All documented operations use the `/v1` prefix and the [same OpenAPI contract](/openapi/amlok.json). There is no parallel legacy API or separate migration reference.
-
-The endpoint reference, Postman collection, examples and console Data Lookup are generated from this contract. Use your institution-issued API origin; do not use the console or documentation hostname for API requests.
-
-Record, calculation, policy and lending-product revisions identify the exact inputs behind an assessment. They are not alternative APIs. Financial export format versions identify file layouts independently of API routing.
-''')
     api('product-api-design','Product API structure','''
 AMLOK exposes one product API for the complete customer journey. The [57-operation OpenAPI contract](/openapi/amlok.json) defines its requests, responses, errors and permissions.
 
@@ -584,7 +577,7 @@ Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/
 - [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
 - [Python webhook signature verifier](/downloads/verify_webhook.py)
 
-Set your institution-issued origin and key in a private environment. Keys and secrets are not included. [API contract and compatibility](/api-reference/versioning) explains the source of truth. [SDK guidance](/overview/sdks) covers client generation.
+Set your institution-issued origin and key in a private environment. Keys and secrets are not included. The [OpenAPI specification](/overview/openapi-spec) is the source of truth. [SDK guidance](/overview/sdks) covers client generation.
 ''')
     page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 1.0.0 contract.', '''
 Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 57 public operations, typed inputs and outputs, scopes, errors and examples.
@@ -593,7 +586,7 @@ API routes use `/v1`. The origin is supplied during institution onboarding; it i
 
 The specification contains the typed normalized evidence models so consolidating source-specific endpoints does not remove field definitions. JSON Schema conditionals remain authoritative even when a code generator cannot represent all constraints.
 
-Use the [Postman collection](/downloads/amlok-api.postman_collection.json), [quickstart](/api-reference/quickstart) and [API contract guide](/api-reference/versioning).
+Use the [Postman collection](/downloads/amlok-api.postman_collection.json) and [quickstart](/api-reference/quickstart) to start integrating.
 ''')
     page('overview/sdks','SDKs and API clients','Build a client from the authoritative AMLOK contract.', '''
 Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 57 operations with typed request and response models.
@@ -620,7 +613,6 @@ def navigation(groups):
         {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Data','Evidence','Events','Exports','Billing','Reliability'] for p in [groups[g]]]},
         {'group':'Integration behavior','pages':['api-reference/response-format','api-reference/processing-lifecycle','api-reference/pagination','api-reference/idempotency','api-reference/request-recovery','api-reference/connection-recovery','api-reference/webhooks','api-reference/event-catalog','api-reference/webhook-operations','api-reference/errors','api-reference/rate-limits','api-reference/sandbox-journeys']},
         {'group':'Billing and exports','pages':['api-reference/credit-reporting','api-reference/consumption-reporting','api-reference/workload-reporting','api-reference/export-formats']},
-        {'group':'API design','pages':['api-reference/versioning']},
     ]
     config['api']['playground']['display']='simple'
     config['api']['examples']['languages']=['bash','python','javascript']

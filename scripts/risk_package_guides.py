@@ -134,7 +134,6 @@ A package does not imply a bureau report, collateral valuation, benchmark percen
   if 'api-reference/risk-package' in group.get('pages',[]):
    pos=group['pages'].index('api-reference/risk-package')+1;group['pages'][pos:pos]=['api-reference/underwriting-dimensions','api-reference/risk-package-methodology']
  save('docs.json',nav)
- path=ROOT/'api-reference/contract-changelog.mdx';text=path.read_text();text+='\n## Comprehensive assessment structure - 6 November 2026\n\nThe single API risk-package contract includes 24 dimension families, 149 versioned metrics and typed supporting analyses. Business, consumer and Signal examples use the same schema. The endpoint count remains 57; the complete result is retrieved through the existing risk-package endpoint. Metric definitions are shared with configuration discovery and console Data Lookup.\n';path.write_text(text)
  # Make the normalized-data versus assessment distinction discoverable without replacing the source dictionary.
  path=ROOT/'data-model/derived-attributes.mdx'
  if path.exists():
