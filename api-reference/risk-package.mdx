@@ -1,0 +1,71 @@
+---
+title: "Risk package design"
+description: "Financial dimensions, policy evaluation and evidence in one immutable result."
+keywords: ["Insights", "Signal", "risk package", "API design"]
+---
+
+<Warning>
+This page defines the replacement API design. The current API returns separate risk snapshots, attributes and decisions; follow [current evidence traceability](/api-reference/evidence-traceability) for those resources. The proposed `RiskPackage` is not yet a live endpoint.
+</Warning>
+
+## What the institution receives
+
+A risk package is the completed assessment of a borrower in a specific lending context. It is not just a score, a provider response dump or an executed lending decision.
+
+| Section | Contents and purpose |
+| --- | --- |
+| Identity and context | Borrower, Origination or monitoring-run ID, product, timestamps and previous-package link |
+| Application | Submitted request and declared data; absent only where an existing-portfolio assessment has no origination |
+| Lending product and policy | Exact immutable definitions, version IDs and content hashes used in this assessment |
+| Assessment | Advisory result, plain-language summary and supported reasons; institution decision remains external |
+| Dimensions | Financial measures grouped by the question they answer, with units, calculation versions and observation windows |
+| Policy results | Each rule's pass, fail, unavailable or not-applicable result, threshold, actual value and evidence |
+| Source coverage | Integration, source-as-of time, retrieval time, usable window, gaps and limitations |
+| Evidence set | Immutable membership ID, count and digest; paginated access to exact normalized versions and files |
+| Reproducibility | Normalization, calculation and applicable model versions; billing usage link when relevant |
+
+Every meaningful conclusion must lead back to evidence. Preserve measured values and definitions separately from narrative interpretation. A fluent explanation is not a substitute for a calculable metric or licensed provider result.
+
+## Assessment dimensions
+
+| Dimension | Business assessment | Consumer assessment and boundaries |
+| --- | --- | --- |
+| Identity | KYB, registration, ownership and related-person checks where authorized | Authorized identity/KYC and applicant consistency; do not assume business ownership checks apply |
+| Cash flow | Operating inflows/outflows, net cash flow, volatility, seasonality and overdraft patterns | Observed income deposits, spending, recurring obligations and cash buffers; deposits are not verified gross income |
+| Liquidity | Available cash, liquidity ratios, runway and working-capital needs | Liquid resources and residual buffers, using permitted sources |
+| Revenue quality | Customer/processor receipts, refunds, chargebacks, recurring revenue and reconciliation | Not applicable unless the consumer assessment legitimately includes self-employment/business income |
+| Profitability | Margins and earnings using eligible statements and consistent periods | Not a generic consumer metric; assess applicable income and affordability instead |
+| Leverage and obligations | Existing facilities, debt schedule, liens and debt-to-equity where supportable | Verified liabilities and complete debt obligations; do not infer missing debts from bank activity alone |
+| Repayment capacity | Cash-flow DSCR, stress scenarios and proposed product payments | Verified-income debt-to-income, payment burden and residual income when the required inputs exist |
+| Concentration | Customer, supplier, channel and related-party dependence | Income-source concentration only where meaningful and permitted |
+| Collateral | Eligible asset valuations, encumbrances and supportable loan-to-value | Product-specific collateral; not applicable to every unsecured product |
+| Fraud and consistency | Identity, document and cross-source inconsistencies with evidence | Applicable identity, document and source discrepancies; a signal is not a proven allegation |
+| Income and affordability | Owner/guarantor support where explicitly in scope | Verified income, obligations and product-specific affordability |
+
+These are assessment categories, not a promise that every integration supplies every field. Use the existing [56 derived-attribute definitions](/data-model/derived-attributes) where applicable. Any new metric needs an approved formula, units, eligible population, minimum coverage, evidence inputs and calculation version before implementation. There is no universal score, threshold or minimum ratio suitable for all products and markets.
+
+## Availability is part of the answer
+
+A dimension is `available`, `partial`, `unavailable` or `not_applicable`. Individual proposed scalar metrics are `available`, `unavailable` or `not_applicable`; a usable metric has a decimal-string value and an explicit unit/window. Unavailable metrics have a null value and a reason. Coverage limitations belong alongside the result, not only in a log.
+
+Do not substitute zero for missing revenue, debt, DSCR, DTI, a credit score or probability of default. Do not manufacture a PD or provider score where the model is not validated, licensed and entitled. Actual cash-flow DSCR and EBITDA-based proxies must have different definitions. Do not combine currencies, legal entities or non-comparable periods without an explicit approved transformation.
+
+Policy results use `unavailable` when inputs are missing. The overall recommendation must not become `within_policy` while a required rule remains unavailable. Institutions review the reasons and make their own final decision.
+
+## Evidence and documents
+
+1. Read the package's immutable `evidence_set.id`.
+2. List evidence with that set ID and an optional normalized `resource_type` filter.
+3. Retrieve a record using its evidence ID. The response contains the frozen normalized version, provenance and any document reference.
+4. Request a controlled download for an authorized original file or provider report. Verify the returned digest against the downloaded bytes.
+5. Use an asynchronous export for large normalized datasets or a complete risk-package report.
+
+This preserves bank transactions, accounting records, payments, commerce, inventory, lender-supplied exposures, KYB/KYC results, liens, reconciliations and retained documents without one collection endpoint per table. Exact records may be restricted by source licensing, consent or retention. Return explicit unavailability; never silently substitute today's record for the one used in the assessment.
+
+A content hash establishes byte consistency, not source authenticity or legal sufficiency. The package and evidence-set digest rules must reuse the canonical manifest serialization in [evidence traceability](/api-reference/evidence-traceability), and the implementation must verify member hashes before publishing an export.
+
+## Historical integrity
+
+Completed packages cannot be edited. A corrected source or changed policy produces a new package linked to its predecessor. Monitoring keeps the original baseline and each subsequent assessment. The prior facts, missing-data state, policy version and reasons remain auditable until the configured retention boundary.
+
+The [synthetic package example](/downloads/risk-package-design-example.json) illustrates a case requiring review because repayment evidence is missing. Its values and hashes are illustrative and are not model-performance or verification claims.

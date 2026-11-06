@@ -1,0 +1,455 @@
+{
+  "availability": "design_only_not_available",
+  "operations": [
+    {
+      "id": "createBorrower",
+      "method": "POST",
+      "path": "/v2/borrowers",
+      "group": "Borrowers",
+      "response": "Borrower",
+      "request": "CreateBorrower",
+      "many": false,
+      "scope": "borrowers:write"
+    },
+    {
+      "id": "listBorrower",
+      "method": "GET",
+      "path": "/v2/borrowers",
+      "group": "Borrowers",
+      "response": "Borrower",
+      "request": null,
+      "many": true,
+      "scope": "borrowers:read"
+    },
+    {
+      "id": "getBorrower",
+      "method": "GET",
+      "path": "/v2/borrowers/{id}",
+      "group": "Borrowers",
+      "response": "Borrower",
+      "request": null,
+      "many": false,
+      "scope": "borrowers:read"
+    },
+    {
+      "id": "createEmbeddingSession",
+      "method": "POST",
+      "path": "/v2/embedding-sessions",
+      "group": "Connections",
+      "response": "EmbeddingSession",
+      "request": "CreateEmbeddingSession",
+      "many": false,
+      "scope": "connections:write"
+    },
+    {
+      "id": "getEmbeddingSession",
+      "method": "GET",
+      "path": "/v2/embedding-sessions/{id}",
+      "group": "Connections",
+      "response": "EmbeddingSession",
+      "request": null,
+      "many": false,
+      "scope": "connections:read"
+    },
+    {
+      "id": "listConnections",
+      "method": "GET",
+      "path": "/v2/connections",
+      "group": "Connections",
+      "response": "Connection",
+      "request": null,
+      "many": true,
+      "scope": "connections:read"
+    },
+    {
+      "id": "getConnection",
+      "method": "GET",
+      "path": "/v2/connections/{id}",
+      "group": "Connections",
+      "response": "Connection",
+      "request": null,
+      "many": false,
+      "scope": "connections:read"
+    },
+    {
+      "id": "getConsent",
+      "method": "GET",
+      "path": "/v2/consents/{id}",
+      "group": "Connections",
+      "response": "Consent",
+      "request": null,
+      "many": false,
+      "scope": "connections:read"
+    },
+    {
+      "id": "revokeConsent",
+      "method": "POST",
+      "path": "/v2/consents/{id}/revoke",
+      "group": "Connections",
+      "response": "Consent",
+      "request": "RevokeConsent",
+      "many": false,
+      "scope": "connections:write"
+    },
+    {
+      "id": "uploadDocument",
+      "method": "POST",
+      "path": "/v2/documents",
+      "group": "Evidence",
+      "response": "Document",
+      "request": "UploadDocument",
+      "many": false,
+      "scope": "evidence:write"
+    },
+    {
+      "id": "getDocument",
+      "method": "GET",
+      "path": "/v2/documents/{id}",
+      "group": "Evidence",
+      "response": "Document",
+      "request": null,
+      "many": false,
+      "scope": "evidence:read"
+    },
+    {
+      "id": "downloadDocument",
+      "method": "POST",
+      "path": "/v2/documents/{id}/download-links",
+      "group": "Evidence",
+      "response": "DownloadLink",
+      "request": "DownloadPurpose",
+      "many": false,
+      "scope": "evidence:read"
+    },
+    {
+      "id": "createLendingProductVersion",
+      "method": "POST",
+      "path": "/v2/lending-product-versions",
+      "group": "Configuration",
+      "response": "LendingProductVersion",
+      "request": "LendingProductInput",
+      "many": false,
+      "scope": "configuration:write"
+    },
+    {
+      "id": "listLendingProductVersion",
+      "method": "GET",
+      "path": "/v2/lending-product-versions",
+      "group": "Configuration",
+      "response": "LendingProductVersion",
+      "request": null,
+      "many": true,
+      "scope": "configuration:read"
+    },
+    {
+      "id": "getLendingProductVersion",
+      "method": "GET",
+      "path": "/v2/lending-product-versions/{id}",
+      "group": "Configuration",
+      "response": "LendingProductVersion",
+      "request": null,
+      "many": false,
+      "scope": "configuration:read"
+    },
+    {
+      "id": "createRiskPolicyVersion",
+      "method": "POST",
+      "path": "/v2/risk-policy-versions",
+      "group": "Configuration",
+      "response": "RiskPolicyVersion",
+      "request": "RiskPolicyInput",
+      "many": false,
+      "scope": "configuration:write"
+    },
+    {
+      "id": "listRiskPolicyVersion",
+      "method": "GET",
+      "path": "/v2/risk-policy-versions",
+      "group": "Configuration",
+      "response": "RiskPolicyVersion",
+      "request": null,
+      "many": true,
+      "scope": "configuration:read"
+    },
+    {
+      "id": "getRiskPolicyVersion",
+      "method": "GET",
+      "path": "/v2/risk-policy-versions/{id}",
+      "group": "Configuration",
+      "response": "RiskPolicyVersion",
+      "request": null,
+      "many": false,
+      "scope": "configuration:read"
+    },
+    {
+      "id": "createOrigination",
+      "method": "POST",
+      "path": "/v2/originations",
+      "group": "Insights",
+      "response": "Origination",
+      "request": "CreateOrigination",
+      "many": false,
+      "scope": "insights:write"
+    },
+    {
+      "id": "listOrigination",
+      "method": "GET",
+      "path": "/v2/originations",
+      "group": "Insights",
+      "response": "Origination",
+      "request": null,
+      "many": true,
+      "scope": "insights:read"
+    },
+    {
+      "id": "getOrigination",
+      "method": "GET",
+      "path": "/v2/originations/{id}",
+      "group": "Insights",
+      "response": "Origination",
+      "request": null,
+      "many": false,
+      "scope": "insights:read"
+    },
+    {
+      "id": "getRiskPackage",
+      "method": "GET",
+      "path": "/v2/risk-packages/{id}",
+      "group": "Results",
+      "response": "RiskPackage",
+      "request": null,
+      "many": false,
+      "scope": "results:read"
+    },
+    {
+      "id": "listEvidence",
+      "method": "GET",
+      "path": "/v2/evidence",
+      "group": "Evidence",
+      "response": "EvidenceSummary",
+      "request": null,
+      "many": true,
+      "scope": "evidence:read"
+    },
+    {
+      "id": "getEvidence",
+      "method": "GET",
+      "path": "/v2/evidence/{id}",
+      "group": "Evidence",
+      "response": "Evidence",
+      "request": null,
+      "many": false,
+      "scope": "evidence:read"
+    },
+    {
+      "id": "createMonitor",
+      "method": "POST",
+      "path": "/v2/monitors",
+      "group": "Signal",
+      "response": "Monitor",
+      "request": "CreateMonitor",
+      "many": false,
+      "scope": "signal:write"
+    },
+    {
+      "id": "listMonitor",
+      "method": "GET",
+      "path": "/v2/monitors",
+      "group": "Signal",
+      "response": "Monitor",
+      "request": null,
+      "many": true,
+      "scope": "signal:read"
+    },
+    {
+      "id": "getMonitor",
+      "method": "GET",
+      "path": "/v2/monitors/{id}",
+      "group": "Signal",
+      "response": "Monitor",
+      "request": null,
+      "many": false,
+      "scope": "signal:read"
+    },
+    {
+      "id": "updateMonitor",
+      "method": "PATCH",
+      "path": "/v2/monitors/{id}",
+      "group": "Signal",
+      "response": "Monitor",
+      "request": "UpdateMonitor",
+      "many": false,
+      "scope": "signal:write"
+    },
+    {
+      "id": "listMonitoringRuns",
+      "method": "GET",
+      "path": "/v2/monitoring-runs",
+      "group": "Signal",
+      "response": "MonitoringRun",
+      "request": null,
+      "many": true,
+      "scope": "signal:read"
+    },
+    {
+      "id": "getMonitoringRun",
+      "method": "GET",
+      "path": "/v2/monitoring-runs/{id}",
+      "group": "Signal",
+      "response": "MonitoringRun",
+      "request": null,
+      "many": false,
+      "scope": "signal:read"
+    },
+    {
+      "id": "listAlerts",
+      "method": "GET",
+      "path": "/v2/alerts",
+      "group": "Signal",
+      "response": "Alert",
+      "request": null,
+      "many": true,
+      "scope": "signal:read"
+    },
+    {
+      "id": "getAlert",
+      "method": "GET",
+      "path": "/v2/alerts/{id}",
+      "group": "Signal",
+      "response": "Alert",
+      "request": null,
+      "many": false,
+      "scope": "signal:read"
+    },
+    {
+      "id": "listEvents",
+      "method": "GET",
+      "path": "/v2/events",
+      "group": "Events",
+      "response": "Event",
+      "request": null,
+      "many": true,
+      "scope": "events:read"
+    },
+    {
+      "id": "getEvent",
+      "method": "GET",
+      "path": "/v2/events/{id}",
+      "group": "Events",
+      "response": "Event",
+      "request": null,
+      "many": false,
+      "scope": "events:read"
+    },
+    {
+      "id": "createExport",
+      "method": "POST",
+      "path": "/v2/exports",
+      "group": "Exports",
+      "response": "Export",
+      "request": "CreateExport",
+      "many": false,
+      "scope": "exports:write"
+    },
+    {
+      "id": "getExport",
+      "method": "GET",
+      "path": "/v2/exports/{id}",
+      "group": "Exports",
+      "response": "Export",
+      "request": null,
+      "many": false,
+      "scope": "exports:read"
+    },
+    {
+      "id": "downloadExport",
+      "method": "POST",
+      "path": "/v2/exports/{id}/download-links",
+      "group": "Exports",
+      "response": "DownloadLink",
+      "request": "DownloadPurpose",
+      "many": false,
+      "scope": "exports:read"
+    },
+    {
+      "id": "listDeliveries",
+      "method": "GET",
+      "path": "/v2/webhook-deliveries",
+      "group": "Events",
+      "response": "Delivery",
+      "request": null,
+      "many": true,
+      "scope": "events:read"
+    },
+    {
+      "id": "replayEvent",
+      "method": "POST",
+      "path": "/v2/webhook-replays",
+      "group": "Events",
+      "response": "ReplayReceipt",
+      "request": "ReplayEvent",
+      "many": false,
+      "scope": "events:write"
+    },
+    {
+      "id": "getBillingSummary",
+      "method": "GET",
+      "path": "/v2/billing/summary",
+      "group": "Billing",
+      "response": "BillingSummary",
+      "request": null,
+      "many": false,
+      "scope": "billing:read"
+    },
+    {
+      "id": "listBillingTransactions",
+      "method": "GET",
+      "path": "/v2/billing/transactions",
+      "group": "Billing",
+      "response": "BillingTransaction",
+      "request": null,
+      "many": true,
+      "scope": "billing:read"
+    },
+    {
+      "id": "getConfiguration",
+      "method": "GET",
+      "path": "/v2/configuration",
+      "group": "Configuration",
+      "response": "Configuration",
+      "request": null,
+      "many": false,
+      "scope": "configuration:read"
+    },
+    {
+      "id": "lookupRequestReceipt",
+      "method": "GET",
+      "path": "/v2/request-receipts/lookup",
+      "group": "Reliability",
+      "response": "RequestReceipt",
+      "request": null,
+      "many": false,
+      "scope": "reliability:read"
+    },
+    {
+      "id": "healthcheck",
+      "method": "GET",
+      "path": "/v2/healthcheck",
+      "group": "Reliability",
+      "response": "Healthcheck",
+      "request": null,
+      "many": false,
+      "scope": "public"
+    },
+    {
+      "id": "serviceStatus",
+      "method": "GET",
+      "path": "/v2/service-status",
+      "group": "Reliability",
+      "response": "ServiceStatus",
+      "request": null,
+      "many": false,
+      "scope": "public"
+    }
+  ]
+}

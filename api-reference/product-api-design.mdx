@@ -1,0 +1,198 @@
+---
+title: "Product API design"
+description: "A proposed API organized around borrower connections, Origination and monitoring."
+keywords: ["Insights", "Signal", "risk package", "API design"]
+---
+
+<Warning>
+Design for implementation review only. The `/v2` routes on this page are not available. Existing integrations continue to use [API 1.4.2](/openapi/amlok-v1.json). Publishing this design does not deploy an API.
+</Warning>
+
+## Public boundary
+
+Expose the customer inputs and outputs: borrower, connection session, lending product, risk policy, Origination, risk package, funded-deal monitor, evaluation, alert and evidence. AMLOK owns source collection, normalization, extraction, verification, calculations and orchestration.
+
+An institution should not need a manifest ID, child workflow ID, calculation job or processing-context object to obtain an underwriting. Those records may remain internal for reproducibility and support.
+
+Download the [proposed OpenAPI contract](/openapi/amlok-product-api-design.json) and [operation index](/downloads/api-product-design-index.json). The proposal has its own version, `2.0.0-design.1`, and is excluded from the current SDK and Postman generators.
+
+## Ownership and configuration
+
+| Object | Ownership and behavior |
+| --- | --- |
+| Organization | Legal customer, team permissions, billing profile and payment methods |
+| Workspace + environment | API authorization boundary, product records, connection sessions and shared credit balance |
+| Embedding configuration | Owner/Dev configures and publishes the Integrations Hub in the console; API sessions pin a published version |
+| Lending product | Institution's financing offer and its repayment/pricing terms, not an AMLOK paid product or inventory item |
+| Risk policy | Institution-approved, typed and versioned assessment rules |
+| Origination | One request to assess a borrower for a particular application, lending product and policy |
+| Risk package | Immutable assessment result and exact evidence references |
+| Monitor | Prospective configuration for observing a funded exposure |
+
+The API key's scopes do not replace console roles. Owners manage organization, workspace, team and billing controls. Owners and Devs manage integration configuration. Analysts read permitted product results and reporting without Dev Tools or billing access. Every export must enforce its underlying data permissions, including Owner authority for billing. Nobody edits or deletes historical product data through these routes.
+
+## 1. Connect a borrower
+
+Create a typed business or person borrower. The server then creates an embedding session using the borrower ID and published embedding version. Only the short-lived launch URL reaches the borrower browser. The institution key, provider credentials and provider routing remain server-side.
+
+The session captures the actual borrower's authorization. Completion provides connection and consent references; it does not mean all data has arrived. Connection health explains missing access and reauthorization. For reauthorization, create a new session bound to the existing connection. Revoked or expired consent cannot be revived by changing a status value; obtain new authorization.
+
+Return URLs must match approved destinations. Session binding, expiry, origin restrictions and callback validation must be enforced by the implementation. A browser success callback is never proof of consent or underwriting completion; verify server-side state or a signed event.
+
+## 2. Supply the lending context
+
+Create immutable versions of the institution's lending product and risk policy, or use versions already provisioned for the workspace. Retrieve approved application and pricing schemas through configuration.
+
+The lending product must capture borrower type, market, currency, size and term bounds, repayment frequency and validated pricing economics. The submitted application carries the requested amount, term, purpose and institution-specific declared data. Validate that these inputs agree. A policy for a Canadian business cannot silently become a US consumer policy.
+
+Policy rules refer to approved dimension keys, units, comparison operators and thresholds. Missing inputs require review. Policy documents are supporting context, not automatically executable rules. Free-text descriptions must not silently become credit decisions. Updating a policy or product means creating a new version; existing packages keep their original versions and hashes.
+
+## 3. Request an Origination
+
+The institution submits its application, borrower, product version, policy version and authorized connection/document IDs in one command. AMLOK gathers the necessary source data, identifies missing requirements, runs included verification and analysis, freezes the evidence and produces the risk package.
+
+```json
+{
+  "borrower_id": "bor_synthetic",
+  "application": {
+    "institution_reference": "LOS-2026-0042",
+    "requested_amount": {"amount": "50000.00", "currency": "CAD"},
+    "requested_term_months": 12,
+    "purpose": "Working capital",
+    "application_schema_id": "app_schema_synthetic",
+    "declared_data": {"annual_revenue": "600000.00"}
+  },
+  "lending_product_version_id": "lpv_synthetic",
+  "risk_policy_version_id": "rpv_synthetic",
+  "connection_ids": ["con_synthetic"],
+  "document_ids": []
+}
+```
+
+This is a synthetic design example. `declared_data` must validate against the institution-approved schema; it is not an unrestricted route around input validation. Submitted claims remain distinguishable from provider-observed or independently verified data.
+
+An accepted request returns `202` and an Origination ID. Follow the resource or a signed event through `collecting`, `requires_action`, `processing`, `waiting_for_credits`, `completed`, `failed` or `cancelled`. Requirements point to source connection, reauthorization or document-upload actions. New accepted evidence can resume the same unfinished request within its agreed scope. Completed work is immutable; a new full underwriting is a separate authorized request.
+
+Completion checks and deducts Insights credits atomically with package publication. Insufficient credits at that point leave the accepted request waiting without publication or a debit. No separate verification/calculation charges or reserved-credit model is introduced.
+
+## 4. Retrieve the result and evidence
+
+Read the [risk package](/api-reference/risk-package) by the ID returned on completion. It includes product/policy versions, application context, financial dimensions, rule outcomes, source coverage and limitations. Use its evidence-set ID to paginate exact normalized records, provider-report references and original documents.
+
+Keep large transaction collections and files outside the main response. Exports support complete risk-package JSON or PDF, normalized evidence JSON/CSV and authorized billing reports. Recheck workspace, consent, retention and provider licensing when reading or downloading. A restricted original file remains restricted even if its derived result is available.
+
+## 5. Monitor the funded deal
+
+Create a monitor with the borrower, funded-deal terms, approved policy, cadence and either an existing risk package or an approved portfolio-onboarding reference. AMLOK resolves the baseline. Institutions do not need to create internal baseline snapshots or calculation manifests. See [Monitoring design](/api-reference/monitoring-design).
+
+## Reliability and scale
+
+- All list routes use opaque cursors and bounded pages. Cursors bind workspace, environment, filters and snapshot; a changed filter requires a new traversal.
+- Every POST accepts a stable idempotency key. A reused key with different input fails. Accepted-command recovery must survive the 24-hour cached-response window.
+- Monitor configuration changes require `If-Match`; stale changes fail with `412`. There are no edits or deletes for packages, alerts, source evidence or billing history.
+- Event consumers verify raw-body signatures, persist before acknowledging, deduplicate by event ID and tolerate out-of-order delivery. Replay only repeats delivery.
+- API origins, quotas, event retention and provider freshness are supplied through onboarding. This design does not invent production values or SLAs.
+
+## Proposed operation catalog
+
+All routes below belong to the replacement design, not the available v1 contract. Endpoint count is the number of method/path pairs.
+
+### Borrowers
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/borrowers` | Create borrower |
+| `GET` | `/v2/borrowers` | List borrower |
+| `GET` | `/v2/borrowers/{id}` | Get borrower |
+
+### Connections
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/embedding-sessions` | Create embedding session |
+| `GET` | `/v2/embedding-sessions/{id}` | Get embedding session |
+| `GET` | `/v2/connections` | List connections |
+| `GET` | `/v2/connections/{id}` | Get connection |
+| `GET` | `/v2/consents/{id}` | Get consent |
+| `POST` | `/v2/consents/{id}/revoke` | Revoke consent |
+
+### Evidence
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/documents` | Upload document |
+| `GET` | `/v2/documents/{id}` | Get document |
+| `POST` | `/v2/documents/{id}/download-links` | Download document |
+| `GET` | `/v2/evidence` | List evidence |
+| `GET` | `/v2/evidence/{id}` | Get evidence |
+
+### Configuration
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/lending-product-versions` | Create lending product version |
+| `GET` | `/v2/lending-product-versions` | List lending product version |
+| `GET` | `/v2/lending-product-versions/{id}` | Get lending product version |
+| `POST` | `/v2/risk-policy-versions` | Create risk policy version |
+| `GET` | `/v2/risk-policy-versions` | List risk policy version |
+| `GET` | `/v2/risk-policy-versions/{id}` | Get risk policy version |
+| `GET` | `/v2/configuration` | Get configuration |
+
+### Insights
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/originations` | Create origination |
+| `GET` | `/v2/originations` | List origination |
+| `GET` | `/v2/originations/{id}` | Get origination |
+
+### Results
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `GET` | `/v2/risk-packages/{id}` | Get risk package |
+
+### Signal
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/monitors` | Create monitor |
+| `GET` | `/v2/monitors` | List monitor |
+| `GET` | `/v2/monitors/{id}` | Get monitor |
+| `PATCH` | `/v2/monitors/{id}` | Update monitor |
+| `GET` | `/v2/monitoring-runs` | List monitoring runs |
+| `GET` | `/v2/monitoring-runs/{id}` | Get monitoring run |
+| `GET` | `/v2/alerts` | List alerts |
+| `GET` | `/v2/alerts/{id}` | Get alert |
+
+### Events
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `GET` | `/v2/events` | List events |
+| `GET` | `/v2/events/{id}` | Get event |
+| `GET` | `/v2/webhook-deliveries` | List deliveries |
+| `POST` | `/v2/webhook-replays` | Replay event |
+
+### Exports
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `POST` | `/v2/exports` | Create export |
+| `GET` | `/v2/exports/{id}` | Get export |
+| `POST` | `/v2/exports/{id}/download-links` | Download export |
+
+### Billing
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `GET` | `/v2/billing/summary` | Get billing summary |
+| `GET` | `/v2/billing/transactions` | List billing transactions |
+
+### Reliability
+
+| Method | Proposed route | Purpose |
+| --- | --- | --- |
+| `GET` | `/v2/request-receipts/lookup` | Lookup request receipt |
+| `GET` | `/v2/healthcheck` | Healthcheck |
+| `GET` | `/v2/service-status` | Service status |

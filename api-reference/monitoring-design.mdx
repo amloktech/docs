@@ -1,0 +1,52 @@
+---
+title: "Monitoring design"
+description: "Enroll a funded exposure and retrieve evaluations, changes, alerts and evidence."
+keywords: ["Insights", "Signal", "risk package", "API design"]
+---
+
+<Warning>
+This is the replacement API design. Use [current monitoring workflows](/api-reference/workflows#monitor-an-existing-exposure) for the available v1 contract.
+</Warning>
+
+## Enroll the deal, not a collection of backend jobs
+
+Submit the borrower, funded amount, outstanding exposure, funding/maturity dates, repayment terms, source connections and approved policy. Reference a completed risk package or an approved existing-portfolio onboarding process. A baseline must be ready before active monitoring; the server resolves and records it.
+
+One borrower may have multiple monitored exposures. Signal's charge remains one borrower/business per workspace per month, with the combined workload determining the tier. Evaluations and included reassessments do not launch or charge a separate full Insights underwriting. The existing activation, monthly charge, insufficient-credit and cancellation rules remain unchanged.
+
+## Keep four concepts separate
+
+| Resource | Answers |
+| --- | --- |
+| Monitor | Which deal is observed, against which baseline, policy and requested cadence? |
+| Monitoring run | What happened in this scheduled or change-driven evaluation, and which source data was available? |
+| Risk package and alert | What changed in the assessment, which risk condition triggered, and what evidence supports it? |
+| Event and delivery attempt | What notification was produced, and did the institution's endpoint receive it? |
+
+## Evaluate each integration explicitly
+
+Each monitoring run reports per-connection retrieval and source-as-of times, the evidence window, completeness, gaps and failure limitations. Its evidence-set ID opens normalized records or document references from that run. The console can render these as per-integration logs and payload drawers without exposing internal worker queues.
+
+Daily monitoring is a requested evaluation schedule, not a guarantee that every provider has new daily data. Do not count unchanged source versions again, interpret a missing sync as zero revenue, or clear a risk condition because data disappeared. A partial run can publish supported findings only with explicit limitations; required unavailable checks remain unresolved.
+
+An alert identifies its rule and policy version, metric, unit, previous/current values, threshold, severity, evidence and baseline/current package IDs. System resolution requires comparable fresh evidence. Institutions can store their own acknowledgements and case actions; they do not edit the historical alert in AMLOK.
+
+## Configuration changes
+
+Owners and Devs can pause, resume or stop future monitoring and change approved policy/cadence with `If-Match`. These are configuration changes, not edits to source data or past results. A stopped monitor is terminal; a new authorization is needed for a new enrollment. Pausing or creating another monitor does not generate duplicate monthly charges within an already paid borrower/workspace/month.
+
+Consent revocation prevents further collection. Account cancellation stops processing and deductions immediately according to the existing policy. A late provider callback cannot reactivate cancelled work or publish a newly billed result.
+
+## Notifications and recovery
+
+The proposed event catalog covers connection actions, Origination progress, completed packages, monitor state, evaluation results, alert creation/resolution and export completion/failure. Notifications contain identifiers, event time and resource version. They contain no bank transactions, full reports, API credentials or download URLs.
+
+1. Validate the raw-body signature using the existing webhook verification rules.
+2. Persist the event before returning success; deduplicate using its event ID.
+3. Fetch the referenced resource using the institution's authorized server-side key.
+4. Do not let an older resource version overwrite newer state.
+5. Use the durable event cursor to recover missed notifications. A webhook replay repeats delivery only.
+
+For initial synchronization, capture a feed cursor with `start=now`, then traverse snapshot-bound collection pages and resume events from the captured cursor. Deduplicate overlap using resource ID and version. The event response returns a resume cursor even when no events are available. Invalid or expired cursors fail explicitly; resynchronize rather than silently skipping a gap. Retention duration remains an onboarding/release requirement, not an invented SLA.
+
+`GET /events` is the durable notification log. `GET /webhook-deliveries` is the transport history. Alert state, processing state and an HTTP delivery failure must never be collapsed into one status.

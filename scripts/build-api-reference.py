@@ -513,6 +513,10 @@ api_tab['groups'] = [
     {'group': 'Endpoints', 'pages': [{'group': g, 'icon': ENDPOINT_ICONS[g], 'expanded': False, 'pages': pages} for g, pages in NAV_GROUPS.items()]},
     {'group': 'Essentials', 'pages': [{'group': name, 'icon': icon, 'expanded': False, 'pages': ['api-reference/' + p for p in pages]} for name, icon, pages in ESSENTIAL_GROUPS]},
 ]
+from product_api_review import generate as generate_product_review
+from product_api_guides import apply_navigation
+generate_product_review()
+apply_navigation(api_tab, NAV_GROUPS, ESSENTIAL_GROUPS, ENDPOINT_ICONS)
 # Reporting endpoints remain directly under their main category.
 # Account-manager actions and platform retention settings are not public API groups.
 config['api']={'playground':{'display':'simple'},'examples':{'languages':['curl','python','javascript']}}
