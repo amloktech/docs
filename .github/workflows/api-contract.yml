@@ -20,7 +20,7 @@ jobs:
       - name: Regenerate the single public contract
         run: |
           python scripts/build-api-reference.py
-          git diff --exit-code -- openapi downloads api-reference data-model docs.json data/api-reference-index.json data/product-api-examples.json
+          git diff --exit-code -- openapi downloads api-reference data-model research docs.json data/api-reference-index.json data/product-api-examples.json
       - name: Validate contracts and examples
         run: |
           python scripts/validate-api-reference.py
@@ -31,3 +31,4 @@ jobs:
           node --test scripts/test-integration-client.mjs
           python scripts/test-readiness-contract.py
           python scripts/test-enterprise-scale.py
+          python scripts/test-data-model-alignment.py

@@ -3,6 +3,213 @@ title: "Shared API types"
 description: "Understand the common envelopes, money, pagination, events and evidence types used throughout the AMLOK API."
 ---
 
+{/* BEGIN API MODEL ALIGNMENT */}
+## Source helper types
+
+These helper schemas belong inside source-normalized records. Requiredness is relative to the containing object. Product response types such as `Money`, `Metric`, `Connection` and `Document` remain separate. OpenAPI carries all nested constraints and enum references.
+
+### `NormalizedAddress`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `line1` | `string` | No | Yes |
+| `line2` | `string` | No | Yes |
+| `city` | `string` | No | Yes |
+| `region` | `string` | No | Yes |
+| `postal_code` | `string` | No | Yes |
+| `country` | `string` | No | Yes |
+| `raw_address` | `string` | No | Yes |
+
+
+### `NormalizedAllocation`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `resource_type` | `NormalizedEnum_receivable_kind` | Yes | No |
+| `resource_id` | `string` | Yes | No |
+| `amount` | `NormalizedMoney` | Yes | No |
+
+
+### `NormalizedError`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `code` | `string` | Yes | No |
+| `message` | `string` | Yes | No |
+| `field` | `string` | No | Yes |
+| `retryable` | `boolean` | Yes | No |
+| `request_id` | `string` | Yes | No |
+
+
+### `NormalizedEvidenceRejection`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `code` | `string` | Yes | No |
+| `message` | `string` | Yes | No |
+| `document_ids` | `array<string>` | Yes | No |
+| `reviewed_at` | `string` | Yes | No |
+
+
+### `NormalizedFieldProvenance`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `field_path` | `string` | Yes | No |
+| `source_ref_index` | `integer` | Yes | No |
+| `source_field_path` | `string` | No | Yes |
+| `transformation_id` | `string` | No | Yes |
+| `evidence_level` | `NormalizedEnum_evidence_level` | Yes | No |
+| `confidence` | `string` | No | Yes |
+| `source_timezone` | `string` | No | Yes |
+
+
+### `NormalizedIdentifier`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `type` | `string` | Yes | No |
+| `value_token` | `string` | No | Yes |
+| `masked_value` | `string` | No | Yes |
+| `country` | `string` | Yes | No |
+| `jurisdiction` | `string` | No | Yes |
+
+
+### `NormalizedIndustryCode`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `taxonomy` | `string` | Yes | No |
+| `version` | `string` | No | Yes |
+| `code` | `string` | Yes | No |
+| `description` | `string` | No | Yes |
+| `is_primary` | `boolean` | No | Yes |
+
+
+### `NormalizedInvoiceLine`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `id` | `string` | No | Yes |
+| `product_id` | `string` | No | Yes |
+| `description` | `string` | No | Yes |
+| `quantity` | `string` | No | Yes |
+| `unit_of_measure` | `string` | No | Yes |
+| `unit_price` | `NormalizedMoney` | No | Yes |
+| `tax_amount` | `NormalizedMoney` | No | Yes |
+| `line_total` | `NormalizedMoney` | No | Yes |
+| `ledger_account_id` | `string` | No | Yes |
+| `tax_code` | `string` | No | Yes |
+
+
+### `NormalizedLienParty`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `role` | `string` | Yes | No |
+| `name` | `string` | Yes | No |
+| `entity_id` | `string` | No | Yes |
+| `address` | `NormalizedAddress` | No | Yes |
+| `source_party_id` | `string` | No | Yes |
+
+
+### `NormalizedMissingField`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `field_path` | `string` | Yes | No |
+| `reason` | `NormalizedEnum_null_reason` | Yes | No |
+| `detail` | `string` | No | Yes |
+
+
+### `NormalizedMoney`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `amount` | `string` | Yes | No |
+| `currency` | `string` | Yes | Yes |
+
+
+### `NormalizedProcessingFailure`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `code` | `string` | Yes | No |
+| `message` | `string` | Yes | No |
+| `retryable` | `boolean` | Yes | No |
+| `recovery_action` | `string` | Yes | No |
+| `retry_after_seconds` | `integer` | Yes | Yes |
+| `occurred_at` | `string` | Yes | No |
+| `request_id` | `string` | Yes | No |
+
+
+### `NormalizedPurchaseLine`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `product_id` | `string` | No | Yes |
+| `description` | `string` | No | Yes |
+| `quantity_ordered` | `string` | No | Yes |
+| `quantity_received` | `string` | No | Yes |
+| `unit_of_measure` | `string` | No | Yes |
+| `unit_price` | `NormalizedMoney` | No | Yes |
+| `line_total` | `NormalizedMoney` | No | Yes |
+
+
+### `NormalizedShipmentLine`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `product_id` | `string` | No | Yes |
+| `quantity` | `string` | Yes | No |
+| `unit_of_measure` | `string` | Yes | No |
+| `order_line_id` | `string` | No | Yes |
+
+
+### `NormalizedSourceRef`
+
+Nested source helper used by normalized evidence.
+
+| Field | Type | Required | Nullable |
+| --- | --- | --- | --- |
+| `provider_id` | `string` | Yes | No |
+| `connection_id` | `string` | No | Yes |
+| `source_record_id` | `string` | No | Yes |
+| `source_record_type` | `string` | No | Yes |
+| `source_updated_at` | `string` | No | Yes |
+| `retrieved_at` | `string` | Yes | No |
+| `document_id` | `string` | No | Yes |
+| `source_api_version` | `string` | No | Yes |
+{/* END API MODEL ALIGNMENT */}
+
 AMLOK uses the following shared types across its single public API. The [OpenAPI contract](/openapi/amlok.json) defines every required field, null rule and validation constraint.
 
 | Type | Meaning |
