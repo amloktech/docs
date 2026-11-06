@@ -4,7 +4,7 @@ Mintlify source for docs.amlok.io. AMLOK exposes one public product API for borr
 
 ## Authoritative contract
 
-`openapi/amlok.json` defines all 45 public operations under `/v1`. Endpoint pages, examples, Postman and the console Data Lookup import use this contract. There is no legacy API or alternate client catalog.
+`openapi/amlok.json` defines all 54 public operations under `/v1`. Endpoint pages, examples, Postman and the console Data Lookup import use this contract. There is no legacy API or alternate client catalog.
 
 ## Regenerate and validate
 

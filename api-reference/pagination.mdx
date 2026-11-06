@@ -16,3 +16,7 @@ Events use a durable feed position instead of collection snapshot metadata. `pag
 For initial bootstrap, call `GET /v1/events?start=now` to capture a position before reading collections. Bootstrap collection snapshots, then resume the event feed using that position to reconcile changes that occurred during bootstrap. Do not combine `start` and `cursor`.
 
 Webhook notifications may be duplicated or out of order. Deduplicate by event ID and compare resource versions when applying updates. A webhook destination failure does not erase the event or justify rerunning an assessment.
+
+## Collected-data synchronization
+
+Data records use DataPage: snapshot_id, as_of and changes_cursor alongside ordinary pagination. Finish that snapshot before consuming changes. Data changes use DataChangePage with a durable resume_cursor. This atomic snapshot boundary avoids gaps and is separate from the general resource-event feed. Follow the [data synchronization procedure](/api-reference/data-access).

@@ -1,0 +1,9 @@
+---
+title: "Get billing usage"
+description: "Retrieve the immutable calculation and product references explaining one usage charge. Historical rates are preserved; retries and included Signal reassessments are not duplicate charges."
+openapi: "/openapi/amlok.json GET /v1/billing/usage/{id}"
+---
+
+Retrieve the immutable calculation and product references explaining one usage charge. Historical rates are preserved; retries and included Signal reassessments are not duplicate charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

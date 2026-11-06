@@ -1,0 +1,56 @@
+---
+title: "Retrieve collected and enriched borrower data"
+sidebarTitle: "Retrieve collected and enriched borrower data"
+description: "Retrieve collected and enriched borrower data using the AMLOK institution API."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+The Data API exposes authorized bank, payment, accounting and other integration records before and after underwriting. It includes the typed normalized representation, enrichment fields, field provenance, missing-value reasons, provider extensions, permitted source payloads and document references. AMLOK handles processing; you do not invoke its internal stages.
+
+## Three read operations
+
+| Operation | Purpose |
+| --- | --- |
+| [GET /v1/data/records](/api-reference/endpoints/data/list-data-records) | Page through all currently authorized records for a borrower at one consistent snapshot |
+| [GET /v1/data/records/{id}](/api-reference/endpoints/data/get-data-record) | Retrieve an exact immutable record version |
+| [GET /v1/data/changes](/api-reference/endpoints/data/list-data-changes) | Keep a downstream copy up to date without repeatedly downloading the full history |
+
+The Data API requires data:read. It is independent of Insights and Signal execution. The underlying integration, borrower consent, purpose and provider entitlement must still authorize access. An empty result means no matching authorized records at that snapshot; inspect connection readiness and coverage before concluding there was no activity.
+
+## Bootstrap without missing changes
+
+```bash
+curl --request GET --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/data/records?borrower_id=bor_synthetic" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
+  --header 'Accept: application/json'
+```
+
+1. Supply borrower_id. Optionally filter by connection_id, integration_id or resource_type, such as bank_transaction, bank_account or invoice.
+2. Persist page.snapshot_id, page.as_of and page.changes_cursor from the first page. The server captures the snapshot and its change-feed boundary atomically.
+3. Fetch every page using next_cursor with the same borrower and filters. The snapshot freezes membership and record versions; current authorization is rechecked on each read.
+4. After committing the complete snapshot, call the changes endpoint with the saved changes_cursor. It already binds borrower, filters and authorization.
+5. Apply each batch idempotently using change ID and logical resource version. Follow next_cursor while has_more is true; after the final committed batch persist resume_cursor, including on empty results.
+
+Changes cover upsert, removed and access_changed. An upsert points to the exact DataRecord version to retrieve. Removed or newly restricted content may expose permitted metadata only. Do not mistake a provider deletion or access withdrawal for zero activity, and handle local retained copies according to the applicable authorization/retention policy.
+
+A stale or mismatched cursor fails explicitly. On 410, deliberately reconcile a new full snapshot; never silently skip the missing interval. Pagination never truncates the dataset. The data.updated notification identifies a connection with new committed data; use your cursor to collect the changes. Webhooks are a wake-up signal, not the record transport.
+
+## Understand each record
+
+- id identifies an immutable DataRecord version; resource_id identifies the logical normalized record, whose record_version increases on change.
+- resource_type selects one of the existing typed normalized schemas. normalized.object, normalized.id and normalized.record_version match the envelope; the server rejects inconsistent representations.
+- normalized includes all authorized populated fields. Financial enrichment can appear in those typed fields, while broader assessment dimensions and policy results are returned in the risk package.
+- field_provenance, source_refs, missing_fields and namespaced extensions retain source attribution and provider details. Do not invent unavailable values.
+- source_payload contains authorized provider-native business fields when retained and permitted. not_retained, restricted and not_applicable use a null value and an explicit reason. Credentials, secrets and unrelated borrower data are never part of the public data.
+- document_ids link original files and reports. Discover and download them with the [document API](/api-reference/documents).
+
+“All available data” means the complete authorized representation, including data not selected as evidence for a particular assessment. It does not override provider licensing or promise fields the provider did not supply. Restricted data is explicitly identified rather than silently represented as an empty successful result.
+
+## Assessments and exports
+
+The [risk package](/api-reference/risk-package) contains assessment-level enrichments, financial dimensions, policy results and limitations. [Evidence](/api-reference/evidence-traceability) freezes the exact inputs used for a particular result. EvidenceSummary.data_record_id connects that assessment input to its exact DataRecord version when applicable. A newer collected record never changes an older risk package.
+
+For a bulk download, create an export with kind data, data_snapshot_id from the list response, and format json or csv. The snapshot preserves the selected borrower and filters. Expired snapshots return 410; do not substitute a newer snapshot without the caller requesting it. Export access requires data:read and source authorization at creation, retrieval and download in addition to export scope.
+
+Data Lookup imports these same schemas. Choose Amlok API to explore the full contract, or a provider to view its applicable data/evidence schemas and the documented upstream field mappings.

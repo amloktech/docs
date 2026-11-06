@@ -47,8 +47,8 @@
 
 ## API reference
 
-- AMLOK publishes one product API: 45 operations under `/v1`, with `openapi/amlok.json` as the only public contract. The user explicitly rejected a parallel legacy API or migration reference on November 6, 2026. Do not restore archived endpoints or SDK downloads.
-- `scripts/product_api_review.py`, `scripts/current_api.py` and `scripts/current_api_guides.py` are the sole public API generators. `data/normalized-schema-source.json` supplies normalized data definitions, not another route catalog. Keep the console Data Lookup import synchronized with this contract.
+- AMLOK publishes one product API: 54 operations under `/v1`, with `openapi/amlok.json` as the only public contract. The user explicitly rejected a parallel legacy API or migration reference on November 6, 2026. Do not restore archived endpoints or SDK downloads.
+- `scripts/product_api_review.py`, `scripts/current_api.py` and `scripts/current_api_guides.py` and their institution_api helpers are the sole public API generators. `data/normalized-schema-source.json` supplies normalized data definitions, not another route catalog. Keep the console Data Lookup import synchronized with this contract.
 - Validate with `scripts/validate-api-reference.py`, `scripts/test-product-api-review.py` and `scripts/test-api-examples.py`. These test contract structure and examples, not a backend deployment.
 - Only distribute clients and examples generated from the current contract. SDK source archives from the superseded design have been removed.
 

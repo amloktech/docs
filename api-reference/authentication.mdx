@@ -19,16 +19,17 @@ Every endpoint lists its required scope. Console roles and machine scopes work t
 
 | Scope | Operations |
 | --- | ---: |
-| `billing:read` | 2 |
+| `billing:read` | 7 |
 | `borrowers:read` | 2 |
 | `borrowers:write` | 1 |
 | `configuration:read` | 5 |
 | `configuration:write` | 2 |
 | `connections:read` | 4 |
 | `connections:write` | 2 |
+| `data:read` | 3 |
 | `events:read` | 3 |
 | `events:write` | 1 |
-| `evidence:read` | 4 |
+| `evidence:read` | 5 |
 | `evidence:write` | 1 |
 | `exports:read` | 2 |
 | `exports:write` | 1 |
@@ -42,3 +43,5 @@ Every endpoint lists its required scope. Console roles and machine scopes work t
 Export access also checks the exported content: `exports:read` does not grant access to the underlying content. Risk-package exports also require `results:read`, billing exports require `billing:read` and Owner authority, and evidence exports require `evidence:read` and source entitlement. The same source entitlements apply on export creation, retrieval and download. All linked IDs and cursor state are checked against the authorized workspace/environment.
 
 `401` means authentication failed; `403` means access was denied. A resource ID is not a permission. Product records have no edit or deletion operations, even for Owners. Creating new assessment inputs or changing future monitor configuration does not modify historical data.
+
+Collected data requires data:read. Assessment evidence requires evidence:read. Export scopes alone grant neither: a data export additionally requires data:read; each other kind retains its documented source permission. Billing events, deliveries and replays require billing:read and Owner authority in addition to event scopes. Data notifications require data:read. Unauthorized event metadata must be filtered from feeds and denied on direct reads/replays.

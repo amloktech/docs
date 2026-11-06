@@ -2,7 +2,7 @@
   "info": {
     "name": "AMLOK API 1.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "45-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries."
+    "description": "54-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries."
   },
   "auth": {
     "type": "bearer",
@@ -339,7 +339,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1,\n    \"embedding_version_id\": \"embed_synthetic\",\n    \"purpose\": \"connect\",\n    \"origination_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -365,7 +365,7 @@
           ],
           "query": []
         },
-        "description": "Get embedding session. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
+        "description": "Inspect the borrower-specific execution of a Hub configured in the console. Session completion confirms connection setup, not ingestion readiness or underwriting completion. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
       },
       "response": [
         {
@@ -390,7 +390,7 @@
               ],
               "query": []
             },
-            "description": "Get embedding session. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
+            "description": "Inspect the borrower-specific execution of a Hub configured in the console. Session completion confirms connection setup, not ingestion readiness or underwriting completion. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
           },
           "status": "OK",
           "code": 200,
@@ -400,7 +400,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1,\n    \"embedding_version_id\": \"embed_synthetic\",\n    \"purpose\": \"connect\",\n    \"origination_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -425,7 +425,7 @@
           ],
           "query": []
         },
-        "description": "List connections. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
+        "description": "Inspect borrower-authorized integrations, connection status, ingestion readiness, freshness and coverage. The Hub performs authorization; this endpoint exposes its result without configuring integrations. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
       },
       "response": [
         {
@@ -449,7 +449,7 @@
               ],
               "query": []
             },
-            "description": "List connections. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
+            "description": "Inspect borrower-authorized integrations, connection status, ingestion readiness, freshness and coverage. The Hub performs authorization; this endpoint exposes its result without configuring integrations. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
           },
           "status": "OK",
           "code": 200,
@@ -459,7 +459,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"con_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"status\": \"connected\",\n      \"consent_id\": \"consent_synthetic\",\n      \"last_successful_sync_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"coverage\": {\n        \"start\": \"2025-11-01T00:00:00Z\",\n        \"end\": \"2026-11-01T00:00:00Z\"\n      },\n      \"missing_reason\": null,\n      \"record_version\": 1\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"con_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"status\": \"connected\",\n      \"consent_id\": \"consent_synthetic\",\n      \"last_successful_sync_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"coverage\": {\n        \"start\": \"2025-11-01T00:00:00Z\",\n        \"end\": \"2026-11-01T00:00:00Z\"\n      },\n      \"missing_reason\": null,\n      \"record_version\": 1,\n      \"data_status\": \"partial\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
         }
       ]
     },
@@ -485,7 +485,7 @@
           ],
           "query": []
         },
-        "description": "Get connection. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
+        "description": "Inspect one borrower connection and its collection status. Use a Hub reauthorization session when borrower action is required; no provider credentials are returned. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
       },
       "response": [
         {
@@ -510,7 +510,7 @@
               ],
               "query": []
             },
-            "description": "Get connection. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
+            "description": "Inspect one borrower connection and its collection status. Use a Hub reauthorization session when borrower action is required; no provider credentials are returned. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:read."
           },
           "status": "OK",
           "code": 200,
@@ -520,7 +520,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"con_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"integration_id\": \"bank_synthetic\",\n    \"status\": \"connected\",\n    \"consent_id\": \"consent_synthetic\",\n    \"last_successful_sync_at\": \"2026-11-06T12:00:00Z\",\n    \"source_as_of\": \"2026-11-06T12:00:00Z\",\n    \"coverage\": {\n      \"start\": \"2025-11-01T00:00:00Z\",\n      \"end\": \"2026-11-01T00:00:00Z\"\n    },\n    \"missing_reason\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"con_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"integration_id\": \"bank_synthetic\",\n    \"status\": \"connected\",\n    \"consent_id\": \"consent_synthetic\",\n    \"last_successful_sync_at\": \"2026-11-06T12:00:00Z\",\n    \"source_as_of\": \"2026-11-06T12:00:00Z\",\n    \"coverage\": {\n      \"start\": \"2025-11-01T00:00:00Z\",\n      \"end\": \"2026-11-01T00:00:00Z\"\n    },\n    \"missing_reason\": null,\n    \"record_version\": 1,\n    \"data_status\": \"partial\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -795,7 +795,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"processing\",\n    \"restriction_reason\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"processing\",\n    \"restriction_reason\": null,\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"document_type\": \"financial_statement\",\n    \"origination_id\": null,\n    \"requirement_id\": null,\n    \"origin\": \"institution_upload\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -856,7 +856,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"available\",\n    \"restriction_reason\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"available\",\n    \"restriction_reason\": null,\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"document_type\": \"financial_statement\",\n    \"origination_id\": null,\n    \"requirement_id\": null,\n    \"origin\": \"institution_upload\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1472,7 +1472,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"accepted\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": null,\n    \"failure\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"accepted\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": null,\n    \"failure\": null,\n    \"record_version\": 1,\n    \"submitted_request\": {\n      \"borrower_id\": \"bor_synthetic\",\n      \"application\": {\n        \"institution_reference\": \"LOS-2026-0042\",\n        \"requested_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"requested_term_months\": 12,\n        \"purpose\": \"Working capital\",\n        \"application_schema_id\": \"app_schema_synthetic\",\n        \"declared_data\": {\n          \"annual_revenue\": \"600000.00\"\n        }\n      },\n      \"lending_product_version_id\": \"lpv_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"document_ids\": []\n    },\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1531,7 +1531,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"orgn_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"status\": \"completed\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"requirements\": [],\n      \"risk_package_id\": \"rp_synthetic\",\n      \"failure\": null,\n      \"record_version\": 1\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"orgn_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"status\": \"completed\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"requirements\": [],\n      \"risk_package_id\": \"rp_synthetic\",\n      \"failure\": null,\n      \"record_version\": 1,\n      \"submitted_request\": {\n        \"borrower_id\": \"bor_synthetic\",\n        \"application\": {\n          \"institution_reference\": \"LOS-2026-0042\",\n          \"requested_amount\": {\n            \"amount\": \"50000.00\",\n            \"currency\": \"CAD\"\n          },\n          \"requested_term_months\": 12,\n          \"purpose\": \"Working capital\",\n          \"application_schema_id\": \"app_schema_synthetic\",\n          \"declared_data\": {\n            \"annual_revenue\": \"600000.00\"\n          }\n        },\n        \"lending_product_version_id\": \"lpv_synthetic\",\n        \"risk_policy_version_id\": \"rpv_synthetic\",\n        \"connection_ids\": [\n          \"con_synthetic\"\n        ],\n        \"document_ids\": []\n      },\n      \"document_ids\": []\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
         }
       ]
     },
@@ -1557,7 +1557,7 @@
           ],
           "query": []
         },
-        "description": "Get origination. All IDs and cursors must belong to the authorized workspace and environment. Required scope: insights:read."
+        "description": "Retrieve an underwriting request, its immutable submitted application, product and policy versions, document associations, requirements, status and risk-package reference, including before processing completes. All IDs and cursors must belong to the authorized workspace and environment. Required scope: insights:read."
       },
       "response": [
         {
@@ -1582,7 +1582,7 @@
               ],
               "query": []
             },
-            "description": "Get origination. All IDs and cursors must belong to the authorized workspace and environment. Required scope: insights:read."
+            "description": "Retrieve an underwriting request, its immutable submitted application, product and policy versions, document associations, requirements, status and risk-package reference, including before processing completes. All IDs and cursors must belong to the authorized workspace and environment. Required scope: insights:read."
           },
           "status": "OK",
           "code": 200,
@@ -1592,7 +1592,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"completed\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": \"rp_synthetic\",\n    \"failure\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"completed\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": \"rp_synthetic\",\n    \"failure\": null,\n    \"record_version\": 1,\n    \"submitted_request\": {\n      \"borrower_id\": \"bor_synthetic\",\n      \"application\": {\n        \"institution_reference\": \"LOS-2026-0042\",\n        \"requested_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"requested_term_months\": 12,\n        \"purpose\": \"Working capital\",\n        \"application_schema_id\": \"app_schema_synthetic\",\n        \"declared_data\": {\n          \"annual_revenue\": \"600000.00\"\n        }\n      },\n      \"lending_product_version_id\": \"lpv_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"document_ids\": []\n    },\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1653,7 +1653,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"rp_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"origination_id\": \"orgn_synthetic\",\n    \"monitoring_run_id\": null,\n    \"product\": \"insights\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"previous_package_id\": null,\n    \"application\": {\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"requested_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"requested_term_months\": 12,\n      \"purpose\": \"Working capital\",\n      \"application_schema_id\": \"app_schema_synthetic\",\n      \"declared_data\": {\n        \"annual_revenue\": \"600000.00\"\n      }\n    },\n    \"lending_product\": {\n      \"id\": \"lpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital\",\n        \"version\": \"1\",\n        \"name\": \"Working capital loan\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"currency\": \"CAD\",\n        \"product_type\": \"term_loan\",\n        \"minimum_amount\": {\n          \"amount\": \"10000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"maximum_amount\": {\n          \"amount\": \"100000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"minimum_term_months\": 6,\n        \"maximum_term_months\": 24,\n        \"repayment_frequency\": \"monthly\",\n        \"pricing_schema_id\": \"pricing_synthetic\",\n        \"pricing\": {\n          \"rate_type\": \"fixed\",\n          \"annual_interest_rate\": \"0.12\",\n          \"amortization_months\": 12,\n          \"fees\": []\n        },\n        \"terms_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"risk_policy\": {\n      \"id\": \"rpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital-policy\",\n        \"version\": \"1\",\n        \"name\": \"Illustrative policy, not a recommended threshold\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"rules\": [\n          {\n            \"id\": \"dscr-minimum\",\n            \"dimension_key\": \"dscr\",\n            \"operator\": \"gte\",\n            \"threshold\": \"1.25\",\n            \"unit\": \"ratio\",\n            \"on_missing\": \"review\",\n            \"on_fail\": \"review\"\n          }\n        ],\n        \"policy_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"assessment\": {\n      \"recommendation\": \"review_required\",\n      \"is_institution_decision\": false,\n      \"summary\": \"Repayment capacity requires review because the debt schedule is incomplete.\",\n      \"reasons\": [\n        \"Required repayment evidence is missing.\"\n      ]\n    },\n    \"dimensions\": [\n      {\n        \"key\": \"repayment_capacity\",\n        \"status\": \"unavailable\",\n        \"summary\": \"DSCR is not calculated without complete eligible debt-service inputs.\",\n        \"metrics\": [\n          {\n            \"key\": \"dscr\",\n            \"label\": \"Cash-flow debt-service coverage\",\n            \"status\": \"unavailable\",\n            \"value\": null,\n            \"unit\": \"ratio\",\n            \"window\": {\n              \"start\": \"2025-11-01T00:00:00Z\",\n              \"end\": \"2026-11-01T00:00:00Z\"\n            },\n            \"calculation_version\": \"cashflow-dscr-synthetic-v1\",\n            \"missing_reason\": \"Complete existing and proposed debt-service schedule is unavailable.\",\n            \"evidence_ids\": [\n              \"ev_bank_synthetic\"\n            ]\n          }\n        ],\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"policy_results\": [\n      {\n        \"rule_id\": \"dscr-minimum\",\n        \"result\": \"unavailable\",\n        \"actual\": null,\n        \"threshold\": \"1.25\",\n        \"unit\": \"ratio\",\n        \"explanation\": \"The rule cannot be evaluated without a supported DSCR.\",\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"sources\": [\n      {\n        \"connection_id\": \"con_synthetic\",\n        \"integration_id\": \"bank_synthetic\",\n        \"source_as_of\": \"2026-11-01T00:00:00Z\",\n        \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n        \"window\": {\n          \"start\": \"2025-11-01T00:00:00Z\",\n          \"end\": \"2026-11-01T00:00:00Z\"\n        },\n        \"status\": \"partial\",\n        \"limitations\": [\n          \"Bank records alone do not establish a complete debt schedule.\"\n        ]\n      }\n    ],\n    \"limitations\": [\n      \"All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation.\"\n    ],\n    \"evidence_set\": {\n      \"id\": \"es_synthetic\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"count\": 1\n    },\n    \"versions\": {\n      \"schema\": \"1.0.0\",\n      \"normalization\": \"synthetic-v1\",\n      \"calculation\": \"synthetic-v1\",\n      \"model\": null\n    },\n    \"billing_usage_id\": \"usage_synthetic\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"rp_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"origination_id\": \"orgn_synthetic\",\n    \"monitoring_run_id\": null,\n    \"product\": \"insights\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"previous_package_id\": null,\n    \"application\": {\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"requested_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"requested_term_months\": 12,\n      \"purpose\": \"Working capital\",\n      \"application_schema_id\": \"app_schema_synthetic\",\n      \"declared_data\": {\n        \"annual_revenue\": \"600000.00\"\n      }\n    },\n    \"lending_product\": {\n      \"id\": \"lpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital\",\n        \"version\": \"1\",\n        \"name\": \"Working capital loan\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"currency\": \"CAD\",\n        \"product_type\": \"term_loan\",\n        \"minimum_amount\": {\n          \"amount\": \"10000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"maximum_amount\": {\n          \"amount\": \"100000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"minimum_term_months\": 6,\n        \"maximum_term_months\": 24,\n        \"repayment_frequency\": \"monthly\",\n        \"pricing_schema_id\": \"pricing_synthetic\",\n        \"pricing\": {\n          \"rate_type\": \"fixed\",\n          \"annual_interest_rate\": \"0.12\",\n          \"amortization_months\": 12,\n          \"fees\": []\n        },\n        \"terms_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"risk_policy\": {\n      \"id\": \"rpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital-policy\",\n        \"version\": \"1\",\n        \"name\": \"Illustrative policy, not a recommended threshold\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"rules\": [\n          {\n            \"id\": \"dscr-minimum\",\n            \"dimension_key\": \"dscr\",\n            \"operator\": \"gte\",\n            \"threshold\": \"1.25\",\n            \"unit\": \"ratio\",\n            \"on_missing\": \"review\",\n            \"on_fail\": \"review\"\n          }\n        ],\n        \"policy_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"assessment\": {\n      \"recommendation\": \"review_required\",\n      \"is_institution_decision\": false,\n      \"summary\": \"Repayment capacity requires review because the debt schedule is incomplete.\",\n      \"reasons\": [\n        \"Required repayment evidence is missing.\"\n      ]\n    },\n    \"dimensions\": [\n      {\n        \"key\": \"repayment_capacity\",\n        \"status\": \"unavailable\",\n        \"summary\": \"DSCR is not calculated without complete eligible debt-service inputs.\",\n        \"metrics\": [\n          {\n            \"key\": \"dscr\",\n            \"label\": \"Cash-flow debt-service coverage\",\n            \"status\": \"unavailable\",\n            \"value\": null,\n            \"unit\": \"ratio\",\n            \"window\": {\n              \"start\": \"2025-11-01T00:00:00Z\",\n              \"end\": \"2026-11-01T00:00:00Z\"\n            },\n            \"calculation_version\": \"cashflow-dscr-synthetic-v1\",\n            \"missing_reason\": \"Complete existing and proposed debt-service schedule is unavailable.\",\n            \"evidence_ids\": [\n              \"ev_bank_synthetic\"\n            ]\n          }\n        ],\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"policy_results\": [\n      {\n        \"rule_id\": \"dscr-minimum\",\n        \"result\": \"unavailable\",\n        \"actual\": null,\n        \"threshold\": \"1.25\",\n        \"unit\": \"ratio\",\n        \"explanation\": \"The rule cannot be evaluated without a supported DSCR.\",\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"sources\": [\n      {\n        \"connection_id\": \"con_synthetic\",\n        \"integration_id\": \"bank_synthetic\",\n        \"source_as_of\": \"2026-11-01T00:00:00Z\",\n        \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n        \"window\": {\n          \"start\": \"2025-11-01T00:00:00Z\",\n          \"end\": \"2026-11-01T00:00:00Z\"\n        },\n        \"status\": \"partial\",\n        \"limitations\": [\n          \"Bank records alone do not establish a complete debt schedule.\"\n        ]\n      }\n    ],\n    \"limitations\": [\n      \"All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation.\"\n    ],\n    \"evidence_set\": {\n      \"id\": \"es_synthetic\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"count\": 1\n    },\n    \"versions\": {\n      \"schema\": \"1.0.0\",\n      \"normalization\": \"synthetic-v1\",\n      \"calculation\": \"synthetic-v1\",\n      \"model\": null\n    },\n    \"billing_usage_id\": \"usage_synthetic\",\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1722,7 +1722,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"ev_bank_synthetic\",\n      \"evidence_set_id\": \"es_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"kind\": \"normalized_record\",\n      \"source_id\": \"bank_synthetic\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"access\": \"restricted\",\n      \"access_reason\": \"Illustrative source entitlement restriction.\",\n      \"document_id\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"ev_bank_synthetic\",\n      \"evidence_set_id\": \"es_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"kind\": \"normalized_record\",\n      \"source_id\": \"bank_synthetic\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"access\": \"restricted\",\n      \"access_reason\": \"Illustrative source entitlement restriction.\",\n      \"document_id\": null,\n      \"data_record_id\": \"dr_synthetic_v1\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
         }
       ]
     },
@@ -1783,7 +1783,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"record\": {\n      \"id\": \"ev_bank_synthetic\",\n      \"evidence_set_id\": \"es_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"kind\": \"normalized_record\",\n      \"source_id\": \"bank_synthetic\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"access\": \"restricted\",\n      \"access_reason\": \"Illustrative source entitlement restriction.\",\n      \"document_id\": null\n    },\n    \"normalized\": null,\n    \"provider_report_document_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"record\": {\n      \"id\": \"ev_bank_synthetic\",\n      \"evidence_set_id\": \"es_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"kind\": \"normalized_record\",\n      \"source_id\": \"bank_synthetic\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"access\": \"restricted\",\n      \"access_reason\": \"Illustrative source entitlement restriction.\",\n      \"document_id\": null,\n      \"data_record_id\": \"dr_synthetic_v1\"\n    },\n    \"normalized\": null,\n    \"provider_report_document_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2356,7 +2356,7 @@
           ],
           "query": []
         },
-        "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read."
+        "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
       },
       "response": [
         {
@@ -2380,7 +2380,7 @@
               ],
               "query": []
             },
-            "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read."
+            "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
           },
           "status": "OK",
           "code": 200,
@@ -2416,7 +2416,7 @@
           ],
           "query": []
         },
-        "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read."
+        "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
       },
       "response": [
         {
@@ -2441,7 +2441,7 @@
               ],
               "query": []
             },
-            "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read."
+            "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
           },
           "status": "OK",
           "code": 200,
@@ -2484,7 +2484,7 @@
           ],
           "query": []
         },
-        "description": "Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:write. Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
+        "description": "Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:write. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
         "body": {
           "mode": "raw",
           "raw": "{\n  \"kind\": \"risk_package\",\n  \"risk_package_id\": \"rp_synthetic\",\n  \"format\": \"json\"\n}",
@@ -2525,7 +2525,7 @@
               ],
               "query": []
             },
-            "description": "Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:write. Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
+            "description": "Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:write. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"kind\": \"risk_package\",\n  \"risk_package_id\": \"rp_synthetic\",\n  \"format\": \"json\"\n}",
@@ -2570,7 +2570,7 @@
           ],
           "query": []
         },
-        "description": "Get export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download."
+        "description": "Get export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download."
       },
       "response": [
         {
@@ -2595,7 +2595,7 @@
               ],
               "query": []
             },
-            "description": "Get export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download."
+            "description": "Get export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download."
           },
           "status": "OK",
           "code": 200,
@@ -2640,7 +2640,7 @@
           ],
           "query": []
         },
-        "description": "Download export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
+        "description": "Download export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
         "body": {
           "mode": "raw",
           "raw": "{\n  \"purpose\": \"Institution underwriting review\"\n}",
@@ -2683,7 +2683,7 @@
               ],
               "query": []
             },
-            "description": "Download export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
+            "description": "Download export. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:read. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"purpose\": \"Institution underwriting review\"\n}",
@@ -2727,7 +2727,7 @@
           ],
           "query": []
         },
-        "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read."
+        "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
       },
       "response": [
         {
@@ -2751,7 +2751,7 @@
               ],
               "query": []
             },
-            "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read."
+            "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
           },
           "status": "OK",
           "code": 200,
@@ -2794,7 +2794,7 @@
           ],
           "query": []
         },
-        "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write.",
+        "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
         "body": {
           "mode": "raw",
           "raw": "{\n  \"event_id\": \"evt_synthetic\",\n  \"endpoint_id\": \"dest_synthetic\"\n}",
@@ -2835,7 +2835,7 @@
               ],
               "query": []
             },
-            "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write.",
+            "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"event_id\": \"evt_synthetic\",\n  \"endpoint_id\": \"dest_synthetic\"\n}",
@@ -2880,7 +2880,7 @@
           ],
           "query": []
         },
-        "description": "Read the selected workspace CAD wallet shared across Insights and Signal. Payment methods and automatic funding controls belong to the organization billing console. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required."
+        "description": "Read the selected workspace CAD wallet shared across Insights and Signal. Payment methods and automatic funding controls belong to the organization billing console. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
       },
       "response": [
         {
@@ -2905,7 +2905,7 @@
               ],
               "query": []
             },
-            "description": "Read the selected workspace CAD wallet shared across Insights and Signal. Payment methods and automatic funding controls belong to the organization billing console. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required."
+            "description": "Read the selected workspace CAD wallet shared across Insights and Signal. Payment methods and automatic funding controls belong to the organization billing console. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
           },
           "status": "OK",
           "code": 200,
@@ -2915,7 +2915,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"currency\": \"CAD\",\n    \"available_credits\": \"4935.00\",\n    \"spent_credits\": \"65.00\",\n    \"billing_account_id\": \"billing_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"currency\": \"CAD\",\n    \"available_credits\": \"4935.00\",\n    \"spent_credits\": \"65.00\",\n    \"billing_account_id\": \"billing_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"paid_funding_credits\": \"5000.00\",\n    \"promotional_credits\": \"0.00\",\n    \"adjustment_credits\": \"0.00\",\n    \"refunded_credits\": \"0.00\",\n    \"auto_pay\": {\n      \"enabled\": false,\n      \"trigger_amount\": \"200.00\",\n      \"top_up_amount\": \"500.00\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2941,7 +2941,7 @@
           ],
           "query": []
         },
-        "description": "Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required."
+        "description": "Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
       },
       "response": [
         {
@@ -2966,7 +2966,7 @@
               ],
               "query": []
             },
-            "description": "Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required."
+            "description": "Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
           },
           "status": "OK",
           "code": 200,
@@ -2976,7 +2976,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"txn_usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"posted_at\": \"2026-11-06T12:00:00Z\",\n      \"amount\": \"-40.00\",\n      \"currency\": \"CAD\",\n      \"kind\": \"usage\",\n      \"product\": \"insights\",\n      \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n      \"usage_id\": \"usage_synthetic\",\n      \"related_transaction_id\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"txn_usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"posted_at\": \"2026-11-06T12:00:00Z\",\n      \"amount\": \"-40.00\",\n      \"currency\": \"CAD\",\n      \"kind\": \"usage\",\n      \"product\": \"insights\",\n      \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n      \"usage_id\": \"usage_synthetic\",\n      \"payment_id\": null,\n      \"borrower_id\": \"bor_synthetic\",\n      \"balance_after\": \"4935.00\",\n      \"sequence\": 3,\n      \"funding_type\": null,\n      \"related_transaction_id\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
         }
       ]
     },
@@ -3245,6 +3245,581 @@
             }
           ],
           "body": "{\n  \"data\": {\n    \"status\": \"operational\",\n    \"as_of\": \"2026-11-06T12:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List data records",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/data/records?borrower_id=bor_synthetic",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "data",
+            "records"
+          ],
+          "query": [
+            {
+              "key": "borrower_id",
+              "value": "bor_synthetic"
+            }
+          ]
+        },
+        "description": "Read all authorized collected and enriched records for a borrower, independently of an origination or risk package. The first page creates a stable snapshot and an atomic changes_cursor. No page truncation; follow next_cursor until has_more is false. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/data/records?borrower_id=bor_synthetic",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "data",
+                "records"
+              ],
+              "query": [
+                {
+                  "key": "borrower_id",
+                  "value": "bor_synthetic"
+                }
+              ]
+            },
+            "description": "Read all authorized collected and enriched records for a borrower, independently of an origination or risk package. The first page creates a stable snapshot and an atomic changes_cursor. No page truncation; follow next_cursor until has_more is false. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"dr_synthetic_v1\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"connection_id\": \"con_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"ingested_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"access\": \"available\",\n      \"access_reason\": null,\n      \"normalized\": {\n        \"id\": \"txn_synthetic\",\n        \"object\": \"bank_transaction\",\n        \"subject_id\": \"biz_synthetic\",\n        \"created_at\": \"2026-11-06T12:00:00Z\",\n        \"updated_at\": \"2026-11-06T12:00:00Z\",\n        \"observed_at\": \"2026-11-06T12:00:00Z\",\n        \"record_version\": 1,\n        \"source_refs\": [],\n        \"data_status\": \"partial\",\n        \"missing_fields\": [],\n        \"schema_version\": \"1.0.0\",\n        \"account_id\": \"acct_synthetic\",\n        \"direction\": \"inflow\",\n        \"status\": \"posted\",\n        \"amount\": {\n          \"amount\": \"1250.00\",\n          \"currency\": \"CAD\"\n        },\n        \"extensions\": {\n          \"synthetic_provider\": {\n            \"original_description\": \"SYNTHETIC CUSTOMER PAYMENT\"\n          }\n        }\n      },\n      \"source_payload\": {\n        \"status\": \"available\",\n        \"value\": {\n          \"description\": \"SYNTHETIC CUSTOMER PAYMENT\",\n          \"amount\": \"1250.00\",\n          \"currency\": \"CAD\"\n        },\n        \"reason\": null\n      },\n      \"document_ids\": []\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"changes_cursor\": \"data_cursor_synthetic\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get data record",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/data/records/{{record_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "data",
+            "records",
+            "{{record_id}}"
+          ],
+          "query": []
+        },
+        "description": "Read an exact immutable data-record version with normalized fields, enrichment fields, provenance, authorized source payload and file references. Never silently replace this version with newer data. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/data/records/{{record_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "data",
+                "records",
+                "{{record_id}}"
+              ],
+              "query": []
+            },
+            "description": "Read an exact immutable data-record version with normalized fields, enrichment fields, provenance, authorized source payload and file references. Never silently replace this version with newer data. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"dr_synthetic_v1\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"connection_id\": \"con_synthetic\",\n    \"integration_id\": \"bank_synthetic\",\n    \"resource_type\": \"bank_transaction\",\n    \"resource_id\": \"txn_synthetic\",\n    \"record_version\": 1,\n    \"ingested_at\": \"2026-11-06T12:00:00Z\",\n    \"source_as_of\": \"2026-11-06T12:00:00Z\",\n    \"access\": \"available\",\n    \"access_reason\": null,\n    \"normalized\": {\n      \"id\": \"txn_synthetic\",\n      \"object\": \"bank_transaction\",\n      \"subject_id\": \"biz_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"record_version\": 1,\n      \"source_refs\": [],\n      \"data_status\": \"partial\",\n      \"missing_fields\": [],\n      \"schema_version\": \"1.0.0\",\n      \"account_id\": \"acct_synthetic\",\n      \"direction\": \"inflow\",\n      \"status\": \"posted\",\n      \"amount\": {\n        \"amount\": \"1250.00\",\n        \"currency\": \"CAD\"\n      },\n      \"extensions\": {\n        \"synthetic_provider\": {\n          \"original_description\": \"SYNTHETIC CUSTOMER PAYMENT\"\n        }\n      }\n    },\n    \"source_payload\": {\n      \"status\": \"available\",\n      \"value\": {\n        \"description\": \"SYNTHETIC CUSTOMER PAYMENT\",\n        \"amount\": \"1250.00\",\n        \"currency\": \"CAD\"\n      },\n      \"reason\": null\n    },\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List data changes",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/data/changes?cursor=data_cursor_synthetic",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "data",
+            "changes"
+          ],
+          "query": [
+            {
+              "key": "cursor",
+              "value": "data_cursor_synthetic"
+            }
+          ]
+        },
+        "description": "Resume from the changes_cursor returned by a completed data snapshot, then persist resume_cursor after applying each batch. Includes upserts, source removals and access changes; expired or mismatched cursors fail explicitly. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/data/changes?cursor=data_cursor_synthetic",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "data",
+                "changes"
+              ],
+              "query": [
+                {
+                  "key": "cursor",
+                  "value": "data_cursor_synthetic"
+                }
+              ]
+            },
+            "description": "Resume from the changes_cursor returned by a completed data snapshot, then persist resume_cursor after applying each batch. Includes upserts, source removals and access changes; expired or mismatched cursors fail explicitly. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"change_synthetic\",\n      \"type\": \"upsert\",\n      \"occurred_at\": \"2026-11-06T12:00:00Z\",\n      \"record_id\": \"dr_synthetic_v1\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"resource_id\": \"txn_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"record_version\": 1,\n      \"reason\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"resume_cursor\": \"resume_synthetic\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List documents",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/documents",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "documents"
+          ],
+          "query": []
+        },
+        "description": "Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/documents",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "documents"
+              ],
+              "query": []
+            },
+            "description": "Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"doc_synthetic\",\n      \"context\": \"borrower\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"file_name\": \"financial-statement.pdf\",\n      \"mime_type\": \"application/pdf\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"size_bytes\": 12500,\n      \"status\": \"available\",\n      \"restriction_reason\": null,\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"document_type\": \"financial_statement\",\n      \"origination_id\": null,\n      \"requirement_id\": null,\n      \"origin\": \"institution_upload\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get billing transaction",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/billing/transactions/{{record_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "billing",
+            "transactions",
+            "{{record_id}}"
+          ],
+          "query": []
+        },
+        "description": "Retrieve one immutable wallet movement, its historical balance and links to payment or product usage. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/billing/transactions/{{record_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "billing",
+                "transactions",
+                "{{record_id}}"
+              ],
+              "query": []
+            },
+            "description": "Retrieve one immutable wallet movement, its historical balance and links to payment or product usage. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"txn_usage_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"posted_at\": \"2026-11-06T12:00:00Z\",\n    \"amount\": \"-40.00\",\n    \"currency\": \"CAD\",\n    \"kind\": \"usage\",\n    \"product\": \"insights\",\n    \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n    \"usage_id\": \"usage_synthetic\",\n    \"payment_id\": null,\n    \"borrower_id\": \"bor_synthetic\",\n    \"balance_after\": \"4935.00\",\n    \"sequence\": 3,\n    \"funding_type\": null,\n    \"related_transaction_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List billing payments",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/billing/payments",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "billing",
+            "payments"
+          ],
+          "query": []
+        },
+        "description": "Read top-up and contract-funding payment attempts, including pending, failed, settled, returned and refunded states. Pending or failed payments are not spendable credits. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/billing/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "billing",
+                "payments"
+              ],
+              "query": []
+            },
+            "description": "Read top-up and contract-funding payment attempts, including pending, failed, settled, returned and refunded states. Pending or failed payments are not spendable credits. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"pay_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"status\": \"succeeded\",\n      \"purpose\": \"manual_top_up\",\n      \"amount\": \"5000.00\",\n      \"currency\": \"CAD\",\n      \"credited_amount\": \"5000.00\",\n      \"refunded_amount\": \"0.00\",\n      \"method\": {\n        \"type\": \"card\",\n        \"label\": \"Visa ending 4242\"\n      },\n      \"external_reference\": \"PAY-SYNTHETIC-0042\",\n      \"settled_at\": \"2026-11-06T12:00:00Z\",\n      \"failure_reason\": null,\n      \"transaction_ids\": [\n        \"txn_funding_synthetic\"\n      ]\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get billing payment",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/billing/payments/{{record_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "billing",
+            "payments",
+            "{{record_id}}"
+          ],
+          "query": []
+        },
+        "description": "Retrieve one payment and the wallet entries created by its settlement, return or refund. Uses the requested billing snapshot when supplied. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/billing/payments/{{record_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "billing",
+                "payments",
+                "{{record_id}}"
+              ],
+              "query": []
+            },
+            "description": "Retrieve one payment and the wallet entries created by its settlement, return or refund. Uses the requested billing snapshot when supplied. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"pay_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"status\": \"succeeded\",\n    \"purpose\": \"manual_top_up\",\n    \"amount\": \"5000.00\",\n    \"currency\": \"CAD\",\n    \"credited_amount\": \"5000.00\",\n    \"refunded_amount\": \"0.00\",\n    \"method\": {\n      \"type\": \"card\",\n      \"label\": \"Visa ending 4242\"\n    },\n    \"external_reference\": \"PAY-SYNTHETIC-0042\",\n    \"settled_at\": \"2026-11-06T12:00:00Z\",\n    \"failure_reason\": null,\n    \"transaction_ids\": [\n      \"txn_funding_synthetic\"\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List billing usage",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/billing/usage",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "billing",
+            "usage"
+          ],
+          "query": []
+        },
+        "description": "Read what was charged, for which borrower and product, with historical rate, tier, workload and links to the wallet transaction and assessment. Signal combines a borrower across deals once per workspace/month. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/billing/usage",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "billing",
+                "usage"
+              ],
+              "query": []
+            },
+            "description": "Read what was charged, for which borrower and product, with historical rate, tier, workload and links to the wallet transaction and assessment. Signal combines a borrower across deals once per workspace/month. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"product\": \"insights\",\n      \"origination_id\": \"orgn_synthetic\",\n      \"monitor_ids\": [],\n      \"risk_package_ids\": [\n        \"rp_synthetic\"\n      ],\n      \"period\": {\n        \"start\": \"2026-11-06T00:00:00Z\",\n        \"end\": \"2026-11-07T00:00:00Z\"\n      },\n      \"charged_at\": \"2026-11-06T12:00:00Z\",\n      \"tier\": \"standard\",\n      \"quantity\": 1,\n      \"unit_rate\": \"40.00\",\n      \"amount\": \"40.00\",\n      \"currency\": \"CAD\",\n      \"rate_card_id\": \"rate_synthetic\",\n      \"rate_version\": \"synthetic-1\",\n      \"transaction_id\": \"txn_usage_synthetic\",\n      \"workload\": {\n        \"bank_accounts\": 1,\n        \"business_systems\": 2,\n        \"records\": 1500,\n        \"record_counting_basis\": \"per_underwriting\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get billing usage",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/billing/usage/{{record_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "billing",
+            "usage",
+            "{{record_id}}"
+          ],
+          "query": []
+        },
+        "description": "Retrieve the immutable calculation and product references explaining one usage charge. Historical rates are preserved; retries and included Signal reassessments are not duplicate charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/billing/usage/{{record_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "billing",
+                "usage",
+                "{{record_id}}"
+              ],
+              "query": []
+            },
+            "description": "Retrieve the immutable calculation and product references explaining one usage charge. Historical rates are preserved; retries and included Signal reassessments are not duplicate charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"usage_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"product\": \"insights\",\n    \"origination_id\": \"orgn_synthetic\",\n    \"monitor_ids\": [],\n    \"risk_package_ids\": [\n      \"rp_synthetic\"\n    ],\n    \"period\": {\n      \"start\": \"2026-11-06T00:00:00Z\",\n      \"end\": \"2026-11-07T00:00:00Z\"\n    },\n    \"charged_at\": \"2026-11-06T12:00:00Z\",\n    \"tier\": \"standard\",\n    \"quantity\": 1,\n    \"unit_rate\": \"40.00\",\n    \"amount\": \"40.00\",\n    \"currency\": \"CAD\",\n    \"rate_card_id\": \"rate_synthetic\",\n    \"rate_version\": \"synthetic-1\",\n    \"transaction_id\": \"txn_usage_synthetic\",\n    \"workload\": {\n      \"bank_accounts\": 1,\n      \"business_systems\": 2,\n      \"records\": 1500,\n      \"record_counting_basis\": \"per_underwriting\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     }

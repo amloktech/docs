@@ -10,7 +10,7 @@ AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and i
 
 ## Product API boundary
 
-The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. AMLOK has one public API with 45 operations under `/v1`, generated from `openapi/amlok.json`. The API reference, downloads, integration guidance and console Data Lookup must follow that same structure. The customer explicitly rejected parallel legacy APIs and migration references.
+The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. AMLOK has one public API with 54 operations under `/v1`, generated from `openapi/amlok.json`. The API reference, downloads, integration guidance and console Data Lookup must follow that same structure. The customer explicitly rejected parallel legacy APIs and migration references.
 
 ## Research evidence boundary
 
@@ -23,3 +23,7 @@ Use concise, scientific language with explicit units, populations, task definiti
 ## Review and publication
 
 Prepare substantial research changes on a review branch. Preserve source records and private source assessments outside public documentation. Publish only within the user's authorization. Existing public product references remain separate from proposed research schemas.
+
+## Institution completeness clarification
+
+The November 6 follow-up confirms that Hub configuration belongs in the console, while borrower-bound launch sessions and connection visibility remain useful API capabilities. Institutions require all authorized collected and enriched data independently of completed assessments, complete application/document associations, and payment, wallet and consumption reconciliation. The contract adds nine read operations for these gaps; it does not expose enrichment jobs or add financial mutations.

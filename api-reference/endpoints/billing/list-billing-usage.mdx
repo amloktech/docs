@@ -1,0 +1,9 @@
+---
+title: "List billing usage"
+description: "Read what was charged, for which borrower and product, with historical rate, tier, workload and links to the wallet transaction and assessment. Signal combines a borrower across deals once per workspace/month."
+openapi: "/openapi/amlok.json GET /v1/billing/usage"
+---
+
+Read what was charged, for which borrower and product, with historical rate, tier, workload and links to the wallet transaction and assessment. Signal combines a borrower across deals once per workspace/month. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

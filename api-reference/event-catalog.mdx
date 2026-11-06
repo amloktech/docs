@@ -37,7 +37,20 @@ AMLOK events notify you of product and connection changes. Each payload contains
 | `alert.resolved` | Retrieve the referenced resource and compare its version. |
 | `export.ready` | Retrieve the referenced resource and compare its version. |
 | `export.failed` | Retrieve the referenced resource and compare its version. |
+| `data.updated` | Retrieve the referenced resource and compare its version. |
+| `document.status_changed` | Retrieve the referenced resource and compare its version. |
+| `billing.payment_updated` | Retrieve the referenced resource and compare its version. |
+| `billing.transaction_posted` | Retrieve the referenced resource and compare its version. |
 
 Delivery is at least once and may be out of order. Deduplicate by event ID. Resource versions are meaningful only within the same resource. An immutable package has version 1; mutable status resources increment their version. Fetching a newer resource than the event is expected.
 
 A run failure and a risk alert describe different problems. Missing data must not be treated as a healthy risk result. Events never contain borrower credentials, complete financial payloads or signed download URLs.
+
+## Data and billing notifications
+
+- data.updated references a connection whose committed data changed. Continue the Data API cursor; the event does not carry records and is not a sync job to execute.
+- document.status_changed references the document to inspect for availability or rejection.
+- billing.payment_updated references a payment's current state. A successful delivery of this notification does not itself post credits.
+- billing.transaction_posted references an immutable wallet entry. Use the billing snapshot APIs for reconciliation.
+
+Only authorized destinations and event readers receive the corresponding resource metadata. Billing notification delivery, reads and replay require Owner authority and billing:read; data notifications require data:read. Losing access stops further delivery and does not permit replay of restricted events.

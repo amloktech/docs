@@ -16,3 +16,29 @@ The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-u
 Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
 
 For detailed usage, credit movements, statements, funding, rates or workload, create a typed billing export. Owner authority and `billing:read` are required at every access step.
+
+## Reconcile payments, credits and consumption
+
+| Read operation | What it explains |
+| --- | --- |
+| [GET /v1/billing/payments](/api-reference/endpoints/billing/list-billing-payments) | Every initial funding, renewal and top-up payment attempt, including pending and failed attempts |
+| [GET /v1/billing/payments/{id}](/api-reference/endpoints/billing/get-billing-payment) | Payment amount, masked method, settlement/failure/refund state and linked ledger entries |
+| GET /v1/billing/transactions | Actual posted changes to the wallet, in sequence order |
+| [GET /v1/billing/transactions/{id}](/api-reference/endpoints/billing/get-billing-transaction) | One movement with historical balance and payment/usage/correction links |
+| [GET /v1/billing/usage](/api-reference/endpoints/billing/list-billing-usage) | Product charges with borrower, period, historical rate, tier and workload |
+| [GET /v1/billing/usage/{id}](/api-reference/endpoints/billing/get-billing-usage) | One charge linked to its origination or monitored deals, result and wallet transaction |
+
+Read billing summary first and pass its snapshot_id to related list/detail calls to reconcile one as-of state. Preserve filters across pages. New payments or charges after that snapshot belong to a later report; an expired snapshot returns 410 rather than silently changing the balance. Date filters use inclusive from and exclusive to UTC timestamps. Lists return all matching rows through pagination, not only the latest entries.
+
+Available credits reconcile as:
+
+```text
+paid_funding_credits + promotional_credits + adjustment_credits
+- spent_credits - refunded_credits = available_credits
+```
+
+All totals use posted CAD wallet entries. A payment attempt is not itself a credit. Pending/processing/failed/cancelled payments contribute no credits. Paid funding links payment_id; promotional funding has no payment. A settled payment's credited_amount records credits actually posted; subsequent returns/refunds have linked negative entries rather than modifying the original credit. Adjustments are signed, with related_transaction_id identifying the original entry. Use transaction sequence, not timestamps alone, to follow balance_after.
+
+Usage amounts are positive costs; their ledger entries are negative. Historical unit_rate, quantity, tier, workload and rate_version explain the deduction. Example rates are synthetic and are not price quotations. Signal groups all monitored deals for one borrower/workspace/month, so do not sum one monthly charge per monitor.
+
+The summary also reports actual auto_pay settings read-only. Payment collection, method updates and top-up settings remain console actions. Billing events and delivery/replay metadata require billing:read and current Owner authority; event scope alone must not reveal financial information. Use typed exports for statements, receipts of funding activity and full-period reports.

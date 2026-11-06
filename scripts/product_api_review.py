@@ -142,6 +142,8 @@ def build_schemas(source):
     schemas['RequestReceipt'] = obj({'idempotency_key': text(), 'operation_id': text(), 'resource_id': identifier, 'accepted_at': stamp, 'response_replay_available': {'type': 'boolean'}}, description='Durable acceptance reference survives expiry of the 24-hour response replay. Never execute accepted work again because a cached response expired.')
     schemas['Healthcheck'] = obj({'status': enum('ok', 'degraded')})
     schemas['ServiceStatus'] = obj({'status': enum('operational', 'degraded', 'unavailable'), 'as_of': stamp})
+    from institution_api import extend_schemas
+    extend_schemas(schemas)
     # Resolve and retain only normalized dictionary dependencies used by the current contract.
     def collect(value):
         if isinstance(value, dict):
@@ -153,6 +155,9 @@ def build_schemas(source):
         elif isinstance(value, list):
             for child in value: collect(child)
     for schema in list(schemas.values()): collect(schema)
+    for name, schema in schemas.items():
+        if name.startswith('Normalized') and 'Read representation:' in schema.get('description', ''):
+            schema['description'] = schema['description'].split('Read representation:')[0] + 'Read representation includes all authorized populated fields. Missing or restricted fields carry explicit availability information; this API does not support field projection.'
     return schemas
 
 
@@ -200,6 +205,8 @@ def operations():
     add('lookupRequestReceipt','GET','request-receipts/lookup','Reliability','RequestReceipt')
     add('healthcheck','GET','healthcheck','Reliability','Healthcheck',scope='public')
     add('serviceStatus','GET','service-status','Reliability','ServiceStatus',scope='public')
+    from institution_api import extend_operations
+    extend_operations(add)
     return rows
 
 
@@ -209,7 +216,7 @@ def build_spec(source):
     def param(name, where='query', required=False, schema=None, description=''):
         return {'name':name,'in':where,'required':required,'schema':schema or text(), 'description':description or name.replace('_',' ')}
     for op in operations():
-        result = obj({'data':array(ref(op['response'])) if op['many'] else ref(op['response']), 'meta':ref('Meta'), **({'page':ref('EventPage' if op['id']=='listEvents' else 'Page')} if op['many'] else {})})
+        result = obj({'data':array(ref(op['response'])) if op['many'] else ref(op['response']), 'meta':ref('Meta'), **({'page':ref({'listEvents':'EventPage','listDataRecords':'DataPage','listDataChanges':'DataChangePage'}.get(op['id'],'Page'))} if op['many'] else {})})
         params = []
         if '{id}' in op['path']: params.append(param('id','path',True))
         if op['many']:
@@ -217,6 +224,8 @@ def build_spec(source):
             if op['id'] not in ['listBorrower','listLendingProductVersion','listRiskPolicyVersion','listBillingTransactions','listDeliveries']: params.append(param('borrower_id'))
         filters = {'listBorrower':['client_reference'], 'listOrigination':['institution_reference','status'], 'listLendingProductVersion':['external_id','version'], 'listRiskPolicyVersion':['external_id','version'], 'listMonitor':['institution_reference','status'], 'listEvidence':['evidence_set_id','resource_type'], 'listMonitoringRuns':['monitor_id'], 'listAlerts':['monitor_id','status'], 'listEvents':['type'], 'listDeliveries':['event_id','endpoint_id'], 'listBillingTransactions':['snapshot_id'], 'lookupRequestReceipt':['operation_id','idempotency_key']}
         for name in filters.get(op['id'],[]): params.append(param(name,required=op['id'] in ['listEvidence','lookupRequestReceipt'] and name not in ['resource_type']))
+        from institution_api import extend_parameters
+        extend_parameters(op, params, param)
         if op['id']=='listEvents': params.append(param('start',schema=enum('now'),description='Capture the current durable feed position with an empty page before initial collection bootstrap. Cannot be combined with cursor. Resume with the returned resume_cursor.'))
         if op['method']=='POST': params.append(param('Idempotency-Key','header',True,description='Stable for one intended command and its retries, scoped to key workspace/environment and operation. Mismatched body returns 409. Full response replay 24 hours; durable receipt remains.'))
         if op['method']=='PATCH': params.append(param('If-Match','header',True,description='Required ETag from the monitor. Reject stale values with 412.'))

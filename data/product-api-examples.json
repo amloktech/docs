@@ -92,7 +92,30 @@
     "requirements": [],
     "risk_package_id": "rp_synthetic",
     "failure": null,
-    "record_version": 1
+    "record_version": 1,
+    "submitted_request": {
+      "borrower_id": "bor_synthetic",
+      "application": {
+        "institution_reference": "LOS-2026-0042",
+        "requested_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "requested_term_months": 12,
+        "purpose": "Working capital",
+        "application_schema_id": "app_schema_synthetic",
+        "declared_data": {
+          "annual_revenue": "600000.00"
+        }
+      },
+      "lending_product_version_id": "lpv_synthetic",
+      "risk_policy_version_id": "rpv_synthetic",
+      "connection_ids": [
+        "con_synthetic"
+      ],
+      "document_ids": []
+    },
+    "document_ids": []
   },
   "Metric": {
     "key": "dscr",
@@ -268,7 +291,8 @@
       "calculation": "synthetic-v1",
       "model": null
     },
-    "billing_usage_id": "usage_synthetic"
+    "billing_usage_id": "usage_synthetic",
+    "document_ids": []
   },
   "CreateMonitor": {
     "borrower_id": "bor_synthetic",
@@ -327,7 +351,8 @@
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
       "access": "restricted",
       "access_reason": "Illustrative source entitlement restriction.",
-      "document_id": null
+      "document_id": null,
+      "data_record_id": "dr_synthetic_v1"
     },
     "normalized": null,
     "provider_report_document_id": null
@@ -355,7 +380,10 @@
     "expires_at": "2026-11-06T12:15:00Z",
     "connection_ids": [],
     "consent_ids": [],
-    "record_version": 1
+    "record_version": 1,
+    "embedding_version_id": "embed_synthetic",
+    "purpose": "connect",
+    "origination_id": null
   },
   "Connection": {
     "id": "con_synthetic",
@@ -370,7 +398,8 @@
       "end": "2026-11-01T00:00:00Z"
     },
     "missing_reason": null,
-    "record_version": 1
+    "record_version": 1,
+    "data_status": "partial"
   },
   "Consent": {
     "id": "consent_synthetic",
@@ -402,7 +431,12 @@
     "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
     "size_bytes": 12500,
     "status": "available",
-    "restriction_reason": null
+    "restriction_reason": null,
+    "created_at": "2026-11-06T12:00:00Z",
+    "document_type": "financial_statement",
+    "origination_id": null,
+    "requirement_id": null,
+    "origin": "institution_upload"
   },
   "DownloadPurpose": {
     "purpose": "Institution underwriting review"
@@ -482,7 +516,8 @@
     "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
     "access": "restricted",
     "access_reason": "Illustrative source entitlement restriction.",
-    "document_id": null
+    "document_id": null,
+    "data_record_id": "dr_synthetic_v1"
   },
   "Monitor": {
     "id": "mon_synthetic",
@@ -598,7 +633,16 @@
     "available_credits": "4935.00",
     "spent_credits": "65.00",
     "billing_account_id": "billing_synthetic",
-    "snapshot_id": "snap_synthetic"
+    "snapshot_id": "snap_synthetic",
+    "paid_funding_credits": "5000.00",
+    "promotional_credits": "0.00",
+    "adjustment_credits": "0.00",
+    "refunded_credits": "0.00",
+    "auto_pay": {
+      "enabled": false,
+      "trigger_amount": "200.00",
+      "top_up_amount": "500.00"
+    }
   },
   "BillingTransaction": {
     "id": "txn_usage_synthetic",
@@ -610,6 +654,11 @@
     "product": "insights",
     "description": "Synthetic underwriting usage, not a price quotation.",
     "usage_id": "usage_synthetic",
+    "payment_id": null,
+    "borrower_id": "bor_synthetic",
+    "balance_after": "4935.00",
+    "sequence": 3,
+    "funding_type": null,
     "related_transaction_id": null
   },
   "RequestReceipt": {
@@ -707,5 +756,116 @@
     "integration_ids": [
       "bank_synthetic"
     ]
+  },
+  "DataRecord": {
+    "id": "dr_synthetic_v1",
+    "borrower_id": "bor_synthetic",
+    "connection_id": "con_synthetic",
+    "integration_id": "bank_synthetic",
+    "resource_type": "bank_transaction",
+    "resource_id": "txn_synthetic",
+    "record_version": 1,
+    "ingested_at": "2026-11-06T12:00:00Z",
+    "source_as_of": "2026-11-06T12:00:00Z",
+    "access": "available",
+    "access_reason": null,
+    "normalized": {
+      "id": "txn_synthetic",
+      "object": "bank_transaction",
+      "subject_id": "biz_synthetic",
+      "created_at": "2026-11-06T12:00:00Z",
+      "updated_at": "2026-11-06T12:00:00Z",
+      "observed_at": "2026-11-06T12:00:00Z",
+      "record_version": 1,
+      "source_refs": [],
+      "data_status": "partial",
+      "missing_fields": [],
+      "schema_version": "1.0.0",
+      "account_id": "acct_synthetic",
+      "direction": "inflow",
+      "status": "posted",
+      "amount": {
+        "amount": "1250.00",
+        "currency": "CAD"
+      },
+      "extensions": {
+        "synthetic_provider": {
+          "original_description": "SYNTHETIC CUSTOMER PAYMENT"
+        }
+      }
+    },
+    "source_payload": {
+      "status": "available",
+      "value": {
+        "description": "SYNTHETIC CUSTOMER PAYMENT",
+        "amount": "1250.00",
+        "currency": "CAD"
+      },
+      "reason": null
+    },
+    "document_ids": []
+  },
+  "DataChange": {
+    "id": "change_synthetic",
+    "type": "upsert",
+    "occurred_at": "2026-11-06T12:00:00Z",
+    "record_id": "dr_synthetic_v1",
+    "borrower_id": "bor_synthetic",
+    "resource_id": "txn_synthetic",
+    "resource_type": "bank_transaction",
+    "record_version": 1,
+    "reason": null
+  },
+  "BillingPayment": {
+    "id": "pay_synthetic",
+    "snapshot_id": "snap_synthetic",
+    "created_at": "2026-11-06T12:00:00Z",
+    "updated_at": "2026-11-06T12:00:00Z",
+    "status": "succeeded",
+    "purpose": "manual_top_up",
+    "amount": "5000.00",
+    "currency": "CAD",
+    "credited_amount": "5000.00",
+    "refunded_amount": "0.00",
+    "method": {
+      "type": "card",
+      "label": "Visa ending 4242"
+    },
+    "external_reference": "PAY-SYNTHETIC-0042",
+    "settled_at": "2026-11-06T12:00:00Z",
+    "failure_reason": null,
+    "transaction_ids": [
+      "txn_funding_synthetic"
+    ]
+  },
+  "BillingUsage": {
+    "id": "usage_synthetic",
+    "snapshot_id": "snap_synthetic",
+    "borrower_id": "bor_synthetic",
+    "product": "insights",
+    "origination_id": "orgn_synthetic",
+    "monitor_ids": [],
+    "risk_package_ids": [
+      "rp_synthetic"
+    ],
+    "period": {
+      "start": "2026-11-06T00:00:00Z",
+      "end": "2026-11-07T00:00:00Z"
+    },
+    "charged_at": "2026-11-06T12:00:00Z",
+    "tier": "standard",
+    "quantity": 1,
+    "unit_rate": "40.00",
+    "amount": "40.00",
+    "currency": "CAD",
+    "rate_card_id": "rate_synthetic",
+    "rate_version": "synthetic-1",
+    "transaction_id": "txn_usage_synthetic",
+    "workload": {
+      "bank_accounts": 1,
+      "business_systems": 2,
+      "records": 1500,
+      "record_counting_basis": "per_underwriting"
+    }
   }
 }
