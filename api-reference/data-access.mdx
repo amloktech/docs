@@ -12,7 +12,7 @@ The Data API exposes authorized bank, payment, accounting and other integration 
 | Operation | Purpose |
 | --- | --- |
 | [GET /v1/data/records](/api-reference/endpoints/data/list-data-records) | Page through all currently authorized records for a borrower at one consistent snapshot |
-| [GET /v1/data/records/{id}](/api-reference/endpoints/data/get-data-record) | Retrieve an exact immutable record version |
+| [`GET /v1/data/records/{id}`](/api-reference/endpoints/data/get-data-record) | Retrieve an exact immutable record version |
 | [GET /v1/data/changes](/api-reference/endpoints/data/list-data-changes) | Keep a downstream copy up to date without repeatedly downloading the full history |
 
 The Data API requires data:read. It is independent of Insights and Signal execution. The underlying integration, borrower consent, purpose and provider entitlement must still authorize access. An empty result means no matching authorized records at that snapshot; inspect connection readiness and coverage before concluding there was no activity.

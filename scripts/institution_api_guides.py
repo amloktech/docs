@@ -59,7 +59,7 @@ The Data API exposes authorized bank, payment, accounting and other integration 
 | Operation | Purpose |
 | --- | --- |
 | [GET /v1/data/records](/api-reference/endpoints/data/list-data-records) | Page through all currently authorized records for a borrower at one consistent snapshot |
-| [GET /v1/data/records/{id}](/api-reference/endpoints/data/get-data-record) | Retrieve an exact immutable record version |
+| [`GET /v1/data/records/{id}`](/api-reference/endpoints/data/get-data-record) | Retrieve an exact immutable record version |
 | [GET /v1/data/changes](/api-reference/endpoints/data/list-data-changes) | Keep a downstream copy up to date without repeatedly downloading the full history |
 
 The Data API requires data:read. It is independent of Insights and Signal execution. The underlying integration, borrower consent, purpose and provider entitlement must still authorize access. An empty result means no matching authorized records at that snapshot; inspect connection readiness and coverage before concluding there was no activity.
@@ -102,7 +102,7 @@ Data Lookup imports these same schemas. Choose Amlok API to explore the full con
 
 See [embedding the Hub](/api-reference/integration-hub) for the split between console configuration and secure borrower-specific sessions. Before or after underwriting, use [GET /v1/data/records](/api-reference/endpoints/data/list-data-records) with borrower_id to retrieve the authorized normalized and enriched data; no risk-package ID is required.
 
-Upload supporting files with POST /v1/documents and include their IDs in the origination request. If Amlok requests a later document, upload it with the origination_id and open requirement_id. GET /v1/originations/{id} retains submitted_request even before completion. GET /v1/documents?origination_id=... lists associated files. See [documents](/api-reference/documents) for attachment states and download controls.
+Upload supporting files with POST /v1/documents and include their IDs in the origination request. If Amlok requests a later document, upload it with the origination_id and open requirement_id. `GET /v1/originations/{id}` retains submitted_request even before completion. GET /v1/documents?origination_id=... lists associated files. See [documents](/api-reference/documents) for attachment states and download controls.
 ''')
     append('documents','''
 ## Discover and associate files
@@ -126,11 +126,11 @@ This evidence interface answers “what exact inputs support this result?” For
 | Read operation | What it explains |
 | --- | --- |
 | [GET /v1/billing/payments](/api-reference/endpoints/billing/list-billing-payments) | Every initial funding, renewal and top-up payment attempt, including pending and failed attempts |
-| [GET /v1/billing/payments/{id}](/api-reference/endpoints/billing/get-billing-payment) | Payment amount, masked method, settlement/failure/refund state and linked ledger entries |
+| [`GET /v1/billing/payments/{id}`](/api-reference/endpoints/billing/get-billing-payment) | Payment amount, masked method, settlement/failure/refund state and linked ledger entries |
 | GET /v1/billing/transactions | Actual posted changes to the wallet, in sequence order |
-| [GET /v1/billing/transactions/{id}](/api-reference/endpoints/billing/get-billing-transaction) | One movement with historical balance and payment/usage/correction links |
+| [`GET /v1/billing/transactions/{id}`](/api-reference/endpoints/billing/get-billing-transaction) | One movement with historical balance and payment/usage/correction links |
 | [GET /v1/billing/usage](/api-reference/endpoints/billing/list-billing-usage) | Product charges with borrower, period, historical rate, tier and workload |
-| [GET /v1/billing/usage/{id}](/api-reference/endpoints/billing/get-billing-usage) | One charge linked to its origination or monitored deals, result and wallet transaction |
+| [`GET /v1/billing/usage/{id}`](/api-reference/endpoints/billing/get-billing-usage) | One charge linked to its origination or monitored deals, result and wallet transaction |
 
 Read billing summary first and pass its snapshot_id to related list/detail calls to reconcile one as-of state. Preserve filters across pages. New payments or charges after that snapshot belong to a later report; an expired snapshot returns 410 rather than silently changing the balance. Date filters use inclusive from and exclusive to UTC timestamps. Lists return all matching rows through pagination, not only the latest entries.
 
@@ -150,7 +150,7 @@ The summary also reports actual auto_pay settings read-only. Payment collection,
     append('consumption-reporting','''
 ## Follow one deduction
 
-List billing usage by product, borrower_id, origination_id, monitor_id or charged date window. Each result links transaction_id to the exact wallet deduction and provides the historical rate and workload behind it. GET /v1/billing/usage/{id} resolves the billing_usage_id on a risk package. Read payment history separately for top-ups; funding is not product consumption.
+List billing usage by product, borrower_id, origination_id, monitor_id or charged date window. Each result links transaction_id to the exact wallet deduction and provides the historical rate and workload behind it. `GET /v1/billing/usage/{id}` resolves the billing_usage_id on a risk package. Read payment history separately for top-ups; funding is not product consumption.
 ''')
     append('pagination','''
 ## Collected-data synchronization
