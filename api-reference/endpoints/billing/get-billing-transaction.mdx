@@ -1,0 +1,9 @@
+---
+title: "Get billing transaction"
+description: "Retrieve one immutable wallet movement, its historical balance and links to payment or product usage."
+openapi: "/openapi/amlok.json GET /v1/billing/transactions/{id}"
+---
+
+Retrieve one immutable wallet movement, its historical balance and links to payment or product usage. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

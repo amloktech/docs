@@ -43,3 +43,9 @@ The simplified API retains the established financial report row schemas and mone
 JSON financial reports include schema version, report type, snapshot, as-of time and rows. Empty results use an empty array. CSV uses UTF-8, RFC 4180 quoting, CRLF line endings and a header even for no rows. Null is an empty cell; defined financial text fields do not use an empty string. Decimal strings retain their sign and precision. Formula-like text cells are escaped; consumers must never execute cell contents.
 
 No export silently truncates records. Download metadata includes expiration and SHA-256; verify integrity before ingestion. Source entitlements, Owner billing access and workspace/environment checks apply during creation, retrieval and download.
+
+## Collected-data exports and lookup schemas
+
+The data kind accepts data_snapshot_id and json/csv format. JSON uses DataExport: schema_version, snapshot_id and rows of DataRecord. CSV uses id,borrower_id,connection_id,integration_id,resource_type,resource_id,record_version,ingested_at,source_as_of,access,access_reason,normalized_json,source_payload_json,document_ids_json. Nested values are compact JSON; use the same quoting, null and formula-escaping rules as financial CSV. No silent truncation is permitted.
+
+All export kinds and financial report schemas are declared in the canonical OpenAPI x-export-schemas map. The console's Data Lookup shows the typed downloaded content beneath the download-link response as reference material; these fields are not included inline in the HTTP download-link response.

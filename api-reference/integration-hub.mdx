@@ -1,0 +1,51 @@
+---
+title: "Embed a configured Integrations Hub"
+sidebarTitle: "Embed a configured Integrations Hub"
+description: "Embed a configured Integrations Hub using the AMLOK institution API."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+Configure available integrations, category steps and branding in the console, publish that Hub, and embed the borrower experience in your own application. Public connection endpoints launch and observe that experience; they do not configure provider adapters or make your team orchestrate ingestion.
+
+## Configuration and execution
+
+| Responsibility | Where it belongs |
+| --- | --- |
+| Select integrations, categories and branding | Published Hub configuration in the console |
+| Associate the Hub with the correct borrower | Your authenticated backend and a short-lived embedding session |
+| Provider authorization, consent and collection | AMLOK and the embedded Hub |
+| Observe readiness, freshness and reconnect requirements | Connection API and notifications |
+| Retrieve authorized collected and enriched data | Data API, independently of an assessment |
+| Request underwriting | Origination API |
+
+## Launch for one borrower
+
+Your backend first verifies the person using your flow is allowed to connect data for the selected borrower. It creates a session with that borrower ID and the published embedding_version_id. A borrower-supplied ID alone is not proof of that association.
+
+```bash
+curl --request POST --fail-with-body --max-time 30 \
+  "${AMLOK_API_BASE_URL}/v1/embedding-sessions" \
+  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
+  --header 'Accept: application/json' \
+  --header 'Idempotency-Key: createEmbeddingSession-synthetic-0042' \
+  --header 'Content-Type: application/json' \
+  --data '{"borrower_id":"bor_synthetic","embedding_version_id":"embed_synthetic","purpose":"connect","return_url":"https://institution.example.com/connected"}'
+```
+
+Use the returned launch_url as the source of the embedded Hub in your approved borrower flow. The session is short-lived and bound to the borrower, institution, workspace, environment and published Hub version. The API key stays on your backend. The session cannot add integrations disabled in that published version. Return URLs and embedding origins must be approved for the institution; the Hub must not accept arbitrary redirects or embedding origins. Provider authorization can require a provider-approved redirect or new window.
+
+This contract specifies the session API and launch URL. It does not claim a distributed JavaScript SDK or invent a widget initialization method.
+
+## Distinguish connection completion from data readiness
+
+A session's completed state means the borrower finished the connection journey. A browser callback or return URL is not authoritative proof: confirm the session server-side or consume the signed embedding_session.completed event.
+
+The session returns connection_ids and consent_ids. A connection has separate authorization status, data_status, last_successful_sync_at, source_as_of and coverage. A connected source can still be collecting or have incomplete data. Read the [data API](/api-reference/data-access) whenever records become available; a completed risk package is not required.
+
+Use the returned connection IDs when submitting the origination or enrolling the funded deal. These select the authorized sources for that application; they do not instruct your team to run synchronization. Every source must match the borrower and allowed purpose. A prior underwriting consent does not automatically authorize post-funding monitoring.
+
+## Recover access
+
+Use the same session endpoint with purpose reauthorize and the affected connection_id to return the borrower to the Hub. AMLOK manages provider authorization and resumes permitted collection. Revoking consent stops future collection; access to retained historical information follows the configured authorization and retention policy.
+
+Connections exist for visibility and recovery. Removing them would hide useful information about whether an institution can rely on the data; it is not necessary to call every connection endpoint in the happy path.

@@ -56,7 +56,8 @@ def fixtures():
         'integration_ids':['bank_synthetic']}
     for name in ['EmbeddingSession','Connection','Origination','Alert','Export']:
         f[name]['record_version'] = 1
-    return f
+    from institution_api import extend_fixtures
+    return extend_fixtures(f)
 
 
 PURPOSE = {
@@ -84,6 +85,9 @@ PURPOSE = {
     'revokeConsent':'Record withdrawal of authorization and stop future collection covered by that consent. Revocation does not edit historical assessments or serve as a data-deletion command.',
 }
 
+
+from institution_api import PURPOSE as INSTITUTION_PURPOSE
+PURPOSE.update(INSTITUTION_PURPOSE)
 
 def enrich(spec, f):
     schemas = spec['components']['schemas']
@@ -121,14 +125,27 @@ def enrich(spec, f):
         spec['components']['schemas'][name]={'type':'object','additionalProperties':False,'required':['schema_version','report_type','snapshot_id','as_of','rows'],'properties':{
             'schema_version':{'const':'1.0.0'},'report_type':{'const':'rates' if name=='RatesExport' else 'workload'},'snapshot_id':{'type':'string','minLength':1},'as_of':{'type':'string','format':'date-time'},'rows':{'type':'array','items':{'$ref':'#/components/schemas/'+resource}}}}
     spec['components']['schemas']['EvidenceExport']={'type':'object','additionalProperties':False,'required':['schema_version','evidence_set_id','rows'],'properties':{'schema_version':{'const':'1.0.0'},'evidence_set_id':{'type':'string','minLength':1},'rows':{'type':'array','items':{'$ref':'#/components/schemas/Evidence'}}}}
-    spec['x-export-schemas']={'risk_package':'#/components/schemas/RiskPackage','evidence':'#/components/schemas/EvidenceExport','rates':'#/components/schemas/RatesExport','workload':'#/components/schemas/WorkloadExport'}
+    schemas['DataExport']={'type':'object','additionalProperties':False,'required':['schema_version','snapshot_id','rows'],'properties':{'schema_version':{'const':VERSION},'snapshot_id':{'type':'string','minLength':1},'rows':{'type':'array','items':{'$ref':'#/components/schemas/DataRecord'}}}}
+    spec['x-export-schemas']={'data':'#/components/schemas/DataExport','risk_package':'#/components/schemas/RiskPackage','evidence':'#/components/schemas/EvidenceExport','rates':'#/components/schemas/RatesExport','workload':'#/components/schemas/WorkloadExport'}
+    # Keep all downloadable financial schemas discoverable in the same contract.
+    for report, filename in [('usage','usage'),('credits','ledger'),('statements','statement'),('funding','funding')]:
+        document=json.loads((ROOT/('downloads/report-schemas/'+filename+'.schema.json')).read_text())
+        def rewrite_report(value):
+            if isinstance(value,dict):
+                return {key:('#/components/schemas/Report'+child.rsplit('/',1)[-1] if key=='$ref' else rewrite_report(child)) for key,child in value.items()}
+            if isinstance(value,list):return [rewrite_report(child) for child in value]
+            return value
+        for name, schema in document['components']['schemas'].items():schemas['Report'+name]=rewrite_report(schema)
+        spec['x-export-schemas'][report]='#/components/schemas/Report'+document['$ref'].rsplit('/',1)[-1]
     for op in operations():
         entry=spec['paths'][op['path']][op['method'].lower()]
         entry['description']=PURPOSE.get(op['id'],entry['summary']+'.')+' All IDs and cursors must belong to the authorized workspace and environment.'
         entry['description']+=' Required scope: '+op['scope']+'.' if op['scope']!='public' else ' No API key is required.'
         if op['id'] in ['createExport','getExport','downloadExport']:
-            entry['description']+=' Risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.'
-        if op['group']=='Billing':entry['description']+=' Owner authority is required.'
+            entry['description']+=' Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.'
+        if op['group']=='Billing':entry['description']+=' Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.'
+        if op['id'] in ['listEvents','getEvent','listDeliveries','replayEvent']:
+            entry['description']+=' Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.'
         entry['summary']=entry['summary'].replace('List borrower','List borrowers').replace('List origination','List originations').replace('List monitor','List monitor')
         if op['id']=='listLendingProductVersion':entry['summary']='List lending product versions'
         if op['id']=='listRiskPolicyVersion':entry['summary']='List risk policy versions'
@@ -142,7 +159,8 @@ def enrich(spec, f):
         if op['id']=='downloadExport':data.update(mime_type='application/json')
         result={'data':[data] if op['many'] else data,'meta':{'request_id':'req_synthetic','schema_version':VERSION,'environment':'sandbox'}}
         if op['many']:
-            result['page']={'next_cursor':None,'has_more':False,**({'resume_cursor':'resume_synthetic'} if op['id']=='listEvents' else {'snapshot_id':'snap_synthetic'})}
+            result['page']={'next_cursor':None,'has_more':False,**({'resume_cursor':'resume_synthetic'} if op['id'] in ['listEvents','listDataChanges'] else {'snapshot_id':'snap_synthetic'})}
+            if op['id']=='listDataRecords':result['page'].update(as_of='2026-11-06T12:00:00Z',changes_cursor='data_cursor_synthetic')
         for status,response in entry['responses'].items():
             if status.startswith('2'):
                 response['content']['application/json']['example']=result
@@ -157,7 +175,7 @@ def enrich(spec, f):
 
 
 def sample_params(op, entry):
-    values={'id':'record_synthetic','borrower_id':'bor_synthetic','evidence_set_id':'es_synthetic','operation_id':'createOrigination','idempotency_key':'origination-synthetic-0042'}
+    values={'id':'record_synthetic','borrower_id':'bor_synthetic','evidence_set_id':'es_synthetic','operation_id':'createOrigination','idempotency_key':'origination-synthetic-0042','cursor':'data_cursor_synthetic'}
     return {p['name']:values.get(p['name'],'synthetic') for p in entry['parameters'] if p['in']=='query' and p['required']}
 
 
@@ -227,7 +245,7 @@ def build():
     save('data/api-reference-index.json',index)
     save('data/product-api-examples.json',f)
     save('downloads/risk-package-example.json',f['RiskPackage'])
-    save('downloads/amlok-api.postman_collection.json',{'info':{'name':'AMLOK API '+VERSION,'schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':'45-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries.'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':k,'value':v} for k,v in {'base_url':'','api_key':'','record_id':'record_synthetic','record_etag':'"1"','command_reference':'replace-for-each-new-command'}.items()],'item':items})
+    save('downloads/amlok-api.postman_collection.json',{'info':{'name':'AMLOK API '+VERSION,'schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':str(len(index))+'-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries.'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':k,'value':v} for k,v in {'base_url':'','api_key':'','record_id':'record_synthetic','record_etag':'"1"','command_reference':'replace-for-each-new-command'}.items()],'item':items})
     from current_api_guides import write_guides, navigation
     write_guides(spec,f,index)
     navigation(groups)

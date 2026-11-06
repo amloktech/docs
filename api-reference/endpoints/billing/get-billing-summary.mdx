@@ -4,6 +4,6 @@ description: "Read the selected workspace CAD wallet shared across Insights and 
 openapi: "/openapi/amlok.json GET /v1/billing/summary"
 ---
 
-Read the selected workspace CAD wallet shared across Insights and Signal. Payment methods and automatic funding controls belong to the organization billing console. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required.
+Read the selected workspace CAD wallet shared across Insights and Signal. Payment methods and automatic funding controls belong to the organization billing console. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

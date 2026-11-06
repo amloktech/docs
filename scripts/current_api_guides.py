@@ -20,7 +20,7 @@ def write_guides(spec,f,index):
     api('overview','API overview','''
 AMLOK helps financial institutions underwrite business and consumer borrowers with **Insights** and monitor funded deals with **Signal**. Borrowers connect their sources through an embedded Integrations Hub. Your institution submits its application, lending product and risk policy; AMLOK returns a risk package and the evidence behind it.
 
-**One API covers the complete borrower-to-monitoring journey in 45 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
+**One API covers the complete borrower-to-monitoring journey in 54 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
 
 ## The integration flow
 
@@ -37,7 +37,7 @@ flowchart LR
     S --> N[Monitoring runs + updated packages + alerts]
 ```
 
-AMLOK handles collection, normalization, KYB/KYC, included checks and calculations. You do not orchestrate provider sync jobs, verification jobs, manifests or workflow runs. You can retrieve authorized normalized records, licensed reports and documents through the evidence and download interfaces.
+AMLOK handles collection, normalization, KYB/KYC, included checks and calculations. You do not orchestrate provider sync jobs, verification jobs, manifests or workflow runs. You can retrieve authorized normalized records, licensed reports and documents through the [Data API](/api-reference/data-access), evidence and download interfaces.
 
 ## Public resources
 
@@ -48,9 +48,9 @@ AMLOK handles collection, normalization, KYB/KYC, included checks and calculatio
 | Lending-product and risk-policy versions | Supply the exact lending context for each assessment |
 | Originations and risk packages | Request underwriting and retrieve dimensions, findings and evidence |
 | Monitors, monitoring runs and alerts | Follow funded exposures, refreshed evidence and material changes |
-| Evidence, documents and exports | Inspect or download the underlying authorized records and files |
+| Data, evidence, documents and exports | Retrieve all collected/enriched data or inspect the exact inputs to an assessment |
 | Events and webhook deliveries | Receive notifications, recover missed events and troubleshoot delivery |
-| Billing summary and transactions | Read the shared wallet and immutable financial history |
+| Billing summary, payments, usage and transactions | Reconcile top-ups, available credit and the exact product consumption behind each deduction |
 
 The organization owns billing identity, payment methods and team roles. Each workspace has a shared CAD wallet and isolated Sandbox and Live environments. API keys are scoped to one workspace and environment. Product records cannot be edited or deleted; authorized configuration changes apply prospectively.
 
@@ -518,7 +518,7 @@ The endpoint reference, Postman collection, examples and console Data Lookup are
 Record, calculation, policy and lending-product revisions identify the exact inputs behind an assessment. They are not alternative APIs. Financial export format versions identify file layouts independently of API routing.
 ''')
     api('product-api-design','Product API structure','''
-AMLOK exposes one product API for the complete customer journey. The [45-operation OpenAPI contract](/openapi/amlok.json) defines its requests, responses, errors and permissions.
+AMLOK exposes one product API for the complete customer journey. The [54-operation OpenAPI contract](/openapi/amlok.json) defines its requests, responses, errors and permissions.
 
 Institutions supply borrowers, applications, lending-product versions and risk-policy versions. Embedding sessions collect borrower authorization and connections. Insights returns an immutable risk package. Signal follows funded deals with evaluation history, updated packages and risk alerts.
 
@@ -572,13 +572,13 @@ These examples follow API 1.0.0 and use synthetic values. Configure your institu
 
 '''+sample('createExport')+'''
 
-Use [Postman](/downloads/amlok-api.postman_collection.json) for all 45 operations and the [complete risk-package example](/downloads/risk-package-example.json) for result structure. Requests are not a claim of live backend execution.
+Use [Postman](/downloads/amlok-api.postman_collection.json) for all 54 operations and the [complete risk-package example](/downloads/risk-package-example.json) for result structure. Requests are not a claim of live backend execution.
 ''')
     api('downloads','Specifications and integration downloads','''
 Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/response examples and Postman requests are generated from the same definitions.
 
 - [OpenAPI 3.1 JSON](/openapi/amlok.json)
-- [Postman collection: 45 operations](/downloads/amlok-api.postman_collection.json)
+- [Postman collection: 54 operations](/downloads/amlok-api.postman_collection.json)
 - [Operation index](/downloads/api-product-index.json)
 - [Complete synthetic risk package](/downloads/risk-package-example.json)
 - [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
@@ -586,31 +586,8 @@ Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/
 
 Set your institution-issued origin and key in a private environment. Keys and secrets are not included. [API contract and compatibility](/api-reference/versioning) explains the source of truth. [SDK guidance](/overview/sdks) covers client generation.
 ''')
-    api('api-review','API simplification review','''
-The public contract has been reduced from **192 to 45 operations**, a reduction of **147 operations (77%)**. The simplified contract is now the main API reference, including endpoint pages, payload schemas, examples, authentication scopes and Postman requests.
-
-The earlier API exposed internal collections and processing stages directly. Customers had to understand applications, workflows, manifests, verification jobs, calculations, decisions and snapshots before obtaining one underwriting result. The new boundary follows the institution's actual job: connect a borrower, submit lending context, receive a risk package and monitor funded exposure.
-
-| Finding | Implemented documentation change |
-| --- | --- |
-| Underwriting required orchestration knowledge | One Origination request; AMLOK owns collection and included stages |
-| Risk outputs were scattered | One immutable risk package with dimensions, policy results and supporting evidence |
-| Lending catalog and risk-policy inputs were missing | First-class immutable product and policy versions |
-| Borrower embedding lifecycle was missing | Short-lived borrower-bound embedding sessions |
-| Data access followed separate source tables | One evidence surface retaining typed records and controlled file access |
-| Monitoring enrollment exposed internal mechanics | Funded deal context and an approved baseline |
-| Billing and delivery interfaces repeated patterns | Summary, transactions, typed exports; distinct alerts, events and attempts |
-
-## What remains accessible
-
-Financial dimensions, normalized source records, KYB/KYC and lien results, authorized provider reports, documents, source freshness, policy evaluation, version provenance, monitoring runs, alerts and financial reconciliation remain accessible. The API simplifies execution responsibilities without replacing useful evidence with opaque scores.
-
-The public surface contains 45 operations. Source-specific collections are accessed as typed evidence, internal jobs remain inside AMLOK, and organization administration stays in the console.
-
-Product data remains immutable, billing remains read-only through the API, and pricing, credit and retention rules are preserved. The endpoint reference and client artifacts describe this single API.
-''')
     page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 1.0.0 contract.', '''
-Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 45 public operations, typed inputs and outputs, scopes, errors and examples.
+Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 54 public operations, typed inputs and outputs, scopes, errors and examples.
 
 API routes use `/v1`. The origin is supplied during institution onboarding; it is not the documentation or console hostname. Configure the origin explicitly when generating clients or running requests.
 
@@ -619,7 +596,7 @@ The specification contains the typed normalized evidence models so consolidating
 Use the [Postman collection](/downloads/amlok-api.postman_collection.json), [quickstart](/api-reference/quickstart) and [API contract guide](/api-reference/versioning).
 ''')
     page('overview/sdks','SDKs and API clients','Build a client from the authoritative AMLOK contract.', '''
-Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 45 operations with typed request and response models.
+Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 54 operations with typed request and response models.
 
 Set your institution-issued API origin explicitly. Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
 
@@ -630,14 +607,17 @@ Generate your language's client from this OpenAPI file. The download contains th
 No packaged SDK is currently distributed. All published client examples and downloads use this same contract.
 ''')
 
+    from institution_api_guides import write_guides as write_institution_guides
+    write_institution_guides(spec,f,index)
+
 def navigation(groups):
     path=ROOT/'docs.json';config=json.loads(path.read_text())
     tab=next(t for t in config['navigation']['tabs'] if t['tab'].lower()=='api reference')
-    icons={'Borrowers':'users','Connections':'plug','Configuration':'sliders','Insights':'files','Results':'file-search','Evidence':'database','Signal':'activity','Events':'webhook','Exports':'download','Billing':'wallet','Reliability':'shield-check'}
+    icons={'Borrowers':'users','Connections':'plug','Configuration':'sliders','Insights':'files','Results':'file-search','Data':'database','Evidence':'database','Signal':'activity','Events':'webhook','Exports':'download','Billing':'wallet','Reliability':'shield-check'}
     tab['groups']=[
         {'group':'Start here','pages':['api-reference/overview','api-reference/quickstart','api-reference/authentication','api-reference/environments','api-reference/downloads']},
-        {'group':'Product guides','pages':['api-reference/configuration','api-reference/risk-package','api-reference/monitoring-design','api-reference/evidence-traceability','api-reference/documents']},
-        {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Evidence','Events','Exports','Billing','Reliability'] for p in [groups[g]]]},
+        {'group':'Product guides','pages':['api-reference/integration-hub','api-reference/configuration','api-reference/data-access','api-reference/risk-package','api-reference/monitoring-design','api-reference/evidence-traceability','api-reference/documents']},
+        {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Data','Evidence','Events','Exports','Billing','Reliability'] for p in [groups[g]]]},
         {'group':'Integration behavior','pages':['api-reference/response-format','api-reference/processing-lifecycle','api-reference/pagination','api-reference/idempotency','api-reference/request-recovery','api-reference/connection-recovery','api-reference/webhooks','api-reference/event-catalog','api-reference/webhook-operations','api-reference/errors','api-reference/rate-limits','api-reference/sandbox-journeys']},
         {'group':'Billing and exports','pages':['api-reference/credit-reporting','api-reference/consumption-reporting','api-reference/workload-reporting','api-reference/export-formats']},
         {'group':'API design','pages':['api-reference/versioning','api-reference/api-review']},

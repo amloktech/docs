@@ -4,6 +4,6 @@ description: "Read immutable workspace funding, usage, adjustment and final-refu
 openapi: "/openapi/amlok.json GET /v1/billing/transactions"
 ---
 
-Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required.
+Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

@@ -4,6 +4,6 @@ description: "Requeue an event for an existing console-managed webhook destinati
 openapi: "/openapi/amlok.json POST /v1/webhook-replays"
 ---
 
-Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write.
+Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

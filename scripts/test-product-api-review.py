@@ -15,7 +15,7 @@ assert all(path.startswith('/v1/') for path in spec['paths'])
 assert not (ROOT/'legacy').exists()
 assert {p.name for p in (ROOT/'openapi').glob('*.json')}=={'amlok.json'}
 target_ops=[op for methods in spec['paths'].values() for op in methods.values()]
-assert len(target_ops)==len({o['operationId'] for o in target_ops})==45
+assert len(target_ops)==len({o['operationId'] for o in target_ops})==54
 for path,methods in spec['paths'].items():
     assert not {'put','delete'} & methods.keys(), path
     if 'patch' in methods: assert path=='/v1/monitors/{id}'
@@ -72,5 +72,43 @@ monitor['baseline']['risk_package_id']='rp_synthetic'
 assert valid('CreateMonitor',monitor)
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
 assert '/v2/' not in json.dumps(collection)
-assert len(collection['item'])==45
-print(json.dumps({'primary_operations':45,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
+assert len(collection['item'])==54
+print(json.dumps({'primary_operations':54,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
+
+# Institution completeness invariants: direct data access, documents and billing.
+paths=spec['paths'];schemas=spec['components']['schemas']
+for path in ['/v1/data/records','/v1/data/records/{id}','/v1/data/changes','/v1/documents','/v1/billing/payments','/v1/billing/payments/{id}','/v1/billing/usage','/v1/billing/usage/{id}','/v1/billing/transactions/{id}']:
+    assert 'get' in paths[path],path
+for path,methods in paths.items():
+    if path.startswith(('/v1/data/','/v1/billing/')):assert set(methods)=={'get'},path
+assert paths['/v1/data/records']['get']['x-required-scopes']==['data:read']
+assert not any(p['name']=='evidence_set_id' for p in paths['/v1/data/records']['get']['parameters'])
+assert any(p['name']=='cursor' and p['required'] for p in paths['/v1/data/changes']['get']['parameters'])
+assert {'snapshot_id','changes_cursor','as_of'} <= set(schemas['DataPage']['required'])
+assert {'submitted_request','document_ids'} <= set(schemas['Origination']['required'])
+assert set(spec['x-export-schemas'])=={'risk_package','evidence','data','usage','credits','statements','funding','rates','workload'}
+for pointer in spec['x-export-schemas'].values():assert pointer.rsplit('/',1)[-1] in schemas
+reject('DataRecord', lambda v:v.update(access='restricted',access_reason='Revoked'))
+reject('DataRecord', lambda v:v['source_payload'].update(status='not_retained'))
+reject('DataChange', lambda v:v.update(record_id=None))
+reject('UploadDocument', lambda v:v.update(requirement_id='req_document'))
+reject('BillingPayment', lambda v:v.update(status='processing'))
+reject('BillingPayment', lambda v:v.update(status='failed',credited_amount='0.00',settled_at=None))
+reject('BillingTransaction', lambda v:v.update(amount='40.00'))
+reject('BillingTransaction', lambda v:v.update(kind='funding',funding_type='paid',amount='5000.00'))
+reject('BillingUsage', lambda v:v.update(product='signal'))
+reject('CreateExport', lambda v:v.update(data_snapshot_id='snap_data'))
+assert not valid('CreateExport',{'kind':'data','data_snapshot_id':'snap_data','format':'json'})
+assert valid('CreateExport',{'kind':'data','format':'json'})
+restricted=deepcopy(fixtures['DataRecord']);restricted.update(access='restricted',access_reason='Authorization withdrawn',normalized=None,document_ids=[],source_payload={'status':'restricted','value':None,'reason':'Authorization withdrawn'})
+assert not valid('DataRecord',restricted)
+pending=deepcopy(fixtures['BillingPayment']);pending.update(status='processing',credited_amount='0.00',settled_at=None,transaction_ids=[])
+assert not valid('BillingPayment',pending)
+from decimal import Decimal
+summary=fixtures['BillingSummary']
+assert Decimal(summary['available_credits'])==sum(Decimal(summary[k]) for k in ['paid_funding_credits','promotional_credits','adjustment_credits'])-Decimal(summary['spent_credits'])-Decimal(summary['refunded_credits'])
+usage=fixtures['BillingUsage'];txn=fixtures['BillingTransaction']
+assert Decimal(usage['unit_rate'])*usage['quantity']==Decimal(usage['amount'])==-Decimal(txn['amount'])
+assert usage['transaction_id']==txn['id'] and txn['usage_id']==usage['id']
+assert fixtures['Origination']['submitted_request']==fixtures['CreateOrigination']
+print(json.dumps({'institution_completeness':'passed','negative_examples':len(negative)+1,'backend_executed':False}))

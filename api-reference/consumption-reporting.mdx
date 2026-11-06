@@ -14,3 +14,7 @@ Signal charges each active borrower/business once per workspace/month, using the
 Signal includes change-driven reassessment. A separate full underwriting is a new Insights Origination. Monetary rates and amounts use two-decimal, half-up rounding: round the effective unit rate, then each quantity-times-rate line, and sum the rounded lines.
 
 Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, source IDs and correction links remain available in the report.
+
+## Follow one deduction
+
+List billing usage by product, borrower_id, origination_id, monitor_id or charged date window. Each result links transaction_id to the exact wallet deduction and provides the historical rate and workload behind it. GET /v1/billing/usage/{id} resolves the billing_usage_id on a risk package. Read payment history separately for top-ups; funding is not product consumption.

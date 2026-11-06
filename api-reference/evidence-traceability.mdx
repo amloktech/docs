@@ -19,3 +19,7 @@ Each summary includes resource type and ID, record version, observation time, so
 Risk packages are immutable. Corrected source information becomes a new evidence version and a new assessment; old evidence is never silently replaced with the latest record. Retention and final cancellation rules still apply.
 
 For large datasets, use a typed evidence export. Files and normalized records remain linked, so a human-readable package can be reconciled to the data used to calculate it.
+
+## All collected data versus assessment evidence
+
+This evidence interface answers “what exact inputs support this result?” For the full authorized collected and enriched dataset, including records available before a result and records not used in that result, use the [Data API](/api-reference/data-access). EvidenceSummary.data_record_id links the exact data version when applicable. Retrieving that link separately requires data:read; an evidence grant does not expand other permissions.

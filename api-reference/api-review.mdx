@@ -1,28 +1,37 @@
 ---
-title: "API simplification review"
+title: "Institution API completeness review"
 sidebarTitle: "Simplification review"
-description: "API simplification review for the AMLOK product API."
+description: "Institution API completeness review using the AMLOK institution API."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-The public contract has been reduced from **192 to 45 operations**, a reduction of **147 operations (77%)**. The simplified contract is now the main API reference, including endpoint pages, payload schemas, examples, authentication scopes and Postman requests.
+The November 6, 2026 review follows the institution's full workflow: configure and embed an Integrations Hub, collect authorized borrower data, submit application information and documents, receive enriched data and risk packages, monitor funded deals, and reconcile deposits and consumption.
 
-The earlier API exposed internal collections and processing stages directly. Customers had to understand applications, workflows, manifests, verification jobs, calculations, decisions and snapshots before obtaining one underwriting result. The new boundary follows the institution's actual job: connect a borrower, submit lending context, receive a risk package and monitor funded exposure.
+The contract has one public surface under /v1 with 54 operations. The prior 45-operation design covered product execution but did not completely expose the surrounding data and financial reporting. This revision adds nine read operations; it retains secure borrower sessions and connection visibility. Endpoint count is a consequence of supported client tasks, not a target.
 
-| Finding | Implemented documentation change |
+| Requirement | Finding and resolution |
 | --- | --- |
-| Underwriting required orchestration knowledge | One Origination request; AMLOK owns collection and included stages |
-| Risk outputs were scattered | One immutable risk package with dimensions, policy results and supporting evidence |
-| Lending catalog and risk-policy inputs were missing | First-class immutable product and policy versions |
-| Borrower embedding lifecycle was missing | Short-lived borrower-bound embedding sessions |
-| Data access followed separate source tables | One evidence surface retaining typed records and controlled file access |
-| Monitoring enrollment exposed internal mechanics | Funded deal context and an approved baseline |
-| Billing and delivery interfaces repeated patterns | Summary, transactions, typed exports; distinct alerts, events and attempts |
+| Configure integrations in the console | Preserved; session creation launches a published Hub and cannot override enabled integrations |
+| Securely embed it for a borrower | Preserved borrower-bound session; documented ownership checks, expiry, approved origins/return URLs and server-side completion checks |
+| Inspect readiness and repair authorization | Preserved connections and consent controls; separate authorization status from data_status |
+| Access all authorized collected/enriched data | Added list/get data records and incremental changes, independently of risk-package creation |
+| Preserve provider detail and explain missing data | Typed normalized fields, source payload availability, extensions, provenance, document references and explicit access reasons |
+| Submit and inspect application information | Origination accepts existing structured application/product/policy inputs and now returns the immutable submitted_request before completion |
+| Upload and find supporting documents | Added document listing; documented initial and later requirement association with borrower ownership and immutable files |
+| Retrieve assessment findings and source proof | Preserved risk packages/evidence, with document IDs and exact DataRecord version links |
+| Monitor funded deals and inspect changes | Preserved monitors, per-run sources, packages and alerts; data changes expose updates between assessments |
+| See deposits and failed/pending top-ups | Added payment list/detail, separating payment attempts from posted wallet credits |
+| Explain consumption | Added usage list/detail with borrower/product references, actual historical rate, workload and ledger links |
+| Reconcile balances and corrections | Added transaction detail, sequence/balance_after, payment and correction links, lifetime totals and shared snapshots |
+| Download all authorized records and reports | Added data-snapshot export; preserved evidence/results and financial export formats with explicit schema links |
+| Keep the console reference accurate | Generate Data Lookup, examples, scopes and event choices from the same OpenAPI contract; validate exact parity |
 
-## What remains accessible
+No provider sync, enrichment stage or underwriting engine is exposed as a client-managed workflow. Product data and financial history remain immutable. Billing mutations, payment-method configuration and Hub design remain console responsibilities. Source access is subject to actual borrower permission and provider entitlement; omitted/unavailable data must have explicit reasons.
 
-Financial dimensions, normalized source records, KYB/KYC and lien results, authorized provider reports, documents, source freshness, policy evaluation, version provenance, monitoring runs, alerts and financial reconciliation remain accessible. The API simplifies execution responsibilities without replacing useful evidence with opaque scores.
+## Implementation and validation boundary
 
-The public surface contains 45 operations. Source-specific collections are accessed as typed evidence, internal jobs remain inside AMLOK, and organization administration stays in the console.
+This repository defines and validates the public contract and generated documentation. It does not deploy or certify the underwriting engine, integration adapters or payment processor. Synthetic schema/example tests and console reference checks are not production end-to-end execution tests. Runtime implementation must enforce the documented authorization, snapshot, reconciliation and idempotency invariants before these operations are enabled for a live institution.
 
-Product data remains immutable, billing remains read-only through the API, and pricing, credit and retention rules are preserved. The endpoint reference and client artifacts describe this single API.
+## Design references
+
+The separation between an embedded authorization experience and server-side data access is supported by [Plaid Link](https://plaid.com/docs/link/). Cursor-based incremental updates and explicit removal handling are described by [Plaid Transactions](https://plaid.com/docs/api/products/transactions/). Linking financial movements to their source records is illustrated by [Stripe balance transactions](https://docs.stripe.com/api/balance_transactions/object). AMLOK's endpoint names, CAD credit rules and institution boundaries follow its own contract; these references do not imply equivalent provider features or payment infrastructure.
