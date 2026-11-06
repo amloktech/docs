@@ -166,8 +166,6 @@ def extend_fixtures(f):
 def enrich(spec,f):
  """Add wire-level requirements after ordinary endpoint example generation."""
  from product_api_review import obj,ref,text,enum
- spec['x-contract-stage']='backend-implementation-specification'
- spec['info']['description']+=' This is the implementation specification for the backend to be built. Publication does not certify a running service. All new environments must pass the integration acceptance checklist.'
  spec['x-browser-message-schema']='#/components/schemas/HubMessage'
  spec['x-event-resources']={k:{'resource_type':v[0],'read_operation_id':v[1],'scope':v[2]} for k,v in EVENT_RESOURCES.items()}
  spec['x-development-profile']=PROFILE

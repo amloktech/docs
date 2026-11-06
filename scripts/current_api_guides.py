@@ -620,7 +620,7 @@ def navigation(groups):
         {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Data','Evidence','Events','Exports','Billing','Reliability'] for p in [groups[g]]]},
         {'group':'Integration behavior','pages':['api-reference/response-format','api-reference/processing-lifecycle','api-reference/pagination','api-reference/idempotency','api-reference/request-recovery','api-reference/connection-recovery','api-reference/webhooks','api-reference/event-catalog','api-reference/webhook-operations','api-reference/errors','api-reference/rate-limits','api-reference/sandbox-journeys']},
         {'group':'Billing and exports','pages':['api-reference/credit-reporting','api-reference/consumption-reporting','api-reference/workload-reporting','api-reference/export-formats']},
-        {'group':'API design','pages':['api-reference/versioning','api-reference/api-review']},
+        {'group':'API design','pages':['api-reference/versioning']},
     ]
     config['api']['playground']['display']='simple'
     config['api']['examples']['languages']=['bash','python','javascript']

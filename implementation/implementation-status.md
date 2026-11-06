@@ -1,10 +1,3 @@
----
-title: "Contract and implementation status"
-sidebarTitle: "Contract and implementation status"
-description: "Implement contract and implementation status using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
-keywords: ["AMLOK", "API", "Insights", "Signal"]
----
-
 The AMLOK API reference is the specification for the product backend to be built. It defines one API under `/v1`. Publishing a specification, example or console Data Lookup entry does not establish that its backend operation is available.
 
 The current contract covers borrower authorization, application and document submission, Insights risk packages, direct data access, Signal monitoring, funded-deal input updates, events, exports and billing reads. All implementations must conform to the same OpenAPI, lifecycle rules and acceptance criteria.

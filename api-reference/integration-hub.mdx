@@ -1,7 +1,7 @@
 ---
 title: "Embed the Integrations Hub"
 sidebarTitle: "Embed the Integrations Hub"
-description: "Implement embed the integrations hub using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
+description: "Embed the Integrations Hub, obtain borrower consent, validate session messages and connect authorized sources for underwriting and ongoing monitoring."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
@@ -9,7 +9,7 @@ AMLOK's Integrations Hub collects borrower authorization and connects sources se
 
 ## Publish and discover a Hub
 
-In **Embeddings**, publish the integrations, branding and requested consent purposes. Approve exact HTTPS embedding origins and return URLs. The backend must reject wildcard origins, embedded URL credentials, fragments and unregistered destinations. Sandbox alone may permit explicitly registered loopback HTTP origins for development; Live requires HTTPS.
+In **Embeddings**, publish the integrations, branding and requested consent purposes. Approve exact HTTPS embedding origins and return URLs. AMLOK rejects wildcard origins, embedded URL credentials, fragments and unregistered destinations. Sandbox alone may permit explicitly registered loopback HTTP origins for development; Live requires HTTPS.
 
 Read `GET /v1/configuration`. Each embedding_versions entry lists its ID, integrations, consent purposes, allowed origins, return URLs and hub_origin. Publishing a new version does not change existing sessions. Use a version whose integration set and purposes fit the borrower flow.
 
@@ -27,7 +27,7 @@ The session expires at expires_at. Repeating the same idempotency key returns th
 
 ## Display the borrower experience
 
-Use launch_url for either full-page navigation or an iframe. A session without embed_origin is redirect-only. The Hub must use a frame-ancestors policy allowing the approved parent origin; API endpoints do not enable browser CORS for secret keys. Allow the configured hub_origin in your application's frame-src policy.
+Use launch_url for either full-page navigation or an iframe. A session without embed_origin is redirect-only. The Hub uses a frame-ancestors policy allowing the approved parent origin; API endpoints do not enable browser CORS for secret keys. Allow the configured hub_origin in your application's frame-src policy.
 
 ```html
 <iframe id="amlok-hub" title="Connect your financial accounts"

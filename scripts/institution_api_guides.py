@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parent.parent
 def write_guides(spec,f,index):
     from current_api_guides import page
     def write(name,title,body):
-        page('api-reference/'+name,title,title+' using the AMLOK institution API.',body)
+        page(('implementation/' if name=='api-review' else 'api-reference/')+name,title,title+' using the AMLOK institution API.',body)
     def append(name,body):
         p=ROOT/('api-reference/'+name+'.mdx');p.write_text(p.read_text().rstrip()+'\n\n'+body.strip()+'\n')
     def sample(name):

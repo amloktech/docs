@@ -1,13 +1,13 @@
 ---
 title: "Discover operating limits"
 sidebarTitle: "Discover operating limits"
-description: "Implement discover operating limits using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
+description: "Discover upload sizes, supported file types, request budgets, polling intervals and resource expiry through your environment configuration."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Read configuration.operational_profile before enabling an integration. The backend must supply every field, an immutable profile ID and version, and reject traffic requiring an unprovisioned setting. This removes undocumented defaults without claiming a universal production quota or SLA.
+Read configuration.operational_profile to discover the effective limits for your workspace and environment. The response includes a profile ID and version, supported file types, request budgets and resource lifetimes. Use these values when configuring uploads, polling and recovery.
 
-| Setting | Client and backend behavior |
+| Setting | Behavior |
 | --- | --- |
 | max_json_bytes | Reject larger JSON bodies with 413 before command acceptance |
 | max_upload_bytes / max_document_pages | Reject oversized uploads with 413; inspection rejects over-limit pages without treating the file as available |
@@ -23,7 +23,7 @@ Read configuration.operational_profile before enabling an integration. The backe
 
 GETs use the reads budget, uploadDocument uses uploads, and other POST/PATCH requests use commands. A 429 carries Retry-After in whole seconds, which overrides local polling schedules. A 503 may include it as well. Caller timeouts do not cancel accepted work. Keep total waiting bounded in your application and hand unresolved requests to durable background reconciliation.
 
-The [development profile](/downloads/development-profile.json) is an executable synthetic fixture. It is not a production allocation or service commitment. Live values come from the provisioned profile. Source freshness and coverage remain provider-specific; polling frequency does not make sources refresh faster.
+The [example profile](/downloads/development-profile.json) provides synthetic values for local tests. Use the profile returned by your environment for its effective limits. Source freshness and coverage remain provider-specific; polling frequency does not make sources refresh faster.
 
 ## Changes and expiration
 
@@ -33,6 +33,6 @@ Snapshots bind workspace, environment, caller authorization and filters. Cursor 
 
 ## Upload inspection
 
-The development fixture accepts PDF, PNG, JPEG and WebP. A real profile explicitly declares supported types. Password-protected/encrypted files and archives are not accepted by this contract. Detected type mismatch returns 415 unsupported_media_type. If discovered after asynchronous acceptance, the document becomes rejected with failure.code document_rejected and a safe explanation. Infected, corrupt, empty or unreadable files never become available. Re-upload a corrected file as a new immutable record.
+The example profile accepts PDF, PNG, JPEG and WebP. Check allowed_document_mime_types for the types supported by your environment. Password-protected/encrypted files and archives are not accepted by this contract. Detected type mismatch returns 415 unsupported_media_type. If discovered after asynchronous acceptance, the document becomes rejected with failure.code document_rejected and a safe explanation. Infected, corrupt, empty or unreadable files never become available. Re-upload a corrected file as a new immutable record.
 
-Client-side checks improve feedback; the backend repeats all size/type/authorization checks. Uploads are not fetched from arbitrary customer URLs. Downloads use short-lived HTTPS capabilities with MIME type and SHA-256; verify integrity after transfer and avoid logging URLs.
+Client-side checks improve feedback; AMLOK validates size, content type and authorization for every upload. Uploads are not fetched from arbitrary customer URLs. Downloads use short-lived HTTPS capabilities with MIME type and SHA-256; verify integrity after transfer and avoid logging URLs.

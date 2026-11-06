@@ -1,11 +1,11 @@
 ---
-title: "Verify an integration before release"
-sidebarTitle: "Acceptance checklist"
-description: "Validate the AMLOK contract against an implemented environment, covering tenant isolation, underwriting, monitoring, recovery, evidence and billing."
-keywords: ["AMLOK", "acceptance", "backend", "integration"]
+title: "Verify your integration"
+sidebarTitle: "Integration checklist"
+description: "Validate your AMLOK integration in Sandbox, including authentication, borrower authorization, underwriting, monitoring, recovery, evidence and billing."
+keywords: ["AMLOK", "acceptance", "integration"]
 ---
 
-An AMLOK environment is ready for institution integration when these checks pass against that environment. Contract validation and offline client tests are prerequisites; they do not establish backend availability.
+Use this checklist to verify your application's integration with AMLOK before enabling Live traffic. Run the business and consumer journeys in Sandbox and confirm that your application handles successful results, recovery paths and permission errors.
 
 | Area | Required observable result |
 | --- | --- |
@@ -14,8 +14,8 @@ An AMLOK environment is ready for institution integration when these checks pass
 | Permissions | Each operation enforces its documented scope; billing requires Owner authority; export and event reads recheck source access |
 | Hub | Approved iframe and redirects work; unapproved origins/URLs fail; spoofed messages cannot complete sessions |
 | Consent | Underwriting and monitoring purposes are explicit; missing/revoked monitoring consent blocks Signal and ongoing restricted collection |
-| Inputs | Application/product/policy schemas and units are validated; document MIME, size, malware and ownership checks run server-side |
-| Insights | One accepted command publishes one immutable package and its debit atomically, or exposes a typed blocking/terminal state |
+| Inputs | Application/product/policy schemas and units are validated; your application handles document validation and rejection states |
+| Insights | Your application retrieves the accepted request's package and linked usage, or handles its typed blocking/terminal state |
 | Recovery | Timeout after acceptance, 24-hour replay expiry, duplicate commands and mismatched payloads do not create duplicate work/charges |
 | Data | All snapshot pages plus changes contain authorized records without gaps; revoked access and removals reconcile local copies |
 | Evidence | Metric/policy references resolve to the exact versions used; restricted files stay restricted; downloads match SHA-256 |
@@ -28,7 +28,7 @@ An AMLOK environment is ready for institution integration when these checks pass
 | Signal billing | One charge per borrower/workspace/month, including multiple facilities; no duplicate charge for included reassessment |
 | Limits | Effective configured upload/rate/expiry boundaries produce the documented errors; clients can discover all values |
 | Cancellation | Processing and future deductions/top-ups stop immediately; closure/refund follow the documented credit policy |
-| Sandbox isolation | All test controls are rejected in Live before side effects; synthetic funding never calls a payment processor |
+| Sandbox isolation | Test controls and synthetic resources stay in Sandbox; Live requests contain no Sandbox scenario headers |
 
 ## Evidence to retain
 
@@ -38,4 +38,4 @@ Record the environment, contract SHA-256/revision, operational profile ID/versio
 
 Run the example to completion, interrupt it after command acceptance, and resume it with the same state. Independently reconcile its package, evidence, monitor, deal snapshot and billing entries. Verify both a business and a consumer fixture; applicability and missing values must remain explicit rather than forcing a business metric into consumer underwriting.
 
-Use two distinct workspaces and both Sandbox/Live test contexts for isolation tests. Use separate Owner, Dev and Analyst users for console permission checks, and independently scoped API keys for programmatic checks. UI visibility never substitutes for server authorization.
+Use two distinct Sandbox workspaces to test isolation. Check that your application selects the intended environment and never reuses Sandbox IDs or test controls in Live. Use separate Owner, Dev and Analyst users for console permission checks, and independently scoped API keys for programmatic checks. UI visibility never substitutes for server authorization.

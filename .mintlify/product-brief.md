@@ -30,4 +30,4 @@ The November 6 follow-up confirms that Hub configuration belongs in the console,
 
 ## Backend build readiness
 
-The user requested a complete implementation specification before building the backend. Define client-visible behavior, executable schemas, append-only lender updates, browser embedding, deterministic Sandbox scenarios and acceptance tests. Distinguish required behavior from deployed capability. No new API version or exposed enrichment orchestration.
+The user requested a complete implementation specification before building the backend. Define client-visible behavior, executable schemas, append-only lender updates, browser embedding, deterministic Sandbox scenarios and acceptance tests. Public documentation describes the complete API in present-tense customer language. Backend build status and runtime acceptance evidence remain in implementation/ and artifacts/, outside the documentation site. No new API version or exposed enrichment orchestration.

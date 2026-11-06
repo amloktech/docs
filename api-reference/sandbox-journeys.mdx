@@ -1,17 +1,17 @@
 ---
 title: "Run reproducible Sandbox scenarios"
 sidebarTitle: "Sandbox journeys"
-description: "Implement run reproducible sandbox scenarios using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
+description: "Test underwriting, monitoring, consent recovery, document requests and billing with deterministic Sandbox scenarios and synthetic borrower data."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-AMLOK Sandbox must provide deterministic synthetic scenarios so you can validate your integration without real borrower credentials or funds. This page specifies the required backend behavior; it does not claim a Sandbox service has already passed it.
+AMLOK Sandbox provides deterministic synthetic scenarios to validate your integration without real borrower credentials or funds. Each scenario covers a specific result, recovery path or billing event.
 
 ## Provision and run
 
 1. Obtain a Sandbox key and read configuration.sandbox. Live returns null.
 2. Publish a Hub containing the returned test_integration_id and both consent purposes. Register your local or test application's return URL and embedding origin.
-3. Create a borrower with X-AMLOK-Sandbox-Scenario set to one of scenario_ids. Omit the header for happy_path. The backend persists the selection with that synthetic borrower. Send the header only on createBorrower. Unknown scenarios return 422 scenario_not_available. Live or another operation returns 400 sandbox_only before creating any resource or touching funds.
+3. Create a borrower with X-AMLOK-Sandbox-Scenario set to one of scenario_ids. Omit the header for happy_path. AMLOK saves the selection with that synthetic borrower. Send the header only on createBorrower. Unknown scenarios return 422 scenario_not_available. Live or another operation returns 400 sandbox_only before creating any resource or touching funds.
 4. Launch the Hub. The synthetic integration offers a clearly labeled **Connect test institution** action; it needs no bank username, password or OTP. Explicit acceptance records test consent and connections.
 5. Run the [downloadable journey](/api-reference/runnable-example). The scenario remains bound to the borrower, so ordinary API calls drive the same deterministic outcome.
 
@@ -30,7 +30,7 @@ Each run uses a new unique client_reference and command prefix. Old records rema
 | payment_return | Console **Sandbox funding** posts a simulated payment, then **Simulate return** creates a linked reversal; earlier wallet entries remain unchanged |
 | export_failure | The first export for that borrower's package fails with processing_failed; a new explicit export command succeeds without another product charge |
 
-Sandbox funding controls must be visibly simulated, environment-scoped and require Owner authority. They must never invoke a payment processor. Sandbox prices and balances are fixtures, not quotations. The backend acceptance suite must reject Sandbox headers and controls against Live before side effects.
+Sandbox funding controls are labeled as simulations, apply only to the selected Sandbox environment and require Owner authority. They do not invoke a payment processor. Sandbox prices and balances are test fixtures. Live rejects Sandbox headers and controls before creating resources or moving funds.
 
 ## Transport and security tests
 
@@ -41,4 +41,4 @@ Sandbox funding controls must be visibly simulated, environment-scoped and requi
 - Use the returned profile to test oversized documents, unsupported MIME types, stale If-Match, expired cursors and invalid purpose scopes.
 - Advance only the Sandbox service's test clock through its authorized console tooling to force configured expiry and scheduled evaluations. Production clocks and real provider data are never affected.
 
-The [scenario manifest](/downloads/sandbox-scenarios.json) supplies stable IDs and expected states for automated conformance tests. Host provisioning is a backend prerequisite, not a dependency on undocumented test credentials.
+The [scenario manifest](/downloads/sandbox-scenarios.json) supplies stable IDs and expected states for automated integration tests. Use the scenario IDs and test integration returned by your Sandbox configuration.
