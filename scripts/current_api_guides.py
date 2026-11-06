@@ -20,7 +20,7 @@ def write_guides(spec,f,index):
     api('overview','API overview','''
 AMLOK helps financial institutions underwrite business and consumer borrowers with **Insights** and monitor funded deals with **Signal**. Borrowers connect their sources through an embedded Integrations Hub. Your institution submits its application, lending product and risk policy; AMLOK returns a risk package and the evidence behind it.
 
-**One API covers the complete borrower-to-monitoring journey in 54 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
+**One API covers the complete borrower-to-monitoring journey in 57 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
 
 ## The integration flow
 
@@ -174,7 +174,7 @@ Signal refreshes authorized sources and reassesses funded deals against the inst
 
 '''+sample('createMonitor')+'''
 
-The baseline is either an existing risk-package ID or an approved `portfolio_onboarding_reference`. Do not send both. Portfolio onboarding does not require purchasing a new Insights assessment. The server validates that the baseline, borrower, policy and connections belong to the same authorized context.
+The baseline is either an existing risk-package ID or typed baseline.portfolio inputs. Do not send both. Portfolio onboarding does not require purchasing a new Insights assessment. The server validates that the baseline, borrower, policy and connections belong to the same authorized context.
 
 `202 Accepted` means enrollment is initializing. Retrieve the monitor to observe activation, action requirements or funding requirements. Cadences come from configuration; provider webhook support does not establish a universal refresh frequency or SLA.
 
@@ -199,7 +199,7 @@ Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may cha
 Signal includes change-driven reassessment. A separately requested full underwriting is Insights. Signal counts a borrower/business once per workspace/month, using its combined workload; see [consumption reporting](/api-reference/consumption-reporting).
 ''')
     api('evidence-traceability','Retrieve records, reports and source files','''
-Use an assessment's evidence set to inspect exactly which records and files support its conclusions. Risk packages and monitoring runs supply `evidence_set_id`; metric and policy-result references identify individual evidence records.
+Use an assessment's evidence set to inspect exactly which records and files support its conclusions. Risk packages supply `evidence_set.id`; monitoring runs supply `evidence_set_id`; metric and policy-result references identify individual evidence records.
 
 1. Call `GET /v1/evidence?evidence_set_id=...`, optionally with `resource_type`.
 2. Page through summaries using the returned cursor without changing filters.
@@ -518,7 +518,7 @@ The endpoint reference, Postman collection, examples and console Data Lookup are
 Record, calculation, policy and lending-product revisions identify the exact inputs behind an assessment. They are not alternative APIs. Financial export format versions identify file layouts independently of API routing.
 ''')
     api('product-api-design','Product API structure','''
-AMLOK exposes one product API for the complete customer journey. The [54-operation OpenAPI contract](/openapi/amlok.json) defines its requests, responses, errors and permissions.
+AMLOK exposes one product API for the complete customer journey. The [57-operation OpenAPI contract](/openapi/amlok.json) defines its requests, responses, errors and permissions.
 
 Institutions supply borrowers, applications, lending-product versions and risk-policy versions. Embedding sessions collect borrower authorization and connections. Insights returns an immutable risk package. Signal follows funded deals with evaluation history, updated packages and risk alerts.
 
@@ -572,13 +572,13 @@ These examples follow API 1.0.0 and use synthetic values. Configure your institu
 
 '''+sample('createExport')+'''
 
-Use [Postman](/downloads/amlok-api.postman_collection.json) for all 54 operations and the [complete risk-package example](/downloads/risk-package-example.json) for result structure. Requests are not a claim of live backend execution.
+Use [Postman](/downloads/amlok-api.postman_collection.json) for all 57 operations and the [complete risk-package example](/downloads/risk-package-example.json) for result structure. Requests are not a claim of live backend execution.
 ''')
     api('downloads','Specifications and integration downloads','''
 Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/response examples and Postman requests are generated from the same definitions.
 
 - [OpenAPI 3.1 JSON](/openapi/amlok.json)
-- [Postman collection: 54 operations](/downloads/amlok-api.postman_collection.json)
+- [Postman collection: 57 operations](/downloads/amlok-api.postman_collection.json)
 - [Operation index](/downloads/api-product-index.json)
 - [Complete synthetic risk package](/downloads/risk-package-example.json)
 - [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
@@ -587,7 +587,7 @@ Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/
 Set your institution-issued origin and key in a private environment. Keys and secrets are not included. [API contract and compatibility](/api-reference/versioning) explains the source of truth. [SDK guidance](/overview/sdks) covers client generation.
 ''')
     page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 1.0.0 contract.', '''
-Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 54 public operations, typed inputs and outputs, scopes, errors and examples.
+Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 57 public operations, typed inputs and outputs, scopes, errors and examples.
 
 API routes use `/v1`. The origin is supplied during institution onboarding; it is not the documentation or console hostname. Configure the origin explicitly when generating clients or running requests.
 
@@ -596,7 +596,7 @@ The specification contains the typed normalized evidence models so consolidating
 Use the [Postman collection](/downloads/amlok-api.postman_collection.json), [quickstart](/api-reference/quickstart) and [API contract guide](/api-reference/versioning).
 ''')
     page('overview/sdks','SDKs and API clients','Build a client from the authoritative AMLOK contract.', '''
-Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 54 operations with typed request and response models.
+Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 57 operations with typed request and response models.
 
 Set your institution-issued API origin explicitly. Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
 

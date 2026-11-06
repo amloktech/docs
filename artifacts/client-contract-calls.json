@@ -1,0 +1,5727 @@
+[
+  {
+    "kind": "business",
+    "operationId": "getConfiguration",
+    "status": "200",
+    "response": {
+      "data": {
+        "products": [
+          "insights",
+          "signal"
+        ],
+        "embedding_version_ids": [
+          "embed_synthetic"
+        ],
+        "application_schemas": [
+          {
+            "id": "app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "annual_revenue"
+              ],
+              "properties": {
+                "annual_revenue": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "id": "consumer_app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "gross_monthly_income",
+                "monthly_debt_payments"
+              ],
+              "properties": {
+                "gross_monthly_income": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                },
+                "monthly_debt_payments": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "pricing_schemas": [
+          {
+            "id": "pricing_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "rate_type",
+                "annual_interest_rate",
+                "amortization_months",
+                "fees"
+              ],
+              "properties": {
+                "rate_type": {
+                  "const": "fixed"
+                },
+                "annual_interest_rate": {
+                  "type": "string"
+                },
+                "amortization_months": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "fees": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "cadences": [
+          {
+            "id": "cadence_synthetic",
+            "description": "Illustrative daily schedule; use your provisioned cadence."
+          }
+        ],
+        "dimensions": [
+          {
+            "key": "dscr",
+            "description": "Eligible cash flow divided by complete existing and proposed debt service over comparable periods.",
+            "unit": "ratio",
+            "calculation_version": "cashflow-dscr-synthetic-v1",
+            "borrower_types": [
+              "business"
+            ]
+          },
+          {
+            "key": "debt_to_income",
+            "description": "Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.",
+            "unit": "ratio",
+            "calculation_version": "consumer-dti-synthetic-v1",
+            "borrower_types": [
+              "person"
+            ]
+          }
+        ],
+        "integration_ids": [
+          "bank_synthetic"
+        ],
+        "operational_profile": {
+          "id": "development-example",
+          "version": "1",
+          "max_json_bytes": 1048576,
+          "max_upload_bytes": 20971520,
+          "max_document_pages": 200,
+          "allowed_document_mime_types": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "document_types": [
+            "financial_statement",
+            "bank_statement",
+            "identity_document",
+            "business_registration",
+            "tax_return",
+            "lending_terms",
+            "risk_policy",
+            "other"
+          ],
+          "session_ttl_seconds": 900,
+          "download_ttl_seconds": 300,
+          "snapshot_ttl_seconds": 3600,
+          "data_feed_retention_seconds": 2592000,
+          "event_retention_seconds": 2592000,
+          "export_retention_seconds": 86400,
+          "poll_min_interval_seconds": 5,
+          "poll_max_interval_seconds": 60,
+          "webhook_timeout_seconds": 10,
+          "webhook_max_body_bytes": 65536,
+          "webhook_rotation_overlap_seconds": 86400,
+          "rate_limits": [
+            {
+              "group": "reads",
+              "requests": 120,
+              "window_seconds": 60
+            },
+            {
+              "group": "commands",
+              "requests": 30,
+              "window_seconds": 60
+            },
+            {
+              "group": "uploads",
+              "requests": 10,
+              "window_seconds": 60
+            }
+          ]
+        },
+        "embedding_versions": [
+          {
+            "id": "embed_synthetic",
+            "name": "Synthetic borrower Hub",
+            "integration_ids": [
+              "bank_synthetic"
+            ],
+            "consent_purposes": [
+              "credit_assessment",
+              "continuous_monitoring"
+            ],
+            "allowed_embed_origins": [
+              "https://institution.example.com"
+            ],
+            "allowed_return_urls": [
+              "https://institution.example.com/connected"
+            ],
+            "hub_origin": "https://borrower.example.com"
+          }
+        ],
+        "sandbox": {
+          "scenario_ids": [
+            "happy_path",
+            "source_reauthorization",
+            "document_required",
+            "missing_financial_input",
+            "restricted_report",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "payment_return",
+            "export_failure"
+          ],
+          "test_integration_id": "bank_synthetic"
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createBorrower",
+    "request": {
+      "type": "business",
+      "business": {
+        "legal_name": "Synthetic Borrower Inc.",
+        "incorporation_country": "CA",
+        "client_reference": "offline-business"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createBorrower",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "bor_synthetic",
+        "type": "business",
+        "subject_id": "biz_synthetic",
+        "created_at": "2026-11-06T12:00:00Z",
+        "client_reference": "offline-business",
+        "profile": {
+          "type": "business",
+          "business": {
+            "legal_name": "Synthetic Borrower Inc.",
+            "incorporation_country": "CA",
+            "client_reference": "offline-business"
+          }
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createLendingProductVersion",
+    "request": {
+      "external_id": "offline-business",
+      "version": "1",
+      "name": "Working capital loan",
+      "borrower_type": "business",
+      "market": "CA",
+      "currency": "CAD",
+      "product_type": "term_loan",
+      "minimum_amount": {
+        "amount": "10000.00",
+        "currency": "CAD"
+      },
+      "maximum_amount": {
+        "amount": "100000.00",
+        "currency": "CAD"
+      },
+      "minimum_term_months": 6,
+      "maximum_term_months": 24,
+      "repayment_frequency": "monthly",
+      "pricing_schema_id": "pricing_synthetic",
+      "pricing": {
+        "rate_type": "fixed",
+        "annual_interest_rate": "0.12",
+        "amortization_months": 12,
+        "fees": []
+      },
+      "terms_document_ids": []
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createLendingProductVersion",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "lpv_synthetic",
+        "created_at": "2026-11-06T12:00:00Z",
+        "definition": {
+          "external_id": "working-capital",
+          "version": "1",
+          "name": "Working capital loan",
+          "borrower_type": "business",
+          "market": "CA",
+          "currency": "CAD",
+          "product_type": "term_loan",
+          "minimum_amount": {
+            "amount": "10000.00",
+            "currency": "CAD"
+          },
+          "maximum_amount": {
+            "amount": "100000.00",
+            "currency": "CAD"
+          },
+          "minimum_term_months": 6,
+          "maximum_term_months": 24,
+          "repayment_frequency": "monthly",
+          "pricing_schema_id": "pricing_synthetic",
+          "pricing": {
+            "rate_type": "fixed",
+            "annual_interest_rate": "0.12",
+            "amortization_months": 12,
+            "fees": []
+          },
+          "terms_document_ids": []
+        },
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createRiskPolicyVersion",
+    "request": {
+      "external_id": "offline-business",
+      "version": "1",
+      "name": "Illustrative policy, not a recommended threshold",
+      "borrower_type": "business",
+      "market": "CA",
+      "rules": [
+        {
+          "id": "dscr-minimum",
+          "dimension_key": "dscr",
+          "operator": "gte",
+          "threshold": "1.25",
+          "unit": "ratio",
+          "on_missing": "review",
+          "on_fail": "review"
+        }
+      ],
+      "policy_document_ids": []
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createRiskPolicyVersion",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "rpv_synthetic",
+        "created_at": "2026-11-06T12:00:00Z",
+        "definition": {
+          "external_id": "working-capital-policy",
+          "version": "1",
+          "name": "Illustrative policy, not a recommended threshold",
+          "borrower_type": "business",
+          "market": "CA",
+          "rules": [
+            {
+              "id": "dscr-minimum",
+              "dimension_key": "dscr",
+              "operator": "gte",
+              "threshold": "1.25",
+              "unit": "ratio",
+              "on_missing": "review",
+              "on_fail": "review"
+            }
+          ],
+          "policy_document_ids": []
+        },
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createEmbeddingSession",
+    "request": {
+      "borrower_id": "bor_synthetic",
+      "embedding_version_id": "embed_synthetic",
+      "purpose": "connect",
+      "return_url": "https://institution.example.com/connected",
+      "consent_purposes": [
+        "credit_assessment",
+        "continuous_monitoring"
+      ]
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createEmbeddingSession",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "embs_synthetic",
+        "borrower_id": "bor_synthetic",
+        "status": "created",
+        "launch_url": "https://borrower.example.com/session/synthetic",
+        "expires_at": "2026-11-06T20:31:08.767Z",
+        "connection_ids": [],
+        "consent_ids": [],
+        "record_version": 1,
+        "embedding_version_id": "embed_synthetic",
+        "purpose": "connect",
+        "origination_id": null,
+        "monitor_id": null,
+        "requirement_id": null,
+        "consent_purposes": [
+          "credit_assessment",
+          "continuous_monitoring"
+        ],
+        "embed_origin": "https://institution.example.com",
+        "return_url": "https://institution.example.com/connected",
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getConfiguration",
+    "status": "200",
+    "response": {
+      "data": {
+        "products": [
+          "insights",
+          "signal"
+        ],
+        "embedding_version_ids": [
+          "embed_synthetic"
+        ],
+        "application_schemas": [
+          {
+            "id": "app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "annual_revenue"
+              ],
+              "properties": {
+                "annual_revenue": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "id": "consumer_app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "gross_monthly_income",
+                "monthly_debt_payments"
+              ],
+              "properties": {
+                "gross_monthly_income": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                },
+                "monthly_debt_payments": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "pricing_schemas": [
+          {
+            "id": "pricing_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "rate_type",
+                "annual_interest_rate",
+                "amortization_months",
+                "fees"
+              ],
+              "properties": {
+                "rate_type": {
+                  "const": "fixed"
+                },
+                "annual_interest_rate": {
+                  "type": "string"
+                },
+                "amortization_months": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "fees": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "cadences": [
+          {
+            "id": "cadence_synthetic",
+            "description": "Illustrative daily schedule; use your provisioned cadence."
+          }
+        ],
+        "dimensions": [
+          {
+            "key": "dscr",
+            "description": "Eligible cash flow divided by complete existing and proposed debt service over comparable periods.",
+            "unit": "ratio",
+            "calculation_version": "cashflow-dscr-synthetic-v1",
+            "borrower_types": [
+              "business"
+            ]
+          },
+          {
+            "key": "debt_to_income",
+            "description": "Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.",
+            "unit": "ratio",
+            "calculation_version": "consumer-dti-synthetic-v1",
+            "borrower_types": [
+              "person"
+            ]
+          }
+        ],
+        "integration_ids": [
+          "bank_synthetic"
+        ],
+        "operational_profile": {
+          "id": "development-example",
+          "version": "1",
+          "max_json_bytes": 1048576,
+          "max_upload_bytes": 20971520,
+          "max_document_pages": 200,
+          "allowed_document_mime_types": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "document_types": [
+            "financial_statement",
+            "bank_statement",
+            "identity_document",
+            "business_registration",
+            "tax_return",
+            "lending_terms",
+            "risk_policy",
+            "other"
+          ],
+          "session_ttl_seconds": 900,
+          "download_ttl_seconds": 300,
+          "snapshot_ttl_seconds": 3600,
+          "data_feed_retention_seconds": 2592000,
+          "event_retention_seconds": 2592000,
+          "export_retention_seconds": 86400,
+          "poll_min_interval_seconds": 5,
+          "poll_max_interval_seconds": 60,
+          "webhook_timeout_seconds": 10,
+          "webhook_max_body_bytes": 65536,
+          "webhook_rotation_overlap_seconds": 86400,
+          "rate_limits": [
+            {
+              "group": "reads",
+              "requests": 120,
+              "window_seconds": 60
+            },
+            {
+              "group": "commands",
+              "requests": 30,
+              "window_seconds": 60
+            },
+            {
+              "group": "uploads",
+              "requests": 10,
+              "window_seconds": 60
+            }
+          ]
+        },
+        "embedding_versions": [
+          {
+            "id": "embed_synthetic",
+            "name": "Synthetic borrower Hub",
+            "integration_ids": [
+              "bank_synthetic"
+            ],
+            "consent_purposes": [
+              "credit_assessment",
+              "continuous_monitoring"
+            ],
+            "allowed_embed_origins": [
+              "https://institution.example.com"
+            ],
+            "allowed_return_urls": [
+              "https://institution.example.com/connected"
+            ],
+            "hub_origin": "https://borrower.example.com"
+          }
+        ],
+        "sandbox": {
+          "scenario_ids": [
+            "happy_path",
+            "source_reauthorization",
+            "document_required",
+            "missing_financial_input",
+            "restricted_report",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "payment_return",
+            "export_failure"
+          ],
+          "test_integration_id": "bank_synthetic"
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getEmbeddingSession",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "embs_synthetic",
+        "borrower_id": "bor_synthetic",
+        "status": "completed",
+        "launch_url": "https://borrower.example.com/session/synthetic",
+        "expires_at": "2026-11-06T20:31:08.769Z",
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "consent_ids": [],
+        "record_version": 1,
+        "embedding_version_id": "embed_synthetic",
+        "purpose": "connect",
+        "origination_id": null,
+        "monitor_id": null,
+        "requirement_id": null,
+        "consent_purposes": [
+          "credit_assessment",
+          "continuous_monitoring"
+        ],
+        "embed_origin": "https://institution.example.com",
+        "return_url": "https://institution.example.com/connected",
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "uploadDocument",
+    "request": {
+      "file": "<binary file bytes>",
+      "context": "borrower",
+      "borrower_id": "bor_synthetic",
+      "document_type": "financial_statement"
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "uploadDocument",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "doc_synthetic",
+        "context": "borrower",
+        "borrower_id": "bor_synthetic",
+        "file_name": "financial-statement.pdf",
+        "mime_type": "application/pdf",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size_bytes": 12500,
+        "status": "available",
+        "restriction_reason": null,
+        "created_at": "2026-11-06T12:00:00Z",
+        "document_type": "financial_statement",
+        "origination_id": null,
+        "requirement_id": null,
+        "origin": "institution_upload",
+        "record_version": 1,
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getDocument",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "doc_synthetic",
+        "context": "borrower",
+        "borrower_id": "bor_synthetic",
+        "file_name": "financial-statement.pdf",
+        "mime_type": "application/pdf",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size_bytes": 12500,
+        "status": "available",
+        "restriction_reason": null,
+        "created_at": "2026-11-06T12:00:00Z",
+        "document_type": "financial_statement",
+        "origination_id": null,
+        "requirement_id": null,
+        "origin": "institution_upload",
+        "record_version": 1,
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createOrigination",
+    "request": {
+      "borrower_id": "bor_synthetic",
+      "application": {
+        "institution_reference": "offline-business",
+        "requested_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "requested_term_months": 12,
+        "purpose": "Working capital",
+        "application_schema_id": "app_schema_synthetic",
+        "declared_data": {
+          "annual_revenue": "600000.00"
+        }
+      },
+      "lending_product_version_id": "lpv_synthetic",
+      "risk_policy_version_id": "rpv_synthetic",
+      "connection_ids": [
+        "con_synthetic"
+      ],
+      "document_ids": [
+        "doc_synthetic"
+      ]
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createOrigination",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "accepted",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": null,
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getOrigination",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": "rp_synthetic",
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getRiskPackage",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "rp_synthetic",
+        "borrower_id": "bor_synthetic",
+        "origination_id": "orgn_synthetic",
+        "monitoring_run_id": null,
+        "product": "insights",
+        "created_at": "2026-11-06T12:00:00Z",
+        "as_of": "2026-11-06T12:00:00Z",
+        "previous_package_id": null,
+        "application": {
+          "institution_reference": "LOS-2026-0042",
+          "requested_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "requested_term_months": 12,
+          "purpose": "Working capital",
+          "application_schema_id": "app_schema_synthetic",
+          "declared_data": {
+            "annual_revenue": "600000.00"
+          }
+        },
+        "lending_product": {
+          "id": "lpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital",
+            "version": "1",
+            "name": "Working capital loan",
+            "borrower_type": "business",
+            "market": "CA",
+            "currency": "CAD",
+            "product_type": "term_loan",
+            "minimum_amount": {
+              "amount": "10000.00",
+              "currency": "CAD"
+            },
+            "maximum_amount": {
+              "amount": "100000.00",
+              "currency": "CAD"
+            },
+            "minimum_term_months": 6,
+            "maximum_term_months": 24,
+            "repayment_frequency": "monthly",
+            "pricing_schema_id": "pricing_synthetic",
+            "pricing": {
+              "rate_type": "fixed",
+              "annual_interest_rate": "0.12",
+              "amortization_months": 12,
+              "fees": []
+            },
+            "terms_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "risk_policy": {
+          "id": "rpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital-policy",
+            "version": "1",
+            "name": "Illustrative policy, not a recommended threshold",
+            "borrower_type": "business",
+            "market": "CA",
+            "rules": [
+              {
+                "id": "dscr-minimum",
+                "dimension_key": "dscr",
+                "operator": "gte",
+                "threshold": "1.25",
+                "unit": "ratio",
+                "on_missing": "review",
+                "on_fail": "review"
+              }
+            ],
+            "policy_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "assessment": {
+          "recommendation": "review_required",
+          "is_institution_decision": false,
+          "summary": "Repayment capacity requires review because the debt schedule is incomplete.",
+          "reasons": [
+            "Required repayment evidence is missing."
+          ]
+        },
+        "dimensions": [
+          {
+            "key": "repayment_capacity",
+            "status": "unavailable",
+            "summary": "DSCR is not calculated without complete eligible debt-service inputs.",
+            "metrics": [
+              {
+                "key": "dscr",
+                "label": "Cash-flow debt-service coverage",
+                "status": "unavailable",
+                "value": null,
+                "unit": "ratio",
+                "window": {
+                  "start": "2025-11-01T00:00:00Z",
+                  "end": "2026-11-01T00:00:00Z"
+                },
+                "calculation_version": "cashflow-dscr-synthetic-v1",
+                "missing_reason": "Complete existing and proposed debt-service schedule is unavailable.",
+                "evidence_ids": [
+                  "ev_bank_synthetic"
+                ]
+              }
+            ],
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "policy_results": [
+          {
+            "rule_id": "dscr-minimum",
+            "result": "unavailable",
+            "actual": null,
+            "threshold": "1.25",
+            "unit": "ratio",
+            "explanation": "The rule cannot be evaluated without a supported DSCR.",
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "connection_id": "con_synthetic",
+            "integration_id": "bank_synthetic",
+            "source_as_of": "2026-11-01T00:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "window": {
+              "start": "2025-11-01T00:00:00Z",
+              "end": "2026-11-01T00:00:00Z"
+            },
+            "status": "partial",
+            "limitations": [
+              "Bank records alone do not establish a complete debt schedule."
+            ]
+          }
+        ],
+        "limitations": [
+          "All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation."
+        ],
+        "evidence_set": {
+          "id": "es_synthetic",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "count": 1
+        },
+        "versions": {
+          "schema": "1.0.0",
+          "normalization": "synthetic-v1",
+          "calculation": "synthetic-v1",
+          "model": null
+        },
+        "billing_usage_id": "usage_synthetic",
+        "document_ids": [],
+        "record_version": 1,
+        "deal_snapshot_id": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listEvidence",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "ev_bank_synthetic",
+          "evidence_set_id": "es_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "kind": "normalized_record",
+          "source_id": "bank_synthetic",
+          "observed_at": "2026-11-06T12:00:00Z",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "access": "restricted",
+          "access_reason": "Illustrative source entitlement restriction.",
+          "document_id": null,
+          "data_record_id": "dr_synthetic_v1"
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listDataRecords",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "connection_id": "con_synthetic",
+          "integration_id": "bank_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "ingested_at": "2026-11-06T12:00:00Z",
+          "source_as_of": "2026-11-06T12:00:00Z",
+          "access": "available",
+          "access_reason": null,
+          "normalized": {
+            "id": "txn_synthetic",
+            "object": "bank_transaction",
+            "subject_id": "biz_synthetic",
+            "created_at": "2026-11-06T12:00:00Z",
+            "updated_at": "2026-11-06T12:00:00Z",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "record_version": 1,
+            "source_refs": [],
+            "data_status": "partial",
+            "missing_fields": [],
+            "schema_version": "1.0.0",
+            "account_id": "acct_synthetic",
+            "direction": "inflow",
+            "status": "posted",
+            "amount": {
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "extensions": {
+              "synthetic_provider": {
+                "original_description": "SYNTHETIC CUSTOMER PAYMENT"
+              }
+            }
+          },
+          "source_payload": {
+            "status": "available",
+            "value": {
+              "description": "SYNTHETIC CUSTOMER PAYMENT",
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "reason": null
+          },
+          "document_ids": []
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "as_of": "2026-11-06T12:00:00Z",
+        "changes_cursor": "data_cursor_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listDataChanges",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "change_synthetic",
+          "type": "upsert",
+          "occurred_at": "2026-11-06T12:00:00Z",
+          "record_id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "resource_id": "txn_synthetic",
+          "resource_type": "bank_transaction",
+          "record_version": 1,
+          "reason": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "resume_cursor": "resume_synthetic",
+        "resume_expires_at": "2026-12-06T12:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createMonitor",
+    "request": {
+      "borrower_id": "bor_synthetic",
+      "deal": {
+        "institution_reference": "offline-business",
+        "funded_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "outstanding_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "funded_at": "2026-11-05T12:00:00Z",
+        "maturity_date": "2027-11-06",
+        "repayment_frequency": "monthly",
+        "terms_document_ids": []
+      },
+      "baseline": {
+        "risk_package_id": "rp_synthetic"
+      },
+      "risk_policy_version_id": "rpv_synthetic",
+      "cadence_id": "cadence_synthetic",
+      "connection_ids": [
+        "con_synthetic"
+      ]
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createMonitor",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "initializing",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": null,
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": null,
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getMonitor",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "active",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": "rp_signal_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": "2026-11-07T12:00:00Z",
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createDealSnapshot",
+    "request": {
+      "previous_snapshot_id": "ds_synthetic",
+      "effective_at": "2026-11-06T20:16:08.770Z",
+      "deal": {
+        "institution_reference": "LOAN-0042",
+        "funded_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "outstanding_amount": {
+          "amount": "48000.00",
+          "currency": "CAD"
+        },
+        "funded_at": "2026-11-05T12:00:00Z",
+        "maturity_date": "2027-11-06",
+        "repayment_frequency": "monthly",
+        "terms_document_ids": []
+      },
+      "performance": null
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createDealSnapshot",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "ds_synthetic",
+        "monitor_id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "previous_snapshot_id": "ds_initial",
+        "sequence": 2,
+        "record_version": 1,
+        "effective_at": "2026-11-06T12:00:00Z",
+        "received_at": "2026-11-06T12:00:00Z",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "performance": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listMonitoringRuns",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "mr_synthetic",
+          "monitor_id": "mon_synthetic",
+          "status": "partial",
+          "started_at": "2026-11-06T12:00:00Z",
+          "completed_at": "2026-11-06T12:00:00Z",
+          "risk_package_id": "rp_signal_synthetic",
+          "sources": [
+            {
+              "connection_id": "con_synthetic",
+              "integration_id": "bank_synthetic",
+              "source_as_of": "2026-11-01T00:00:00Z",
+              "retrieved_at": "2026-11-06T12:00:00Z",
+              "window": {
+                "start": "2025-11-01T00:00:00Z",
+                "end": "2026-11-01T00:00:00Z"
+              },
+              "status": "partial",
+              "limitations": [
+                "Bank records alone do not establish a complete debt schedule."
+              ]
+            }
+          ],
+          "evidence_set_id": "es_synthetic",
+          "limitations": [
+            "Debt-service data remains incomplete."
+          ],
+          "record_version": 1,
+          "deal_snapshot_id": "ds_synthetic",
+          "failure": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listAlerts",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "alert_synthetic",
+          "monitor_id": "mon_synthetic",
+          "borrower_id": "bor_synthetic",
+          "status": "open",
+          "severity": "warning",
+          "rule_id": "dscr-minimum",
+          "policy_version_id": "rpv_synthetic",
+          "message": "Required debt-service evidence is unavailable.",
+          "detected_at": "2026-11-06T12:00:00Z",
+          "resolved_at": null,
+          "previous_package_id": "rp_synthetic",
+          "current_package_id": "rp_signal_synthetic",
+          "metric_key": "dscr",
+          "previous_value": null,
+          "current_value": null,
+          "threshold": "1.25",
+          "unit": "ratio",
+          "evidence_ids": [
+            "ev_bank_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createExport",
+    "request": {
+      "kind": "risk_package",
+      "risk_package_id": "rp_synthetic",
+      "format": "json"
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "createExport",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.770Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.770Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "downloadExport",
+    "request": {
+      "purpose": "Sandbox integration acceptance"
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "downloadExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "url": "https://downloads.example.com/synthetic",
+        "expires_at": "2026-11-06T12:05:00Z",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "mime_type": "application/pdf"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getBillingSummary",
+    "status": "200",
+    "response": {
+      "data": {
+        "as_of": "2026-11-06T12:00:00Z",
+        "currency": "CAD",
+        "available_credits": "4935.00",
+        "spent_credits": "65.00",
+        "billing_account_id": "billing_synthetic",
+        "snapshot_id": "snap_synthetic",
+        "paid_funding_credits": "5000.00",
+        "promotional_credits": "0.00",
+        "adjustment_credits": "0.00",
+        "refunded_credits": "0.00",
+        "auto_pay": {
+          "enabled": false,
+          "trigger_amount": "200.00",
+          "top_up_amount": "500.00"
+        },
+        "snapshot_expires_at": "2026-11-06T13:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listBillingPayments",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "pay_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "updated_at": "2026-11-06T12:00:00Z",
+          "status": "succeeded",
+          "purpose": "manual_top_up",
+          "amount": "5000.00",
+          "currency": "CAD",
+          "credited_amount": "5000.00",
+          "refunded_amount": "0.00",
+          "method": {
+            "type": "card",
+            "label": "Visa ending 4242"
+          },
+          "external_reference": "PAY-SYNTHETIC-0042",
+          "settled_at": "2026-11-06T12:00:00Z",
+          "failure_reason": null,
+          "transaction_ids": [
+            "txn_funding_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listBillingTransactions",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "txn_usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "posted_at": "2026-11-06T12:00:00Z",
+          "amount": "-40.00",
+          "currency": "CAD",
+          "kind": "usage",
+          "product": "insights",
+          "description": "Synthetic underwriting usage, not a price quotation.",
+          "usage_id": "usage_synthetic",
+          "payment_id": null,
+          "borrower_id": "bor_synthetic",
+          "balance_after": "4935.00",
+          "sequence": 3,
+          "funding_type": null,
+          "record_version": 1,
+          "related_transaction_id": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listBillingUsage",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "borrower_id": "bor_synthetic",
+          "product": "insights",
+          "origination_id": "orgn_synthetic",
+          "monitor_ids": [],
+          "risk_package_ids": [
+            "rp_synthetic"
+          ],
+          "period": {
+            "start": "2026-11-06T00:00:00Z",
+            "end": "2026-11-07T00:00:00Z"
+          },
+          "charged_at": "2026-11-06T12:00:00Z",
+          "tier": "standard",
+          "quantity": 1,
+          "unit_rate": "40.00",
+          "amount": "40.00",
+          "currency": "CAD",
+          "rate_card_id": "rate_synthetic",
+          "rate_version": "synthetic-1",
+          "transaction_id": "txn_usage_synthetic",
+          "workload": {
+            "bank_accounts": 1,
+            "business_systems": 2,
+            "records": 1500,
+            "record_counting_basis": "per_underwriting"
+          }
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getConfiguration",
+    "status": "200",
+    "response": {
+      "data": {
+        "products": [
+          "insights",
+          "signal"
+        ],
+        "embedding_version_ids": [
+          "embed_synthetic"
+        ],
+        "application_schemas": [
+          {
+            "id": "app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "annual_revenue"
+              ],
+              "properties": {
+                "annual_revenue": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "id": "consumer_app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "gross_monthly_income",
+                "monthly_debt_payments"
+              ],
+              "properties": {
+                "gross_monthly_income": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                },
+                "monthly_debt_payments": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "pricing_schemas": [
+          {
+            "id": "pricing_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "rate_type",
+                "annual_interest_rate",
+                "amortization_months",
+                "fees"
+              ],
+              "properties": {
+                "rate_type": {
+                  "const": "fixed"
+                },
+                "annual_interest_rate": {
+                  "type": "string"
+                },
+                "amortization_months": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "fees": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "cadences": [
+          {
+            "id": "cadence_synthetic",
+            "description": "Illustrative daily schedule; use your provisioned cadence."
+          }
+        ],
+        "dimensions": [
+          {
+            "key": "dscr",
+            "description": "Eligible cash flow divided by complete existing and proposed debt service over comparable periods.",
+            "unit": "ratio",
+            "calculation_version": "cashflow-dscr-synthetic-v1",
+            "borrower_types": [
+              "business"
+            ]
+          },
+          {
+            "key": "debt_to_income",
+            "description": "Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.",
+            "unit": "ratio",
+            "calculation_version": "consumer-dti-synthetic-v1",
+            "borrower_types": [
+              "person"
+            ]
+          }
+        ],
+        "integration_ids": [
+          "bank_synthetic"
+        ],
+        "operational_profile": {
+          "id": "development-example",
+          "version": "1",
+          "max_json_bytes": 1048576,
+          "max_upload_bytes": 20971520,
+          "max_document_pages": 200,
+          "allowed_document_mime_types": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "document_types": [
+            "financial_statement",
+            "bank_statement",
+            "identity_document",
+            "business_registration",
+            "tax_return",
+            "lending_terms",
+            "risk_policy",
+            "other"
+          ],
+          "session_ttl_seconds": 900,
+          "download_ttl_seconds": 300,
+          "snapshot_ttl_seconds": 3600,
+          "data_feed_retention_seconds": 2592000,
+          "event_retention_seconds": 2592000,
+          "export_retention_seconds": 86400,
+          "poll_min_interval_seconds": 5,
+          "poll_max_interval_seconds": 60,
+          "webhook_timeout_seconds": 10,
+          "webhook_max_body_bytes": 65536,
+          "webhook_rotation_overlap_seconds": 86400,
+          "rate_limits": [
+            {
+              "group": "reads",
+              "requests": 120,
+              "window_seconds": 60
+            },
+            {
+              "group": "commands",
+              "requests": 30,
+              "window_seconds": 60
+            },
+            {
+              "group": "uploads",
+              "requests": 10,
+              "window_seconds": 60
+            }
+          ]
+        },
+        "embedding_versions": [
+          {
+            "id": "embed_synthetic",
+            "name": "Synthetic borrower Hub",
+            "integration_ids": [
+              "bank_synthetic"
+            ],
+            "consent_purposes": [
+              "credit_assessment",
+              "continuous_monitoring"
+            ],
+            "allowed_embed_origins": [
+              "https://institution.example.com"
+            ],
+            "allowed_return_urls": [
+              "https://institution.example.com/connected"
+            ],
+            "hub_origin": "https://borrower.example.com"
+          }
+        ],
+        "sandbox": {
+          "scenario_ids": [
+            "happy_path",
+            "source_reauthorization",
+            "document_required",
+            "missing_financial_input",
+            "restricted_report",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "payment_return",
+            "export_failure"
+          ],
+          "test_integration_id": "bank_synthetic"
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getEmbeddingSession",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "embs_synthetic",
+        "borrower_id": "bor_synthetic",
+        "status": "completed",
+        "launch_url": "https://borrower.example.com/session/synthetic",
+        "expires_at": "2026-11-06T20:31:08.771Z",
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "consent_ids": [],
+        "record_version": 1,
+        "embedding_version_id": "embed_synthetic",
+        "purpose": "connect",
+        "origination_id": null,
+        "monitor_id": null,
+        "requirement_id": null,
+        "consent_purposes": [
+          "credit_assessment",
+          "continuous_monitoring"
+        ],
+        "embed_origin": "https://institution.example.com",
+        "return_url": "https://institution.example.com/connected",
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getDocument",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "doc_synthetic",
+        "context": "borrower",
+        "borrower_id": "bor_synthetic",
+        "file_name": "financial-statement.pdf",
+        "mime_type": "application/pdf",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size_bytes": 12500,
+        "status": "available",
+        "restriction_reason": null,
+        "created_at": "2026-11-06T12:00:00Z",
+        "document_type": "financial_statement",
+        "origination_id": null,
+        "requirement_id": null,
+        "origin": "institution_upload",
+        "record_version": 1,
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getOrigination",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": "rp_synthetic",
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getOrigination",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": "rp_synthetic",
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getRiskPackage",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "rp_synthetic",
+        "borrower_id": "bor_synthetic",
+        "origination_id": "orgn_synthetic",
+        "monitoring_run_id": null,
+        "product": "insights",
+        "created_at": "2026-11-06T12:00:00Z",
+        "as_of": "2026-11-06T12:00:00Z",
+        "previous_package_id": null,
+        "application": {
+          "institution_reference": "LOS-2026-0042",
+          "requested_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "requested_term_months": 12,
+          "purpose": "Working capital",
+          "application_schema_id": "app_schema_synthetic",
+          "declared_data": {
+            "annual_revenue": "600000.00"
+          }
+        },
+        "lending_product": {
+          "id": "lpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital",
+            "version": "1",
+            "name": "Working capital loan",
+            "borrower_type": "business",
+            "market": "CA",
+            "currency": "CAD",
+            "product_type": "term_loan",
+            "minimum_amount": {
+              "amount": "10000.00",
+              "currency": "CAD"
+            },
+            "maximum_amount": {
+              "amount": "100000.00",
+              "currency": "CAD"
+            },
+            "minimum_term_months": 6,
+            "maximum_term_months": 24,
+            "repayment_frequency": "monthly",
+            "pricing_schema_id": "pricing_synthetic",
+            "pricing": {
+              "rate_type": "fixed",
+              "annual_interest_rate": "0.12",
+              "amortization_months": 12,
+              "fees": []
+            },
+            "terms_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "risk_policy": {
+          "id": "rpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital-policy",
+            "version": "1",
+            "name": "Illustrative policy, not a recommended threshold",
+            "borrower_type": "business",
+            "market": "CA",
+            "rules": [
+              {
+                "id": "dscr-minimum",
+                "dimension_key": "dscr",
+                "operator": "gte",
+                "threshold": "1.25",
+                "unit": "ratio",
+                "on_missing": "review",
+                "on_fail": "review"
+              }
+            ],
+            "policy_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "assessment": {
+          "recommendation": "review_required",
+          "is_institution_decision": false,
+          "summary": "Repayment capacity requires review because the debt schedule is incomplete.",
+          "reasons": [
+            "Required repayment evidence is missing."
+          ]
+        },
+        "dimensions": [
+          {
+            "key": "repayment_capacity",
+            "status": "unavailable",
+            "summary": "DSCR is not calculated without complete eligible debt-service inputs.",
+            "metrics": [
+              {
+                "key": "dscr",
+                "label": "Cash-flow debt-service coverage",
+                "status": "unavailable",
+                "value": null,
+                "unit": "ratio",
+                "window": {
+                  "start": "2025-11-01T00:00:00Z",
+                  "end": "2026-11-01T00:00:00Z"
+                },
+                "calculation_version": "cashflow-dscr-synthetic-v1",
+                "missing_reason": "Complete existing and proposed debt-service schedule is unavailable.",
+                "evidence_ids": [
+                  "ev_bank_synthetic"
+                ]
+              }
+            ],
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "policy_results": [
+          {
+            "rule_id": "dscr-minimum",
+            "result": "unavailable",
+            "actual": null,
+            "threshold": "1.25",
+            "unit": "ratio",
+            "explanation": "The rule cannot be evaluated without a supported DSCR.",
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "connection_id": "con_synthetic",
+            "integration_id": "bank_synthetic",
+            "source_as_of": "2026-11-01T00:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "window": {
+              "start": "2025-11-01T00:00:00Z",
+              "end": "2026-11-01T00:00:00Z"
+            },
+            "status": "partial",
+            "limitations": [
+              "Bank records alone do not establish a complete debt schedule."
+            ]
+          }
+        ],
+        "limitations": [
+          "All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation."
+        ],
+        "evidence_set": {
+          "id": "es_synthetic",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "count": 1
+        },
+        "versions": {
+          "schema": "1.0.0",
+          "normalization": "synthetic-v1",
+          "calculation": "synthetic-v1",
+          "model": null
+        },
+        "billing_usage_id": "usage_synthetic",
+        "document_ids": [],
+        "record_version": 1,
+        "deal_snapshot_id": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listEvidence",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "ev_bank_synthetic",
+          "evidence_set_id": "es_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "kind": "normalized_record",
+          "source_id": "bank_synthetic",
+          "observed_at": "2026-11-06T12:00:00Z",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "access": "restricted",
+          "access_reason": "Illustrative source entitlement restriction.",
+          "document_id": null,
+          "data_record_id": "dr_synthetic_v1"
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listDataRecords",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "connection_id": "con_synthetic",
+          "integration_id": "bank_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "ingested_at": "2026-11-06T12:00:00Z",
+          "source_as_of": "2026-11-06T12:00:00Z",
+          "access": "available",
+          "access_reason": null,
+          "normalized": {
+            "id": "txn_synthetic",
+            "object": "bank_transaction",
+            "subject_id": "biz_synthetic",
+            "created_at": "2026-11-06T12:00:00Z",
+            "updated_at": "2026-11-06T12:00:00Z",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "record_version": 1,
+            "source_refs": [],
+            "data_status": "partial",
+            "missing_fields": [],
+            "schema_version": "1.0.0",
+            "account_id": "acct_synthetic",
+            "direction": "inflow",
+            "status": "posted",
+            "amount": {
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "extensions": {
+              "synthetic_provider": {
+                "original_description": "SYNTHETIC CUSTOMER PAYMENT"
+              }
+            }
+          },
+          "source_payload": {
+            "status": "available",
+            "value": {
+              "description": "SYNTHETIC CUSTOMER PAYMENT",
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "reason": null
+          },
+          "document_ids": []
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "as_of": "2026-11-06T12:00:00Z",
+        "changes_cursor": "data_cursor_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listDataChanges",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "change_synthetic",
+          "type": "upsert",
+          "occurred_at": "2026-11-06T12:00:00Z",
+          "record_id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "resource_id": "txn_synthetic",
+          "resource_type": "bank_transaction",
+          "record_version": 1,
+          "reason": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "resume_cursor": "resume_synthetic",
+        "resume_expires_at": "2026-12-06T12:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getMonitor",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "active",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": "rp_signal_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": "2026-11-07T12:00:00Z",
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getMonitor",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "active",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": "rp_signal_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": "2026-11-07T12:00:00Z",
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getDealSnapshot",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "ds_synthetic",
+        "monitor_id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "previous_snapshot_id": "ds_initial",
+        "sequence": 2,
+        "record_version": 1,
+        "effective_at": "2026-11-06T12:00:00Z",
+        "received_at": "2026-11-06T12:00:00Z",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "performance": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listMonitoringRuns",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "mr_synthetic",
+          "monitor_id": "mon_synthetic",
+          "status": "partial",
+          "started_at": "2026-11-06T12:00:00Z",
+          "completed_at": "2026-11-06T12:00:00Z",
+          "risk_package_id": "rp_signal_synthetic",
+          "sources": [
+            {
+              "connection_id": "con_synthetic",
+              "integration_id": "bank_synthetic",
+              "source_as_of": "2026-11-01T00:00:00Z",
+              "retrieved_at": "2026-11-06T12:00:00Z",
+              "window": {
+                "start": "2025-11-01T00:00:00Z",
+                "end": "2026-11-01T00:00:00Z"
+              },
+              "status": "partial",
+              "limitations": [
+                "Bank records alone do not establish a complete debt schedule."
+              ]
+            }
+          ],
+          "evidence_set_id": "es_synthetic",
+          "limitations": [
+            "Debt-service data remains incomplete."
+          ],
+          "record_version": 1,
+          "deal_snapshot_id": "ds_synthetic",
+          "failure": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listAlerts",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "alert_synthetic",
+          "monitor_id": "mon_synthetic",
+          "borrower_id": "bor_synthetic",
+          "status": "open",
+          "severity": "warning",
+          "rule_id": "dscr-minimum",
+          "policy_version_id": "rpv_synthetic",
+          "message": "Required debt-service evidence is unavailable.",
+          "detected_at": "2026-11-06T12:00:00Z",
+          "resolved_at": null,
+          "previous_package_id": "rp_synthetic",
+          "current_package_id": "rp_signal_synthetic",
+          "metric_key": "dscr",
+          "previous_value": null,
+          "current_value": null,
+          "threshold": "1.25",
+          "unit": "ratio",
+          "evidence_ids": [
+            "ev_bank_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.772Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.772Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "downloadExport",
+    "request": {
+      "purpose": "Sandbox integration acceptance"
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "downloadExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "url": "https://downloads.example.com/synthetic",
+        "expires_at": "2026-11-06T12:05:00Z",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "mime_type": "application/pdf"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "getBillingSummary",
+    "status": "200",
+    "response": {
+      "data": {
+        "as_of": "2026-11-06T12:00:00Z",
+        "currency": "CAD",
+        "available_credits": "4935.00",
+        "spent_credits": "65.00",
+        "billing_account_id": "billing_synthetic",
+        "snapshot_id": "snap_synthetic",
+        "paid_funding_credits": "5000.00",
+        "promotional_credits": "0.00",
+        "adjustment_credits": "0.00",
+        "refunded_credits": "0.00",
+        "auto_pay": {
+          "enabled": false,
+          "trigger_amount": "200.00",
+          "top_up_amount": "500.00"
+        },
+        "snapshot_expires_at": "2026-11-06T13:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listBillingPayments",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "pay_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "updated_at": "2026-11-06T12:00:00Z",
+          "status": "succeeded",
+          "purpose": "manual_top_up",
+          "amount": "5000.00",
+          "currency": "CAD",
+          "credited_amount": "5000.00",
+          "refunded_amount": "0.00",
+          "method": {
+            "type": "card",
+            "label": "Visa ending 4242"
+          },
+          "external_reference": "PAY-SYNTHETIC-0042",
+          "settled_at": "2026-11-06T12:00:00Z",
+          "failure_reason": null,
+          "transaction_ids": [
+            "txn_funding_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listBillingTransactions",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "txn_usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "posted_at": "2026-11-06T12:00:00Z",
+          "amount": "-40.00",
+          "currency": "CAD",
+          "kind": "usage",
+          "product": "insights",
+          "description": "Synthetic underwriting usage, not a price quotation.",
+          "usage_id": "usage_synthetic",
+          "payment_id": null,
+          "borrower_id": "bor_synthetic",
+          "balance_after": "4935.00",
+          "sequence": 3,
+          "funding_type": null,
+          "record_version": 1,
+          "related_transaction_id": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "business",
+    "operationId": "listBillingUsage",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "borrower_id": "bor_synthetic",
+          "product": "insights",
+          "origination_id": "orgn_synthetic",
+          "monitor_ids": [],
+          "risk_package_ids": [
+            "rp_synthetic"
+          ],
+          "period": {
+            "start": "2026-11-06T00:00:00Z",
+            "end": "2026-11-07T00:00:00Z"
+          },
+          "charged_at": "2026-11-06T12:00:00Z",
+          "tier": "standard",
+          "quantity": 1,
+          "unit_rate": "40.00",
+          "amount": "40.00",
+          "currency": "CAD",
+          "rate_card_id": "rate_synthetic",
+          "rate_version": "synthetic-1",
+          "transaction_id": "txn_usage_synthetic",
+          "workload": {
+            "bank_accounts": 1,
+            "business_systems": 2,
+            "records": 1500,
+            "record_counting_basis": "per_underwriting"
+          }
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getConfiguration",
+    "status": "200",
+    "response": {
+      "data": {
+        "products": [
+          "insights",
+          "signal"
+        ],
+        "embedding_version_ids": [
+          "embed_synthetic"
+        ],
+        "application_schemas": [
+          {
+            "id": "app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "annual_revenue"
+              ],
+              "properties": {
+                "annual_revenue": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "id": "consumer_app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "gross_monthly_income",
+                "monthly_debt_payments"
+              ],
+              "properties": {
+                "gross_monthly_income": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                },
+                "monthly_debt_payments": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "pricing_schemas": [
+          {
+            "id": "pricing_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "rate_type",
+                "annual_interest_rate",
+                "amortization_months",
+                "fees"
+              ],
+              "properties": {
+                "rate_type": {
+                  "const": "fixed"
+                },
+                "annual_interest_rate": {
+                  "type": "string"
+                },
+                "amortization_months": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "fees": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "cadences": [
+          {
+            "id": "cadence_synthetic",
+            "description": "Illustrative daily schedule; use your provisioned cadence."
+          }
+        ],
+        "dimensions": [
+          {
+            "key": "dscr",
+            "description": "Eligible cash flow divided by complete existing and proposed debt service over comparable periods.",
+            "unit": "ratio",
+            "calculation_version": "cashflow-dscr-synthetic-v1",
+            "borrower_types": [
+              "business"
+            ]
+          },
+          {
+            "key": "debt_to_income",
+            "description": "Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.",
+            "unit": "ratio",
+            "calculation_version": "consumer-dti-synthetic-v1",
+            "borrower_types": [
+              "person"
+            ]
+          }
+        ],
+        "integration_ids": [
+          "bank_synthetic"
+        ],
+        "operational_profile": {
+          "id": "development-example",
+          "version": "1",
+          "max_json_bytes": 1048576,
+          "max_upload_bytes": 20971520,
+          "max_document_pages": 200,
+          "allowed_document_mime_types": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "document_types": [
+            "financial_statement",
+            "bank_statement",
+            "identity_document",
+            "business_registration",
+            "tax_return",
+            "lending_terms",
+            "risk_policy",
+            "other"
+          ],
+          "session_ttl_seconds": 900,
+          "download_ttl_seconds": 300,
+          "snapshot_ttl_seconds": 3600,
+          "data_feed_retention_seconds": 2592000,
+          "event_retention_seconds": 2592000,
+          "export_retention_seconds": 86400,
+          "poll_min_interval_seconds": 5,
+          "poll_max_interval_seconds": 60,
+          "webhook_timeout_seconds": 10,
+          "webhook_max_body_bytes": 65536,
+          "webhook_rotation_overlap_seconds": 86400,
+          "rate_limits": [
+            {
+              "group": "reads",
+              "requests": 120,
+              "window_seconds": 60
+            },
+            {
+              "group": "commands",
+              "requests": 30,
+              "window_seconds": 60
+            },
+            {
+              "group": "uploads",
+              "requests": 10,
+              "window_seconds": 60
+            }
+          ]
+        },
+        "embedding_versions": [
+          {
+            "id": "embed_synthetic",
+            "name": "Synthetic borrower Hub",
+            "integration_ids": [
+              "bank_synthetic"
+            ],
+            "consent_purposes": [
+              "credit_assessment",
+              "continuous_monitoring"
+            ],
+            "allowed_embed_origins": [
+              "https://institution.example.com"
+            ],
+            "allowed_return_urls": [
+              "https://institution.example.com/connected"
+            ],
+            "hub_origin": "https://borrower.example.com"
+          }
+        ],
+        "sandbox": {
+          "scenario_ids": [
+            "happy_path",
+            "source_reauthorization",
+            "document_required",
+            "missing_financial_input",
+            "restricted_report",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "payment_return",
+            "export_failure"
+          ],
+          "test_integration_id": "bank_synthetic"
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createBorrower",
+    "request": {
+      "type": "person",
+      "person": {
+        "given_name": "Synthetic",
+        "family_name": "Borrower",
+        "residence_country": "CA",
+        "client_reference": "offline-person"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createBorrower",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "bor_synthetic",
+        "type": "business",
+        "subject_id": "biz_synthetic",
+        "created_at": "2026-11-06T12:00:00Z",
+        "client_reference": "offline-person",
+        "profile": {
+          "type": "person",
+          "person": {
+            "given_name": "Synthetic",
+            "family_name": "Borrower",
+            "residence_country": "CA",
+            "client_reference": "offline-person"
+          }
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createLendingProductVersion",
+    "request": {
+      "external_id": "offline-person",
+      "version": "1",
+      "name": "Synthetic consumer term loan",
+      "borrower_type": "person",
+      "market": "CA",
+      "currency": "CAD",
+      "product_type": "term_loan",
+      "minimum_amount": {
+        "amount": "10000.00",
+        "currency": "CAD"
+      },
+      "maximum_amount": {
+        "amount": "100000.00",
+        "currency": "CAD"
+      },
+      "minimum_term_months": 6,
+      "maximum_term_months": 24,
+      "repayment_frequency": "monthly",
+      "pricing_schema_id": "pricing_synthetic",
+      "pricing": {
+        "rate_type": "fixed",
+        "annual_interest_rate": "0.12",
+        "amortization_months": 12,
+        "fees": []
+      },
+      "terms_document_ids": []
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createLendingProductVersion",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "lpv_synthetic",
+        "created_at": "2026-11-06T12:00:00Z",
+        "definition": {
+          "external_id": "working-capital",
+          "version": "1",
+          "name": "Working capital loan",
+          "borrower_type": "business",
+          "market": "CA",
+          "currency": "CAD",
+          "product_type": "term_loan",
+          "minimum_amount": {
+            "amount": "10000.00",
+            "currency": "CAD"
+          },
+          "maximum_amount": {
+            "amount": "100000.00",
+            "currency": "CAD"
+          },
+          "minimum_term_months": 6,
+          "maximum_term_months": 24,
+          "repayment_frequency": "monthly",
+          "pricing_schema_id": "pricing_synthetic",
+          "pricing": {
+            "rate_type": "fixed",
+            "annual_interest_rate": "0.12",
+            "amortization_months": 12,
+            "fees": []
+          },
+          "terms_document_ids": []
+        },
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createRiskPolicyVersion",
+    "request": {
+      "external_id": "offline-person",
+      "version": "1",
+      "name": "Synthetic consumer policy; not a recommended threshold",
+      "borrower_type": "person",
+      "market": "CA",
+      "rules": [
+        {
+          "id": "dti-test",
+          "dimension_key": "debt_to_income",
+          "operator": "lte",
+          "threshold": "0.40",
+          "unit": "ratio",
+          "on_missing": "review",
+          "on_fail": "review"
+        }
+      ],
+      "policy_document_ids": []
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createRiskPolicyVersion",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "rpv_synthetic",
+        "created_at": "2026-11-06T12:00:00Z",
+        "definition": {
+          "external_id": "working-capital-policy",
+          "version": "1",
+          "name": "Illustrative policy, not a recommended threshold",
+          "borrower_type": "business",
+          "market": "CA",
+          "rules": [
+            {
+              "id": "dscr-minimum",
+              "dimension_key": "dscr",
+              "operator": "gte",
+              "threshold": "1.25",
+              "unit": "ratio",
+              "on_missing": "review",
+              "on_fail": "review"
+            }
+          ],
+          "policy_document_ids": []
+        },
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createEmbeddingSession",
+    "request": {
+      "borrower_id": "bor_synthetic",
+      "embedding_version_id": "embed_synthetic",
+      "purpose": "connect",
+      "return_url": "https://institution.example.com/connected",
+      "consent_purposes": [
+        "credit_assessment",
+        "continuous_monitoring"
+      ]
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createEmbeddingSession",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "embs_synthetic",
+        "borrower_id": "bor_synthetic",
+        "status": "created",
+        "launch_url": "https://borrower.example.com/session/synthetic",
+        "expires_at": "2026-11-06T20:31:08.774Z",
+        "connection_ids": [],
+        "consent_ids": [],
+        "record_version": 1,
+        "embedding_version_id": "embed_synthetic",
+        "purpose": "connect",
+        "origination_id": null,
+        "monitor_id": null,
+        "requirement_id": null,
+        "consent_purposes": [
+          "credit_assessment",
+          "continuous_monitoring"
+        ],
+        "embed_origin": "https://institution.example.com",
+        "return_url": "https://institution.example.com/connected",
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getConfiguration",
+    "status": "200",
+    "response": {
+      "data": {
+        "products": [
+          "insights",
+          "signal"
+        ],
+        "embedding_version_ids": [
+          "embed_synthetic"
+        ],
+        "application_schemas": [
+          {
+            "id": "app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "annual_revenue"
+              ],
+              "properties": {
+                "annual_revenue": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "id": "consumer_app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "gross_monthly_income",
+                "monthly_debt_payments"
+              ],
+              "properties": {
+                "gross_monthly_income": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                },
+                "monthly_debt_payments": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "pricing_schemas": [
+          {
+            "id": "pricing_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "rate_type",
+                "annual_interest_rate",
+                "amortization_months",
+                "fees"
+              ],
+              "properties": {
+                "rate_type": {
+                  "const": "fixed"
+                },
+                "annual_interest_rate": {
+                  "type": "string"
+                },
+                "amortization_months": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "fees": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "cadences": [
+          {
+            "id": "cadence_synthetic",
+            "description": "Illustrative daily schedule; use your provisioned cadence."
+          }
+        ],
+        "dimensions": [
+          {
+            "key": "dscr",
+            "description": "Eligible cash flow divided by complete existing and proposed debt service over comparable periods.",
+            "unit": "ratio",
+            "calculation_version": "cashflow-dscr-synthetic-v1",
+            "borrower_types": [
+              "business"
+            ]
+          },
+          {
+            "key": "debt_to_income",
+            "description": "Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.",
+            "unit": "ratio",
+            "calculation_version": "consumer-dti-synthetic-v1",
+            "borrower_types": [
+              "person"
+            ]
+          }
+        ],
+        "integration_ids": [
+          "bank_synthetic"
+        ],
+        "operational_profile": {
+          "id": "development-example",
+          "version": "1",
+          "max_json_bytes": 1048576,
+          "max_upload_bytes": 20971520,
+          "max_document_pages": 200,
+          "allowed_document_mime_types": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "document_types": [
+            "financial_statement",
+            "bank_statement",
+            "identity_document",
+            "business_registration",
+            "tax_return",
+            "lending_terms",
+            "risk_policy",
+            "other"
+          ],
+          "session_ttl_seconds": 900,
+          "download_ttl_seconds": 300,
+          "snapshot_ttl_seconds": 3600,
+          "data_feed_retention_seconds": 2592000,
+          "event_retention_seconds": 2592000,
+          "export_retention_seconds": 86400,
+          "poll_min_interval_seconds": 5,
+          "poll_max_interval_seconds": 60,
+          "webhook_timeout_seconds": 10,
+          "webhook_max_body_bytes": 65536,
+          "webhook_rotation_overlap_seconds": 86400,
+          "rate_limits": [
+            {
+              "group": "reads",
+              "requests": 120,
+              "window_seconds": 60
+            },
+            {
+              "group": "commands",
+              "requests": 30,
+              "window_seconds": 60
+            },
+            {
+              "group": "uploads",
+              "requests": 10,
+              "window_seconds": 60
+            }
+          ]
+        },
+        "embedding_versions": [
+          {
+            "id": "embed_synthetic",
+            "name": "Synthetic borrower Hub",
+            "integration_ids": [
+              "bank_synthetic"
+            ],
+            "consent_purposes": [
+              "credit_assessment",
+              "continuous_monitoring"
+            ],
+            "allowed_embed_origins": [
+              "https://institution.example.com"
+            ],
+            "allowed_return_urls": [
+              "https://institution.example.com/connected"
+            ],
+            "hub_origin": "https://borrower.example.com"
+          }
+        ],
+        "sandbox": {
+          "scenario_ids": [
+            "happy_path",
+            "source_reauthorization",
+            "document_required",
+            "missing_financial_input",
+            "restricted_report",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "payment_return",
+            "export_failure"
+          ],
+          "test_integration_id": "bank_synthetic"
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getEmbeddingSession",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "embs_synthetic",
+        "borrower_id": "bor_synthetic",
+        "status": "completed",
+        "launch_url": "https://borrower.example.com/session/synthetic",
+        "expires_at": "2026-11-06T20:31:08.774Z",
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "consent_ids": [],
+        "record_version": 1,
+        "embedding_version_id": "embed_synthetic",
+        "purpose": "connect",
+        "origination_id": null,
+        "monitor_id": null,
+        "requirement_id": null,
+        "consent_purposes": [
+          "credit_assessment",
+          "continuous_monitoring"
+        ],
+        "embed_origin": "https://institution.example.com",
+        "return_url": "https://institution.example.com/connected",
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "uploadDocument",
+    "request": {
+      "file": "<binary file bytes>",
+      "context": "borrower",
+      "borrower_id": "bor_synthetic",
+      "document_type": "financial_statement"
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "uploadDocument",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "doc_synthetic",
+        "context": "borrower",
+        "borrower_id": "bor_synthetic",
+        "file_name": "financial-statement.pdf",
+        "mime_type": "application/pdf",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size_bytes": 12500,
+        "status": "available",
+        "restriction_reason": null,
+        "created_at": "2026-11-06T12:00:00Z",
+        "document_type": "financial_statement",
+        "origination_id": null,
+        "requirement_id": null,
+        "origin": "institution_upload",
+        "record_version": 1,
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getDocument",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "doc_synthetic",
+        "context": "borrower",
+        "borrower_id": "bor_synthetic",
+        "file_name": "financial-statement.pdf",
+        "mime_type": "application/pdf",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size_bytes": 12500,
+        "status": "available",
+        "restriction_reason": null,
+        "created_at": "2026-11-06T12:00:00Z",
+        "document_type": "financial_statement",
+        "origination_id": null,
+        "requirement_id": null,
+        "origin": "institution_upload",
+        "record_version": 1,
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createOrigination",
+    "request": {
+      "borrower_id": "bor_synthetic",
+      "application": {
+        "institution_reference": "offline-person",
+        "requested_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "requested_term_months": 12,
+        "purpose": "Working capital",
+        "application_schema_id": "consumer_app_schema_synthetic",
+        "declared_data": {
+          "gross_monthly_income": "6000.00",
+          "monthly_debt_payments": "1200.00"
+        }
+      },
+      "lending_product_version_id": "lpv_synthetic",
+      "risk_policy_version_id": "rpv_synthetic",
+      "connection_ids": [
+        "con_synthetic"
+      ],
+      "document_ids": [
+        "doc_synthetic"
+      ]
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createOrigination",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "accepted",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": null,
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getOrigination",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": "rp_synthetic",
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getRiskPackage",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "rp_synthetic",
+        "borrower_id": "bor_synthetic",
+        "origination_id": "orgn_synthetic",
+        "monitoring_run_id": null,
+        "product": "insights",
+        "created_at": "2026-11-06T12:00:00Z",
+        "as_of": "2026-11-06T12:00:00Z",
+        "previous_package_id": null,
+        "application": {
+          "institution_reference": "LOS-2026-0042",
+          "requested_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "requested_term_months": 12,
+          "purpose": "Working capital",
+          "application_schema_id": "app_schema_synthetic",
+          "declared_data": {
+            "annual_revenue": "600000.00"
+          }
+        },
+        "lending_product": {
+          "id": "lpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital",
+            "version": "1",
+            "name": "Working capital loan",
+            "borrower_type": "business",
+            "market": "CA",
+            "currency": "CAD",
+            "product_type": "term_loan",
+            "minimum_amount": {
+              "amount": "10000.00",
+              "currency": "CAD"
+            },
+            "maximum_amount": {
+              "amount": "100000.00",
+              "currency": "CAD"
+            },
+            "minimum_term_months": 6,
+            "maximum_term_months": 24,
+            "repayment_frequency": "monthly",
+            "pricing_schema_id": "pricing_synthetic",
+            "pricing": {
+              "rate_type": "fixed",
+              "annual_interest_rate": "0.12",
+              "amortization_months": 12,
+              "fees": []
+            },
+            "terms_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "risk_policy": {
+          "id": "rpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital-policy",
+            "version": "1",
+            "name": "Illustrative policy, not a recommended threshold",
+            "borrower_type": "business",
+            "market": "CA",
+            "rules": [
+              {
+                "id": "dscr-minimum",
+                "dimension_key": "dscr",
+                "operator": "gte",
+                "threshold": "1.25",
+                "unit": "ratio",
+                "on_missing": "review",
+                "on_fail": "review"
+              }
+            ],
+            "policy_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "assessment": {
+          "recommendation": "review_required",
+          "is_institution_decision": false,
+          "summary": "Repayment capacity requires review because the debt schedule is incomplete.",
+          "reasons": [
+            "Required repayment evidence is missing."
+          ]
+        },
+        "dimensions": [
+          {
+            "key": "repayment_capacity",
+            "status": "unavailable",
+            "summary": "DSCR is not calculated without complete eligible debt-service inputs.",
+            "metrics": [
+              {
+                "key": "dscr",
+                "label": "Cash-flow debt-service coverage",
+                "status": "unavailable",
+                "value": null,
+                "unit": "ratio",
+                "window": {
+                  "start": "2025-11-01T00:00:00Z",
+                  "end": "2026-11-01T00:00:00Z"
+                },
+                "calculation_version": "cashflow-dscr-synthetic-v1",
+                "missing_reason": "Complete existing and proposed debt-service schedule is unavailable.",
+                "evidence_ids": [
+                  "ev_bank_synthetic"
+                ]
+              }
+            ],
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "policy_results": [
+          {
+            "rule_id": "dscr-minimum",
+            "result": "unavailable",
+            "actual": null,
+            "threshold": "1.25",
+            "unit": "ratio",
+            "explanation": "The rule cannot be evaluated without a supported DSCR.",
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "connection_id": "con_synthetic",
+            "integration_id": "bank_synthetic",
+            "source_as_of": "2026-11-01T00:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "window": {
+              "start": "2025-11-01T00:00:00Z",
+              "end": "2026-11-01T00:00:00Z"
+            },
+            "status": "partial",
+            "limitations": [
+              "Bank records alone do not establish a complete debt schedule."
+            ]
+          }
+        ],
+        "limitations": [
+          "All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation."
+        ],
+        "evidence_set": {
+          "id": "es_synthetic",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "count": 1
+        },
+        "versions": {
+          "schema": "1.0.0",
+          "normalization": "synthetic-v1",
+          "calculation": "synthetic-v1",
+          "model": null
+        },
+        "billing_usage_id": "usage_synthetic",
+        "document_ids": [],
+        "record_version": 1,
+        "deal_snapshot_id": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listEvidence",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "ev_bank_synthetic",
+          "evidence_set_id": "es_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "kind": "normalized_record",
+          "source_id": "bank_synthetic",
+          "observed_at": "2026-11-06T12:00:00Z",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "access": "restricted",
+          "access_reason": "Illustrative source entitlement restriction.",
+          "document_id": null,
+          "data_record_id": "dr_synthetic_v1"
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listDataRecords",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "connection_id": "con_synthetic",
+          "integration_id": "bank_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "ingested_at": "2026-11-06T12:00:00Z",
+          "source_as_of": "2026-11-06T12:00:00Z",
+          "access": "available",
+          "access_reason": null,
+          "normalized": {
+            "id": "txn_synthetic",
+            "object": "bank_transaction",
+            "subject_id": "biz_synthetic",
+            "created_at": "2026-11-06T12:00:00Z",
+            "updated_at": "2026-11-06T12:00:00Z",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "record_version": 1,
+            "source_refs": [],
+            "data_status": "partial",
+            "missing_fields": [],
+            "schema_version": "1.0.0",
+            "account_id": "acct_synthetic",
+            "direction": "inflow",
+            "status": "posted",
+            "amount": {
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "extensions": {
+              "synthetic_provider": {
+                "original_description": "SYNTHETIC CUSTOMER PAYMENT"
+              }
+            }
+          },
+          "source_payload": {
+            "status": "available",
+            "value": {
+              "description": "SYNTHETIC CUSTOMER PAYMENT",
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "reason": null
+          },
+          "document_ids": []
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "as_of": "2026-11-06T12:00:00Z",
+        "changes_cursor": "data_cursor_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listDataChanges",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "change_synthetic",
+          "type": "upsert",
+          "occurred_at": "2026-11-06T12:00:00Z",
+          "record_id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "resource_id": "txn_synthetic",
+          "resource_type": "bank_transaction",
+          "record_version": 1,
+          "reason": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "resume_cursor": "resume_synthetic",
+        "resume_expires_at": "2026-12-06T12:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createMonitor",
+    "request": {
+      "borrower_id": "bor_synthetic",
+      "deal": {
+        "institution_reference": "offline-person",
+        "funded_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "outstanding_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "funded_at": "2026-11-05T12:00:00Z",
+        "maturity_date": "2027-11-06",
+        "repayment_frequency": "monthly",
+        "terms_document_ids": []
+      },
+      "baseline": {
+        "risk_package_id": "rp_synthetic"
+      },
+      "risk_policy_version_id": "rpv_synthetic",
+      "cadence_id": "cadence_synthetic",
+      "connection_ids": [
+        "con_synthetic"
+      ]
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createMonitor",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "initializing",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": null,
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": null,
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getMonitor",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "active",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": "rp_signal_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": "2026-11-07T12:00:00Z",
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createDealSnapshot",
+    "request": {
+      "previous_snapshot_id": "ds_synthetic",
+      "effective_at": "2026-11-06T20:16:08.775Z",
+      "deal": {
+        "institution_reference": "LOAN-0042",
+        "funded_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "outstanding_amount": {
+          "amount": "48000.00",
+          "currency": "CAD"
+        },
+        "funded_at": "2026-11-05T12:00:00Z",
+        "maturity_date": "2027-11-06",
+        "repayment_frequency": "monthly",
+        "terms_document_ids": []
+      },
+      "performance": null
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createDealSnapshot",
+    "status": "201",
+    "response": {
+      "data": {
+        "id": "ds_synthetic",
+        "monitor_id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "previous_snapshot_id": "ds_initial",
+        "sequence": 2,
+        "record_version": 1,
+        "effective_at": "2026-11-06T12:00:00Z",
+        "received_at": "2026-11-06T12:00:00Z",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "performance": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listMonitoringRuns",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "mr_synthetic",
+          "monitor_id": "mon_synthetic",
+          "status": "partial",
+          "started_at": "2026-11-06T12:00:00Z",
+          "completed_at": "2026-11-06T12:00:00Z",
+          "risk_package_id": "rp_signal_synthetic",
+          "sources": [
+            {
+              "connection_id": "con_synthetic",
+              "integration_id": "bank_synthetic",
+              "source_as_of": "2026-11-01T00:00:00Z",
+              "retrieved_at": "2026-11-06T12:00:00Z",
+              "window": {
+                "start": "2025-11-01T00:00:00Z",
+                "end": "2026-11-01T00:00:00Z"
+              },
+              "status": "partial",
+              "limitations": [
+                "Bank records alone do not establish a complete debt schedule."
+              ]
+            }
+          ],
+          "evidence_set_id": "es_synthetic",
+          "limitations": [
+            "Debt-service data remains incomplete."
+          ],
+          "record_version": 1,
+          "deal_snapshot_id": "ds_synthetic",
+          "failure": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listAlerts",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "alert_synthetic",
+          "monitor_id": "mon_synthetic",
+          "borrower_id": "bor_synthetic",
+          "status": "open",
+          "severity": "warning",
+          "rule_id": "dscr-minimum",
+          "policy_version_id": "rpv_synthetic",
+          "message": "Required debt-service evidence is unavailable.",
+          "detected_at": "2026-11-06T12:00:00Z",
+          "resolved_at": null,
+          "previous_package_id": "rp_synthetic",
+          "current_package_id": "rp_signal_synthetic",
+          "metric_key": "dscr",
+          "previous_value": null,
+          "current_value": null,
+          "threshold": "1.25",
+          "unit": "ratio",
+          "evidence_ids": [
+            "ev_bank_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createExport",
+    "request": {
+      "kind": "risk_package",
+      "risk_package_id": "rp_synthetic",
+      "format": "json"
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "createExport",
+    "status": "202",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.775Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.775Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "downloadExport",
+    "request": {
+      "purpose": "Sandbox integration acceptance"
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "downloadExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "url": "https://downloads.example.com/synthetic",
+        "expires_at": "2026-11-06T12:05:00Z",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "mime_type": "application/pdf"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getBillingSummary",
+    "status": "200",
+    "response": {
+      "data": {
+        "as_of": "2026-11-06T12:00:00Z",
+        "currency": "CAD",
+        "available_credits": "4935.00",
+        "spent_credits": "65.00",
+        "billing_account_id": "billing_synthetic",
+        "snapshot_id": "snap_synthetic",
+        "paid_funding_credits": "5000.00",
+        "promotional_credits": "0.00",
+        "adjustment_credits": "0.00",
+        "refunded_credits": "0.00",
+        "auto_pay": {
+          "enabled": false,
+          "trigger_amount": "200.00",
+          "top_up_amount": "500.00"
+        },
+        "snapshot_expires_at": "2026-11-06T13:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listBillingPayments",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "pay_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "updated_at": "2026-11-06T12:00:00Z",
+          "status": "succeeded",
+          "purpose": "manual_top_up",
+          "amount": "5000.00",
+          "currency": "CAD",
+          "credited_amount": "5000.00",
+          "refunded_amount": "0.00",
+          "method": {
+            "type": "card",
+            "label": "Visa ending 4242"
+          },
+          "external_reference": "PAY-SYNTHETIC-0042",
+          "settled_at": "2026-11-06T12:00:00Z",
+          "failure_reason": null,
+          "transaction_ids": [
+            "txn_funding_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listBillingTransactions",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "txn_usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "posted_at": "2026-11-06T12:00:00Z",
+          "amount": "-40.00",
+          "currency": "CAD",
+          "kind": "usage",
+          "product": "insights",
+          "description": "Synthetic underwriting usage, not a price quotation.",
+          "usage_id": "usage_synthetic",
+          "payment_id": null,
+          "borrower_id": "bor_synthetic",
+          "balance_after": "4935.00",
+          "sequence": 3,
+          "funding_type": null,
+          "record_version": 1,
+          "related_transaction_id": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listBillingUsage",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "borrower_id": "bor_synthetic",
+          "product": "insights",
+          "origination_id": "orgn_synthetic",
+          "monitor_ids": [],
+          "risk_package_ids": [
+            "rp_synthetic"
+          ],
+          "period": {
+            "start": "2026-11-06T00:00:00Z",
+            "end": "2026-11-07T00:00:00Z"
+          },
+          "charged_at": "2026-11-06T12:00:00Z",
+          "tier": "standard",
+          "quantity": 1,
+          "unit_rate": "40.00",
+          "amount": "40.00",
+          "currency": "CAD",
+          "rate_card_id": "rate_synthetic",
+          "rate_version": "synthetic-1",
+          "transaction_id": "txn_usage_synthetic",
+          "workload": {
+            "bank_accounts": 1,
+            "business_systems": 2,
+            "records": 1500,
+            "record_counting_basis": "per_underwriting"
+          }
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getConfiguration",
+    "status": "200",
+    "response": {
+      "data": {
+        "products": [
+          "insights",
+          "signal"
+        ],
+        "embedding_version_ids": [
+          "embed_synthetic"
+        ],
+        "application_schemas": [
+          {
+            "id": "app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "annual_revenue"
+              ],
+              "properties": {
+                "annual_revenue": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          {
+            "id": "consumer_app_schema_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "gross_monthly_income",
+                "monthly_debt_payments"
+              ],
+              "properties": {
+                "gross_monthly_income": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                },
+                "monthly_debt_payments": {
+                  "type": "string",
+                  "pattern": "^[0-9]+\\.[0-9]{2}$"
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "pricing_schemas": [
+          {
+            "id": "pricing_synthetic",
+            "version": "1",
+            "json_schema": {
+              "type": "object",
+              "required": [
+                "rate_type",
+                "annual_interest_rate",
+                "amortization_months",
+                "fees"
+              ],
+              "properties": {
+                "rate_type": {
+                  "const": "fixed"
+                },
+                "annual_interest_rate": {
+                  "type": "string"
+                },
+                "amortization_months": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "fees": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              },
+              "additionalProperties": false
+            }
+          }
+        ],
+        "cadences": [
+          {
+            "id": "cadence_synthetic",
+            "description": "Illustrative daily schedule; use your provisioned cadence."
+          }
+        ],
+        "dimensions": [
+          {
+            "key": "dscr",
+            "description": "Eligible cash flow divided by complete existing and proposed debt service over comparable periods.",
+            "unit": "ratio",
+            "calculation_version": "cashflow-dscr-synthetic-v1",
+            "borrower_types": [
+              "business"
+            ]
+          },
+          {
+            "key": "debt_to_income",
+            "description": "Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.",
+            "unit": "ratio",
+            "calculation_version": "consumer-dti-synthetic-v1",
+            "borrower_types": [
+              "person"
+            ]
+          }
+        ],
+        "integration_ids": [
+          "bank_synthetic"
+        ],
+        "operational_profile": {
+          "id": "development-example",
+          "version": "1",
+          "max_json_bytes": 1048576,
+          "max_upload_bytes": 20971520,
+          "max_document_pages": 200,
+          "allowed_document_mime_types": [
+            "application/pdf",
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+          ],
+          "document_types": [
+            "financial_statement",
+            "bank_statement",
+            "identity_document",
+            "business_registration",
+            "tax_return",
+            "lending_terms",
+            "risk_policy",
+            "other"
+          ],
+          "session_ttl_seconds": 900,
+          "download_ttl_seconds": 300,
+          "snapshot_ttl_seconds": 3600,
+          "data_feed_retention_seconds": 2592000,
+          "event_retention_seconds": 2592000,
+          "export_retention_seconds": 86400,
+          "poll_min_interval_seconds": 5,
+          "poll_max_interval_seconds": 60,
+          "webhook_timeout_seconds": 10,
+          "webhook_max_body_bytes": 65536,
+          "webhook_rotation_overlap_seconds": 86400,
+          "rate_limits": [
+            {
+              "group": "reads",
+              "requests": 120,
+              "window_seconds": 60
+            },
+            {
+              "group": "commands",
+              "requests": 30,
+              "window_seconds": 60
+            },
+            {
+              "group": "uploads",
+              "requests": 10,
+              "window_seconds": 60
+            }
+          ]
+        },
+        "embedding_versions": [
+          {
+            "id": "embed_synthetic",
+            "name": "Synthetic borrower Hub",
+            "integration_ids": [
+              "bank_synthetic"
+            ],
+            "consent_purposes": [
+              "credit_assessment",
+              "continuous_monitoring"
+            ],
+            "allowed_embed_origins": [
+              "https://institution.example.com"
+            ],
+            "allowed_return_urls": [
+              "https://institution.example.com/connected"
+            ],
+            "hub_origin": "https://borrower.example.com"
+          }
+        ],
+        "sandbox": {
+          "scenario_ids": [
+            "happy_path",
+            "source_reauthorization",
+            "document_required",
+            "missing_financial_input",
+            "restricted_report",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "payment_return",
+            "export_failure"
+          ],
+          "test_integration_id": "bank_synthetic"
+        }
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getEmbeddingSession",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "embs_synthetic",
+        "borrower_id": "bor_synthetic",
+        "status": "completed",
+        "launch_url": "https://borrower.example.com/session/synthetic",
+        "expires_at": "2026-11-06T20:31:08.775Z",
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "consent_ids": [],
+        "record_version": 1,
+        "embedding_version_id": "embed_synthetic",
+        "purpose": "connect",
+        "origination_id": null,
+        "monitor_id": null,
+        "requirement_id": null,
+        "consent_purposes": [
+          "credit_assessment",
+          "continuous_monitoring"
+        ],
+        "embed_origin": "https://institution.example.com",
+        "return_url": "https://institution.example.com/connected",
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getDocument",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "doc_synthetic",
+        "context": "borrower",
+        "borrower_id": "bor_synthetic",
+        "file_name": "financial-statement.pdf",
+        "mime_type": "application/pdf",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "size_bytes": 12500,
+        "status": "available",
+        "restriction_reason": null,
+        "created_at": "2026-11-06T12:00:00Z",
+        "document_type": "financial_statement",
+        "origination_id": null,
+        "requirement_id": null,
+        "origin": "institution_upload",
+        "record_version": 1,
+        "failure": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getOrigination",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": "rp_synthetic",
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getOrigination",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "orgn_synthetic",
+        "borrower_id": "bor_synthetic",
+        "institution_reference": "LOS-2026-0042",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "updated_at": "2026-11-06T12:00:00Z",
+        "requirements": [],
+        "risk_package_id": "rp_synthetic",
+        "failure": null,
+        "record_version": 1,
+        "submitted_request": {
+          "borrower_id": "bor_synthetic",
+          "application": {
+            "institution_reference": "LOS-2026-0042",
+            "requested_amount": {
+              "amount": "50000.00",
+              "currency": "CAD"
+            },
+            "requested_term_months": 12,
+            "purpose": "Working capital",
+            "application_schema_id": "app_schema_synthetic",
+            "declared_data": {
+              "annual_revenue": "600000.00"
+            }
+          },
+          "lending_product_version_id": "lpv_synthetic",
+          "risk_policy_version_id": "rpv_synthetic",
+          "connection_ids": [
+            "con_synthetic"
+          ],
+          "document_ids": []
+        },
+        "document_ids": [],
+        "connection_ids": [
+          "con_synthetic"
+        ]
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getRiskPackage",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "rp_synthetic",
+        "borrower_id": "bor_synthetic",
+        "origination_id": "orgn_synthetic",
+        "monitoring_run_id": null,
+        "product": "insights",
+        "created_at": "2026-11-06T12:00:00Z",
+        "as_of": "2026-11-06T12:00:00Z",
+        "previous_package_id": null,
+        "application": {
+          "institution_reference": "LOS-2026-0042",
+          "requested_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "requested_term_months": 12,
+          "purpose": "Working capital",
+          "application_schema_id": "app_schema_synthetic",
+          "declared_data": {
+            "annual_revenue": "600000.00"
+          }
+        },
+        "lending_product": {
+          "id": "lpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital",
+            "version": "1",
+            "name": "Working capital loan",
+            "borrower_type": "business",
+            "market": "CA",
+            "currency": "CAD",
+            "product_type": "term_loan",
+            "minimum_amount": {
+              "amount": "10000.00",
+              "currency": "CAD"
+            },
+            "maximum_amount": {
+              "amount": "100000.00",
+              "currency": "CAD"
+            },
+            "minimum_term_months": 6,
+            "maximum_term_months": 24,
+            "repayment_frequency": "monthly",
+            "pricing_schema_id": "pricing_synthetic",
+            "pricing": {
+              "rate_type": "fixed",
+              "annual_interest_rate": "0.12",
+              "amortization_months": 12,
+              "fees": []
+            },
+            "terms_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "risk_policy": {
+          "id": "rpv_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "definition": {
+            "external_id": "working-capital-policy",
+            "version": "1",
+            "name": "Illustrative policy, not a recommended threshold",
+            "borrower_type": "business",
+            "market": "CA",
+            "rules": [
+              {
+                "id": "dscr-minimum",
+                "dimension_key": "dscr",
+                "operator": "gte",
+                "threshold": "1.25",
+                "unit": "ratio",
+                "on_missing": "review",
+                "on_fail": "review"
+              }
+            ],
+            "policy_document_ids": []
+          },
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "assessment": {
+          "recommendation": "review_required",
+          "is_institution_decision": false,
+          "summary": "Repayment capacity requires review because the debt schedule is incomplete.",
+          "reasons": [
+            "Required repayment evidence is missing."
+          ]
+        },
+        "dimensions": [
+          {
+            "key": "repayment_capacity",
+            "status": "unavailable",
+            "summary": "DSCR is not calculated without complete eligible debt-service inputs.",
+            "metrics": [
+              {
+                "key": "dscr",
+                "label": "Cash-flow debt-service coverage",
+                "status": "unavailable",
+                "value": null,
+                "unit": "ratio",
+                "window": {
+                  "start": "2025-11-01T00:00:00Z",
+                  "end": "2026-11-01T00:00:00Z"
+                },
+                "calculation_version": "cashflow-dscr-synthetic-v1",
+                "missing_reason": "Complete existing and proposed debt-service schedule is unavailable.",
+                "evidence_ids": [
+                  "ev_bank_synthetic"
+                ]
+              }
+            ],
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "policy_results": [
+          {
+            "rule_id": "dscr-minimum",
+            "result": "unavailable",
+            "actual": null,
+            "threshold": "1.25",
+            "unit": "ratio",
+            "explanation": "The rule cannot be evaluated without a supported DSCR.",
+            "evidence_ids": [
+              "ev_bank_synthetic"
+            ]
+          }
+        ],
+        "sources": [
+          {
+            "connection_id": "con_synthetic",
+            "integration_id": "bank_synthetic",
+            "source_as_of": "2026-11-01T00:00:00Z",
+            "retrieved_at": "2026-11-06T12:00:00Z",
+            "window": {
+              "start": "2025-11-01T00:00:00Z",
+              "end": "2026-11-01T00:00:00Z"
+            },
+            "status": "partial",
+            "limitations": [
+              "Bank records alone do not establish a complete debt schedule."
+            ]
+          }
+        ],
+        "limitations": [
+          "All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation."
+        ],
+        "evidence_set": {
+          "id": "es_synthetic",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "count": 1
+        },
+        "versions": {
+          "schema": "1.0.0",
+          "normalization": "synthetic-v1",
+          "calculation": "synthetic-v1",
+          "model": null
+        },
+        "billing_usage_id": "usage_synthetic",
+        "document_ids": [],
+        "record_version": 1,
+        "deal_snapshot_id": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listEvidence",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "ev_bank_synthetic",
+          "evidence_set_id": "es_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "kind": "normalized_record",
+          "source_id": "bank_synthetic",
+          "observed_at": "2026-11-06T12:00:00Z",
+          "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+          "access": "restricted",
+          "access_reason": "Illustrative source entitlement restriction.",
+          "document_id": null,
+          "data_record_id": "dr_synthetic_v1"
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listDataRecords",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "connection_id": "con_synthetic",
+          "integration_id": "bank_synthetic",
+          "resource_type": "bank_transaction",
+          "resource_id": "txn_synthetic",
+          "record_version": 1,
+          "ingested_at": "2026-11-06T12:00:00Z",
+          "source_as_of": "2026-11-06T12:00:00Z",
+          "access": "available",
+          "access_reason": null,
+          "normalized": {
+            "id": "txn_synthetic",
+            "object": "bank_transaction",
+            "subject_id": "biz_synthetic",
+            "created_at": "2026-11-06T12:00:00Z",
+            "updated_at": "2026-11-06T12:00:00Z",
+            "observed_at": "2026-11-06T12:00:00Z",
+            "record_version": 1,
+            "source_refs": [],
+            "data_status": "partial",
+            "missing_fields": [],
+            "schema_version": "1.0.0",
+            "account_id": "acct_synthetic",
+            "direction": "inflow",
+            "status": "posted",
+            "amount": {
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "extensions": {
+              "synthetic_provider": {
+                "original_description": "SYNTHETIC CUSTOMER PAYMENT"
+              }
+            }
+          },
+          "source_payload": {
+            "status": "available",
+            "value": {
+              "description": "SYNTHETIC CUSTOMER PAYMENT",
+              "amount": "1250.00",
+              "currency": "CAD"
+            },
+            "reason": null
+          },
+          "document_ids": []
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "as_of": "2026-11-06T12:00:00Z",
+        "changes_cursor": "data_cursor_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listDataChanges",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "change_synthetic",
+          "type": "upsert",
+          "occurred_at": "2026-11-06T12:00:00Z",
+          "record_id": "dr_synthetic_v1",
+          "borrower_id": "bor_synthetic",
+          "resource_id": "txn_synthetic",
+          "resource_type": "bank_transaction",
+          "record_version": 1,
+          "reason": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "resume_cursor": "resume_synthetic",
+        "resume_expires_at": "2026-12-06T12:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getMonitor",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "active",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": "rp_signal_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": "2026-11-07T12:00:00Z",
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getMonitor",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "status": "active",
+        "baseline_package_id": "rp_synthetic",
+        "latest_package_id": "rp_signal_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "cadence_id": "cadence_synthetic",
+        "next_evaluation_at": "2026-11-07T12:00:00Z",
+        "record_version": 1,
+        "connection_ids": [
+          "con_synthetic"
+        ],
+        "requirements": [],
+        "failure": null,
+        "latest_deal_snapshot_id": "ds_synthetic",
+        "updated_at": "2026-11-06T12:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getDealSnapshot",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "ds_synthetic",
+        "monitor_id": "mon_synthetic",
+        "borrower_id": "bor_synthetic",
+        "previous_snapshot_id": "ds_initial",
+        "sequence": 2,
+        "record_version": 1,
+        "effective_at": "2026-11-06T12:00:00Z",
+        "received_at": "2026-11-06T12:00:00Z",
+        "deal": {
+          "institution_reference": "LOAN-0042",
+          "funded_amount": {
+            "amount": "50000.00",
+            "currency": "CAD"
+          },
+          "outstanding_amount": {
+            "amount": "48000.00",
+            "currency": "CAD"
+          },
+          "funded_at": "2026-11-05T12:00:00Z",
+          "maturity_date": "2027-11-06",
+          "repayment_frequency": "monthly",
+          "terms_document_ids": []
+        },
+        "performance": null
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listMonitoringRuns",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "mr_synthetic",
+          "monitor_id": "mon_synthetic",
+          "status": "partial",
+          "started_at": "2026-11-06T12:00:00Z",
+          "completed_at": "2026-11-06T12:00:00Z",
+          "risk_package_id": "rp_signal_synthetic",
+          "sources": [
+            {
+              "connection_id": "con_synthetic",
+              "integration_id": "bank_synthetic",
+              "source_as_of": "2026-11-01T00:00:00Z",
+              "retrieved_at": "2026-11-06T12:00:00Z",
+              "window": {
+                "start": "2025-11-01T00:00:00Z",
+                "end": "2026-11-01T00:00:00Z"
+              },
+              "status": "partial",
+              "limitations": [
+                "Bank records alone do not establish a complete debt schedule."
+              ]
+            }
+          ],
+          "evidence_set_id": "es_synthetic",
+          "limitations": [
+            "Debt-service data remains incomplete."
+          ],
+          "record_version": 1,
+          "deal_snapshot_id": "ds_synthetic",
+          "failure": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listAlerts",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "alert_synthetic",
+          "monitor_id": "mon_synthetic",
+          "borrower_id": "bor_synthetic",
+          "status": "open",
+          "severity": "warning",
+          "rule_id": "dscr-minimum",
+          "policy_version_id": "rpv_synthetic",
+          "message": "Required debt-service evidence is unavailable.",
+          "detected_at": "2026-11-06T12:00:00Z",
+          "resolved_at": null,
+          "previous_package_id": "rp_synthetic",
+          "current_package_id": "rp_signal_synthetic",
+          "metric_key": "dscr",
+          "previous_value": null,
+          "current_value": null,
+          "threshold": "1.25",
+          "unit": "ratio",
+          "evidence_ids": [
+            "ev_bank_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.776Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "id": "exp_synthetic",
+        "status": "completed",
+        "created_at": "2026-11-06T12:00:00Z",
+        "format": "json",
+        "source": {
+          "kind": "risk_package",
+          "risk_package_id": "rp_synthetic",
+          "format": "json"
+        },
+        "failure": null,
+        "record_version": 1,
+        "expires_at": "2026-11-07T20:16:08.776Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "downloadExport",
+    "request": {
+      "purpose": "Sandbox integration acceptance"
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "downloadExport",
+    "status": "200",
+    "response": {
+      "data": {
+        "url": "https://downloads.example.com/synthetic",
+        "expires_at": "2026-11-06T12:05:00Z",
+        "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+        "mime_type": "application/pdf"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "getBillingSummary",
+    "status": "200",
+    "response": {
+      "data": {
+        "as_of": "2026-11-06T12:00:00Z",
+        "currency": "CAD",
+        "available_credits": "4935.00",
+        "spent_credits": "65.00",
+        "billing_account_id": "billing_synthetic",
+        "snapshot_id": "snap_synthetic",
+        "paid_funding_credits": "5000.00",
+        "promotional_credits": "0.00",
+        "adjustment_credits": "0.00",
+        "refunded_credits": "0.00",
+        "auto_pay": {
+          "enabled": false,
+          "trigger_amount": "200.00",
+          "top_up_amount": "500.00"
+        },
+        "snapshot_expires_at": "2026-11-06T13:00:00Z"
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listBillingPayments",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "pay_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "created_at": "2026-11-06T12:00:00Z",
+          "updated_at": "2026-11-06T12:00:00Z",
+          "status": "succeeded",
+          "purpose": "manual_top_up",
+          "amount": "5000.00",
+          "currency": "CAD",
+          "credited_amount": "5000.00",
+          "refunded_amount": "0.00",
+          "method": {
+            "type": "card",
+            "label": "Visa ending 4242"
+          },
+          "external_reference": "PAY-SYNTHETIC-0042",
+          "settled_at": "2026-11-06T12:00:00Z",
+          "failure_reason": null,
+          "transaction_ids": [
+            "txn_funding_synthetic"
+          ],
+          "record_version": 1
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listBillingTransactions",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "txn_usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "posted_at": "2026-11-06T12:00:00Z",
+          "amount": "-40.00",
+          "currency": "CAD",
+          "kind": "usage",
+          "product": "insights",
+          "description": "Synthetic underwriting usage, not a price quotation.",
+          "usage_id": "usage_synthetic",
+          "payment_id": null,
+          "borrower_id": "bor_synthetic",
+          "balance_after": "4935.00",
+          "sequence": 3,
+          "funding_type": null,
+          "record_version": 1,
+          "related_transaction_id": null
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  },
+  {
+    "kind": "person",
+    "operationId": "listBillingUsage",
+    "status": "200",
+    "response": {
+      "data": [
+        {
+          "id": "usage_synthetic",
+          "snapshot_id": "snap_synthetic",
+          "borrower_id": "bor_synthetic",
+          "product": "insights",
+          "origination_id": "orgn_synthetic",
+          "monitor_ids": [],
+          "risk_package_ids": [
+            "rp_synthetic"
+          ],
+          "period": {
+            "start": "2026-11-06T00:00:00Z",
+            "end": "2026-11-07T00:00:00Z"
+          },
+          "charged_at": "2026-11-06T12:00:00Z",
+          "tier": "standard",
+          "quantity": 1,
+          "unit_rate": "40.00",
+          "amount": "40.00",
+          "currency": "CAD",
+          "rate_card_id": "rate_synthetic",
+          "rate_version": "synthetic-1",
+          "transaction_id": "txn_usage_synthetic",
+          "workload": {
+            "bank_accounts": 1,
+            "business_systems": 2,
+            "records": 1500,
+            "record_counting_basis": "per_underwriting"
+          }
+        }
+      ],
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "snap_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    }
+  }
+]

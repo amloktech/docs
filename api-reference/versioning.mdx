@@ -1,12 +1,20 @@
 ---
-title: "API contract and compatibility"
+title: "API compatibility and release rules"
 sidebarTitle: "Versioning"
-description: "API contract and compatibility for the AMLOK product API."
+description: "Implement api compatibility and release rules using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-AMLOK has one public product API. All documented operations use the `/v1` prefix and the [same OpenAPI contract](/openapi/amlok.json). There is no parallel legacy API or separate migration reference.
+AMLOK publishes one `/v1` API. The OpenAPI info.version and response meta.schema_version identify the contract revision. There is no separate legacy reference. The current 1.0.0 document is the implementation specification before backend release.
 
-The endpoint reference, Postman collection, examples and console Data Lookup are generated from this contract. Use your institution-issued API origin; do not use the console or documentation hostname for API requests.
+Before the first backend release, align code, fixtures, guides, generated client artifacts and console Data Lookup to the same contract hash. A deployed environment must expose that revision in responses and pass the acceptance checklist.
 
-Record, calculation, policy and lending-product revisions identify the exact inputs behind an assessment. They are not alternative APIs. Financial export format versions identify file layouts independently of API routing.
+## After release
+
+Within a released major API, adding an optional response field or a new independent operation is additive. Clients must ignore unknown response fields, preserve opaque IDs/cursors and tolerate additional event types by safely recording or ignoring unknown events without crashing. Requests remain strict: reject unsupported input fields with 422 rather than silently discarding them.
+
+Removing/renaming fields or operations, adding required request fields, changing units/semantics, changing nullability to invalidate accepted values, or adding states to a closed status enum are breaking changes. They require an explicit contract review and a published adoption plan before deployment. Do not silently change a released contract or introduce an undocumented alternative API.
+
+Record changes in the [contract change log](/api-reference/contract-changelog), notify institution technical contacts before an affected release and test generated consumers. Security revocation and entitlement changes still take effect when required; they do not authorize changing historical evidence or billing entries.
+
+Published packages and financial records preserve their original schema/calculation/rate versions. A new metric calculation version affects new results only. Provider-specific coverage changes must remain visible as data availability information.

@@ -108,7 +108,9 @@ def extend_schemas(s):
         'BillingTransaction': {'payment_id':'Related funding payment or refund source; null when no payment applies.', 'borrower_id':'Borrower charged when applicable; funding is workspace-wide and normally null.', 'balance_after':'Spendable CAD balance immediately after this entry in sequence order.', 'sequence':'Strictly increasing posting order within the workspace wallet.', 'funding_type':'Paid or promotional credit for funding entries; null for other kinds.'},
     }
     for name, fields in descriptions.items():
-        for field, description in fields.items():s[name]['properties'][field]['description']=description
+        for field, description in fields.items():
+            s[name]['properties'][field]=deepcopy(s[name]['properties'][field])
+            s[name]['properties'][field]['description']=description
     s['Event']['properties']['type']['enum'] += ['data.updated','document.status_changed','billing.payment_updated','billing.transaction_posted']
     return s
 

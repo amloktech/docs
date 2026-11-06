@@ -77,3 +77,7 @@ The threshold above is synthetic and is not a recommended credit policy. Your in
 Every Origination supplies an `application_schema_id` and `declared_data`. Validate those fields against the matching JSON Schema from configuration. Compatibility checks also cover borrower type, market, currency, product and policy. Unsupported inputs produce a validation error rather than silently changing the assessment.
 
 Owners manage organization/workspace settings and billing; Owners and Devs manage approved integration configuration. Versioned product and policy records are new records, never edits to prior assessment data.
+
+## Runtime discovery
+
+embedding_versions exposes each published Hub's allowed origins, return URLs, integrations and consent purposes. operational_profile supplies required limits and lifetimes. sandbox is null in Live; in Sandbox it exposes deterministic scenario IDs and the synthetic integration ID. Read the [operating profile guide](/api-reference/operating-profile) before implementing uploads, polling or recovery.

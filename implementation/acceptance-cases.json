@@ -1,0 +1,19 @@
+{
+  "contract_version": "1.0.0",
+  "backend_execution": "not_run",
+  "cases": [
+    {"id":"tenant-isolation","setup":"two workspaces, environments and scoped principals","assertions":["foreign IDs return 404 without content","foreign cursors cannot be resumed","Owner-only billing rejects Dev and Analyst","export and event source permissions are rechecked"]},
+    {"id":"hub-origin-and-consent","setup":"published Hub, authenticated borrower session","assertions":["reject unapproved origins/URLs","only explicit purposes authorize collection","forged postMessage cannot complete backend session","monitoring without consent fails","requirement completion is idempotent"]},
+    {"id":"command-acceptance","setup":"drop response after transaction commit","assertions":["receipt recovers original resource","24-hour replay expiry never creates duplicate work","different body or target with same key returns 409","scenario header participates in borrower fingerprint"]},
+    {"id":"upload-inspection","setup":"PDF, image, oversize, encrypted, corrupt and cross-borrower fixtures","assertions":["413/415 are explicit","rejected file has structured failure","only available files can be downloaded","sha256 matches bytes","open requirement association and receipt are atomic"]},
+    {"id":"insights-publication","setup":"happy, missing-input, failure and insufficient-credit fixtures","assertions":["package and debit publish atomically","missing input is null with reason","failed work has no package/debit","funding resumes accepted work once"]},
+    {"id":"deal-snapshot-race","setup":"two new inputs share previous_snapshot_id","assertions":["exactly one append accepted","loser receives deal_snapshot_conflict","retry accepted key returns original snapshot","older run keeps its original snapshot","no historical mutation"]},
+    {"id":"signal-lifecycle","setup":"two facilities for one borrower and explicit portfolio baseline","assertions":["one borrower/month charge","new portfolio needs no Insights purchase","pause survives funding/consent changes","stop is terminal","failed/skipped run has no new package","new lender input never resumes paused work"]},
+    {"id":"snapshot-feed-recovery","setup":"updates occur during multi-page snapshot","assertions":["checkpoint prevents gaps","page filters remain bound","removed access yields permitted tombstone","expired cursors return 410","new bootstrap reconciles deletions"]},
+    {"id":"event-conformance","setup":"each event type, duplicate and reverse-order delivery","assertions":["resource type and version match catalog","bad raw-byte signatures rejected","persist before acknowledgement","no local version rollback","replay preserves event ID and renews signature"]},
+    {"id":"billing-reconciliation","setup":"funding, Insights, Signal, adjustment and payment return","assertions":["pending payment creates no credits","one pinned snapshot balances","usage cost links negative ledger entry","posted entries immutable","return links original payment/entry"]},
+    {"id":"export-integrity","setup":"multi-page source accepted before snapshot expiry","assertions":["all authorized rows exported","expiry does not truncate accepted job","schema and SHA-256 match","revocation blocks later download"]},
+    {"id":"sandbox-live-boundary","setup":"every scenario header/control sent to Live","assertions":["reject before mutation","no provider/payment processor invocation","synthetic funding requires Owner","test clock cannot advance Live"]},
+    {"id":"workspace-cancellation","setup":"work and top-up already in progress","assertions":["no new work/deductions/top-ups after cancellation","unfinished work does not publish","closure/refund follows policy","borrower access ends at closure"]}
+  ]
+}

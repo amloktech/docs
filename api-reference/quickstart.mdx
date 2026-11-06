@@ -39,7 +39,7 @@ curl --request POST --fail-with-body --max-time 30 \
   --header 'Accept: application/json' \
   --header 'Idempotency-Key: createEmbeddingSession-synthetic-0042' \
   --header 'Content-Type: application/json' \
-  --data '{"borrower_id":"bor_synthetic","embedding_version_id":"embed_synthetic","purpose":"connect","return_url":"https://institution.example.com/connected"}'
+  --data '{"borrower_id":"bor_synthetic","embedding_version_id":"embed_synthetic","purpose":"connect","return_url":"https://institution.example.com/connected","consent_purposes":["credit_assessment","continuous_monitoring"],"embed_origin":"https://institution.example.com"}'
 ```
 
 Use the returned `data.launch_url` in your borrower experience. Your institution API key must never enter the browser. The published embedding configuration determines enabled integrations and category steps. AMLOK captures consent, handles provider authorization and collects data.
