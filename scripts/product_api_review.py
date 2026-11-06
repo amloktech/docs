@@ -32,7 +32,7 @@ def array(items, **extra):
 
 
 def obj(properties, required=None, **extra):
-    return {'type': 'object', 'properties': properties, 'required': list(properties) if required is None else required, 'additionalProperties': False, **extra}
+    return {'type': 'object', 'properties': {key: deepcopy(value) for key, value in properties.items()}, 'required': list(properties) if required is None else required, 'additionalProperties': False, **extra}
 
 
 def nullable(schema):
@@ -144,6 +144,8 @@ def build_schemas(source):
     schemas['ServiceStatus'] = obj({'status': enum('operational', 'degraded', 'unavailable'), 'as_of': stamp})
     from institution_api import extend_schemas
     extend_schemas(schemas)
+    from readiness_contract import extend_schemas as readiness_schemas
+    readiness_schemas(schemas)
     # Resolve and retain only normalized dictionary dependencies used by the current contract.
     def collect(value):
         if isinstance(value, dict):
@@ -207,6 +209,8 @@ def operations():
     add('serviceStatus','GET','service-status','Reliability','ServiceStatus',scope='public')
     from institution_api import extend_operations
     extend_operations(add)
+    from readiness_contract import extend_operations as readiness_operations
+    readiness_operations(add)
     return rows
 
 

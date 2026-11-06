@@ -1,21 +1,52 @@
 ---
-title: "Origination and monitoring lifecycle"
+title: "Processing states and recovery"
 sidebarTitle: "Product lifecycle"
-description: "Origination and monitoring lifecycle for the AMLOK product API."
+description: "Implement processing states and recovery using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Origination progresses from accepted through collection and processing to a completed risk package. Source or document dependencies may produce `requires_action`; insufficient funding after acceptance may produce `waiting_for_credits`. Terminal failure or cancellation does not produce a published successful package.
+AMLOK accepts long-running product commands with 202. Persist the returned ID before polling or processing events. HTTP acceptance does not mean authorization, data collection, underwriting or charging has completed.
 
-| Origination status | Client action |
-| --- | --- |
-| `accepted`, `collecting`, `processing` | Follow the existing ID or wait for events |
-| `requires_action` | Complete the returned authorization/document requirement |
-| `waiting_for_credits` | Resolve funding through the console and follow the same ID |
-| `completed` | Retrieve the non-null risk-package ID |
-| `failed` | Inspect failure and contact support when appropriate |
-| `cancelled` | Retain the outcome; do not treat it as completed underwriting |
+## Insights origination
 
-Signal has a long-lived monitor and separate evaluation runs. Monitor configuration can change prospectively with ETag protection. Every evaluation and resulting risk package preserves the inputs and versions used. Pausing or stopping a monitor does not erase historical data.
+| State | Meaning | Permitted continuation |
+| --- | --- | --- |
+| accepted | Command and recovery receipt committed | AMLOK begins collecting |
+| collecting | Waiting for permitted input processing | AMLOK advances to processing or requires_action |
+| requires_action | One or more typed requirements are open | Resolve requirements through Hub or new document uploads |
+| processing | Evaluation uses the captured source/input versions | AMLOK completes, waits for credits, requires action or fails |
+| waiting_for_credits | Accepted work cannot publish an unfunded output | Funding posts through the console; AMLOK resumes automatically |
+| completed | Immutable package and any Insights debit published atomically | Terminal; retrieve package/evidence |
+| failed | Terminal failure, with structured failure | Reconcile failure; a fresh assessment is a deliberate new command |
+| cancelled | Workspace cancellation ended unfinished work | Terminal; no further processing or debit |
 
-Insights charges and publication are atomic. Signal reassessments are included in its monthly product charge. See [consumption reporting](/api-reference/consumption-reporting).
+No public operation overwrites a completed application. To correct institution application data, submit a new origination. Idempotent retry never means a new underwriting. An internal stage retry does not add another charge.
+
+## Typed requirements
+
+requirements is nonempty exactly when a product resource is requires_action. IDs remain stable while the same requirement is open. Resolving one requirement does not imply others are resolved. A later recurrence gets a new requirement ID.
+
+| action | Required details | Resolution |
+| --- | --- | --- |
+| connect_source | integration_id, consent_purposes | Create a connect session bound to resource + requirement |
+| reauthorize_source | connection_id, consent_purposes | Create a reauthorize session bound to resource + requirement |
+| upload_document | document_type, accepted_mime_types | Upload with borrower_id, origination_id and requirement_id |
+| contact_support | code and human explanation | Give support the resource ID and request ID; never credentials |
+
+Document requirements apply to originations. A monitor needing a different term document receives it through a new deal snapshot; the monitor must not emit an upload_document requirement that has no upload resolution route. Validation errors use JSON-pointer field paths. Do not branch on message text.
+
+## Signal monitor
+
+initializing captures the first snapshot and prepares a baseline. It becomes active, requires_action, waiting_for_credits or failed. active schedules configured evaluations. paused suspends new work by institution configuration. stopped is terminal and rejects future changes or lender snapshot submissions. Work already running when paused or stopped must not publish a new package after the state change; keep its skipped/cancelled explanation without a new usage charge.
+
+A monitor exposes current connection_ids, requirements, failure, latest_deal_snapshot_id, latest_package_id and next_evaluation_at. failure is non-null exactly when failed. A source or purpose problem produces a typed requirement; insufficient credits produces waiting_for_credits, not a fabricated source error.
+
+Use PATCH with If-Match for future policy, cadence, connection set or active/paused/stopped state. Active is accepted only after server validation of consent, required inputs and funding; otherwise return 409 invalid_state with the unresolved reason and retain state. failed cannot be resumed: correct the cause and enroll a new monitor. Unchanged identical configuration does not increment version or emit an event.
+
+Resolving a requirement resumes an eligible monitor automatically. Posting credits resumes only the current period; no missed-period backcharges or synthetic historical runs. Explicitly paused monitors stay paused when credits or consent change. An institution must explicitly set active to resume. Consent revocation during evaluation prevents publication of restricted results.
+
+## Monitoring runs and exports
+
+A run freezes deal_snapshot_id, policy and authorized source/evidence versions when evaluation starts. processing becomes completed, partial, failed or skipped. Terminal runs do not change. Partial results describe coverage and limitations; failed/skipped runs have no newly published risk package. An alert is a derived risk condition, not a run error. Resolution requires new comparable evidence.
+
+An export moves queued to processing to completed or failed. completed means the file is ready and emits export.ready. Each read/download rechecks source permissions. The source snapshot is pinned at acceptance, so its later cursor expiry does not truncate an already accepted export. Export metadata includes availability expiry; download capability expiry is separate. Failed exports carry a structured failure. Export/replay commands never rerun underwriting.

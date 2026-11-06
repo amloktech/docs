@@ -10,3 +10,5 @@ Use bounded polling and exponential backoff with jitter. `429` and transient `50
 Prefer events to frequent polling for Origination completion, monitoring changes and export readiness. Keep a durable event cursor for recovery and a bounded fallback polling strategy. A collection page has at most 100 items; fetch pages rather than requesting an unlimited response.
 
 Preserve an operation's idempotency key during transport retries. Rate limits do not change source-provider freshness, monitoring cadence or evidence completeness.
+
+Read configuration.operational_profile.rate_limits for effective shared workspace/environment budgets and the polling interval fields. The [profile guide](/api-reference/operating-profile) defines grouping, rolling windows and timeout handling. Development fixtures do not establish production allocations.

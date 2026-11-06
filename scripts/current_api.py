@@ -57,7 +57,9 @@ def fixtures():
     for name in ['EmbeddingSession','Connection','Origination','Alert','Export']:
         f[name]['record_version'] = 1
     from institution_api import extend_fixtures
-    return extend_fixtures(f)
+    extend_fixtures(f)
+    from readiness_contract import extend_fixtures as readiness_fixtures
+    return readiness_fixtures(f)
 
 
 PURPOSE = {
@@ -88,10 +90,12 @@ PURPOSE = {
 
 from institution_api import PURPOSE as INSTITUTION_PURPOSE
 PURPOSE.update(INSTITUTION_PURPOSE)
+from readiness_contract import PURPOSE as READINESS_PURPOSE
+PURPOSE.update(READINESS_PURPOSE)
 
 def enrich(spec, f):
     schemas = spec['components']['schemas']
-    for schema_name,titles in {'CreateBorrower':['Business borrower','Consumer borrower'],'BaselineInput':['Existing risk package','Approved portfolio onboarding'],'RiskPackage':['Insights risk package','Signal risk package'],'CreateExport':['Risk-package export','Evidence export','Billing export']}.items():
+    for schema_name,titles in {'CreateBorrower':['Business borrower','Consumer borrower'],'BaselineInput':['Existing risk package','Explicit portfolio baseline'],'RiskPackage':['Insights risk package','Signal risk package'],'CreateExport':['Risk-package export','Evidence export','Billing export']}.items():
         for branch,title in zip(schemas[schema_name]['oneOf'],titles):branch['title']=title
     for name in ['EmbeddingSession','Connection','Origination','Alert','Export']:
         schemas[name]['properties']['record_version']={'type':'integer','minimum':1,'description':'Monotonic version for this resource; compare with event.resource_version.'}
@@ -152,7 +156,7 @@ def enrich(spec, f):
         if op['id']=='listMonitor':entry['summary']='List monitors'
         data=deepcopy(f[op['response']])
         if op['id']=='createOrigination':data.update(status='accepted',risk_package_id=None)
-        if op['id']=='createMonitor':data.update(status='initializing',latest_package_id=None,next_evaluation_at=None)
+        if op['id']=='createMonitor':data.update(status='initializing',latest_package_id=None,next_evaluation_at=None,deal=f['CreateMonitor']['deal'],latest_deal_snapshot_id='ds_initial')
         if op['id']=='updateMonitor':data.update(status='paused',record_version=2,next_evaluation_at=None)
         if op['id']=='revokeConsent':data.update(status='revoked',revoked_at='2026-11-06T12:00:00Z')
         if op['id']=='uploadDocument':data.update(status='processing')
@@ -171,7 +175,8 @@ def enrich(spec, f):
         if op['request']:
             media=next(iter(entry['requestBody']['content']))
             entry['requestBody']['content'][media]['example']=f[op['request']]
-    return spec
+    from readiness_contract import enrich as readiness_enrich
+    return readiness_enrich(spec, f)
 
 
 def sample_params(op, entry):
@@ -249,6 +254,8 @@ def build():
     from current_api_guides import write_guides, navigation
     write_guides(spec,f,index)
     navigation(groups)
+    from readiness_guides import write_guides as readiness_guides
+    readiness_guides(spec, f, index)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()

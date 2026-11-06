@@ -180,7 +180,7 @@ Only authorized destinations and event readers receive the corresponding resourc
     write('api-review','Institution API completeness review','''
 The November 6, 2026 review follows the institution's full workflow: configure and embed an Integrations Hub, collect authorized borrower data, submit application information and documents, receive enriched data and risk packages, monitor funded deals, and reconcile deposits and consumption.
 
-The contract has one public surface under /v1 with 54 operations. The prior 45-operation design covered product execution but did not completely expose the surrounding data and financial reporting. This revision adds nine read operations; it retains secure borrower sessions and connection visibility. Endpoint count is a consequence of supported client tasks, not a target.
+The contract has one public surface under /v1 with 57 operations. It covers secure borrower sessions, application and document inputs, direct data access, immutable lender updates and financial reconciliation. Endpoint count is a consequence of supported client tasks, not a target.
 
 | Requirement | Finding and resolution |
 | --- | --- |

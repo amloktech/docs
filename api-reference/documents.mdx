@@ -36,3 +36,7 @@ For the initial request, upload files with borrower context and include returned
 For an open document requirement, upload a new file with borrower_id, origination_id and requirement_id. All three must refer to the same authorized context. Association and the upload receipt are atomic and idempotent; inspection still completes asynchronously. requirement_id cannot be supplied without origination_id. Later association is permitted only while the origination is collecting or requires_action; other states return 409. Completed assessments and files are never overwritten.
 
 The origination retains its immutable submitted_request and the accepted document associations. The completed risk package freezes document_ids and its evidence set. For changed application information after submission, create a new origination with a new command identity; do not modify the historical application. A document status notification identifies the file to retrieve without including file contents or a signed URL.
+
+## Validation and rejection
+
+Read allowed_document_mime_types, document_types, max_upload_bytes and max_document_pages from configuration.operational_profile. [Operating limits](/api-reference/operating-profile) defines 413/415 behavior, asynchronous rejection, encrypted-file handling and integrity checks. Rejected documents expose structured failure; available documents have failure null. Every document exposes record_version for event reconciliation.

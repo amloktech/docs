@@ -1,0 +1,59 @@
+---
+title: "Run the complete integration example"
+sidebarTitle: "Runnable example"
+description: "Run a Sandbox client from Hub authorization through underwriting, evidence, Signal deal snapshots and billing, using returned IDs and safe command retries."
+keywords: ["AMLOK", "integration", "Sandbox", "Node.js"]
+---
+
+Use this reference client to exercise the AMLOK contract against an implemented Sandbox. It connects the individual endpoint examples into one journey and retains command identities across interruptions. The backend must implement the contract and Sandbox fixtures first.
+
+## Download the example
+
+Save these files together:
+
+- [amlok-journey.mjs](/downloads/amlok-journey.mjs)
+- [journey-inputs.json](/downloads/journey-inputs.json)
+- [consumer-journey-inputs.json](/downloads/consumer-journey-inputs.json)
+- [synthetic-statement.pdf](/downloads/synthetic-statement.pdf)
+
+Use Node.js 22 or newer, which supplies fetch, FormData, Blob and structuredClone. No package installation is needed. The file is a reference client, not a distributed product SDK.
+
+## Provision the test environment
+
+An Owner obtains the API origin, creates a Sandbox key, and publishes a Hub containing configuration.sandbox.test_integration_id. Approve your return URL and both credit_assessment and continuous_monitoring purposes. For this complete example, the Owner key needs borrowers:read/write, connections:read/write, configuration:read/write, insights:read/write, results:read, evidence:read/write, data:read, signal:read/write, billing:read, exports:read/write and reliability:read.
+
+Set AMLOK_BORROWER_TYPE=person and use a fresh state file to run the consumer fixture, which uses gross monthly income, monthly debt payments and a synthetic debt_to_income rule. Both schema variants must be provisioned in configuration.
+
+The default development input file uses a Canadian business, a fixed-rate term loan, annual_revenue application data and a dscr rule. Provision the development application/pricing schemas and metric in configuration. A different environment's schemas require corresponding input changes; the example never bypasses validation.
+
+```bash
+export AMLOK_API_BASE_URL="<institution-issued Sandbox origin>"
+export AMLOK_API_KEY="<server-side Sandbox key>"
+export AMLOK_EMBEDDING_VERSION_ID="<published test Hub version>"
+export AMLOK_RETURN_URL="<approved return URL>"
+node amlok-journey.mjs prepare amlok-journey-state.json
+```
+
+The placeholders above are provisioning values, not working credentials. Prefer a secret manager instead of shell history on shared systems. The state file contains synthetic inputs and resource IDs but no API key or launch URL. Keep it private; use a distinct file for each new journey.
+
+## Connect, submit and reconcile
+
+Prepare creates the borrower, product/policy versions and embedding session. Open the printed short-lived URL privately and select **Connect test institution**. Affirm both purposes. Then run:
+
+```bash
+node amlok-journey.mjs complete amlok-journey-state.json
+```
+
+Complete retrieves the authoritative session, uploads the supplied PDF, submits the origination and waits within a bounded interval. It reads the risk package, all evidence and a complete data snapshot, obtains a change-feed checkpoint, enrolls Signal, appends a lender deal snapshot, reads monitoring runs and alerts, prepares a JSON risk-package export and a controlled download capability, and reads payments, usage and transactions against one billing snapshot.
+
+Expected output identifies the origination, package, monitor, deal snapshot and billing snapshot, plus record counts and available credits. IDs and counts come from the backend; no hardcoded success output is presented as an executed result.
+
+The journey stops visibly on requires_action, waiting_for_credits or failed. Follow [recovery instructions](/api-reference/processing-lifecycle), then rerun complete with the same state file. Never replace an accepted origination simply because your client timed out. The example uses bounded transport retries and request receipts; production applications should use a transactional database/outbox for durable state instead of a local JSON file.
+
+## Browser integration and event handling
+
+Use the [browser helper](/downloads/hub-embed.js) and [Hub protocol](/api-reference/integration-hub) to integrate into your own UI. Your authenticated backend supplies the session and verifies completion. Use the downloadable [Node.js verifier](/downloads/verify-webhook.mjs) or [Python verifier](/downloads/verify_webhook.py) with a durable event inbox before acknowledging webhooks.
+
+## Test failures deliberately
+
+Set AMLOK_SCENARIO to a documented [Sandbox scenario](/api-reference/sandbox-journeys) and use a new state file. This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Passing syntax or offline fixture tests does not certify a deployed backend.

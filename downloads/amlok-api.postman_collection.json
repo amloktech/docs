@@ -2,7 +2,7 @@
   "info": {
     "name": "AMLOK API 1.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "54-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries."
+    "description": "57-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries."
   },
   "auth": {
     "type": "bearer",
@@ -185,7 +185,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"bor_synthetic\",\n      \"type\": \"business\",\n      \"subject_id\": \"biz_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"client_reference\": \"LOS-B-0042\",\n      \"profile\": {\n        \"type\": \"business\",\n        \"business\": {\n          \"legal_name\": \"Synthetic Borrower Inc.\",\n          \"incorporation_country\": \"CA\",\n          \"client_reference\": \"LOS-B-0042\"\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"bor_synthetic\",\n      \"type\": \"business\",\n      \"subject_id\": \"biz_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"client_reference\": \"LOS-B-0042\",\n      \"profile\": {\n        \"type\": \"business\",\n        \"business\": {\n          \"legal_name\": \"Synthetic Borrower Inc.\",\n          \"incorporation_country\": \"CA\",\n          \"client_reference\": \"LOS-B-0042\"\n        }\n      }\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -282,7 +282,7 @@
         "description": "Create a short-lived Integrations Hub session. Send only launch_url to the borrower. AMLOK captures consent and manages provider authorization and ingestion. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:write.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"embedding_version_id\": \"embed_synthetic\",\n  \"purpose\": \"connect\",\n  \"return_url\": \"https://institution.example.com/connected\"\n}",
+          "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"embedding_version_id\": \"embed_synthetic\",\n  \"purpose\": \"connect\",\n  \"return_url\": \"https://institution.example.com/connected\",\n  \"consent_purposes\": [\n    \"credit_assessment\",\n    \"continuous_monitoring\"\n  ],\n  \"embed_origin\": \"https://institution.example.com\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -323,7 +323,7 @@
             "description": "Create a short-lived Integrations Hub session. Send only launch_url to the borrower. AMLOK captures consent and manages provider authorization and ingestion. All IDs and cursors must belong to the authorized workspace and environment. Required scope: connections:write.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"embedding_version_id\": \"embed_synthetic\",\n  \"purpose\": \"connect\",\n  \"return_url\": \"https://institution.example.com/connected\"\n}",
+              "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"embedding_version_id\": \"embed_synthetic\",\n  \"purpose\": \"connect\",\n  \"return_url\": \"https://institution.example.com/connected\",\n  \"consent_purposes\": [\n    \"credit_assessment\",\n    \"continuous_monitoring\"\n  ],\n  \"embed_origin\": \"https://institution.example.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -339,7 +339,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1,\n    \"embedding_version_id\": \"embed_synthetic\",\n    \"purpose\": \"connect\",\n    \"origination_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1,\n    \"embedding_version_id\": \"embed_synthetic\",\n    \"purpose\": \"connect\",\n    \"origination_id\": null,\n    \"monitor_id\": null,\n    \"requirement_id\": null,\n    \"consent_purposes\": [\n      \"credit_assessment\",\n      \"continuous_monitoring\"\n    ],\n    \"embed_origin\": \"https://institution.example.com\",\n    \"return_url\": \"https://institution.example.com/connected\",\n    \"failure\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -400,7 +400,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1,\n    \"embedding_version_id\": \"embed_synthetic\",\n    \"purpose\": \"connect\",\n    \"origination_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"embs_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"created\",\n    \"launch_url\": \"https://borrower.example.com/session/synthetic\",\n    \"expires_at\": \"2026-11-06T12:15:00Z\",\n    \"connection_ids\": [],\n    \"consent_ids\": [],\n    \"record_version\": 1,\n    \"embedding_version_id\": \"embed_synthetic\",\n    \"purpose\": \"connect\",\n    \"origination_id\": null,\n    \"monitor_id\": null,\n    \"requirement_id\": null,\n    \"consent_purposes\": [\n      \"credit_assessment\",\n      \"continuous_monitoring\"\n    ],\n    \"embed_origin\": \"https://institution.example.com\",\n    \"return_url\": \"https://institution.example.com/connected\",\n    \"failure\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -459,7 +459,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"con_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"status\": \"connected\",\n      \"consent_id\": \"consent_synthetic\",\n      \"last_successful_sync_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"coverage\": {\n        \"start\": \"2025-11-01T00:00:00Z\",\n        \"end\": \"2026-11-01T00:00:00Z\"\n      },\n      \"missing_reason\": null,\n      \"record_version\": 1,\n      \"data_status\": \"partial\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"con_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"status\": \"connected\",\n      \"consent_id\": \"consent_synthetic\",\n      \"last_successful_sync_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"coverage\": {\n        \"start\": \"2025-11-01T00:00:00Z\",\n        \"end\": \"2026-11-01T00:00:00Z\"\n      },\n      \"missing_reason\": null,\n      \"record_version\": 1,\n      \"data_status\": \"partial\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -581,7 +581,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"consent_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"active\",\n    \"purposes\": [\n      \"credit_assessment\",\n      \"continuous_monitoring\"\n    ],\n    \"captured_at\": \"2026-11-06T12:00:00Z\",\n    \"expires_at\": null,\n    \"revoked_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"consent_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"active\",\n    \"purposes\": [\n      \"credit_assessment\",\n      \"continuous_monitoring\"\n    ],\n    \"captured_at\": \"2026-11-06T12:00:00Z\",\n    \"expires_at\": null,\n    \"revoked_at\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -678,7 +678,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"consent_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"revoked\",\n    \"purposes\": [\n      \"credit_assessment\",\n      \"continuous_monitoring\"\n    ],\n    \"captured_at\": \"2026-11-06T12:00:00Z\",\n    \"expires_at\": null,\n    \"revoked_at\": \"2026-11-06T12:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"consent_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"status\": \"revoked\",\n    \"purposes\": [\n      \"credit_assessment\",\n      \"continuous_monitoring\"\n    ],\n    \"captured_at\": \"2026-11-06T12:00:00Z\",\n    \"expires_at\": null,\n    \"revoked_at\": \"2026-11-06T12:00:00Z\",\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -795,7 +795,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"processing\",\n    \"restriction_reason\": null,\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"document_type\": \"financial_statement\",\n    \"origination_id\": null,\n    \"requirement_id\": null,\n    \"origin\": \"institution_upload\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"processing\",\n    \"restriction_reason\": null,\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"document_type\": \"financial_statement\",\n    \"origination_id\": null,\n    \"requirement_id\": null,\n    \"origin\": \"institution_upload\",\n    \"record_version\": 1,\n    \"failure\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -856,7 +856,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"available\",\n    \"restriction_reason\": null,\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"document_type\": \"financial_statement\",\n    \"origination_id\": null,\n    \"requirement_id\": null,\n    \"origin\": \"institution_upload\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"doc_synthetic\",\n    \"context\": \"borrower\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"file_name\": \"financial-statement.pdf\",\n    \"mime_type\": \"application/pdf\",\n    \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n    \"size_bytes\": 12500,\n    \"status\": \"available\",\n    \"restriction_reason\": null,\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"document_type\": \"financial_statement\",\n    \"origination_id\": null,\n    \"requirement_id\": null,\n    \"origin\": \"institution_upload\",\n    \"record_version\": 1,\n    \"failure\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1105,7 +1105,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"lpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital\",\n        \"version\": \"1\",\n        \"name\": \"Working capital loan\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"currency\": \"CAD\",\n        \"product_type\": \"term_loan\",\n        \"minimum_amount\": {\n          \"amount\": \"10000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"maximum_amount\": {\n          \"amount\": \"100000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"minimum_term_months\": 6,\n        \"maximum_term_months\": 24,\n        \"repayment_frequency\": \"monthly\",\n        \"pricing_schema_id\": \"pricing_synthetic\",\n        \"pricing\": {\n          \"rate_type\": \"fixed\",\n          \"annual_interest_rate\": \"0.12\",\n          \"amortization_months\": 12,\n          \"fees\": []\n        },\n        \"terms_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"lpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital\",\n        \"version\": \"1\",\n        \"name\": \"Working capital loan\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"currency\": \"CAD\",\n        \"product_type\": \"term_loan\",\n        \"minimum_amount\": {\n          \"amount\": \"10000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"maximum_amount\": {\n          \"amount\": \"100000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"minimum_term_months\": 6,\n        \"maximum_term_months\": 24,\n        \"repayment_frequency\": \"monthly\",\n        \"pricing_schema_id\": \"pricing_synthetic\",\n        \"pricing\": {\n          \"rate_type\": \"fixed\",\n          \"annual_interest_rate\": \"0.12\",\n          \"amortization_months\": 12,\n          \"fees\": []\n        },\n        \"terms_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -1318,7 +1318,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"rpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital-policy\",\n        \"version\": \"1\",\n        \"name\": \"Illustrative policy, not a recommended threshold\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"rules\": [\n          {\n            \"id\": \"dscr-minimum\",\n            \"dimension_key\": \"dscr\",\n            \"operator\": \"gte\",\n            \"threshold\": \"1.25\",\n            \"unit\": \"ratio\",\n            \"on_missing\": \"review\",\n            \"on_fail\": \"review\"\n          }\n        ],\n        \"policy_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"rpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital-policy\",\n        \"version\": \"1\",\n        \"name\": \"Illustrative policy, not a recommended threshold\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"rules\": [\n          {\n            \"id\": \"dscr-minimum\",\n            \"dimension_key\": \"dscr\",\n            \"operator\": \"gte\",\n            \"threshold\": \"1.25\",\n            \"unit\": \"ratio\",\n            \"on_missing\": \"review\",\n            \"on_fail\": \"review\"\n          }\n        ],\n        \"policy_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -1472,7 +1472,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"accepted\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": null,\n    \"failure\": null,\n    \"record_version\": 1,\n    \"submitted_request\": {\n      \"borrower_id\": \"bor_synthetic\",\n      \"application\": {\n        \"institution_reference\": \"LOS-2026-0042\",\n        \"requested_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"requested_term_months\": 12,\n        \"purpose\": \"Working capital\",\n        \"application_schema_id\": \"app_schema_synthetic\",\n        \"declared_data\": {\n          \"annual_revenue\": \"600000.00\"\n        }\n      },\n      \"lending_product_version_id\": \"lpv_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"document_ids\": []\n    },\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"accepted\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": null,\n    \"failure\": null,\n    \"record_version\": 1,\n    \"submitted_request\": {\n      \"borrower_id\": \"bor_synthetic\",\n      \"application\": {\n        \"institution_reference\": \"LOS-2026-0042\",\n        \"requested_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"requested_term_months\": 12,\n        \"purpose\": \"Working capital\",\n        \"application_schema_id\": \"app_schema_synthetic\",\n        \"declared_data\": {\n          \"annual_revenue\": \"600000.00\"\n        }\n      },\n      \"lending_product_version_id\": \"lpv_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"document_ids\": []\n    },\n    \"document_ids\": [],\n    \"connection_ids\": [\n      \"con_synthetic\"\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1531,7 +1531,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"orgn_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"status\": \"completed\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"requirements\": [],\n      \"risk_package_id\": \"rp_synthetic\",\n      \"failure\": null,\n      \"record_version\": 1,\n      \"submitted_request\": {\n        \"borrower_id\": \"bor_synthetic\",\n        \"application\": {\n          \"institution_reference\": \"LOS-2026-0042\",\n          \"requested_amount\": {\n            \"amount\": \"50000.00\",\n            \"currency\": \"CAD\"\n          },\n          \"requested_term_months\": 12,\n          \"purpose\": \"Working capital\",\n          \"application_schema_id\": \"app_schema_synthetic\",\n          \"declared_data\": {\n            \"annual_revenue\": \"600000.00\"\n          }\n        },\n        \"lending_product_version_id\": \"lpv_synthetic\",\n        \"risk_policy_version_id\": \"rpv_synthetic\",\n        \"connection_ids\": [\n          \"con_synthetic\"\n        ],\n        \"document_ids\": []\n      },\n      \"document_ids\": []\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"orgn_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"status\": \"completed\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"requirements\": [],\n      \"risk_package_id\": \"rp_synthetic\",\n      \"failure\": null,\n      \"record_version\": 1,\n      \"submitted_request\": {\n        \"borrower_id\": \"bor_synthetic\",\n        \"application\": {\n          \"institution_reference\": \"LOS-2026-0042\",\n          \"requested_amount\": {\n            \"amount\": \"50000.00\",\n            \"currency\": \"CAD\"\n          },\n          \"requested_term_months\": 12,\n          \"purpose\": \"Working capital\",\n          \"application_schema_id\": \"app_schema_synthetic\",\n          \"declared_data\": {\n            \"annual_revenue\": \"600000.00\"\n          }\n        },\n        \"lending_product_version_id\": \"lpv_synthetic\",\n        \"risk_policy_version_id\": \"rpv_synthetic\",\n        \"connection_ids\": [\n          \"con_synthetic\"\n        ],\n        \"document_ids\": []\n      },\n      \"document_ids\": [],\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ]\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -1592,7 +1592,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"completed\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": \"rp_synthetic\",\n    \"failure\": null,\n    \"record_version\": 1,\n    \"submitted_request\": {\n      \"borrower_id\": \"bor_synthetic\",\n      \"application\": {\n        \"institution_reference\": \"LOS-2026-0042\",\n        \"requested_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"requested_term_months\": 12,\n        \"purpose\": \"Working capital\",\n        \"application_schema_id\": \"app_schema_synthetic\",\n        \"declared_data\": {\n          \"annual_revenue\": \"600000.00\"\n        }\n      },\n      \"lending_product_version_id\": \"lpv_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"document_ids\": []\n    },\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"orgn_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"institution_reference\": \"LOS-2026-0042\",\n    \"status\": \"completed\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"requirements\": [],\n    \"risk_package_id\": \"rp_synthetic\",\n    \"failure\": null,\n    \"record_version\": 1,\n    \"submitted_request\": {\n      \"borrower_id\": \"bor_synthetic\",\n      \"application\": {\n        \"institution_reference\": \"LOS-2026-0042\",\n        \"requested_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"requested_term_months\": 12,\n        \"purpose\": \"Working capital\",\n        \"application_schema_id\": \"app_schema_synthetic\",\n        \"declared_data\": {\n          \"annual_revenue\": \"600000.00\"\n        }\n      },\n      \"lending_product_version_id\": \"lpv_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"document_ids\": []\n    },\n    \"document_ids\": [],\n    \"connection_ids\": [\n      \"con_synthetic\"\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1653,7 +1653,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"rp_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"origination_id\": \"orgn_synthetic\",\n    \"monitoring_run_id\": null,\n    \"product\": \"insights\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"previous_package_id\": null,\n    \"application\": {\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"requested_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"requested_term_months\": 12,\n      \"purpose\": \"Working capital\",\n      \"application_schema_id\": \"app_schema_synthetic\",\n      \"declared_data\": {\n        \"annual_revenue\": \"600000.00\"\n      }\n    },\n    \"lending_product\": {\n      \"id\": \"lpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital\",\n        \"version\": \"1\",\n        \"name\": \"Working capital loan\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"currency\": \"CAD\",\n        \"product_type\": \"term_loan\",\n        \"minimum_amount\": {\n          \"amount\": \"10000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"maximum_amount\": {\n          \"amount\": \"100000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"minimum_term_months\": 6,\n        \"maximum_term_months\": 24,\n        \"repayment_frequency\": \"monthly\",\n        \"pricing_schema_id\": \"pricing_synthetic\",\n        \"pricing\": {\n          \"rate_type\": \"fixed\",\n          \"annual_interest_rate\": \"0.12\",\n          \"amortization_months\": 12,\n          \"fees\": []\n        },\n        \"terms_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"risk_policy\": {\n      \"id\": \"rpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital-policy\",\n        \"version\": \"1\",\n        \"name\": \"Illustrative policy, not a recommended threshold\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"rules\": [\n          {\n            \"id\": \"dscr-minimum\",\n            \"dimension_key\": \"dscr\",\n            \"operator\": \"gte\",\n            \"threshold\": \"1.25\",\n            \"unit\": \"ratio\",\n            \"on_missing\": \"review\",\n            \"on_fail\": \"review\"\n          }\n        ],\n        \"policy_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"assessment\": {\n      \"recommendation\": \"review_required\",\n      \"is_institution_decision\": false,\n      \"summary\": \"Repayment capacity requires review because the debt schedule is incomplete.\",\n      \"reasons\": [\n        \"Required repayment evidence is missing.\"\n      ]\n    },\n    \"dimensions\": [\n      {\n        \"key\": \"repayment_capacity\",\n        \"status\": \"unavailable\",\n        \"summary\": \"DSCR is not calculated without complete eligible debt-service inputs.\",\n        \"metrics\": [\n          {\n            \"key\": \"dscr\",\n            \"label\": \"Cash-flow debt-service coverage\",\n            \"status\": \"unavailable\",\n            \"value\": null,\n            \"unit\": \"ratio\",\n            \"window\": {\n              \"start\": \"2025-11-01T00:00:00Z\",\n              \"end\": \"2026-11-01T00:00:00Z\"\n            },\n            \"calculation_version\": \"cashflow-dscr-synthetic-v1\",\n            \"missing_reason\": \"Complete existing and proposed debt-service schedule is unavailable.\",\n            \"evidence_ids\": [\n              \"ev_bank_synthetic\"\n            ]\n          }\n        ],\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"policy_results\": [\n      {\n        \"rule_id\": \"dscr-minimum\",\n        \"result\": \"unavailable\",\n        \"actual\": null,\n        \"threshold\": \"1.25\",\n        \"unit\": \"ratio\",\n        \"explanation\": \"The rule cannot be evaluated without a supported DSCR.\",\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"sources\": [\n      {\n        \"connection_id\": \"con_synthetic\",\n        \"integration_id\": \"bank_synthetic\",\n        \"source_as_of\": \"2026-11-01T00:00:00Z\",\n        \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n        \"window\": {\n          \"start\": \"2025-11-01T00:00:00Z\",\n          \"end\": \"2026-11-01T00:00:00Z\"\n        },\n        \"status\": \"partial\",\n        \"limitations\": [\n          \"Bank records alone do not establish a complete debt schedule.\"\n        ]\n      }\n    ],\n    \"limitations\": [\n      \"All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation.\"\n    ],\n    \"evidence_set\": {\n      \"id\": \"es_synthetic\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"count\": 1\n    },\n    \"versions\": {\n      \"schema\": \"1.0.0\",\n      \"normalization\": \"synthetic-v1\",\n      \"calculation\": \"synthetic-v1\",\n      \"model\": null\n    },\n    \"billing_usage_id\": \"usage_synthetic\",\n    \"document_ids\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"rp_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"origination_id\": \"orgn_synthetic\",\n    \"monitoring_run_id\": null,\n    \"product\": \"insights\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"previous_package_id\": null,\n    \"application\": {\n      \"institution_reference\": \"LOS-2026-0042\",\n      \"requested_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"requested_term_months\": 12,\n      \"purpose\": \"Working capital\",\n      \"application_schema_id\": \"app_schema_synthetic\",\n      \"declared_data\": {\n        \"annual_revenue\": \"600000.00\"\n      }\n    },\n    \"lending_product\": {\n      \"id\": \"lpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital\",\n        \"version\": \"1\",\n        \"name\": \"Working capital loan\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"currency\": \"CAD\",\n        \"product_type\": \"term_loan\",\n        \"minimum_amount\": {\n          \"amount\": \"10000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"maximum_amount\": {\n          \"amount\": \"100000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"minimum_term_months\": 6,\n        \"maximum_term_months\": 24,\n        \"repayment_frequency\": \"monthly\",\n        \"pricing_schema_id\": \"pricing_synthetic\",\n        \"pricing\": {\n          \"rate_type\": \"fixed\",\n          \"annual_interest_rate\": \"0.12\",\n          \"amortization_months\": 12,\n          \"fees\": []\n        },\n        \"terms_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"risk_policy\": {\n      \"id\": \"rpv_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"definition\": {\n        \"external_id\": \"working-capital-policy\",\n        \"version\": \"1\",\n        \"name\": \"Illustrative policy, not a recommended threshold\",\n        \"borrower_type\": \"business\",\n        \"market\": \"CA\",\n        \"rules\": [\n          {\n            \"id\": \"dscr-minimum\",\n            \"dimension_key\": \"dscr\",\n            \"operator\": \"gte\",\n            \"threshold\": \"1.25\",\n            \"unit\": \"ratio\",\n            \"on_missing\": \"review\",\n            \"on_fail\": \"review\"\n          }\n        ],\n        \"policy_document_ids\": []\n      },\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\"\n    },\n    \"assessment\": {\n      \"recommendation\": \"review_required\",\n      \"is_institution_decision\": false,\n      \"summary\": \"Repayment capacity requires review because the debt schedule is incomplete.\",\n      \"reasons\": [\n        \"Required repayment evidence is missing.\"\n      ]\n    },\n    \"dimensions\": [\n      {\n        \"key\": \"repayment_capacity\",\n        \"status\": \"unavailable\",\n        \"summary\": \"DSCR is not calculated without complete eligible debt-service inputs.\",\n        \"metrics\": [\n          {\n            \"key\": \"dscr\",\n            \"label\": \"Cash-flow debt-service coverage\",\n            \"status\": \"unavailable\",\n            \"value\": null,\n            \"unit\": \"ratio\",\n            \"window\": {\n              \"start\": \"2025-11-01T00:00:00Z\",\n              \"end\": \"2026-11-01T00:00:00Z\"\n            },\n            \"calculation_version\": \"cashflow-dscr-synthetic-v1\",\n            \"missing_reason\": \"Complete existing and proposed debt-service schedule is unavailable.\",\n            \"evidence_ids\": [\n              \"ev_bank_synthetic\"\n            ]\n          }\n        ],\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"policy_results\": [\n      {\n        \"rule_id\": \"dscr-minimum\",\n        \"result\": \"unavailable\",\n        \"actual\": null,\n        \"threshold\": \"1.25\",\n        \"unit\": \"ratio\",\n        \"explanation\": \"The rule cannot be evaluated without a supported DSCR.\",\n        \"evidence_ids\": [\n          \"ev_bank_synthetic\"\n        ]\n      }\n    ],\n    \"sources\": [\n      {\n        \"connection_id\": \"con_synthetic\",\n        \"integration_id\": \"bank_synthetic\",\n        \"source_as_of\": \"2026-11-01T00:00:00Z\",\n        \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n        \"window\": {\n          \"start\": \"2025-11-01T00:00:00Z\",\n          \"end\": \"2026-11-01T00:00:00Z\"\n        },\n        \"status\": \"partial\",\n        \"limitations\": [\n          \"Bank records alone do not establish a complete debt schedule.\"\n        ]\n      }\n    ],\n    \"limitations\": [\n      \"All values, IDs and hashes in this example are synthetic. The threshold is illustrative, not an industry recommendation.\"\n    ],\n    \"evidence_set\": {\n      \"id\": \"es_synthetic\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"count\": 1\n    },\n    \"versions\": {\n      \"schema\": \"1.0.0\",\n      \"normalization\": \"synthetic-v1\",\n      \"calculation\": \"synthetic-v1\",\n      \"model\": null\n    },\n    \"billing_usage_id\": \"usage_synthetic\",\n    \"document_ids\": [],\n    \"record_version\": 1,\n    \"deal_snapshot_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1722,7 +1722,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"ev_bank_synthetic\",\n      \"evidence_set_id\": \"es_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"kind\": \"normalized_record\",\n      \"source_id\": \"bank_synthetic\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"access\": \"restricted\",\n      \"access_reason\": \"Illustrative source entitlement restriction.\",\n      \"document_id\": null,\n      \"data_record_id\": \"dr_synthetic_v1\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"ev_bank_synthetic\",\n      \"evidence_set_id\": \"es_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"kind\": \"normalized_record\",\n      \"source_id\": \"bank_synthetic\",\n      \"observed_at\": \"2026-11-06T12:00:00Z\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"access\": \"restricted\",\n      \"access_reason\": \"Illustrative source entitlement restriction.\",\n      \"document_id\": null,\n      \"data_record_id\": \"dr_synthetic_v1\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -1819,7 +1819,7 @@
         "description": "Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write.",
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"deal\": {\n    \"institution_reference\": \"LOAN-0042\",\n    \"funded_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"outstanding_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"funded_at\": \"2026-11-06T12:00:00Z\",\n    \"maturity_date\": \"2027-11-06\",\n    \"repayment_frequency\": \"monthly\",\n    \"terms_document_ids\": []\n  },\n  \"baseline\": {\n    \"risk_package_id\": \"rp_synthetic\"\n  },\n  \"risk_policy_version_id\": \"rpv_synthetic\",\n  \"cadence_id\": \"cadence_synthetic\",\n  \"connection_ids\": [\n    \"con_synthetic\"\n  ]\n}",
+          "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"deal\": {\n    \"institution_reference\": \"LOAN-0042\",\n    \"funded_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"outstanding_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"funded_at\": \"2026-11-05T12:00:00Z\",\n    \"maturity_date\": \"2027-11-06\",\n    \"repayment_frequency\": \"monthly\",\n    \"terms_document_ids\": []\n  },\n  \"baseline\": {\n    \"risk_package_id\": \"rp_synthetic\"\n  },\n  \"risk_policy_version_id\": \"rpv_synthetic\",\n  \"cadence_id\": \"cadence_synthetic\",\n  \"connection_ids\": [\n    \"con_synthetic\"\n  ]\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -1860,7 +1860,7 @@
             "description": "Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write.",
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"deal\": {\n    \"institution_reference\": \"LOAN-0042\",\n    \"funded_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"outstanding_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"funded_at\": \"2026-11-06T12:00:00Z\",\n    \"maturity_date\": \"2027-11-06\",\n    \"repayment_frequency\": \"monthly\",\n    \"terms_document_ids\": []\n  },\n  \"baseline\": {\n    \"risk_package_id\": \"rp_synthetic\"\n  },\n  \"risk_policy_version_id\": \"rpv_synthetic\",\n  \"cadence_id\": \"cadence_synthetic\",\n  \"connection_ids\": [\n    \"con_synthetic\"\n  ]\n}",
+              "raw": "{\n  \"borrower_id\": \"bor_synthetic\",\n  \"deal\": {\n    \"institution_reference\": \"LOAN-0042\",\n    \"funded_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"outstanding_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"funded_at\": \"2026-11-05T12:00:00Z\",\n    \"maturity_date\": \"2027-11-06\",\n    \"repayment_frequency\": \"monthly\",\n    \"terms_document_ids\": []\n  },\n  \"baseline\": {\n    \"risk_package_id\": \"rp_synthetic\"\n  },\n  \"risk_policy_version_id\": \"rpv_synthetic\",\n  \"cadence_id\": \"cadence_synthetic\",\n  \"connection_ids\": [\n    \"con_synthetic\"\n  ]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1876,7 +1876,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-06T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"status\": \"initializing\",\n    \"baseline_package_id\": \"rp_synthetic\",\n    \"latest_package_id\": null,\n    \"risk_policy_version_id\": \"rpv_synthetic\",\n    \"cadence_id\": \"cadence_synthetic\",\n    \"next_evaluation_at\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-05T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"status\": \"initializing\",\n    \"baseline_package_id\": \"rp_synthetic\",\n    \"latest_package_id\": null,\n    \"risk_policy_version_id\": \"rpv_synthetic\",\n    \"cadence_id\": \"cadence_synthetic\",\n    \"next_evaluation_at\": null,\n    \"record_version\": 1,\n    \"connection_ids\": [\n      \"con_synthetic\"\n    ],\n    \"requirements\": [],\n    \"failure\": null,\n    \"latest_deal_snapshot_id\": \"ds_initial\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -1935,7 +1935,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"mon_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"deal\": {\n        \"institution_reference\": \"LOAN-0042\",\n        \"funded_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"outstanding_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"funded_at\": \"2026-11-06T12:00:00Z\",\n        \"maturity_date\": \"2027-11-06\",\n        \"repayment_frequency\": \"monthly\",\n        \"terms_document_ids\": []\n      },\n      \"status\": \"active\",\n      \"baseline_package_id\": \"rp_synthetic\",\n      \"latest_package_id\": \"rp_signal_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"cadence_id\": \"cadence_synthetic\",\n      \"next_evaluation_at\": \"2026-11-07T12:00:00Z\",\n      \"record_version\": 1\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"mon_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"deal\": {\n        \"institution_reference\": \"LOAN-0042\",\n        \"funded_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"outstanding_amount\": {\n          \"amount\": \"48000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"funded_at\": \"2026-11-05T12:00:00Z\",\n        \"maturity_date\": \"2027-11-06\",\n        \"repayment_frequency\": \"monthly\",\n        \"terms_document_ids\": []\n      },\n      \"status\": \"active\",\n      \"baseline_package_id\": \"rp_synthetic\",\n      \"latest_package_id\": \"rp_signal_synthetic\",\n      \"risk_policy_version_id\": \"rpv_synthetic\",\n      \"cadence_id\": \"cadence_synthetic\",\n      \"next_evaluation_at\": \"2026-11-07T12:00:00Z\",\n      \"record_version\": 1,\n      \"connection_ids\": [\n        \"con_synthetic\"\n      ],\n      \"requirements\": [],\n      \"failure\": null,\n      \"latest_deal_snapshot_id\": \"ds_synthetic\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -1996,7 +1996,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-06T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"status\": \"active\",\n    \"baseline_package_id\": \"rp_synthetic\",\n    \"latest_package_id\": \"rp_signal_synthetic\",\n    \"risk_policy_version_id\": \"rpv_synthetic\",\n    \"cadence_id\": \"cadence_synthetic\",\n    \"next_evaluation_at\": \"2026-11-07T12:00:00Z\",\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"48000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-05T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"status\": \"active\",\n    \"baseline_package_id\": \"rp_synthetic\",\n    \"latest_package_id\": \"rp_signal_synthetic\",\n    \"risk_policy_version_id\": \"rpv_synthetic\",\n    \"cadence_id\": \"cadence_synthetic\",\n    \"next_evaluation_at\": \"2026-11-07T12:00:00Z\",\n    \"record_version\": 1,\n    \"connection_ids\": [\n      \"con_synthetic\"\n    ],\n    \"requirements\": [],\n    \"failure\": null,\n    \"latest_deal_snapshot_id\": \"ds_synthetic\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2091,7 +2091,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-06T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"status\": \"paused\",\n    \"baseline_package_id\": \"rp_synthetic\",\n    \"latest_package_id\": \"rp_signal_synthetic\",\n    \"risk_policy_version_id\": \"rpv_synthetic\",\n    \"cadence_id\": \"cadence_synthetic\",\n    \"next_evaluation_at\": null,\n    \"record_version\": 2\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"48000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-05T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"status\": \"paused\",\n    \"baseline_package_id\": \"rp_synthetic\",\n    \"latest_package_id\": \"rp_signal_synthetic\",\n    \"risk_policy_version_id\": \"rpv_synthetic\",\n    \"cadence_id\": \"cadence_synthetic\",\n    \"next_evaluation_at\": null,\n    \"record_version\": 2,\n    \"connection_ids\": [\n      \"con_synthetic\"\n    ],\n    \"requirements\": [],\n    \"failure\": null,\n    \"latest_deal_snapshot_id\": \"ds_synthetic\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2150,7 +2150,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"mr_synthetic\",\n      \"monitor_id\": \"mon_synthetic\",\n      \"status\": \"partial\",\n      \"started_at\": \"2026-11-06T12:00:00Z\",\n      \"completed_at\": \"2026-11-06T12:00:00Z\",\n      \"risk_package_id\": \"rp_signal_synthetic\",\n      \"sources\": [\n        {\n          \"connection_id\": \"con_synthetic\",\n          \"integration_id\": \"bank_synthetic\",\n          \"source_as_of\": \"2026-11-01T00:00:00Z\",\n          \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n          \"window\": {\n            \"start\": \"2025-11-01T00:00:00Z\",\n            \"end\": \"2026-11-01T00:00:00Z\"\n          },\n          \"status\": \"partial\",\n          \"limitations\": [\n            \"Bank records alone do not establish a complete debt schedule.\"\n          ]\n        }\n      ],\n      \"evidence_set_id\": \"es_synthetic\",\n      \"limitations\": [\n        \"Debt-service data remains incomplete.\"\n      ]\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"mr_synthetic\",\n      \"monitor_id\": \"mon_synthetic\",\n      \"status\": \"partial\",\n      \"started_at\": \"2026-11-06T12:00:00Z\",\n      \"completed_at\": \"2026-11-06T12:00:00Z\",\n      \"risk_package_id\": \"rp_signal_synthetic\",\n      \"sources\": [\n        {\n          \"connection_id\": \"con_synthetic\",\n          \"integration_id\": \"bank_synthetic\",\n          \"source_as_of\": \"2026-11-01T00:00:00Z\",\n          \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n          \"window\": {\n            \"start\": \"2025-11-01T00:00:00Z\",\n            \"end\": \"2026-11-01T00:00:00Z\"\n          },\n          \"status\": \"partial\",\n          \"limitations\": [\n            \"Bank records alone do not establish a complete debt schedule.\"\n          ]\n        }\n      ],\n      \"evidence_set_id\": \"es_synthetic\",\n      \"limitations\": [\n        \"Debt-service data remains incomplete.\"\n      ],\n      \"record_version\": 1,\n      \"deal_snapshot_id\": \"ds_synthetic\",\n      \"failure\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -2211,7 +2211,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"mr_synthetic\",\n    \"monitor_id\": \"mon_synthetic\",\n    \"status\": \"partial\",\n    \"started_at\": \"2026-11-06T12:00:00Z\",\n    \"completed_at\": \"2026-11-06T12:00:00Z\",\n    \"risk_package_id\": \"rp_signal_synthetic\",\n    \"sources\": [\n      {\n        \"connection_id\": \"con_synthetic\",\n        \"integration_id\": \"bank_synthetic\",\n        \"source_as_of\": \"2026-11-01T00:00:00Z\",\n        \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n        \"window\": {\n          \"start\": \"2025-11-01T00:00:00Z\",\n          \"end\": \"2026-11-01T00:00:00Z\"\n        },\n        \"status\": \"partial\",\n        \"limitations\": [\n          \"Bank records alone do not establish a complete debt schedule.\"\n        ]\n      }\n    ],\n    \"evidence_set_id\": \"es_synthetic\",\n    \"limitations\": [\n      \"Debt-service data remains incomplete.\"\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"mr_synthetic\",\n    \"monitor_id\": \"mon_synthetic\",\n    \"status\": \"partial\",\n    \"started_at\": \"2026-11-06T12:00:00Z\",\n    \"completed_at\": \"2026-11-06T12:00:00Z\",\n    \"risk_package_id\": \"rp_signal_synthetic\",\n    \"sources\": [\n      {\n        \"connection_id\": \"con_synthetic\",\n        \"integration_id\": \"bank_synthetic\",\n        \"source_as_of\": \"2026-11-01T00:00:00Z\",\n        \"retrieved_at\": \"2026-11-06T12:00:00Z\",\n        \"window\": {\n          \"start\": \"2025-11-01T00:00:00Z\",\n          \"end\": \"2026-11-01T00:00:00Z\"\n        },\n        \"status\": \"partial\",\n        \"limitations\": [\n          \"Bank records alone do not establish a complete debt schedule.\"\n        ]\n      }\n    ],\n    \"evidence_set_id\": \"es_synthetic\",\n    \"limitations\": [\n      \"Debt-service data remains incomplete.\"\n    ],\n    \"record_version\": 1,\n    \"deal_snapshot_id\": \"ds_synthetic\",\n    \"failure\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2270,7 +2270,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"alert_synthetic\",\n      \"monitor_id\": \"mon_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"status\": \"open\",\n      \"severity\": \"warning\",\n      \"rule_id\": \"dscr-minimum\",\n      \"policy_version_id\": \"rpv_synthetic\",\n      \"message\": \"Required debt-service evidence is unavailable.\",\n      \"detected_at\": \"2026-11-06T12:00:00Z\",\n      \"resolved_at\": null,\n      \"previous_package_id\": \"rp_synthetic\",\n      \"current_package_id\": \"rp_signal_synthetic\",\n      \"metric_key\": \"dscr\",\n      \"previous_value\": null,\n      \"current_value\": null,\n      \"threshold\": \"1.25\",\n      \"unit\": \"ratio\",\n      \"evidence_ids\": [\n        \"ev_bank_synthetic\"\n      ],\n      \"record_version\": 1\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"alert_synthetic\",\n      \"monitor_id\": \"mon_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"status\": \"open\",\n      \"severity\": \"warning\",\n      \"rule_id\": \"dscr-minimum\",\n      \"policy_version_id\": \"rpv_synthetic\",\n      \"message\": \"Required debt-service evidence is unavailable.\",\n      \"detected_at\": \"2026-11-06T12:00:00Z\",\n      \"resolved_at\": null,\n      \"previous_package_id\": \"rp_synthetic\",\n      \"current_package_id\": \"rp_signal_synthetic\",\n      \"metric_key\": \"dscr\",\n      \"previous_value\": null,\n      \"current_value\": null,\n      \"threshold\": \"1.25\",\n      \"unit\": \"ratio\",\n      \"evidence_ids\": [\n        \"ev_bank_synthetic\"\n      ],\n      \"record_version\": 1\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -2390,7 +2390,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"evt_synthetic\",\n      \"type\": \"origination.completed\",\n      \"occurred_at\": \"2026-11-06T12:00:00Z\",\n      \"resource_type\": \"origination\",\n      \"resource_id\": \"orgn_synthetic\",\n      \"resource_version\": 4,\n      \"borrower_id\": \"bor_synthetic\",\n      \"environment\": \"sandbox\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"resume_cursor\": \"resume_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"evt_synthetic\",\n      \"type\": \"origination.completed\",\n      \"occurred_at\": \"2026-11-06T12:00:00Z\",\n      \"resource_type\": \"origination\",\n      \"resource_id\": \"orgn_synthetic\",\n      \"resource_version\": 4,\n      \"borrower_id\": \"bor_synthetic\",\n      \"environment\": \"sandbox\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"resume_cursor\": \"resume_synthetic\",\n    \"resume_expires_at\": \"2026-12-06T12:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -2544,7 +2544,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"exp_synthetic\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"format\": \"json\",\n    \"source\": {\n      \"kind\": \"risk_package\",\n      \"risk_package_id\": \"rp_synthetic\",\n      \"format\": \"json\"\n    },\n    \"failure\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"exp_synthetic\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"format\": \"json\",\n    \"source\": {\n      \"kind\": \"risk_package\",\n      \"risk_package_id\": \"rp_synthetic\",\n      \"format\": \"json\"\n    },\n    \"failure\": null,\n    \"record_version\": 1,\n    \"expires_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2605,7 +2605,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"exp_synthetic\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"format\": \"json\",\n    \"source\": {\n      \"kind\": \"risk_package\",\n      \"risk_package_id\": \"rp_synthetic\",\n      \"format\": \"json\"\n    },\n    \"failure\": null,\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"exp_synthetic\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"format\": \"json\",\n    \"source\": {\n      \"kind\": \"risk_package\",\n      \"risk_package_id\": \"rp_synthetic\",\n      \"format\": \"json\"\n    },\n    \"failure\": null,\n    \"record_version\": 1,\n    \"expires_at\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2761,7 +2761,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"del_synthetic\",\n      \"event_id\": \"evt_synthetic\",\n      \"endpoint_id\": \"dest_synthetic\",\n      \"attempt\": 1,\n      \"status\": \"delivered\",\n      \"attempted_at\": \"2026-11-06T12:00:00Z\",\n      \"http_status\": 200\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"del_synthetic\",\n      \"event_id\": \"evt_synthetic\",\n      \"endpoint_id\": \"dest_synthetic\",\n      \"attempt\": 1,\n      \"status\": \"delivered\",\n      \"attempted_at\": \"2026-11-06T12:00:00Z\",\n      \"http_status\": 200\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -2915,7 +2915,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"currency\": \"CAD\",\n    \"available_credits\": \"4935.00\",\n    \"spent_credits\": \"65.00\",\n    \"billing_account_id\": \"billing_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"paid_funding_credits\": \"5000.00\",\n    \"promotional_credits\": \"0.00\",\n    \"adjustment_credits\": \"0.00\",\n    \"refunded_credits\": \"0.00\",\n    \"auto_pay\": {\n      \"enabled\": false,\n      \"trigger_amount\": \"200.00\",\n      \"top_up_amount\": \"500.00\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"currency\": \"CAD\",\n    \"available_credits\": \"4935.00\",\n    \"spent_credits\": \"65.00\",\n    \"billing_account_id\": \"billing_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"paid_funding_credits\": \"5000.00\",\n    \"promotional_credits\": \"0.00\",\n    \"adjustment_credits\": \"0.00\",\n    \"refunded_credits\": \"0.00\",\n    \"auto_pay\": {\n      \"enabled\": false,\n      \"trigger_amount\": \"200.00\",\n      \"top_up_amount\": \"500.00\"\n    },\n    \"snapshot_expires_at\": \"2026-11-06T13:00:00Z\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -2976,7 +2976,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"txn_usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"posted_at\": \"2026-11-06T12:00:00Z\",\n      \"amount\": \"-40.00\",\n      \"currency\": \"CAD\",\n      \"kind\": \"usage\",\n      \"product\": \"insights\",\n      \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n      \"usage_id\": \"usage_synthetic\",\n      \"payment_id\": null,\n      \"borrower_id\": \"bor_synthetic\",\n      \"balance_after\": \"4935.00\",\n      \"sequence\": 3,\n      \"funding_type\": null,\n      \"related_transaction_id\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"txn_usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"posted_at\": \"2026-11-06T12:00:00Z\",\n      \"amount\": \"-40.00\",\n      \"currency\": \"CAD\",\n      \"kind\": \"usage\",\n      \"product\": \"insights\",\n      \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n      \"usage_id\": \"usage_synthetic\",\n      \"payment_id\": null,\n      \"borrower_id\": \"bor_synthetic\",\n      \"balance_after\": \"4935.00\",\n      \"sequence\": 3,\n      \"funding_type\": null,\n      \"record_version\": 1,\n      \"related_transaction_id\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -3001,7 +3001,7 @@
           ],
           "query": []
         },
-        "description": "Discover the approved schemas, products, integration IDs, embedding versions and monitoring cadences available to this API key. All IDs and cursors must belong to the authorized workspace and environment. Required scope: configuration:read."
+        "description": "Discover the approved schemas, products, integration IDs, embedding versions and monitoring cadences available to this API key. All IDs and cursors must belong to the authorized workspace and environment. Required scope: configuration:read. operational_profile and embedding_versions are required discovery; sandbox is null in Live. Never infer production quotas from synthetic examples."
       },
       "response": [
         {
@@ -3025,7 +3025,7 @@
               ],
               "query": []
             },
-            "description": "Discover the approved schemas, products, integration IDs, embedding versions and monitoring cadences available to this API key. All IDs and cursors must belong to the authorized workspace and environment. Required scope: configuration:read."
+            "description": "Discover the approved schemas, products, integration IDs, embedding versions and monitoring cadences available to this API key. All IDs and cursors must belong to the authorized workspace and environment. Required scope: configuration:read. operational_profile and embedding_versions are required discovery; sandbox is null in Live. Never infer production quotas from synthetic examples."
           },
           "status": "OK",
           "code": 200,
@@ -3035,7 +3035,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"products\": [\n      \"insights\",\n      \"signal\"\n    ],\n    \"embedding_version_ids\": [\n      \"embed_synthetic\"\n    ],\n    \"application_schemas\": [\n      {\n        \"id\": \"app_schema_synthetic\",\n        \"version\": \"1\",\n        \"json_schema\": {\n          \"type\": \"object\",\n          \"required\": [\n            \"annual_revenue\"\n          ],\n          \"properties\": {\n            \"annual_revenue\": {\n              \"type\": \"string\",\n              \"pattern\": \"^[0-9]+\\\\.[0-9]{2}$\"\n            }\n          },\n          \"additionalProperties\": false\n        }\n      }\n    ],\n    \"pricing_schemas\": [\n      {\n        \"id\": \"pricing_synthetic\",\n        \"version\": \"1\",\n        \"json_schema\": {\n          \"type\": \"object\",\n          \"required\": [\n            \"rate_type\",\n            \"annual_interest_rate\",\n            \"amortization_months\",\n            \"fees\"\n          ],\n          \"properties\": {\n            \"rate_type\": {\n              \"const\": \"fixed\"\n            },\n            \"annual_interest_rate\": {\n              \"type\": \"string\"\n            },\n            \"amortization_months\": {\n              \"type\": \"integer\",\n              \"minimum\": 1\n            },\n            \"fees\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"object\"\n              }\n            }\n          },\n          \"additionalProperties\": false\n        }\n      }\n    ],\n    \"cadences\": [\n      {\n        \"id\": \"cadence_synthetic\",\n        \"description\": \"Illustrative daily schedule; use your provisioned cadence.\"\n      }\n    ],\n    \"dimensions\": [\n      {\n        \"key\": \"dscr\",\n        \"description\": \"Eligible cash flow divided by complete existing and proposed debt service over comparable periods.\",\n        \"unit\": \"ratio\",\n        \"calculation_version\": \"cashflow-dscr-synthetic-v1\",\n        \"borrower_types\": [\n          \"business\"\n        ]\n      }\n    ],\n    \"integration_ids\": [\n      \"bank_synthetic\"\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"products\": [\n      \"insights\",\n      \"signal\"\n    ],\n    \"embedding_version_ids\": [\n      \"embed_synthetic\"\n    ],\n    \"application_schemas\": [\n      {\n        \"id\": \"app_schema_synthetic\",\n        \"version\": \"1\",\n        \"json_schema\": {\n          \"type\": \"object\",\n          \"required\": [\n            \"annual_revenue\"\n          ],\n          \"properties\": {\n            \"annual_revenue\": {\n              \"type\": \"string\",\n              \"pattern\": \"^[0-9]+\\\\.[0-9]{2}$\"\n            }\n          },\n          \"additionalProperties\": false\n        }\n      },\n      {\n        \"id\": \"consumer_app_schema_synthetic\",\n        \"version\": \"1\",\n        \"json_schema\": {\n          \"type\": \"object\",\n          \"required\": [\n            \"gross_monthly_income\",\n            \"monthly_debt_payments\"\n          ],\n          \"properties\": {\n            \"gross_monthly_income\": {\n              \"type\": \"string\",\n              \"pattern\": \"^[0-9]+\\\\.[0-9]{2}$\"\n            },\n            \"monthly_debt_payments\": {\n              \"type\": \"string\",\n              \"pattern\": \"^[0-9]+\\\\.[0-9]{2}$\"\n            }\n          },\n          \"additionalProperties\": false\n        }\n      }\n    ],\n    \"pricing_schemas\": [\n      {\n        \"id\": \"pricing_synthetic\",\n        \"version\": \"1\",\n        \"json_schema\": {\n          \"type\": \"object\",\n          \"required\": [\n            \"rate_type\",\n            \"annual_interest_rate\",\n            \"amortization_months\",\n            \"fees\"\n          ],\n          \"properties\": {\n            \"rate_type\": {\n              \"const\": \"fixed\"\n            },\n            \"annual_interest_rate\": {\n              \"type\": \"string\"\n            },\n            \"amortization_months\": {\n              \"type\": \"integer\",\n              \"minimum\": 1\n            },\n            \"fees\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"object\"\n              }\n            }\n          },\n          \"additionalProperties\": false\n        }\n      }\n    ],\n    \"cadences\": [\n      {\n        \"id\": \"cadence_synthetic\",\n        \"description\": \"Illustrative daily schedule; use your provisioned cadence.\"\n      }\n    ],\n    \"dimensions\": [\n      {\n        \"key\": \"dscr\",\n        \"description\": \"Eligible cash flow divided by complete existing and proposed debt service over comparable periods.\",\n        \"unit\": \"ratio\",\n        \"calculation_version\": \"cashflow-dscr-synthetic-v1\",\n        \"borrower_types\": [\n          \"business\"\n        ]\n      },\n      {\n        \"key\": \"debt_to_income\",\n        \"description\": \"Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.\",\n        \"unit\": \"ratio\",\n        \"calculation_version\": \"consumer-dti-synthetic-v1\",\n        \"borrower_types\": [\n          \"person\"\n        ]\n      }\n    ],\n    \"integration_ids\": [\n      \"bank_synthetic\"\n    ],\n    \"operational_profile\": {\n      \"id\": \"development-example\",\n      \"version\": \"1\",\n      \"max_json_bytes\": 1048576,\n      \"max_upload_bytes\": 20971520,\n      \"max_document_pages\": 200,\n      \"allowed_document_mime_types\": [\n        \"application/pdf\",\n        \"image/png\",\n        \"image/jpeg\",\n        \"image/webp\"\n      ],\n      \"document_types\": [\n        \"financial_statement\",\n        \"bank_statement\",\n        \"identity_document\",\n        \"business_registration\",\n        \"tax_return\",\n        \"lending_terms\",\n        \"risk_policy\",\n        \"other\"\n      ],\n      \"session_ttl_seconds\": 900,\n      \"download_ttl_seconds\": 300,\n      \"snapshot_ttl_seconds\": 3600,\n      \"data_feed_retention_seconds\": 2592000,\n      \"event_retention_seconds\": 2592000,\n      \"export_retention_seconds\": 86400,\n      \"poll_min_interval_seconds\": 5,\n      \"poll_max_interval_seconds\": 60,\n      \"webhook_timeout_seconds\": 10,\n      \"webhook_max_body_bytes\": 65536,\n      \"webhook_rotation_overlap_seconds\": 86400,\n      \"rate_limits\": [\n        {\n          \"group\": \"reads\",\n          \"requests\": 120,\n          \"window_seconds\": 60\n        },\n        {\n          \"group\": \"commands\",\n          \"requests\": 30,\n          \"window_seconds\": 60\n        },\n        {\n          \"group\": \"uploads\",\n          \"requests\": 10,\n          \"window_seconds\": 60\n        }\n      ]\n    },\n    \"embedding_versions\": [\n      {\n        \"id\": \"embed_synthetic\",\n        \"name\": \"Synthetic borrower Hub\",\n        \"integration_ids\": [\n          \"bank_synthetic\"\n        ],\n        \"consent_purposes\": [\n          \"credit_assessment\",\n          \"continuous_monitoring\"\n        ],\n        \"allowed_embed_origins\": [\n          \"https://institution.example.com\"\n        ],\n        \"allowed_return_urls\": [\n          \"https://institution.example.com/connected\"\n        ],\n        \"hub_origin\": \"https://borrower.example.com\"\n      }\n    ],\n    \"sandbox\": {\n      \"scenario_ids\": [\n        \"happy_path\",\n        \"source_reauthorization\",\n        \"document_required\",\n        \"missing_financial_input\",\n        \"restricted_report\",\n        \"provider_failure\",\n        \"insufficient_credits\",\n        \"monitoring_alert\",\n        \"payment_return\",\n        \"export_failure\"\n      ],\n      \"test_integration_id\": \"bank_synthetic\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -3315,7 +3315,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"dr_synthetic_v1\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"connection_id\": \"con_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"ingested_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"access\": \"available\",\n      \"access_reason\": null,\n      \"normalized\": {\n        \"id\": \"txn_synthetic\",\n        \"object\": \"bank_transaction\",\n        \"subject_id\": \"biz_synthetic\",\n        \"created_at\": \"2026-11-06T12:00:00Z\",\n        \"updated_at\": \"2026-11-06T12:00:00Z\",\n        \"observed_at\": \"2026-11-06T12:00:00Z\",\n        \"record_version\": 1,\n        \"source_refs\": [],\n        \"data_status\": \"partial\",\n        \"missing_fields\": [],\n        \"schema_version\": \"1.0.0\",\n        \"account_id\": \"acct_synthetic\",\n        \"direction\": \"inflow\",\n        \"status\": \"posted\",\n        \"amount\": {\n          \"amount\": \"1250.00\",\n          \"currency\": \"CAD\"\n        },\n        \"extensions\": {\n          \"synthetic_provider\": {\n            \"original_description\": \"SYNTHETIC CUSTOMER PAYMENT\"\n          }\n        }\n      },\n      \"source_payload\": {\n        \"status\": \"available\",\n        \"value\": {\n          \"description\": \"SYNTHETIC CUSTOMER PAYMENT\",\n          \"amount\": \"1250.00\",\n          \"currency\": \"CAD\"\n        },\n        \"reason\": null\n      },\n      \"document_ids\": []\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"changes_cursor\": \"data_cursor_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"dr_synthetic_v1\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"connection_id\": \"con_synthetic\",\n      \"integration_id\": \"bank_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"resource_id\": \"txn_synthetic\",\n      \"record_version\": 1,\n      \"ingested_at\": \"2026-11-06T12:00:00Z\",\n      \"source_as_of\": \"2026-11-06T12:00:00Z\",\n      \"access\": \"available\",\n      \"access_reason\": null,\n      \"normalized\": {\n        \"id\": \"txn_synthetic\",\n        \"object\": \"bank_transaction\",\n        \"subject_id\": \"biz_synthetic\",\n        \"created_at\": \"2026-11-06T12:00:00Z\",\n        \"updated_at\": \"2026-11-06T12:00:00Z\",\n        \"observed_at\": \"2026-11-06T12:00:00Z\",\n        \"record_version\": 1,\n        \"source_refs\": [],\n        \"data_status\": \"partial\",\n        \"missing_fields\": [],\n        \"schema_version\": \"1.0.0\",\n        \"account_id\": \"acct_synthetic\",\n        \"direction\": \"inflow\",\n        \"status\": \"posted\",\n        \"amount\": {\n          \"amount\": \"1250.00\",\n          \"currency\": \"CAD\"\n        },\n        \"extensions\": {\n          \"synthetic_provider\": {\n            \"original_description\": \"SYNTHETIC CUSTOMER PAYMENT\"\n          }\n        }\n      },\n      \"source_payload\": {\n        \"status\": \"available\",\n        \"value\": {\n          \"description\": \"SYNTHETIC CUSTOMER PAYMENT\",\n          \"amount\": \"1250.00\",\n          \"currency\": \"CAD\"\n        },\n        \"reason\": null\n      },\n      \"document_ids\": []\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"as_of\": \"2026-11-06T12:00:00Z\",\n    \"changes_cursor\": \"data_cursor_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -3449,7 +3449,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"change_synthetic\",\n      \"type\": \"upsert\",\n      \"occurred_at\": \"2026-11-06T12:00:00Z\",\n      \"record_id\": \"dr_synthetic_v1\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"resource_id\": \"txn_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"record_version\": 1,\n      \"reason\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"resume_cursor\": \"resume_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"change_synthetic\",\n      \"type\": \"upsert\",\n      \"occurred_at\": \"2026-11-06T12:00:00Z\",\n      \"record_id\": \"dr_synthetic_v1\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"resource_id\": \"txn_synthetic\",\n      \"resource_type\": \"bank_transaction\",\n      \"record_version\": 1,\n      \"reason\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"resume_cursor\": \"resume_synthetic\",\n    \"resume_expires_at\": \"2026-12-06T12:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -3508,7 +3508,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"doc_synthetic\",\n      \"context\": \"borrower\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"file_name\": \"financial-statement.pdf\",\n      \"mime_type\": \"application/pdf\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"size_bytes\": 12500,\n      \"status\": \"available\",\n      \"restriction_reason\": null,\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"document_type\": \"financial_statement\",\n      \"origination_id\": null,\n      \"requirement_id\": null,\n      \"origin\": \"institution_upload\"\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"doc_synthetic\",\n      \"context\": \"borrower\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"file_name\": \"financial-statement.pdf\",\n      \"mime_type\": \"application/pdf\",\n      \"sha256\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n      \"size_bytes\": 12500,\n      \"status\": \"available\",\n      \"restriction_reason\": null,\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"document_type\": \"financial_statement\",\n      \"origination_id\": null,\n      \"requirement_id\": null,\n      \"origin\": \"institution_upload\",\n      \"record_version\": 1,\n      \"failure\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -3571,7 +3571,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"txn_usage_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"posted_at\": \"2026-11-06T12:00:00Z\",\n    \"amount\": \"-40.00\",\n    \"currency\": \"CAD\",\n    \"kind\": \"usage\",\n    \"product\": \"insights\",\n    \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n    \"usage_id\": \"usage_synthetic\",\n    \"payment_id\": null,\n    \"borrower_id\": \"bor_synthetic\",\n    \"balance_after\": \"4935.00\",\n    \"sequence\": 3,\n    \"funding_type\": null,\n    \"related_transaction_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"txn_usage_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"posted_at\": \"2026-11-06T12:00:00Z\",\n    \"amount\": \"-40.00\",\n    \"currency\": \"CAD\",\n    \"kind\": \"usage\",\n    \"product\": \"insights\",\n    \"description\": \"Synthetic underwriting usage, not a price quotation.\",\n    \"usage_id\": \"usage_synthetic\",\n    \"payment_id\": null,\n    \"borrower_id\": \"bor_synthetic\",\n    \"balance_after\": \"4935.00\",\n    \"sequence\": 3,\n    \"funding_type\": null,\n    \"record_version\": 1,\n    \"related_transaction_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -3632,7 +3632,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"pay_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"status\": \"succeeded\",\n      \"purpose\": \"manual_top_up\",\n      \"amount\": \"5000.00\",\n      \"currency\": \"CAD\",\n      \"credited_amount\": \"5000.00\",\n      \"refunded_amount\": \"0.00\",\n      \"method\": {\n        \"type\": \"card\",\n        \"label\": \"Visa ending 4242\"\n      },\n      \"external_reference\": \"PAY-SYNTHETIC-0042\",\n      \"settled_at\": \"2026-11-06T12:00:00Z\",\n      \"failure_reason\": null,\n      \"transaction_ids\": [\n        \"txn_funding_synthetic\"\n      ]\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"pay_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"created_at\": \"2026-11-06T12:00:00Z\",\n      \"updated_at\": \"2026-11-06T12:00:00Z\",\n      \"status\": \"succeeded\",\n      \"purpose\": \"manual_top_up\",\n      \"amount\": \"5000.00\",\n      \"currency\": \"CAD\",\n      \"credited_amount\": \"5000.00\",\n      \"refunded_amount\": \"0.00\",\n      \"method\": {\n        \"type\": \"card\",\n        \"label\": \"Visa ending 4242\"\n      },\n      \"external_reference\": \"PAY-SYNTHETIC-0042\",\n      \"settled_at\": \"2026-11-06T12:00:00Z\",\n      \"failure_reason\": null,\n      \"transaction_ids\": [\n        \"txn_funding_synthetic\"\n      ],\n      \"record_version\": 1\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -3695,7 +3695,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": {\n    \"id\": \"pay_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"status\": \"succeeded\",\n    \"purpose\": \"manual_top_up\",\n    \"amount\": \"5000.00\",\n    \"currency\": \"CAD\",\n    \"credited_amount\": \"5000.00\",\n    \"refunded_amount\": \"0.00\",\n    \"method\": {\n      \"type\": \"card\",\n      \"label\": \"Visa ending 4242\"\n    },\n    \"external_reference\": \"PAY-SYNTHETIC-0042\",\n    \"settled_at\": \"2026-11-06T12:00:00Z\",\n    \"failure_reason\": null,\n    \"transaction_ids\": [\n      \"txn_funding_synthetic\"\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+          "body": "{\n  \"data\": {\n    \"id\": \"pay_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"created_at\": \"2026-11-06T12:00:00Z\",\n    \"updated_at\": \"2026-11-06T12:00:00Z\",\n    \"status\": \"succeeded\",\n    \"purpose\": \"manual_top_up\",\n    \"amount\": \"5000.00\",\n    \"currency\": \"CAD\",\n    \"credited_amount\": \"5000.00\",\n    \"refunded_amount\": \"0.00\",\n    \"method\": {\n      \"type\": \"card\",\n      \"label\": \"Visa ending 4242\"\n    },\n    \"external_reference\": \"PAY-SYNTHETIC-0042\",\n    \"settled_at\": \"2026-11-06T12:00:00Z\",\n    \"failure_reason\": null,\n    \"transaction_ids\": [\n      \"txn_funding_synthetic\"\n    ],\n    \"record_version\": 1\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     },
@@ -3756,7 +3756,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"product\": \"insights\",\n      \"origination_id\": \"orgn_synthetic\",\n      \"monitor_ids\": [],\n      \"risk_package_ids\": [\n        \"rp_synthetic\"\n      ],\n      \"period\": {\n        \"start\": \"2026-11-06T00:00:00Z\",\n        \"end\": \"2026-11-07T00:00:00Z\"\n      },\n      \"charged_at\": \"2026-11-06T12:00:00Z\",\n      \"tier\": \"standard\",\n      \"quantity\": 1,\n      \"unit_rate\": \"40.00\",\n      \"amount\": \"40.00\",\n      \"currency\": \"CAD\",\n      \"rate_card_id\": \"rate_synthetic\",\n      \"rate_version\": \"synthetic-1\",\n      \"transaction_id\": \"txn_usage_synthetic\",\n      \"workload\": {\n        \"bank_accounts\": 1,\n        \"business_systems\": 2,\n        \"records\": 1500,\n        \"record_counting_basis\": \"per_underwriting\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"usage_synthetic\",\n      \"snapshot_id\": \"snap_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"product\": \"insights\",\n      \"origination_id\": \"orgn_synthetic\",\n      \"monitor_ids\": [],\n      \"risk_package_ids\": [\n        \"rp_synthetic\"\n      ],\n      \"period\": {\n        \"start\": \"2026-11-06T00:00:00Z\",\n        \"end\": \"2026-11-07T00:00:00Z\"\n      },\n      \"charged_at\": \"2026-11-06T12:00:00Z\",\n      \"tier\": \"standard\",\n      \"quantity\": 1,\n      \"unit_rate\": \"40.00\",\n      \"amount\": \"40.00\",\n      \"currency\": \"CAD\",\n      \"rate_card_id\": \"rate_synthetic\",\n      \"rate_version\": \"synthetic-1\",\n      \"transaction_id\": \"txn_usage_synthetic\",\n      \"workload\": {\n        \"bank_accounts\": 1,\n        \"business_systems\": 2,\n        \"records\": 1500,\n        \"record_counting_basis\": \"per_underwriting\"\n      }\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -3820,6 +3820,227 @@
             }
           ],
           "body": "{\n  \"data\": {\n    \"id\": \"usage_synthetic\",\n    \"snapshot_id\": \"snap_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"product\": \"insights\",\n    \"origination_id\": \"orgn_synthetic\",\n    \"monitor_ids\": [],\n    \"risk_package_ids\": [\n      \"rp_synthetic\"\n    ],\n    \"period\": {\n      \"start\": \"2026-11-06T00:00:00Z\",\n      \"end\": \"2026-11-07T00:00:00Z\"\n    },\n    \"charged_at\": \"2026-11-06T12:00:00Z\",\n    \"tier\": \"standard\",\n    \"quantity\": 1,\n    \"unit_rate\": \"40.00\",\n    \"amount\": \"40.00\",\n    \"currency\": \"CAD\",\n    \"rate_card_id\": \"rate_synthetic\",\n    \"rate_version\": \"synthetic-1\",\n    \"transaction_id\": \"txn_usage_synthetic\",\n    \"workload\": {\n      \"bank_accounts\": 1,\n      \"business_systems\": 2,\n      \"records\": 1500,\n      \"record_counting_basis\": \"per_underwriting\"\n    }\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Create deal snapshot",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "createDealSnapshot-{{command_reference}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/monitors/{{record_id}}/deal-snapshots",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "monitors",
+            "{{record_id}}",
+            "deal-snapshots"
+          ],
+          "query": []
+        },
+        "description": "Append a complete, immutable lender-supplied snapshot of a monitored deal. Compare previous_snapshot_id atomically; never edit old balances, evidence or assessments. Future Signal runs use the accepted snapshot. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write. Failed monitors also reject new inputs; correct the failure and enroll a new monitor. previous_snapshot_id is mandatory optimistic concurrency; 409 deal_snapshot_conflict when stale. Same idempotency key replays the accepted snapshot even if the monitor has since advanced. New snapshot affects evaluations starting after acceptance; no retroactive analysis or new Insights charge.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"previous_snapshot_id\": \"ds_initial\",\n  \"effective_at\": \"2026-11-06T12:00:00Z\",\n  \"deal\": {\n    \"institution_reference\": \"LOAN-0042\",\n    \"funded_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"outstanding_amount\": {\n      \"amount\": \"48000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"funded_at\": \"2026-11-05T12:00:00Z\",\n    \"maturity_date\": \"2027-11-06\",\n    \"repayment_frequency\": \"monthly\",\n    \"terms_document_ids\": []\n  },\n  \"performance\": null\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "createDealSnapshot-{{command_reference}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/monitors/{{record_id}}/deal-snapshots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "monitors",
+                "{{record_id}}",
+                "deal-snapshots"
+              ],
+              "query": []
+            },
+            "description": "Append a complete, immutable lender-supplied snapshot of a monitored deal. Compare previous_snapshot_id atomically; never edit old balances, evidence or assessments. Future Signal runs use the accepted snapshot. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write. Failed monitors also reject new inputs; correct the failure and enroll a new monitor. previous_snapshot_id is mandatory optimistic concurrency; 409 deal_snapshot_conflict when stale. Same idempotency key replays the accepted snapshot even if the monitor has since advanced. New snapshot affects evaluations starting after acceptance; no retroactive analysis or new Insights charge.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"previous_snapshot_id\": \"ds_initial\",\n  \"effective_at\": \"2026-11-06T12:00:00Z\",\n  \"deal\": {\n    \"institution_reference\": \"LOAN-0042\",\n    \"funded_amount\": {\n      \"amount\": \"50000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"outstanding_amount\": {\n      \"amount\": \"48000.00\",\n      \"currency\": \"CAD\"\n    },\n    \"funded_at\": \"2026-11-05T12:00:00Z\",\n    \"maturity_date\": \"2027-11-06\",\n    \"repayment_frequency\": \"monthly\",\n    \"terms_document_ids\": []\n  },\n  \"performance\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 201,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"ds_synthetic\",\n    \"monitor_id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"previous_snapshot_id\": \"ds_initial\",\n    \"sequence\": 2,\n    \"record_version\": 1,\n    \"effective_at\": \"2026-11-06T12:00:00Z\",\n    \"received_at\": \"2026-11-06T12:00:00Z\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"48000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-05T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"performance\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List deal snapshots",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/monitors/{{record_id}}/deal-snapshots",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "monitors",
+            "{{record_id}}",
+            "deal-snapshots"
+          ],
+          "query": []
+        },
+        "description": "List the immutable lender snapshots for this monitor, including its initial enrollment snapshot. Ordered by sequence ascending within a stable snapshot. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:read."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/monitors/{{record_id}}/deal-snapshots",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "monitors",
+                "{{record_id}}",
+                "deal-snapshots"
+              ],
+              "query": []
+            },
+            "description": "List the immutable lender snapshots for this monitor, including its initial enrollment snapshot. Ordered by sequence ascending within a stable snapshot. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:read."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"ds_synthetic\",\n      \"monitor_id\": \"mon_synthetic\",\n      \"borrower_id\": \"bor_synthetic\",\n      \"previous_snapshot_id\": \"ds_initial\",\n      \"sequence\": 2,\n      \"record_version\": 1,\n      \"effective_at\": \"2026-11-06T12:00:00Z\",\n      \"received_at\": \"2026-11-06T12:00:00Z\",\n      \"deal\": {\n        \"institution_reference\": \"LOAN-0042\",\n        \"funded_amount\": {\n          \"amount\": \"50000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"outstanding_amount\": {\n          \"amount\": \"48000.00\",\n          \"currency\": \"CAD\"\n        },\n        \"funded_at\": \"2026-11-05T12:00:00Z\",\n        \"maturity_date\": \"2027-11-06\",\n        \"repayment_frequency\": \"monthly\",\n        \"terms_document_ids\": []\n      },\n      \"performance\": null\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get deal snapshot",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/deal-snapshots/{{record_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "deal-snapshots",
+            "{{record_id}}"
+          ],
+          "query": []
+        },
+        "description": "Retrieve the exact lender input version used by a monitoring run or risk package, including its effective time and previous version. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:read."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/deal-snapshots/{{record_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "deal-snapshots",
+                "{{record_id}}"
+              ],
+              "query": []
+            },
+            "description": "Retrieve the exact lender input version used by a monitoring run or risk package, including its effective time and previous version. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:read."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"ds_synthetic\",\n    \"monitor_id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"previous_snapshot_id\": \"ds_initial\",\n    \"sequence\": 2,\n    \"record_version\": 1,\n    \"effective_at\": \"2026-11-06T12:00:00Z\",\n    \"received_at\": \"2026-11-06T12:00:00Z\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"48000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-05T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"performance\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     }

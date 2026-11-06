@@ -1,23 +1,44 @@
 ---
-title: "Validate a Sandbox integration"
+title: "Run reproducible Sandbox scenarios"
 sidebarTitle: "Sandbox journeys"
-description: "Validate a Sandbox integration for the AMLOK product API."
+description: "Implement run reproducible sandbox scenarios using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Use an enabled Sandbox environment to exercise the complete product journey with approved test data. Synthetic examples in this documentation validate contract shape; they do not establish that a backend operation ran successfully.
+AMLOK Sandbox must provide deterministic synthetic scenarios so you can validate your integration without real borrower credentials or funds. This page specifies the required backend behavior; it does not claim a Sandbox service has already passed it.
 
-| Journey | Verify |
+## Provision and run
+
+1. Obtain a Sandbox key and read configuration.sandbox. Live returns null.
+2. Publish a Hub containing the returned test_integration_id and both consent purposes. Register your local or test application's return URL and embedding origin.
+3. Create a borrower with X-AMLOK-Sandbox-Scenario set to one of scenario_ids. Omit the header for happy_path. The backend persists the selection with that synthetic borrower. Send the header only on createBorrower. Unknown scenarios return 422 scenario_not_available. Live or another operation returns 400 sandbox_only before creating any resource or touching funds.
+4. Launch the Hub. The synthetic integration offers a clearly labeled **Connect test institution** action; it needs no bank username, password or OTP. Explicit acceptance records test consent and connections.
+5. Run the [downloadable journey](/api-reference/runnable-example). The scenario remains bound to the borrower, so ordinary API calls drive the same deterministic outcome.
+
+Each run uses a new unique client_reference and command prefix. Old records remain immutable. Reset a scenario by creating a new synthetic borrower; no production-style reset/delete API is introduced.
+
+| Scenario | Trigger and expected result |
 | --- | --- |
-| Connect and underwrite | Borrower session completes; Origination publishes a traceable risk package |
-| Missing authorization | Requires-action state; reauthorization resumes the existing request |
-| Missing financial input | Null metric and explicit reason; policy routes to review |
-| Restricted provider report | Metadata visible as permitted; content and downloads remain inaccessible |
-| Timeout after acceptance | Receipt recovery returns the original resource without duplicate work |
-| Insufficient credits | No unfunded debit; accepted work waits without another command |
-| Monitoring | Runs expose source coverage; alerts link previous/current packages and evidence |
-| Duplicate/out-of-order event | Receiver deduplicates and reconciles versions correctly |
-| Export | Correct source permissions, complete rows and matching integrity hash |
-| Tenant boundary | Other workspace/environment IDs and cursors are rejected |
+| happy_path | Complete test consent, submit a valid origination; completed package, evidence and linked Insights usage appear |
+| source_reauthorization | First origination returns requires_action with reauthorize_source; a requirement-bound Hub session resolves it and the same origination completes |
+| document_required | First origination returns upload_document for financial_statement; upload a readable PDF with its requirement ID; the same origination completes |
+| missing_financial_input | Complete package has an unavailable dscr metric with null value and explicit reason; policy result is unavailable and recommendation review_required |
+| restricted_report | Package includes restricted report metadata with explanation; download is denied with 403 and no capability URL |
+| provider_failure | First evaluation terminates failed with processing_failed; no package or Insights debit is published |
+| insufficient_credits | First completion attempt waits for credits; console **Sandbox funding** adds a simulated top-up, then that same request completes with one debit |
+| monitoring_alert | First Signal evaluation establishes baseline; the next configured evaluation publishes an adverse fixture and alert with previous/current values and evidence |
+| payment_return | Console **Sandbox funding** posts a simulated payment, then **Simulate return** creates a linked reversal; earlier wallet entries remain unchanged |
+| export_failure | The first export for that borrower's package fails with processing_failed; a new explicit export command succeeds without another product charge |
 
-Test controls are available through authorized Sandbox tooling. They are not public production API commands and cannot affect Live funds or real provider authorizations.
+Sandbox funding controls must be visibly simulated, environment-scoped and require Owner authority. They must never invoke a payment processor. Sandbox prices and balances are fixtures, not quotations. The backend acceptance suite must reject Sandbox headers and controls against Live before side effects.
+
+## Transport and security tests
+
+- Simulate a client-side timeout after acceptance, then recover via request receipt and retry the original key. Assert one resource and one charge.
+- Deliver the same signed event twice and deliver newer/older resource versions out of order. Assert one durable event inbox entry and no state rollback.
+- Replay via the normal event replay endpoint. Assert the event ID is unchanged and signature timestamp is fresh.
+- Use two independently provisioned workspaces. Cross-workspace IDs, snapshots, cursors, downloads and session associations must fail without leaking resource contents.
+- Use the returned profile to test oversized documents, unsupported MIME types, stale If-Match, expired cursors and invalid purpose scopes.
+- Advance only the Sandbox service's test clock through its authorized console tooling to force configured expiry and scheduled evaluations. Production clocks and real provider data are never affected.
+
+The [scenario manifest](/downloads/sandbox-scenarios.json) supplies stable IDs and expected states for automated conformance tests. Host provisioning is a backend prerequisite, not a dependency on undocumented test credentials.

@@ -7,7 +7,7 @@ keywords: ["AMLOK", "API", "Insights", "Signal"]
 
 The November 6, 2026 review follows the institution's full workflow: configure and embed an Integrations Hub, collect authorized borrower data, submit application information and documents, receive enriched data and risk packages, monitor funded deals, and reconcile deposits and consumption.
 
-The contract has one public surface under /v1 with 54 operations. The prior 45-operation design covered product execution but did not completely expose the surrounding data and financial reporting. This revision adds nine read operations; it retains secure borrower sessions and connection visibility. Endpoint count is a consequence of supported client tasks, not a target.
+The contract has one public surface under /v1 with 57 operations. It covers secure borrower sessions, application and document inputs, direct data access, immutable lender updates and financial reconciliation. Endpoint count is a consequence of supported client tasks, not a target.
 
 | Requirement | Finding and resolution |
 | --- | --- |
@@ -35,3 +35,7 @@ This repository defines and validates the public contract and generated document
 ## Design references
 
 The separation between an embedded authorization experience and server-side data access is supported by [Plaid Link](https://plaid.com/docs/link/). Cursor-based incremental updates and explicit removal handling are described by [Plaid Transactions](https://plaid.com/docs/api/products/transactions/). Linking financial movements to their source records is illustrated by [Stripe balance transactions](https://docs.stripe.com/api/balance_transactions/object). AMLOK's endpoint names, CAD credit rules and institution boundaries follow its own contract; these references do not imply equivalent provider features or payment infrastructure.
+
+## Implementation readiness
+
+[Hub integration](/api-reference/integration-hub), [lender snapshots](/api-reference/deal-inputs), [operating profiles](/api-reference/operating-profile) and [typed recovery](/api-reference/processing-lifecycle) define the previously incomplete client workflows. The [runnable example](/api-reference/runnable-example) supports business and consumer inputs. The [acceptance checklist](/api-reference/integration-acceptance) distinguishes verified contract artifacts from the backend tests still required before release.

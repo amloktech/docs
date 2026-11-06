@@ -1,0 +1,34 @@
+---
+title: "Send funded-deal updates"
+sidebarTitle: "Send funded-deal updates"
+description: "Implement send funded-deal updates using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
+keywords: ["AMLOK", "API", "Insights", "Signal"]
+---
+
+Signal needs the institution's current exposure as well as the borrower's integration data. Use immutable deal snapshots to submit balance, maturity, terms and lender-reported performance after enrollment. AMLOK does not service loans or initiate borrower payments.
+
+## Initial enrollment and portfolio onboarding
+
+`POST /v1/monitors` captures the initial deal as snapshot sequence 1 and returns latest_deal_snapshot_id. It validates borrower ownership, currency, funded amount, outstanding amount, policy, connection consent and baseline before accepting. funded_at cannot be in the future; amounts are nonnegative decimal strings and currencies must agree.
+
+For an Insights-funded deal, pass baseline.risk_package_id. For an existing portfolio deal, pass baseline.portfolio with lending_product_version_id, application (or null when unavailable) and document_ids. AMLOK prepares the Signal baseline from those inputs and the authorized sources. Portfolio preparation is included in Signal; it does not purchase a separate Insights assessment. Missing evidence remains explicit in the baseline.
+
+## Append a new snapshot
+
+1. Retrieve the monitor and its latest_deal_snapshot_id.
+2. Submit `POST /v1/monitors/{id}/deal-snapshots` with previous_snapshot_id, effective_at, the complete deal and performance (or null if unknown).
+3. Save the returned immutable snapshot ID. Read its sequence and received_at to confirm acceptance.
+
+previous_snapshot_id is compared atomically to the monitor's current pointer. A stale value returns 409 deal_snapshot_conflict without accepting or charging anything. Fetch the latest state and review the intended input before submitting a new command. Retrying an already accepted command with its original idempotency key returns its original snapshot even if the pointer has subsequently advanced.
+
+The institution_reference, funded_at, funded_amount and currency identify the enrolled facility and cannot change. Submit a separate monitor for a refinanced or different facility. Outstanding balance, maturity, repayment frequency and referenced terms can change in a new snapshot. effective_at must be later than the previous snapshot and no later than server acceptance. Backdated corrections do not rewrite existing results; submit the corrected current state with a new as-of time and retain earlier records for audit.
+
+The accepted write stores the snapshot, advances the monitor pointer/version and emits deal_snapshot.created atomically. Future evaluations capture that exact pointer at their start. A run already in progress retains its original snapshot. Each monitoring run and Signal risk package exposes deal_snapshot_id, and the package freezes its supporting evidence.
+
+`GET /v1/monitors/{id}/deal-snapshots` lists versions by sequence ascending. `GET /v1/deal-snapshots/{id}` retrieves one exact version. There is no update/delete operation for snapshots. Stopped monitors reject new inputs with 409 invalid_state. Paused and action-required monitors may accept current inputs without starting processing until their blocking state resolves.
+
+A paid_off performance status records lender information; explicitly stop monitoring with PATCH when monitoring should end. Snapshots and included change-driven reassessment add no Insights charge. Normal Signal borrower/month charging still applies.
+
+## Currency and performance validation
+
+All deal and performance amounts use the facility currency. days_past_due is a nonnegative integer. current and paid_off require zero days_past_due and zero amount_past_due; paid_off additionally requires zero outstanding_amount. Do not use zero to represent unknown performance: send performance null. A maturity amendment must still be compatible with the selected lending product. Unsupported amendments fail with field-specific 422 validation_error.

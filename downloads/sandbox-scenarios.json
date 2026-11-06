@@ -1,0 +1,110 @@
+{
+  "contract_version": "1.0.0",
+  "scenarios": [
+    {
+      "id": "happy_path",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "origination": "completed",
+        "insights_debits": 1
+      }
+    },
+    {
+      "id": "source_reauthorization",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "initial_origination": "requires_action",
+        "action": "reauthorize_source",
+        "after_resolution": "completed"
+      }
+    },
+    {
+      "id": "document_required",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "initial_origination": "requires_action",
+        "action": "upload_document",
+        "document_type": "financial_statement",
+        "after_resolution": "completed"
+      }
+    },
+    {
+      "id": "missing_financial_input",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "metric": "dscr",
+        "value": null,
+        "recommendation": "review_required"
+      }
+    },
+    {
+      "id": "restricted_report",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "evidence_access": "restricted",
+        "download_status": 403
+      }
+    },
+    {
+      "id": "provider_failure",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "origination": "failed",
+        "failure_code": "processing_failed",
+        "insights_debits": 0
+      }
+    },
+    {
+      "id": "insufficient_credits",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "initial_origination": "waiting_for_credits",
+        "after_simulated_funding": "completed",
+        "insights_debits": 1
+      }
+    },
+    {
+      "id": "monitoring_alert",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "subsequent_event": "alert.created"
+      }
+    },
+    {
+      "id": "payment_return",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "historical_entries_unchanged": true,
+        "new_linked_reversal": true
+      }
+    },
+    {
+      "id": "export_failure",
+      "environment": "sandbox",
+      "selected_on": "createBorrower",
+      "header": "X-AMLOK-Sandbox-Scenario",
+      "expected": {
+        "first_export": "failed",
+        "explicit_new_export": "ready"
+      }
+    }
+  ]
+}

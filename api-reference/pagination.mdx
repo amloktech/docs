@@ -20,3 +20,5 @@ Webhook notifications may be duplicated or out of order. Deduplicate by event ID
 ## Collected-data synchronization
 
 Data records use DataPage: snapshot_id, as_of and changes_cursor alongside ordinary pagination. Finish that snapshot before consuming changes. Data changes use DataChangePage with a durable resume_cursor. This atomic snapshot boundary avoids gaps and is separate from the general resource-event feed. Follow the [data synchronization procedure](/api-reference/data-access).
+
+Every snapshot page returns expires_at. Data-change and event pages return resume_expires_at, including empty pages. The billing summary returns snapshot_expires_at. Use these timestamps to schedule reconciliation before the effective retention window closes.

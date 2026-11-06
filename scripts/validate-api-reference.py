@@ -29,7 +29,7 @@ for name,schema in spec['components']['schemas'].items():Draft202012Validator.ch
 webhook=spec['webhooks']['resourceEvent']['post']['requestBody']['content']['application/json']
 check(webhook['schema'],webhook['example'],'webhook')
 index=json.loads((ROOT/'data/api-reference-index.json').read_text())
-assert len(index)==counts['operations']==54
+assert len(index)==counts['operations']==57
 assert spec['info']['version']=='1.0.0'
 assert spec['x-availability']=='published_contract'
 assert {i['id'] for i in index}=={o['operationId'] for methods in spec['paths'].values() for o in methods.values()}
@@ -47,7 +47,7 @@ def navpages(value):
     elif isinstance(value,dict):
         yield from navpages(value.get('pages',[]));yield from navpages(value.get('groups',[]))
 nav=list(navpages(tab));endpoints=[p for p in nav if p.startswith('api-reference/endpoints/')]
-assert len(endpoints)==54 and set(endpoints)=={i['page'] for i in index}
+assert len(endpoints)==57 and set(endpoints)=={i['page'] for i in index}
 for p in nav:assert (ROOT/(p+'.mdx')).exists(),p
 for p in (ROOT/'api-reference').glob('*.mdx'):
     text=p.read_text()

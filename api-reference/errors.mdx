@@ -22,3 +22,16 @@ AMLOK returns structured errors. Inspect the HTTP status, error code, retryabili
 Network failure does not prove that a command failed. Recover accepted commands before attempting a new one. Do not automatically retry every error or repeat a chargeable assessment with a fresh idempotency key.
 
 A successful HTTP response may contain incomplete source coverage, an action requirement or an asynchronous status. Inspect resource and metric states before treating the business operation as completed.
+
+## Additional defined errors
+
+| HTTP | Code | Action |
+| --- | --- | --- |
+| 400 | sandbox_only | Remove test controls from Live or unsupported operations; no side effects occurred |
+| 409 | deal_snapshot_conflict | Read the latest monitor snapshot and review the new input |
+| 413 | payload_too_large | Reduce to the discovered size limit; the command was not accepted |
+| 415 | unsupported_media_type | Submit supported detected file content or JSON media type |
+| 422 | consent_purpose_missing | Obtain the explicit required borrower purpose through a permitted Hub version |
+| 422 | scenario_not_available | Use a scenario returned by Sandbox configuration |
+
+Asynchronous document_rejected and processing_failed appear in resource.failure; they are not successful business outcomes. Error.field is a JSON pointer into the submitted request (or null). Safe messages never contain provider credentials or full source payloads. 429 and 503 are retryable; validation, authorization, stale-state and terminal processing failures require corrective action.

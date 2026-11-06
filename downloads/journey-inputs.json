@@ -1,0 +1,125 @@
+{
+  "CreateBorrower": {
+    "type": "business",
+    "business": {
+      "legal_name": "Synthetic Borrower Inc.",
+      "incorporation_country": "CA",
+      "client_reference": "LOS-B-0042"
+    }
+  },
+  "LendingProductInput": {
+    "external_id": "working-capital",
+    "version": "1",
+    "name": "Working capital loan",
+    "borrower_type": "business",
+    "market": "CA",
+    "currency": "CAD",
+    "product_type": "term_loan",
+    "minimum_amount": {
+      "amount": "10000.00",
+      "currency": "CAD"
+    },
+    "maximum_amount": {
+      "amount": "100000.00",
+      "currency": "CAD"
+    },
+    "minimum_term_months": 6,
+    "maximum_term_months": 24,
+    "repayment_frequency": "monthly",
+    "pricing_schema_id": "pricing_synthetic",
+    "pricing": {
+      "rate_type": "fixed",
+      "annual_interest_rate": "0.12",
+      "amortization_months": 12,
+      "fees": []
+    },
+    "terms_document_ids": []
+  },
+  "RiskPolicyInput": {
+    "external_id": "working-capital-policy",
+    "version": "1",
+    "name": "Illustrative policy, not a recommended threshold",
+    "borrower_type": "business",
+    "market": "CA",
+    "rules": [
+      {
+        "id": "dscr-minimum",
+        "dimension_key": "dscr",
+        "operator": "gte",
+        "threshold": "1.25",
+        "unit": "ratio",
+        "on_missing": "review",
+        "on_fail": "review"
+      }
+    ],
+    "policy_document_ids": []
+  },
+  "CreateOrigination": {
+    "borrower_id": "bor_synthetic",
+    "application": {
+      "institution_reference": "LOS-2026-0042",
+      "requested_amount": {
+        "amount": "50000.00",
+        "currency": "CAD"
+      },
+      "requested_term_months": 12,
+      "purpose": "Working capital",
+      "application_schema_id": "app_schema_synthetic",
+      "declared_data": {
+        "annual_revenue": "600000.00"
+      }
+    },
+    "lending_product_version_id": "lpv_synthetic",
+    "risk_policy_version_id": "rpv_synthetic",
+    "connection_ids": [
+      "con_synthetic"
+    ],
+    "document_ids": []
+  },
+  "CreateMonitor": {
+    "borrower_id": "bor_synthetic",
+    "deal": {
+      "institution_reference": "LOAN-0042",
+      "funded_amount": {
+        "amount": "50000.00",
+        "currency": "CAD"
+      },
+      "outstanding_amount": {
+        "amount": "50000.00",
+        "currency": "CAD"
+      },
+      "funded_at": "2026-11-05T12:00:00Z",
+      "maturity_date": "2027-11-06",
+      "repayment_frequency": "monthly",
+      "terms_document_ids": []
+    },
+    "baseline": {
+      "risk_package_id": "rp_synthetic"
+    },
+    "risk_policy_version_id": "rpv_synthetic",
+    "cadence_id": "cadence_synthetic",
+    "connection_ids": [
+      "con_synthetic"
+    ]
+  },
+  "DealSnapshotInput": {
+    "previous_snapshot_id": "ds_initial",
+    "effective_at": "2026-11-06T12:00:00Z",
+    "deal": {
+      "institution_reference": "LOAN-0042",
+      "funded_amount": {
+        "amount": "50000.00",
+        "currency": "CAD"
+      },
+      "outstanding_amount": {
+        "amount": "48000.00",
+        "currency": "CAD"
+      },
+      "funded_at": "2026-11-05T12:00:00Z",
+      "maturity_date": "2027-11-06",
+      "repayment_frequency": "monthly",
+      "terms_document_ids": []
+    },
+    "performance": null
+  }
+}

@@ -1,51 +1,56 @@
 ---
-title: "Embed a configured Integrations Hub"
-sidebarTitle: "Embed a configured Integrations Hub"
-description: "Embed a configured Integrations Hub using the AMLOK institution API."
+title: "Embed the Integrations Hub"
+sidebarTitle: "Embed the Integrations Hub"
+description: "Implement embed the integrations hub using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Configure available integrations, category steps and branding in the console, publish that Hub, and embed the borrower experience in your own application. Public connection endpoints launch and observe that experience; they do not configure provider adapters or make your team orchestrate ingestion.
+AMLOK's Integrations Hub collects borrower authorization and connects sources selected by the institution in the console. Your backend creates a borrower-bound session; your frontend displays its short-lived launch URL. AMLOK performs collection and normalization.
 
-## Configuration and execution
+## Publish and discover a Hub
 
-| Responsibility | Where it belongs |
-| --- | --- |
-| Select integrations, categories and branding | Published Hub configuration in the console |
-| Associate the Hub with the correct borrower | Your authenticated backend and a short-lived embedding session |
-| Provider authorization, consent and collection | AMLOK and the embedded Hub |
-| Observe readiness, freshness and reconnect requirements | Connection API and notifications |
-| Retrieve authorized collected and enriched data | Data API, independently of an assessment |
-| Request underwriting | Origination API |
+In **Embeddings**, publish the integrations, branding and requested consent purposes. Approve exact HTTPS embedding origins and return URLs. The backend must reject wildcard origins, embedded URL credentials, fragments and unregistered destinations. Sandbox alone may permit explicitly registered loopback HTTP origins for development; Live requires HTTPS.
 
-## Launch for one borrower
+Read `GET /v1/configuration`. Each embedding_versions entry lists its ID, integrations, consent purposes, allowed origins, return URLs and hub_origin. Publishing a new version does not change existing sessions. Use a version whose integration set and purposes fit the borrower flow.
 
-Your backend first verifies the person using your flow is allowed to connect data for the selected borrower. It creates a session with that borrower ID and the published embedding_version_id. A borrower-supplied ID alone is not proof of that association.
+## Create the session on your server
 
-```bash
-curl --request POST --fail-with-body --max-time 30 \
-  "${AMLOK_API_BASE_URL}/v1/embedding-sessions" \
-  --header "Authorization: Bearer ${AMLOK_API_KEY}" \
-  --header 'Accept: application/json' \
-  --header 'Idempotency-Key: createEmbeddingSession-synthetic-0042' \
-  --header 'Content-Type: application/json' \
-  --data '{"borrower_id":"bor_synthetic","embedding_version_id":"embed_synthetic","purpose":"connect","return_url":"https://institution.example.com/connected"}'
+Authenticate your own customer and authorize their relationship to the borrower before calling `POST /v1/embedding-sessions`. Keep the API key on the server. Send borrower_id, embedding_version_id, purpose, return_url, consent_purposes and, for an iframe, embed_origin.
+
+- Request credit_assessment for underwriting.
+- Request continuous_monitoring for post-funding monitoring.
+- Request both if the borrower is explicitly consenting to both. The Hub presents both purposes; neither implies the other.
+- Requested purposes must be a subset of the published Hub's allowed purposes. Otherwise return 422 consent_purpose_missing.
+- For reauthorization, use purpose reauthorize and the affected connection_id. Consent can be renewed only with a new affirmative borrower authorization.
+
+The session expires at expires_at. Repeating the same idempotency key returns the same session, including its original expiry. After expiration create a new session with a fresh command identity. An abandoned session is never evidence of consent.
+
+## Display the borrower experience
+
+Use launch_url for either full-page navigation or an iframe. A session without embed_origin is redirect-only. The Hub must use a frame-ancestors policy allowing the approved parent origin; API endpoints do not enable browser CORS for secret keys. Allow the configured hub_origin in your application's frame-src policy.
+
+```html
+<iframe id="amlok-hub" title="Connect your financial accounts"
+  sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-popups-to-escape-sandbox"
+  referrerpolicy="no-referrer" style="width:100%;height:720px;border:0"></iframe>
 ```
 
-Use the returned launch_url as the source of the embedded Hub in your approved borrower flow. The session is short-lived and bound to the borrower, institution, workspace, environment and published Hub version. The API key stays on your backend. The session cannot add integrations disabled in that published version. Return URLs and embedding origins must be approved for the institution; the Hub must not accept arbitrary redirects or embedding origins. Provider authorization can require a provider-approved redirect or new window.
+Set the iframe source from your own authenticated backend response. Never put an API key into HTML. Providers that require a new window open it only after a borrower action. If browser restrictions prevent completion, offer a borrower-initiated full-page link to the same unexpired launch URL. The Hub persists the session's confirmed connections across these presentations.
 
-This contract specifies the session API and launch URL. It does not claim a distributed JavaScript SDK or invent a widget initialization method.
+The [browser example](/downloads/hub-embed.js) uses the typed HubMessage contract. Every message contains protocol_version, event_id, session_id and type. Types are amlok.hub.ready, amlok.hub.completed, amlok.hub.cancelled, amlok.hub.expired and amlok.hub.failed. The Hub sends messages only to the exact embed_origin, never `*`.
 
-## Distinguish connection completion from data readiness
+Validate event.origin against the configured hub_origin, event.source against the iframe's contentWindow, and session_id against the session your backend created. Deduplicate event_id. No message includes provider tokens, financial data or proof of consent. Your backend retrieves the session before trusting a terminal state.
 
-A session's completed state means the borrower finished the connection journey. A browser callback or return URL is not authoritative proof: confirm the session server-side or consume the signed embedding_session.completed event.
+For full-page presentation, terminal states return the browser to the approved return_url with amlok_session_id and amlok_state added as query parameters. These reserved parameters cannot be supplied in the configured URL. Treat them as untrusted hints; your authenticated backend verifies session ownership and retrieves its state. Cancelled and expired sessions require a new session. Already confirmed consent/connections are not revoked by closing the window.
 
-The session returns connection_ids and consent_ids. A connection has separate authorization status, data_status, last_successful_sync_at, source_as_of and coverage. A connected source can still be collecting or have incomplete data. Read the [data API](/api-reference/data-access) whenever records become available; a completed risk package is not required.
+## Confirm readiness
 
-Use the returned connection IDs when submitting the origination or enrolling the funded deal. These select the authorized sources for that application; they do not instruct your team to run synchronization. Every source must match the borrower and allowed purpose. A prior underwriting consent does not automatically authorize post-funding monitoring.
+The completed state means the borrower finished the Hub journey, not that all sources have finished ingestion. Retrieve session.connection_ids and consent_ids. A connection exposes authorization status separately from data_status, freshness and coverage. Wait for required inputs or let an origination remain collecting; never interpret a stale or partial source as a clean result.
 
-## Recover access
+An underwriting-only connection cannot enroll in Signal. Create a new authorization session requesting continuous_monitoring, then use the resulting connection IDs. Reauthorization preserves the logical connection ID when the same source account is reconnected. A different source creates a different connection.
 
-Use the same session endpoint with purpose reauthorize and the affected connection_id to return the borrower to the Hub. AMLOK manages provider authorization and resumes permitted collection. Revoking consent stops future collection; access to retained historical information follows the configured authorization and retention policy.
+## Resolve a resource requirement
 
-Connections exist for visibility and recovery. Removing them would hide useful information about whether an institution can rely on the data; it is not necessary to call every connection endpoint in the happy path.
+When an origination or monitor returns requires_action, use its typed requirements. Create a Hub session with that resource's origination_id or monitor_id and requirement_id. These IDs must match the borrower and an open connect/reauthorize requirement. On successful authorization, AMLOK atomically associates the connection, resolves that requirement, increments the resource version and schedules permitted continuation. The immutable submitted_request and historical results remain unchanged.
+
+For an independently connected source on an existing monitor, replace connection_ids using the monitor's If-Match configuration update. This change is prospective. Hub configuration stays in the console; the API does not expose provider job orchestration.

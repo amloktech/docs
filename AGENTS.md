@@ -47,7 +47,7 @@
 
 ## API reference
 
-- AMLOK publishes one product API: 54 operations under `/v1`, with `openapi/amlok.json` as the only public contract. The user explicitly rejected a parallel legacy API or migration reference on November 6, 2026. Do not restore archived endpoints or SDK downloads.
+- AMLOK publishes one product API: 57 operations under `/v1`, with `openapi/amlok.json` as the only public contract. The user explicitly rejected a parallel legacy API or migration reference on November 6, 2026. Do not restore archived endpoints or SDK downloads.
 - `scripts/product_api_review.py`, `scripts/current_api.py` and `scripts/current_api_guides.py` and their institution_api helpers are the sole public API generators. `data/normalized-schema-source.json` supplies normalized data definitions, not another route catalog. Keep the console Data Lookup import synchronized with this contract.
 - Validate with `scripts/validate-api-reference.py`, `scripts/test-product-api-review.py` and `scripts/test-api-examples.py`. These test contract structure and examples, not a backend deployment.
 - Only distribute clients and examples generated from the current contract. SDK source archives from the superseded design have been removed.
@@ -72,7 +72,7 @@
 - Support retains the approved uptime and response targets, including 24/7 P1 coverage and a one-hour human response target. There is no standard compensation formula or automatic SLA credit; any remedy is discretionary and expressly agreed.
 - Internal supplemental verification and registry providers are not customer integrations. Do not reintroduce their named pages, provider-coverage sections or field mappings. Preserve generic jurisdiction/regulatory terminology and the original source snapshot.
 
-- Assessment boundary: AMLOK identifies risk and intervention signals. Do not expose servicing cases, tasks, borrower communications, payment promises, or their approval/send workflows. Institution staff handle outreach and intervention in their own systems. Apply scripts/public_api_scope.py when generating from the original workbook. Preserve loan and repayment data as read-only evidence.
+- Assessment boundary: AMLOK identifies risk and intervention signals. Do not expose servicing cases, tasks, borrower communications, payment promises, or their approval/send workflows. Institution staff handle outreach and intervention in their own systems. Apply scripts/public_api_scope.py when generating from the original workbook. Preserve loan and repayment data as read-only evidence. The November 6 readiness request authorizes append-only lender deal snapshots for Signal inputs; these never modify historical loan evidence or perform servicing.
 
 - Signal charges the full monthly rate at 00:00 UTC on the first calendar day, or immediately on first activation mid-month without proration. No duplicate charge within a paid borrower/business/workspace/month. Unfunded monitoring pauses without debt; fund only the current period on resume.
 - Only Insights and Signal are paid products. Verification, lien searches, calculations and investigations are included stages managed internally; API clients do not supply a processing_context. Do not add standalone service prices.
@@ -81,3 +81,5 @@
 - Authorized administrators create API keys in the client portal. The account manager provides portal access information and environment details. Preserve one workspace and environment per key. Portal webhook administration includes destination settings and signing-secret rotation; these controls do not add financial mutation APIs.
 - Related-person KYC may use an active subject association inside the parent business product. Keep the business as the billing/workload subject and do not introduce standalone verification charges. Other stage types remain same-subject.
 - Accepted commands retain durable recovery receipts until workspace deletion while full-response idempotent replay remains 24 hours. Do not rerun an accepted command merely because its full response expired. Sandbox scenario controls cannot affect production or real funds.
+
+- Backend readiness: readiness_contract.py and readiness_guides.py extend the same canonical generator. Readiness fixtures are development examples, not production quotas. No backend availability claim without runtime acceptance evidence.

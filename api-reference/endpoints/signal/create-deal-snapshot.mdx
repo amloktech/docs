@@ -1,0 +1,9 @@
+---
+title: "Create deal snapshot"
+description: "Append a complete, immutable lender-supplied snapshot of a monitored deal. Compare previous_snapshot_id atomically; never edit old balances, evidence or assessments. Future Signal runs use the accepted snapshot."
+openapi: "/openapi/amlok.json POST /v1/monitors/{id}/deal-snapshots"
+---
+
+Append a complete, immutable lender-supplied snapshot of a monitored deal. Compare previous_snapshot_id atomically; never edit old balances, evidence or assessments. Future Signal runs use the accepted snapshot. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write. Failed monitors also reject new inputs; correct the failure and enroll a new monitor. previous_snapshot_id is mandatory optimistic concurrency; 409 deal_snapshot_conflict when stale. Same idempotency key replays the accepted snapshot even if the monitor has since advanced. New snapshot affects evaluations starting after acceptance; no retroactive analysis or new Insights charge.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

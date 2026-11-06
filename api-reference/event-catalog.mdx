@@ -1,56 +1,47 @@
 ---
-title: "Event catalog"
-sidebarTitle: "Event catalog"
-description: "Event catalog for the AMLOK product API."
+title: "Public event catalog"
+sidebarTitle: "Public event catalog"
+description: "Implement public event catalog using the AMLOK contract, including required inputs, authorization, recovery behavior and integration acceptance checks."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-AMLOK events notify you of product and connection changes. Each payload contains an event ID, type, occurrence time, resource type/ID/version, nullable borrower ID and environment. This is the same envelope used by signed webhooks and the durable event feed.
+AMLOK emits the same Event envelope through signed webhooks and the durable event feed. This is the complete public event vocabulary. Internal provider jobs, workflows and normalization stages are not separate public events.
 
-```json
-{
-  "id": "evt_synthetic",
-  "type": "origination.completed",
-  "occurred_at": "2026-11-06T12:00:00Z",
-  "resource_type": "origination",
-  "resource_id": "orgn_synthetic",
-  "resource_version": 4,
-  "borrower_id": "bor_synthetic",
-  "environment": "sandbox"
-}
-```
+| Event | resource_type | Retrieve details | Source permission |
+| --- | --- | --- | --- |
+| `embedding_session.completed` | `embedding_session` | [getEmbeddingSession](/api-reference/endpoints/connections/get-embedding-session) | `connections:read` |
+| `connection.action_required` | `connection` | [getConnection](/api-reference/endpoints/connections/get-connection) | `connections:read` |
+| `connection.status_changed` | `connection` | [getConnection](/api-reference/endpoints/connections/get-connection) | `connections:read` |
+| `origination.action_required` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
+| `origination.status_changed` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
+| `origination.completed` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
+| `origination.failed` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
+| `risk_package.created` | `risk_package` | [getRiskPackage](/api-reference/endpoints/results/get-risk-package) | `results:read` |
+| `monitor.status_changed` | `monitor` | [getMonitor](/api-reference/endpoints/signal/get-monitor) | `signal:read` |
+| `monitoring_run.completed` | `monitoring_run` | [getMonitoringRun](/api-reference/endpoints/signal/get-monitoring-run) | `signal:read` |
+| `monitoring_run.failed` | `monitoring_run` | [getMonitoringRun](/api-reference/endpoints/signal/get-monitoring-run) | `signal:read` |
+| `alert.created` | `alert` | [getAlert](/api-reference/endpoints/signal/get-alert) | `signal:read` |
+| `alert.resolved` | `alert` | [getAlert](/api-reference/endpoints/signal/get-alert) | `signal:read` |
+| `export.ready` | `export` | [getExport](/api-reference/endpoints/exports/get-export) | `exports:read` |
+| `export.failed` | `export` | [getExport](/api-reference/endpoints/exports/get-export) | `exports:read` |
+| `data.updated` | `connection` | [getConnection](/api-reference/endpoints/connections/get-connection) | `data:read` |
+| `document.status_changed` | `document` | [getDocument](/api-reference/endpoints/evidence/get-document) | `evidence:read` |
+| `billing.payment_updated` | `billing_payment` | [getBillingPayment](/api-reference/endpoints/billing/get-billing-payment) | `billing:read` |
+| `billing.transaction_posted` | `billing_transaction` | [getBillingTransaction](/api-reference/endpoints/billing/get-billing-transaction) | `billing:read` |
+| `deal_snapshot.created` | `deal_snapshot` | [getDealSnapshot](/api-reference/endpoints/signal/get-deal-snapshot) | `signal:read` |
 
-| Event | Follow-up |
-| --- | --- |
-| `embedding_session.completed` | Retrieve the referenced resource and compare its version. |
-| `connection.action_required` | Retrieve the referenced resource and compare its version. |
-| `connection.status_changed` | Retrieve the referenced resource and compare its version. |
-| `origination.action_required` | Retrieve the referenced resource and compare its version. |
-| `origination.status_changed` | Retrieve the referenced resource and compare its version. |
-| `origination.completed` | Retrieve the referenced resource and compare its version. |
-| `origination.failed` | Retrieve the referenced resource and compare its version. |
-| `risk_package.created` | Retrieve the referenced resource and compare its version. |
-| `monitor.status_changed` | Retrieve the referenced resource and compare its version. |
-| `monitoring_run.completed` | Retrieve the referenced resource and compare its version. |
-| `monitoring_run.failed` | Retrieve the referenced resource and compare its version. |
-| `alert.created` | Retrieve the referenced resource and compare its version. |
-| `alert.resolved` | Retrieve the referenced resource and compare its version. |
-| `export.ready` | Retrieve the referenced resource and compare its version. |
-| `export.failed` | Retrieve the referenced resource and compare its version. |
-| `data.updated` | Retrieve the referenced resource and compare its version. |
-| `document.status_changed` | Retrieve the referenced resource and compare its version. |
-| `billing.payment_updated` | Retrieve the referenced resource and compare its version. |
-| `billing.transaction_posted` | Retrieve the referenced resource and compare its version. |
+Event reads and replay also require events access. Source permission applies in addition to that access; billing requires current Owner authority. data.updated can be consumed with data:read and a Data API checkpoint; reading connection details separately requires connections:read. Export events also retain the source permissions used by that export. Destinations cannot subscribe around these authorization checks.
 
-Delivery is at least once and may be out of order. Deduplicate by event ID. Resource versions are meaningful only within the same resource. An immutable package has version 1; mutable status resources increment their version. Fetching a newer resource than the event is expected.
+## Ordering and versions
 
-A run failure and a risk alert describe different problems. Missing data must not be treated as a healthy risk result. Events never contain borrower credentials, complete financial payloads or signed download URLs.
+Every event carries id, type, occurred_at, resource_type, resource_id, resource_version, nullable borrower_id and environment. Event.resource_version refers to the resource in this table. Every mutable referenced representation exposes record_version; immutable packages, deal snapshots and wallet transactions always use 1. Version numbers are comparable only for the same resource ID/type.
 
-## Data and billing notifications
+Deduplicate event IDs. Fetch the current resource, not an assumed event-embedded payload. A fetched newer version is expected; a fetched older version must be retried and must not replace newer local state. Billing snapshot reads intentionally represent an older as-of time; use an unpinned payment read when reconciling a new payment event. Event arrival order does not define wallet posting order; use transaction.sequence.
 
-- data.updated references a connection whose committed data changed. Continue the Data API cursor; the event does not carry records and is not a sync job to execute.
-- document.status_changed references the document to inspect for availability or rejection.
-- billing.payment_updated references a payment's current state. A successful delivery of this notification does not itself post credits.
-- billing.transaction_posted references an immutable wallet entry. Use the billing snapshot APIs for reconciliation.
+State mutation and event-outbox insertion must commit atomically. Several events may refer to one state change; for example origination.completed and risk_package.created. Their delivery order is not guaranteed. A completed monitoring event includes both completed and partial terminal runs; fetch status and limitations. Failed/skipped runs use monitoring_run.failed with a structured reason.
 
-Only authorized destinations and event readers receive the corresponding resource metadata. Billing notification delivery, reads and replay require Owner authority and billing:read; data notifications require data:read. Losing access stops further delivery and does not permit replay of restricted events.
+connection.status_changed also covers collection-state/freshness changes and consent withdrawal. Export readiness, document status changes, payment state changes and snapshot acceptance increment or reference the correct resource version. Events contain no provider credentials, financial records or download URLs.
+
+## Recovery
+
+Capture an events checkpoint with start=now before collection bootstrap, then consume the saved resume_cursor after the snapshots. Process and checkpoint batches atomically. Replaying a webhook preserves the event ID and uses a fresh signature; it never reruns product work or changes a charge. See [webhook verification](/api-reference/webhooks) and [delivery recovery](/api-reference/webhook-operations).

@@ -1,0 +1,51 @@
+{
+  "id": "development-example",
+  "version": "1",
+  "max_json_bytes": 1048576,
+  "max_upload_bytes": 20971520,
+  "max_document_pages": 200,
+  "allowed_document_mime_types": [
+    "application/pdf",
+    "image/png",
+    "image/jpeg",
+    "image/webp"
+  ],
+  "document_types": [
+    "financial_statement",
+    "bank_statement",
+    "identity_document",
+    "business_registration",
+    "tax_return",
+    "lending_terms",
+    "risk_policy",
+    "other"
+  ],
+  "session_ttl_seconds": 900,
+  "download_ttl_seconds": 300,
+  "snapshot_ttl_seconds": 3600,
+  "data_feed_retention_seconds": 2592000,
+  "event_retention_seconds": 2592000,
+  "export_retention_seconds": 86400,
+  "poll_min_interval_seconds": 5,
+  "poll_max_interval_seconds": 60,
+  "webhook_timeout_seconds": 10,
+  "webhook_max_body_bytes": 65536,
+  "webhook_rotation_overlap_seconds": 86400,
+  "rate_limits": [
+    {
+      "group": "reads",
+      "requests": 120,
+      "window_seconds": 60
+    },
+    {
+      "group": "commands",
+      "requests": 30,
+      "window_seconds": 60
+    },
+    {
+      "group": "uploads",
+      "requests": 10,
+      "window_seconds": 60
+    }
+  ]
+}
