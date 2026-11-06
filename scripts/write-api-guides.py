@@ -869,4 +869,6 @@ from integration_guides import generate as generate_integration
 generate_integration()
 from sandbox_journeys import generate as generate_journeys
 generate_journeys()
+from product_api_guides import generate as generate_product_guides
+generate_product_guides()
 print('Wrote API guides and enterprise contract guides')

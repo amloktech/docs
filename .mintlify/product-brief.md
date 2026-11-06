@@ -8,6 +8,10 @@ Financial-institution developers, risk teams, model validators, procurement team
 
 AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and includes change-driven reassessment. Institutions make decisions and perform outreach in their own systems. Preserve the finalized API, pricing, credit, cancellation, and data-handling rules in AGENTS.md. Research does not change those contracts.
 
+## Product API boundary
+
+The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. The separate product API design and migration inventory describe a proposed replacement; the current v1.4.2 contract remains intact until backend implementation and a managed release. Do not claim documentation publication makes proposed routes available.
+
 ## Research evidence boundary
 
 Research package 0.3 extends the acquired corpus and adds measured supervised SBA baselines. Package 0.2 builds an original-source inventory, Canadian financing cases, field semantics and real financial-document retrieval measurements. It specifies financial-language, event and graph training and matched frontier comparisons. It does not establish production foundation-model training, Canadian borrower validation or frontier superiority. Preserve actual source units, acquisition status and measured denominators. The prior 0.1 engineering experiment is retained only in local archival evidence, outside public pages and downloads. Do not relabel its outputs as observed data.

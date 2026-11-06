@@ -107,7 +107,7 @@ unknown=deepcopy(status);unknown['status']='unknown';unknown['services'][0]['sta
 check(valid('ServiceStatus',unknown),'Unknown service state cannot be represented')
 config=json.loads((ROOT/'docs.json').read_text())
 api=next(t for t in config['navigation']['tabs'] if t['tab']=='API Reference')
-groups=next(g for g in api['groups'] if g['group']=='Endpoints')['pages']
+groups=next(g for g in api['groups'] if g['group']=='Current v1 endpoints')['pages']
 check(all(g.get('icon') for g in groups),'Endpoint category missing icon')
 reporting=next(g for g in groups if g['group']=='Reporting')
 check(all(isinstance(p,str) for p in reporting['pages']),'Reporting contains redundant nested groups')
