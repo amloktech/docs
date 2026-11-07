@@ -39,7 +39,7 @@ Read alerts through `GET /v1/alerts?monitor_id=...`, receive signed events and t
 
 ## Change future configuration
 
-Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
+Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. A replacement risk policy must retain the existing policy's borrower type and market; an incompatible policy returns `422 validation_error` and leaves the monitor unchanged. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
 
 Signal includes change-driven reassessment. A separately requested full underwriting is Insights. Signal counts a borrower/business once per workspace/month, using its combined workload; see [consumption reporting](/api-reference/consumption-reporting).
 

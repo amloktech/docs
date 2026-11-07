@@ -48,3 +48,5 @@ If a copied link does not open, check [workspace access and environment](/consol
 ## See new API activity
 
 Record lists refresh every 30 seconds while the Console is visible and when you return to its window. If a request is still processing, wait for its terminal status or follow its event before expecting the result. Switching workspaces or environments clears the previous record context. Table filters and exports apply to the loaded collection; use API pagination or exports for a complete large dataset.
+
+When more history exists than the Console has loaded, a notice explains this limit. The current window contains up to 500 current API records of each type, 500 API request logs and 1,000 records from the earlier Console data store. Search, view counts, filters and CSV do not search beyond that window. An empty filtered table therefore does not prove that no older matching records exist. Use the relevant API list with its `next_cursor`, or a completed [export](/api-reference/large-results), to retrieve full history.
