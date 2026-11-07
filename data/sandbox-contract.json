@@ -1,0 +1,5010 @@
+{
+  "paths": {
+    "/v1/sandbox/catalog": {
+      "get": {
+        "operationId": "getSandboxCatalog",
+        "summary": "List Sandbox scenarios and businesses",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "x-required-scopes": [
+          "sandbox:read"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SandboxCatalog"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "version": "2026-11-07.1",
+                    "businesses": [
+                      {
+                        "id": "maple-retail",
+                        "name": "Maple & Pine Retail Ltd.",
+                        "market": "CA",
+                        "industry": "Retail",
+                        "scenario_id": "healthy",
+                        "annual_revenue": "720000.00",
+                        "monthly_inflows": "60000.00",
+                        "monthly_outflows": "45000.00"
+                      },
+                      {
+                        "id": "harbor-logistics",
+                        "name": "Harbor Route Logistics Inc.",
+                        "market": "US",
+                        "industry": "Transportation",
+                        "scenario_id": "outside_policy",
+                        "annual_revenue": "240000.00",
+                        "monthly_inflows": "20000.00",
+                        "monthly_outflows": "23000.00"
+                      },
+                      {
+                        "id": "cedar-software",
+                        "name": "Cedar Cloud Software Inc.",
+                        "market": "CA",
+                        "industry": "Software",
+                        "scenario_id": "manual_review",
+                        "annual_revenue": "480000.00",
+                        "monthly_inflows": "40000.00",
+                        "monthly_outflows": "30000.00"
+                      },
+                      {
+                        "id": "prairie-manufacturing",
+                        "name": "Prairie Precision Manufacturing Ltd.",
+                        "market": "CA",
+                        "industry": "Manufacturing",
+                        "scenario_id": "document_required",
+                        "annual_revenue": "960000.00",
+                        "monthly_inflows": "80000.00",
+                        "monthly_outflows": "64000.00"
+                      },
+                      {
+                        "id": "summit-hospitality",
+                        "name": "Summit Table Hospitality LLC",
+                        "market": "US",
+                        "industry": "Hospitality",
+                        "scenario_id": "source_reauthorization",
+                        "annual_revenue": "600000.00",
+                        "monthly_inflows": "50000.00",
+                        "monthly_outflows": "42000.00"
+                      },
+                      {
+                        "id": "atlas-wholesale",
+                        "name": "Atlas Supply Wholesale Ltd.",
+                        "market": "CA",
+                        "industry": "Wholesale",
+                        "scenario_id": "provider_failure",
+                        "annual_revenue": "1200000.00",
+                        "monthly_inflows": "100000.00",
+                        "monthly_outflows": "86000.00"
+                      }
+                    ],
+                    "scenarios": [
+                      {
+                        "id": "sample_pack",
+                        "name": "Complete sample workspace",
+                        "category": "Getting started",
+                        "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+                        "expected": "Six businesses and associated records are available in the API and console.",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "healthy",
+                        "name": "Within-policy underwriting",
+                        "category": "Underwriting",
+                        "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
+                        "expected": "completed / within_policy",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "outside_policy",
+                        "name": "Outside-policy underwriting",
+                        "category": "Underwriting",
+                        "description": "Run the same test policy against a business with lower cash receipts.",
+                        "expected": "completed / outside_policy",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "manual_review",
+                        "name": "Manual review",
+                        "category": "Underwriting",
+                        "description": "Test a policy metric whose required source input is unavailable.",
+                        "expected": "completed / review_required",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "document_required",
+                        "name": "Additional document required",
+                        "category": "Underwriting",
+                        "description": "Pause underwriting with an actionable document requirement.",
+                        "expected": "requires_action / upload_document",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "document_recovery",
+                        "name": "Upload the missing document",
+                        "category": "Underwriting",
+                        "description": "Run a missing-document flow and resume it with a real synthetic PDF upload.",
+                        "expected": "requires_action \u2192 completed",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "source_reauthorization",
+                        "name": "Source authorization required",
+                        "category": "Connections",
+                        "description": "Pause a case until the borrower renews the requested source.",
+                        "expected": "requires_action / reauthorize_source",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "source_recovery",
+                        "name": "Renew source authorization",
+                        "category": "Connections",
+                        "description": "Complete the reauthorization Hub and resume underwriting.",
+                        "expected": "requires_action \u2192 completed",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "consent_cancelled",
+                        "name": "Borrower cancels connection",
+                        "category": "Connections",
+                        "description": "Cancel a synthetic Hub session before consent.",
+                        "expected": "cancelled / no connections",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "consent_revoked",
+                        "name": "Borrower withdraws consent",
+                        "category": "Connections",
+                        "description": "Revoke consent and confirm that normalized source content becomes restricted.",
+                        "expected": "revoked / restricted source data",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "provider_failure",
+                        "name": "Provider unavailable",
+                        "category": "Underwriting",
+                        "description": "Exercise terminal processing failure without fabricating a risk package.",
+                        "expected": "failed / processing_failed",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "insufficient_credits",
+                        "name": "Insufficient credit handling",
+                        "category": "Billing",
+                        "description": "Pause an assessment and then resume it with simulated funding.",
+                        "expected": "waiting_for_credits \u2192 completed",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "monitoring_alert",
+                        "name": "Cash-flow deterioration",
+                        "category": "Monitoring",
+                        "description": "Create a funded baseline, reduce synthetic receipts, and evaluate monitoring.",
+                        "expected": "alert.created / outside_policy",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "monitoring_recovery",
+                        "name": "Risk recovery",
+                        "category": "Monitoring",
+                        "description": "Restore receipts after a deterioration and resolve the previous alert.",
+                        "expected": "alert.resolved / within_policy",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "monitoring_lifecycle",
+                        "name": "Pause and resume monitoring",
+                        "category": "Monitoring",
+                        "description": "Exercise monitor state changes and a new evaluation after resumption.",
+                        "expected": "active \u2192 paused \u2192 active",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "card_success",
+                        "name": "Successful card top-up",
+                        "category": "Billing",
+                        "description": "Post a simulated card payment and matching funding transaction.",
+                        "expected": "succeeded / credits posted",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "card_declined",
+                        "name": "Declined card payment",
+                        "category": "Billing",
+                        "description": "Create a failed test payment with no credit posting.",
+                        "expected": "failed / balance unchanged",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "ach_pending",
+                        "name": "Pending ACH top-up",
+                        "category": "Billing",
+                        "description": "Record an ACH payment before settlement.",
+                        "expected": "pending / balance unchanged",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "ach_settled",
+                        "name": "ACH settlement",
+                        "category": "Billing",
+                        "description": "Move an ACH payment from pending to succeeded and post its credits once.",
+                        "expected": "pending \u2192 succeeded / credits posted",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "ach_returned",
+                        "name": "ACH returned",
+                        "category": "Billing",
+                        "description": "Settle then return an ACH payment with a linked reversing ledger entry.",
+                        "expected": "returned / net zero funding",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "payment_refund",
+                        "name": "Payment refund",
+                        "category": "Billing",
+                        "description": "Post a payment followed by a full refund and linked immutable transactions.",
+                        "expected": "refunded / net zero funding",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "autopay",
+                        "name": "Automatic top-up",
+                        "category": "Billing",
+                        "description": "Exercise a run-local low-balance trigger and an automatic simulated payment.",
+                        "expected": "automatic_top_up / succeeded",
+                        "owner_only": true,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "export_success",
+                        "name": "Download reports and evidence",
+                        "category": "Exports",
+                        "description": "Create JSON, PDF and CSV exports from the same risk package and evidence.",
+                        "expected": "completed / downloadable files",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "export_failure",
+                        "name": "Failed export",
+                        "category": "Exports",
+                        "description": "Exercise the documented export failure state.",
+                        "expected": "failed / export.failed",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "idempotency",
+                        "name": "Safe retries and conflicts",
+                        "category": "API behavior",
+                        "description": "Repeat a create request with the same key, then change its payload.",
+                        "expected": "same resource on retry / 409 on conflict",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "validation_error",
+                        "name": "Invalid input",
+                        "category": "API behavior",
+                        "description": "Submit an invalid borrower request and inspect the structured error.",
+                        "expected": "422 / validation_error",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "pagination",
+                        "name": "Snapshot pagination",
+                        "category": "API behavior",
+                        "description": "Read a frozen page, create another borrower, and continue the original snapshot.",
+                        "expected": "no duplicates / new record excluded from snapshot",
+                        "owner_only": false,
+                        "requires_endpoint": false
+                      },
+                      {
+                        "id": "webhook_delivery",
+                        "name": "Signed webhook delivery",
+                        "category": "Webhooks",
+                        "description": "Create a real Sandbox event and enqueue delivery to the selected Sandbox endpoint.",
+                        "expected": "signed HTTP request / persisted delivery attempt",
+                        "owner_only": false,
+                        "requires_endpoint": true
+                      },
+                      {
+                        "id": "webhook_duplicate",
+                        "name": "Duplicate webhook delivery",
+                        "category": "Webhooks",
+                        "description": "Replay the same persisted event twice to test deduplication by event ID.",
+                        "expected": "same event ID / separate deliveries",
+                        "owner_only": false,
+                        "requires_endpoint": true
+                      },
+                      {
+                        "id": "webhook_out_of_order",
+                        "name": "Out-of-order events",
+                        "category": "Webhooks",
+                        "description": "Replay persisted resource versions in reverse order.",
+                        "expected": "newer event replay queued before older event replay",
+                        "owner_only": false,
+                        "requires_endpoint": true
+                      }
+                    ]
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sandbox/setup": {
+      "get": {
+        "operationId": "getSandboxSetup",
+        "summary": "Get Sandbox setup choice",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "x-required-scopes": [
+          "sandbox:read"
+        ],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SandboxState"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "choice": null,
+                    "chosen_at": null,
+                    "run_id": null
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "operationId": "configureSandbox",
+        "summary": "Choose empty or sample Sandbox",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Persist a workspace-wide initial choice. Samples queue six businesses and associated records. Empty preserves existing data and provides synthetic credits. The choice cannot erase data. Owners can load samples; Owners and Developers can choose empty. Concurrent setup requests return the existing choice. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "x-required-scopes": [
+          "sandbox:write"
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Stable for one intended command and its retries, scoped to key workspace/environment and operation. Mismatched body returns 409. Full response replay 24 hours; durable receipt remains."
+          },
+          {
+            "name": "X-AMLOK-Sandbox-Scenario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "happy_path",
+                "source_reauthorization",
+                "document_required",
+                "missing_financial_input",
+                "restricted_report",
+                "provider_failure",
+                "insufficient_credits",
+                "monitoring_alert",
+                "payment_return",
+                "export_failure"
+              ]
+            },
+            "description": "Sandbox-only deterministic test scenario on borrower creation, persisted for that borrower. On other operations or any Live request, reject before side effects with 400 sandbox_only. Omit for happy_path."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SandboxState"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "choice": "empty",
+                    "chosen_at": "2026-11-07T12:00:00Z",
+                    "run_id": null
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfigureSandboxRequest"
+              },
+              "example": {
+                "choice": "empty"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sandbox/runs": {
+      "post": {
+        "operationId": "createSandboxRun",
+        "summary": "Run a Sandbox scenario",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Queue a repeatable versioned scenario. Each run owns a new set of resources and preserves other runs. Uses the initiating key permissions; product flows also need borrower, connection, configuration, evidence, Insights, Signal, results and export scopes. Billing scenarios and sample pack require Owner authority and billing:read. Outbound webhooks are disabled unless explicitly requested; webhook scenarios require an enabled endpoint in this Sandbox. Inspect the run steps for real API requests, responses and request IDs. No real provider calls or payments occur. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. A maximum of three runs may be queued or running per workspace environment. Additional runs return 429 with Retry-After. Enabling delivery requires endpoint_id; only that destination is used. Webhook scenarios also require events:write.",
+        "x-required-scopes": [
+          "sandbox:write"
+        ],
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Stable for one intended command and its retries, scoped to key workspace/environment and operation. Mismatched body returns 409. Full response replay 24 hours; durable receipt remains."
+          },
+          {
+            "name": "X-AMLOK-Sandbox-Scenario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "happy_path",
+                "source_reauthorization",
+                "document_required",
+                "missing_financial_input",
+                "restricted_report",
+                "provider_failure",
+                "insufficient_credits",
+                "monitoring_alert",
+                "payment_return",
+                "export_failure"
+              ]
+            },
+            "description": "Sandbox-only deterministic test scenario on borrower creation, persisted for that borrower. On other operations or any Live request, reject before side effects with 400 sandbox_only. Omit for happy_path."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SandboxRun"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "id": "srun_example",
+                    "scenario_id": "healthy",
+                    "fixture_id": "maple-retail",
+                    "catalog_version": "2026-11-07.1",
+                    "status": "queued",
+                    "created_at": "2026-11-07T12:00:00Z",
+                    "updated_at": "2026-11-07T12:00:00Z",
+                    "completed_at": null,
+                    "error": null,
+                    "assertions": [],
+                    "resources": [],
+                    "steps": []
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSandboxRunRequest"
+              },
+              "example": {
+                "scenario_id": "healthy",
+                "fixture_id": "maple-retail",
+                "catalog_version": "2026-11-07.1"
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "listSandboxRuns",
+        "summary": "List Sandbox runs",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Returns the newest runs first, bounded to limit. List entries omit steps and resources; retrieve a run to inspect its execution. Billing runs are visible only to Owners with billing:read. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "x-required-scopes": [
+          "sandbox:read"
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 25
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SandboxRun"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": [
+                    {
+                      "id": "srun_example",
+                      "scenario_id": "healthy",
+                      "fixture_id": "maple-retail",
+                      "catalog_version": "2026-11-07.1",
+                      "status": "queued",
+                      "created_at": "2026-11-07T12:00:00Z",
+                      "updated_at": "2026-11-07T12:00:00Z",
+                      "completed_at": null,
+                      "error": null,
+                      "assertions": [],
+                      "resources": [],
+                      "steps": []
+                    }
+                  ],
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sandbox/runs/{id}": {
+      "get": {
+        "operationId": "getSandboxRun",
+        "summary": "Inspect a Sandbox run",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. Traces require all product read scopes (borrowers, connections, configuration, data, evidence, insights, results, signal, exports and events) and enabled Insights and Signal. Billing-only traces require Owner billing:read. When a source is no longer authorized, saved request/response payloads and assertions are redacted.",
+        "x-required-scopes": [
+          "sandbox:read"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SandboxRun"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "id": "srun_example",
+                    "scenario_id": "healthy",
+                    "fixture_id": "maple-retail",
+                    "catalog_version": "2026-11-07.1",
+                    "status": "queued",
+                    "created_at": "2026-11-07T12:00:00Z",
+                    "updated_at": "2026-11-07T12:00:00Z",
+                    "completed_at": null,
+                    "error": null,
+                    "assertions": [],
+                    "resources": [],
+                    "steps": []
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/sandbox/runs/{id}/repeat": {
+      "post": {
+        "operationId": "repeatSandboxRun",
+        "summary": "Repeat a scenario with fresh records",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Reset the scenario by starting a fresh isolated run with the same version, fixture and settings. Preserves immutable history, billing and other developer records. The existing run is never rewritten or deleted. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "x-required-scopes": [
+          "sandbox:write"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Stable for one intended command and its retries, scoped to key workspace/environment and operation. Mismatched body returns 409. Full response replay 24 hours; durable receipt remains."
+          },
+          {
+            "name": "X-AMLOK-Sandbox-Scenario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "happy_path",
+                "source_reauthorization",
+                "document_required",
+                "missing_financial_input",
+                "restricted_report",
+                "provider_failure",
+                "insufficient_credits",
+                "monitoring_alert",
+                "payment_return",
+                "export_failure"
+              ]
+            },
+            "description": "Sandbox-only deterministic test scenario on borrower creation, persisted for that borrower. On other operations or any Live request, reject before side effects with 400 sandbox_only. Omit for happy_path."
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/SandboxRun"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "id": "srun_example",
+                    "scenario_id": "healthy",
+                    "fixture_id": "maple-retail",
+                    "catalog_version": "2026-11-07.1",
+                    "status": "queued",
+                    "created_at": "2026-11-07T12:00:00Z",
+                    "updated_at": "2026-11-07T12:00:00Z",
+                    "completed_at": null,
+                    "error": null,
+                    "assertions": [],
+                    "resources": [],
+                    "steps": []
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RepeatSandboxRunRequest"
+              },
+              "example": {}
+            }
+          }
+        }
+      }
+    },
+    "/v1/sandbox/runs/{id}/actions": {
+      "post": {
+        "operationId": "simulateSandboxAction",
+        "summary": "Simulate a change in a run",
+        "tags": [
+          "Sandbox"
+        ],
+        "description": "Affects only resources owned by this run. Funding is synthetic and requires Owner billing authority. Receipt changes publish new normalized data versions. Evaluation advances the selected monitor to its next evaluation immediately without changing server time, token expiry or billing periods. resume_credits clears the explicit insufficient-credit test condition after simulated funding. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. The autopay payment outcome tests a synthetic balance of CAD 199 against a CAD 200 threshold, creating a CAD 1,000 simulated top-up. It does not change saved auto-pay settings or deduct funds to force the actual Sandbox balance below the threshold. Source changes require connections:write; evaluation requires signal:write; credit recovery requires insights:write and Owner billing authority.",
+        "x-required-scopes": [
+          "sandbox:write"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Stable for one intended command and its retries, scoped to key workspace/environment and operation. Mismatched body returns 409. Full response replay 24 hours; durable receipt remains."
+          },
+          {
+            "name": "X-AMLOK-Sandbox-Scenario",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "happy_path",
+                "source_reauthorization",
+                "document_required",
+                "missing_financial_input",
+                "restricted_report",
+                "provider_failure",
+                "insufficient_credits",
+                "monitoring_alert",
+                "payment_return",
+                "export_failure"
+              ]
+            },
+            "description": "Sandbox-only deterministic test scenario on borrower creation, persisted for that borrower. On other operations or any Live request, reject before side effects with 400 sandbox_only. Omit for happy_path."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "action": {
+                          "enum": [
+                            "funding",
+                            "receipts_drop",
+                            "receipts_recover",
+                            "evaluate_monitor",
+                            "resume_credits"
+                          ]
+                        },
+                        "resource_id": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "status": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "action",
+                        "resource_id",
+                        "status"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "action": "evaluate_monitor",
+                    "resource_id": "mon_example",
+                    "status": "queued"
+                  },
+                  "meta": {
+                    "request_id": "req_example",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "idempotency_conflict",
+                    "message": "Idempotency conflict.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "402": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "insufficient_credits",
+                    "message": "Insufficient credits.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Same request ID as meta.request_id or error.request_id."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SimulateSandboxActionRequest"
+              },
+              "example": {
+                "action": "evaluate_monitor",
+                "resource_id": "mon_example"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemas": {
+    "SandboxState": {
+      "type": "object",
+      "properties": {
+        "choice": {
+          "enum": [
+            "empty",
+            "samples",
+            null
+          ],
+          "description": "The workspace-wide first-use choice. Null means no choice has been saved."
+        },
+        "chosen_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "UTC time the first choice was committed."
+        },
+        "run_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "The queued sample-pack run, or null when starting empty."
+        }
+      },
+      "required": [
+        "choice",
+        "chosen_at",
+        "run_id"
+      ],
+      "additionalProperties": false
+    },
+    "SandboxAssertion": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name for this Sandbox fixture."
+        },
+        "passed": {
+          "type": "boolean",
+          "description": "Passed for this Sandbox fixture."
+        },
+        "expected": {
+          "type": "string",
+          "description": "Expected for this Sandbox fixture."
+        },
+        "actual": {
+          "type": "string",
+          "description": "Actual for this Sandbox fixture."
+        }
+      },
+      "required": [
+        "name",
+        "passed",
+        "expected",
+        "actual"
+      ],
+      "additionalProperties": false
+    },
+    "SandboxResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Id for this Sandbox fixture."
+        },
+        "kind": {
+          "type": "string",
+          "description": "Kind for this Sandbox fixture."
+        },
+        "fixture_id": {
+          "type": "string",
+          "description": "Fictional business definition used to create this run."
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "fixture_id"
+      ],
+      "additionalProperties": false
+    },
+    "SandboxStep": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name for this Sandbox fixture."
+        },
+        "sequence": {
+          "type": "integer",
+          "description": "Execution order of the persisted checkpoint."
+        },
+        "request_id": {
+          "type": "string",
+          "description": "Request ID for correlation with console logs."
+        },
+        "status": {
+          "type": "integer",
+          "description": "Current lifecycle state of this run or action."
+        },
+        "request": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Actual request metadata and payload, with capabilities redacted."
+        },
+        "response": {
+          "description": "Actual response payload, with capabilities redacted. A revoked source redacts the saved trace."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp in UTC."
+        }
+      },
+      "required": [
+        "name",
+        "sequence",
+        "request_id",
+        "status",
+        "request",
+        "response",
+        "created_at"
+      ],
+      "additionalProperties": false
+    },
+    "SandboxRun": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Id for this Sandbox fixture."
+        },
+        "scenario_id": {
+          "type": "string",
+          "description": "Stable scenario identifier from the versioned catalog."
+        },
+        "fixture_id": {
+          "type": "string",
+          "description": "Fictional business definition used to create this run."
+        },
+        "catalog_version": {
+          "type": "string",
+          "description": "Exact catalog version; reject mismatches rather than silently changing test behavior."
+        },
+        "status": {
+          "enum": [
+            "queued",
+            "running",
+            "completed",
+            "failed"
+          ],
+          "description": "Current lifecycle state of this run or action."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp in UTC."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp in UTC."
+        },
+        "completed_at": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time",
+          "description": "Terminal timestamp, or null while queued or running."
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Failure explanation, or null. Failed runs retain their completed steps and records."
+        },
+        "assertions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SandboxAssertion"
+          },
+          "description": "Expected and observed outcomes. Passed checks validate the scenario, not production capacity."
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SandboxResource"
+          },
+          "description": "IDs created by this run; retrieve them using the ordinary product endpoints."
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/SandboxStep"
+          },
+          "description": "Persisted request/response checkpoints. Transferable tokens and signed URLs are omitted."
+        }
+      },
+      "required": [
+        "id",
+        "scenario_id",
+        "fixture_id",
+        "catalog_version",
+        "status",
+        "created_at",
+        "updated_at",
+        "completed_at",
+        "error",
+        "assertions",
+        "resources",
+        "steps"
+      ],
+      "additionalProperties": false
+    },
+    "SandboxCatalog": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "Version for this Sandbox fixture."
+        },
+        "businesses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id for this Sandbox fixture."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name for this Sandbox fixture."
+              },
+              "market": {
+                "type": "string",
+                "description": "Market for this Sandbox fixture."
+              },
+              "industry": {
+                "type": "string",
+                "description": "Industry for this Sandbox fixture."
+              },
+              "scenario_id": {
+                "type": "string",
+                "description": "Stable scenario identifier from the versioned catalog."
+              },
+              "annual_revenue": {
+                "type": "string",
+                "description": "Annual revenue for this Sandbox fixture."
+              },
+              "monthly_inflows": {
+                "type": "string",
+                "description": "Monthly inflows for this Sandbox fixture."
+              },
+              "monthly_outflows": {
+                "type": "string",
+                "description": "Monthly outflows for this Sandbox fixture."
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "market",
+              "industry",
+              "scenario_id",
+              "annual_revenue",
+              "monthly_inflows",
+              "monthly_outflows"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Businesses for this Sandbox fixture."
+        },
+        "scenarios": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Id for this Sandbox fixture."
+              },
+              "name": {
+                "type": "string",
+                "description": "Name for this Sandbox fixture."
+              },
+              "category": {
+                "type": "string",
+                "description": "Category for this Sandbox fixture."
+              },
+              "description": {
+                "type": "string",
+                "description": "Description for this Sandbox fixture."
+              },
+              "expected": {
+                "type": "string",
+                "description": "Expected for this Sandbox fixture."
+              },
+              "owner_only": {
+                "type": "boolean",
+                "description": "Owner only for this Sandbox fixture."
+              },
+              "requires_endpoint": {
+                "type": "boolean",
+                "description": "Requires endpoint for this Sandbox fixture."
+              }
+            },
+            "required": [
+              "id",
+              "name",
+              "category",
+              "description",
+              "expected",
+              "owner_only",
+              "requires_endpoint"
+            ],
+            "additionalProperties": false
+          },
+          "description": "Scenarios for this Sandbox fixture."
+        }
+      },
+      "required": [
+        "version",
+        "businesses",
+        "scenarios"
+      ],
+      "additionalProperties": false
+    },
+    "ConfigureSandboxRequest": {
+      "type": "object",
+      "properties": {
+        "choice": {
+          "enum": [
+            "empty",
+            "samples"
+          ],
+          "description": "The workspace-wide first-use choice. Null means no choice has been saved."
+        }
+      },
+      "required": [
+        "choice"
+      ],
+      "additionalProperties": false
+    },
+    "CreateSandboxRunRequest": {
+      "type": "object",
+      "properties": {
+        "scenario_id": {
+          "enum": [
+            "sample_pack",
+            "healthy",
+            "outside_policy",
+            "manual_review",
+            "document_required",
+            "document_recovery",
+            "source_reauthorization",
+            "source_recovery",
+            "consent_cancelled",
+            "consent_revoked",
+            "provider_failure",
+            "insufficient_credits",
+            "monitoring_alert",
+            "monitoring_recovery",
+            "monitoring_lifecycle",
+            "card_success",
+            "card_declined",
+            "ach_pending",
+            "ach_settled",
+            "ach_returned",
+            "payment_refund",
+            "autopay",
+            "export_success",
+            "export_failure",
+            "idempotency",
+            "validation_error",
+            "pagination",
+            "webhook_delivery",
+            "webhook_duplicate",
+            "webhook_out_of_order"
+          ],
+          "description": "Stable scenario identifier from the versioned catalog."
+        },
+        "fixture_id": {
+          "enum": [
+            "maple-retail",
+            "harbor-logistics",
+            "cedar-software",
+            "prairie-manufacturing",
+            "summit-hospitality",
+            "atlas-wholesale"
+          ],
+          "description": "Fictional business definition used to create this run."
+        },
+        "catalog_version": {
+          "const": "2026-11-07.1",
+          "description": "Exact catalog version; reject mismatches rather than silently changing test behavior."
+        },
+        "endpoint_id": {
+          "type": "string",
+          "description": "Enabled webhook destination in this Sandbox. Required when send_webhooks is true."
+        },
+        "send_webhooks": {
+          "type": "boolean",
+          "default": false,
+          "description": "Defaults to false. Explicitly opt in to signed HTTP delivery to the selected endpoint."
+        }
+      },
+      "required": [
+        "scenario_id",
+        "fixture_id",
+        "catalog_version"
+      ],
+      "additionalProperties": false
+    },
+    "RepeatSandboxRunRequest": {
+      "type": "object",
+      "properties": {},
+      "required": [],
+      "additionalProperties": false
+    },
+    "SimulateSandboxActionRequest": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "enum": [
+            "funding",
+            "receipts_drop",
+            "receipts_recover",
+            "evaluate_monitor",
+            "resume_credits"
+          ],
+          "description": "Controlled Sandbox-only action. Referenced resources must belong to this run."
+        },
+        "resource_id": {
+          "type": "string",
+          "description": "Resource id for this Sandbox fixture."
+        },
+        "payment_outcome": {
+          "enum": [
+            "card_success",
+            "card_declined",
+            "ach_pending",
+            "ach_settled",
+            "ach_returned",
+            "payment_refund",
+            "autopay"
+          ],
+          "description": "Synthetic card, ACH, refund or auto-pay result. No real payment processor is contacted."
+        }
+      },
+      "required": [
+        "action"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

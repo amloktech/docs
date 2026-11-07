@@ -10,7 +10,7 @@ AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and i
 
 ## Product API boundary
 
-The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. AMLOK has one public API with 57 operations under `/v1`, generated from `openapi/amlok.json`. The API reference, downloads, integration guidance and console Data Lookup must follow that same structure. The customer explicitly rejected parallel legacy APIs and migration references.
+The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. AMLOK has one public API with 65 operations under `/v1`, generated from `openapi/amlok.json`. The API reference, downloads, integration guidance and console Data Lookup must follow that same structure. The customer explicitly rejected parallel legacy APIs and migration references.
 
 ## Research evidence boundary
 
@@ -34,8 +34,12 @@ The user requested a complete implementation specification before building the b
 
 ## Enterprise operating contract
 
-The November 6 follow-up authorizes closing enterprise-volume documentation gaps. Preserve one API and its 57 operations. Define capacity discovery, bounded result representations, resumable complete exports, coordinated schema evolution and a unified data-model entry point. Keep environment-specific targets distinct from measured results and from the approved availability SLA. Runtime acceptance requires actual environment evidence recorded internally.
+The November 6 follow-up authorizes closing enterprise-volume documentation gaps. Preserve one API and its 65 operations. Define capacity discovery, bounded result representations, resumable complete exports, coordinated schema evolution and a unified data-model entry point. Keep environment-specific targets distinct from measured results and from the approved availability SLA. Runtime acceptance requires actual environment evidence recorded internally.
 
 ## Model correspondence
 
 The Data Model distinguishes 63 source-normalized variants, the detailed verification aggregate, product responses and research-only representations. Source fields, state enums, catalog counts and schema pointers are generated and checked against the public contract; console Data Lookup imports the same field catalog. Capability associations for the full integration inventory do not change Active/In Review, Beta, markets or contractual entitlements. Research links explain correspondence without turning study labels, training manifests or measured population results into API fields or borrower-level findings.
+
+## Sandbox developer experience
+
+The November 7 direction adds six fictional business fixtures, 30 executable scenarios, a first-use empty/sample choice, and eight Sandbox-only controls. These extend the same API and do not add Live financial mutation commands. Prepare and test on staging; production release requires explicit approval.

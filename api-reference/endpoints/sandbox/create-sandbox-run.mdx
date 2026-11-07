@@ -1,0 +1,9 @@
+---
+title: "Run a Sandbox scenario"
+description: "Run a Sandbox scenario."
+openapi: "/openapi/amlok.json POST /v1/sandbox/runs"
+---
+
+Queue a repeatable versioned scenario. Each run owns a new set of resources and preserves other runs. Uses the initiating key permissions; product flows also need borrower, connection, configuration, evidence, Insights, Signal, results and export scopes. Billing scenarios and sample pack require Owner authority and billing:read. Outbound webhooks are disabled unless explicitly requested; webhook scenarios require an enabled endpoint in this Sandbox. Inspect the run steps for real API requests, responses and request IDs. No real provider calls or payments occur. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. A maximum of three runs may be queued or running per workspace environment. Additional runs return 429 with Retry-After. Enabling delivery requires endpoint_id; only that destination is used. Webhook scenarios also require events:write.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.
