@@ -37239,7 +37239,7 @@
             }
           }
         },
-        "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
+        "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.",
         "security": [
           {
             "BearerAuth": []
@@ -37646,7 +37646,7 @@
             }
           }
         },
-        "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
+        "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.",
         "security": [
           {
             "BearerAuth": []
@@ -39385,7 +39385,13 @@
                       "attempt": 1,
                       "status": "delivered",
                       "attempted_at": "2026-11-06T12:00:00Z",
-                      "http_status": 200
+                      "http_status": 200,
+                      "delivery_id": "delivery_synthetic",
+                      "replay_id": null,
+                      "duration_ms": 84,
+                      "error_code": null,
+                      "next_attempt_at": null,
+                      "exhausted": false
                     }
                   ],
                   "meta": {
@@ -39723,7 +39729,7 @@
             }
           }
         },
-        "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
+        "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.",
         "security": [
           {
             "BearerAuth": []
@@ -40255,7 +40261,7 @@
             }
           }
         },
-        "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
+        "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.",
         "security": [
           {
             "BearerAuth": []
@@ -57245,7 +57251,7 @@
               "export_expired",
               "invalid_export_part"
             ],
-            "description": "Code for Error. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Stable machine-readable code. validation_error: Correct the named field, schema or incompatible input. Do not retry unchanged. unauthenticated: Use an unexpired, unrevoked API key for this workspace environment. forbidden: Check current membership, scopes, product access, Live activation and source consent. not_found: Check the ID and workspace/environment; foreign records are not exposed. invalid_state: Fetch current state and choose an allowed lifecycle action. idempotency_conflict: Reuse the original payload for that key, or use a fresh key for a genuinely new command. insufficient_credits: Top up through the Console. For an accepted resource, inspect waiting_for_credits before submitting more work. precondition_failed: Fetch the current ETag, review the change and submit If-Match again. cursor_expired: Start a new snapshot and reconcile; retain deduplication state. Expired event replays cannot be queued. rate_limited: Respect Retry-After and use bounded jittered backoff with the same command identity. temporarily_unavailable: Respect retryable and Retry-After; recover an uncertain accepted command before repeating it. deal_snapshot_conflict: Read the current deal snapshot and review previous_snapshot_id before appending. payload_too_large: Reduce JSON or upload size to the operational profile limit; do not split a single document arbitrarily. unsupported_media_type: Send the supported Content-Type and matching detected file content. document_rejected: Inspect the rejected document and replace unsafe, corrupt or unsupported content. processing_failed: Inspect the terminal origination, monitor, run or export failure and retain request_id for support. session_expired: Create a new short-lived embedding session; do not reuse its launch URL. consent_purpose_missing: Obtain the required borrower purpose through the approved Hub configuration. sandbox_only: Remove simulation controls from Live; use the Sandbox environment to test scenarios. scenario_not_available: Choose a scenario returned by the Sandbox catalog and meet its preconditions. idempotency_result_expired: Look up the durable request receipt and resource; an expired cached response does not authorize duplicate work. capacity_exceeded: Lower concurrency or resource fan-out and respect Retry-After. queue_full: Apply bounded backoff; do not replace the idempotency key while retrying submission. queue_wait_exceeded: Inspect the accepted resource failure; review capacity before an intentional new command. processing_deadline_exceeded: Inspect partial evidence and the terminal failure; do not interpret a deadline as a completed result. response_too_large: Use Error.recovery to choose a summary, section, smaller page or supported export. export_too_large: Reduce the export scope or choose a supported partitioned format. export_expired: Create a new export; expired downloads are not renewed indefinitely. invalid_export_part: Read the export manifest and request an existing part number."
           },
           "message": {
             "type": "string",
@@ -65150,7 +65156,7 @@
               "billing.transaction_posted",
               "deal_snapshot.created"
             ],
-            "description": "Type for Event. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Event name. embedding_session.completed: The borrower finishes the Hub connection flow. connection.action_required: A connection needs borrower action, such as renewed authorization. connection.status_changed: Connection authorization, availability or collection status changes. origination.action_required: An assessment pauses for documents, consent or another explicit requirement. origination.status_changed: Origination processing enters another nonterminal state, including waiting_for_credits. origination.completed: Underwriting processing finishes and a risk package is available. origination.failed: Underwriting ends without a successful result. risk_package.created: A new immutable Insights or Signal risk package is committed. monitor.status_changed: Monitoring configuration or lifecycle changes, including active, paused, requires_action, waiting_for_credits, stopped or failed. monitoring_run.completed: A monitoring evaluation finishes as completed or partial. monitoring_run.failed: A monitoring evaluation terminates as failed or skipped without a new risk conclusion. alert.created: A policy condition becomes an open monitoring alert. alert.resolved: Fresh comparable evidence satisfies the policy condition for a previously open alert. export.ready: An export finishes and can be downloaded. export.failed: Export generation fails. data.updated: New normalized data is available for a connection. document.status_changed: Document processing or access status changes. billing.payment_updated: A funding payment changes state, for example pending, succeeded, failed or returned. billing.transaction_posted: An immutable funding, usage, adjustment or refund ledger transaction is posted. deal_snapshot.created: A new immutable lender-supplied deal snapshot is accepted."
           },
           "occurred_at": {
             "type": "string",
@@ -66060,6 +66066,55 @@
               }
             ],
             "description": "Http status for Delivery. Constraints, requiredness and allowed values are defined by this schema."
+          },
+          "delivery_id": {
+            "type": "string",
+            "description": "Stable delivery group across automatic retries."
+          },
+          "replay_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Replay receipt ID, or null for original delivery."
+          },
+          "duration_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Elapsed milliseconds, including DNS, connection, TLS and acknowledgment."
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              null,
+              "http_error",
+              "redirect_rejected",
+              "dns_error",
+              "unsafe_destination",
+              "timeout",
+              "tls_error",
+              "connection_error",
+              "destination_disabled",
+              "signing_unavailable",
+              "payload_too_large",
+              "demo_delivery_disabled"
+            ],
+            "description": "Safe transport diagnostic; null for a 2xx acknowledgment. http_error: The receiver returned a non-2xx HTTP status. Inspect http_status and fix receiver authentication, validation or availability. redirect_rejected: The destination returned 3xx. Redirects are not followed; configure the final HTTPS URL. dns_error: The hostname could not be resolved. Check public DNS and retry after correcting it. unsafe_destination: The URL or a resolved address is not permitted. Use a public HTTPS hostname on port 443; private, local, metadata and mixed public/private DNS addresses are blocked. This delivery stops. timeout: DNS, TLS, connection or acknowledgment exceeded the total 10-second deadline. Persist and return 2xx before asynchronous processing. tls_error: TLS negotiation or certificate validation failed. Install a valid public certificate with the correct hostname and chain. connection_error: A network connection failed or closed before acknowledgment. Check reachability and receiver capacity. destination_disabled: The endpoint was disabled or unsubscribed before this attempt. This delivery stops; re-enable and explicitly replay retained events as needed. signing_unavailable: The service could not access the destination signing secret. Retain the attempt ID and contact support. payload_too_large: The notification exceeded the 64 KiB envelope limit. This delivery stops; reconcile the event feed and contact support. demo_delivery_disabled: Outbound delivery is suppressed in the demonstration deployment. Use a normal Sandbox workspace for receiver tests."
+          },
+          "next_attempt_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "UTC retry schedule at attempt completion, or null when no retry is scheduled."
+          },
+          "exhausted": {
+            "type": "boolean",
+            "description": "True if unsuccessful and no more automatic attempts remain, including a terminal destination rejection."
           }
         },
         "required": [
@@ -66071,7 +66126,8 @@
           "attempted_at",
           "http_status"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "One immutable HTTP attempt. Multiple attempts share delivery_id; replay creates a new delivery_id while preserving event_id. Diagnostic fields are optional on historical records. next_attempt_at is the schedule at the time of this attempt, not a guarantee of current queue state."
       },
       "ReplayEvent": {
         "type": "object",
@@ -117979,7 +118035,7 @@
   "webhooks": {
     "resourceEvent": {
       "post": {
-        "description": "Resource event envelope. Apply the existing raw-body HMAC verifier; persist then acknowledge. Delivery may be duplicated or out of order.",
+        "description": "POST to your Console-configured destination, not an AMLOK API route. Authentication is HMAC-SHA256 using the destination secret, not a Bearer API key. Verify the exact raw body, enforce five-minute timestamp tolerance, durably deduplicate, then return 2xx within 10 seconds. Maximum body 65536 bytes. During a 24-hour rotation overlap the signature header contains two v1 values. No redirects, Basic authentication, custom authorization headers or mutual TLS are supported.",
         "security": [],
         "requestBody": {
           "required": true,
@@ -118003,9 +118059,42 @@
         },
         "responses": {
           "200": {
-            "description": "Durably accepted."
+            "description": "Durably accepted, including a previously accepted duplicate."
+          },
+          "204": {
+            "description": "Durably accepted without a response body."
+          },
+          "400": {
+            "description": "Malformed payload; not acknowledged."
+          },
+          "401": {
+            "description": "Invalid signature; not acknowledged."
+          },
+          "503": {
+            "description": "Receiver unavailable; not acknowledged."
           }
-        }
+        },
+        "summary": "Receive a signed resource event",
+        "parameters": [
+          {
+            "name": "X-AMLOK-Signature",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "t=<unix_seconds>,v1=<hex_hmac>[,v1=<overlap_hmac>]. HMAC-SHA256 over timestamp + dot + exact raw request bytes."
+          },
+          {
+            "name": "X-AMLOK-Event-ID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches the verified body id. Use workspace/environment + event ID for durable deduplication."
+          }
+        ]
       }
     }
   },
@@ -118567,5 +118656,147 @@
       "name": "Sandbox",
       "description": "Reproducible developer scenarios with synthetic data and money."
     }
-  ]
+  ],
+  "x-event-catalog": {
+    "embedding_session.completed": {
+      "trigger": "The borrower finishes the Hub connection flow.",
+      "action": "Fetch the session and its connection IDs. Completion does not mean underwriting is complete.",
+      "resource_type": "embedding_session",
+      "read_operation_id": "getEmbeddingSession",
+      "scope": "connections:read"
+    },
+    "connection.action_required": {
+      "trigger": "A connection needs borrower action, such as renewed authorization.",
+      "action": "Fetch the connection and start an authorized Hub reauthorization flow; do not retry credentials yourself.",
+      "resource_type": "connection",
+      "read_operation_id": "getConnection",
+      "scope": "connections:read"
+    },
+    "connection.status_changed": {
+      "trigger": "Connection authorization, availability or collection status changes.",
+      "action": "Reconcile status, data_status, freshness and consent before using source data.",
+      "resource_type": "connection",
+      "read_operation_id": "getConnection",
+      "scope": "connections:read"
+    },
+    "origination.action_required": {
+      "trigger": "An assessment pauses for documents, consent or another explicit requirement.",
+      "action": "Read requirements and supply the requested input; a submission receipt is not an approval.",
+      "resource_type": "origination",
+      "read_operation_id": "getOrigination",
+      "scope": "insights:read"
+    },
+    "origination.status_changed": {
+      "trigger": "Origination processing enters another nonterminal state, including waiting_for_credits.",
+      "action": "Read current status and requirements. Follow the specific completion/failure events for terminal outcomes.",
+      "resource_type": "origination",
+      "read_operation_id": "getOrigination",
+      "scope": "insights:read"
+    },
+    "origination.completed": {
+      "trigger": "Underwriting processing finishes and a risk package is available.",
+      "action": "Fetch the origination and risk package. Completed includes approve, decline and review recommendations; it is not a lending approval.",
+      "resource_type": "origination",
+      "read_operation_id": "getOrigination",
+      "scope": "insights:read"
+    },
+    "origination.failed": {
+      "trigger": "Underwriting ends without a successful result.",
+      "action": "Read failure.code and request_id, correct the cause, and use a new command only for an intentional new assessment.",
+      "resource_type": "origination",
+      "read_operation_id": "getOrigination",
+      "scope": "insights:read"
+    },
+    "risk_package.created": {
+      "trigger": "A new immutable Insights or Signal risk package is committed.",
+      "action": "Read the package, completeness, dimensions, evidence and policy results with results:read and the required product entitlement.",
+      "resource_type": "risk_package",
+      "read_operation_id": "getRiskPackage",
+      "scope": "results:read"
+    },
+    "monitor.status_changed": {
+      "trigger": "Monitoring configuration or lifecycle changes, including active, paused, requires_action, waiting_for_credits, stopped or failed.",
+      "action": "Fetch the monitor. Paused or blocked monitoring must not be interpreted as a clean risk evaluation.",
+      "resource_type": "monitor",
+      "read_operation_id": "getMonitor",
+      "scope": "signal:read"
+    },
+    "monitoring_run.completed": {
+      "trigger": "A monitoring evaluation finishes as completed or partial.",
+      "action": "Fetch the run, sources, limitations, deal snapshot and risk package. Partial coverage is explicit.",
+      "resource_type": "monitoring_run",
+      "read_operation_id": "getMonitoringRun",
+      "scope": "signal:read"
+    },
+    "monitoring_run.failed": {
+      "trigger": "A monitoring evaluation terminates as failed or skipped without a new risk conclusion.",
+      "action": "Inspect the run failure and current monitor. Preserve the previous result; do not treat this as an all-clear.",
+      "resource_type": "monitoring_run",
+      "read_operation_id": "getMonitoringRun",
+      "scope": "signal:read"
+    },
+    "alert.created": {
+      "trigger": "A policy condition becomes an open monitoring alert.",
+      "action": "Fetch severity, rule, evidence and package references. Start your own intervention workflow; this API does not manage lender cases.",
+      "resource_type": "alert",
+      "read_operation_id": "getAlert",
+      "scope": "signal:read"
+    },
+    "alert.resolved": {
+      "trigger": "Fresh comparable evidence satisfies the policy condition for a previously open alert.",
+      "action": "Fetch the resolved alert and package. A delivery retry or manual acknowledgment does not resolve risk.",
+      "resource_type": "alert",
+      "read_operation_id": "getAlert",
+      "scope": "signal:read"
+    },
+    "export.ready": {
+      "trigger": "An export finishes and can be downloaded.",
+      "action": "Fetch the export and request a short-lived download link before expiry. The webhook contains no file or signed URL.",
+      "resource_type": "export",
+      "read_operation_id": "getExport",
+      "scope": "exports:read"
+    },
+    "export.failed": {
+      "trigger": "Export generation fails.",
+      "action": "Read failure and correct format, input or size constraints before requesting a new export.",
+      "resource_type": "export",
+      "read_operation_id": "getExport",
+      "scope": "exports:read"
+    },
+    "data.updated": {
+      "trigger": "New normalized data is available for a connection.",
+      "action": "Resume the normalized-data change feed. resource_version identifies the updated connection, not a count of rows.",
+      "resource_type": "connection",
+      "read_operation_id": "getConnection",
+      "scope": "data:read"
+    },
+    "document.status_changed": {
+      "trigger": "Document processing or access status changes.",
+      "action": "Fetch the document and inspect available, rejected or restricted status and failure before using it.",
+      "resource_type": "document",
+      "read_operation_id": "getDocument",
+      "scope": "evidence:read"
+    },
+    "billing.payment_updated": {
+      "trigger": "A funding payment changes state, for example pending, succeeded, failed or returned.",
+      "action": "Owners with billing:read reconcile the payment; a pending payment is not spendable credit.",
+      "resource_type": "billing_payment",
+      "read_operation_id": "getBillingPayment",
+      "scope": "billing:read"
+    },
+    "billing.transaction_posted": {
+      "trigger": "An immutable funding, usage, adjustment or refund ledger transaction is posted.",
+      "action": "Read the transaction and billing summary. Reconcile by transaction ID, never by webhook arrival order.",
+      "resource_type": "billing_transaction",
+      "read_operation_id": "getBillingTransaction",
+      "scope": "billing:read"
+    },
+    "deal_snapshot.created": {
+      "trigger": "A new immutable lender-supplied deal snapshot is accepted.",
+      "action": "Read its sequence and effective time. This records lender input; it does not rerun historical underwriting.",
+      "resource_type": "deal_snapshot",
+      "read_operation_id": "getDealSnapshot",
+      "scope": "signal:read"
+    }
+  }
 }

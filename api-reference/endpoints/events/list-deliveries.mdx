@@ -4,6 +4,6 @@ description: "List deliveries."
 openapi: "/openapi/amlok.json GET /v1/webhook-deliveries"
 ---
 
-List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.
+List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

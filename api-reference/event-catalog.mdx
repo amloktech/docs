@@ -1,47 +1,181 @@
 ---
-title: "Public event catalog"
-sidebarTitle: "Public event catalog"
-description: "Find every AMLOK event type, its referenced resource and required permission, then reconcile versions and recover missed webhook notifications."
-keywords: ["AMLOK", "API", "Insights", "Signal"]
+title: "Event catalog"
+description: "Every event trigger, resource, required permission and consumer action."
+keywords: ["webhooks", "events", "errors", "recovery"]
 ---
 
-AMLOK emits the same Event envelope through signed webhooks and the durable event feed. This is the complete public event vocabulary. Internal provider jobs, workflows and normalization stages are not separate public events.
+Events are durable notifications of committed resource changes. They contain identifiers and versions, not full financial payloads. Fetch the resource with an authorized server-side key. Event recording, outbound delivery and your business processing are separate outcomes.
 
-| Event | resource_type | Retrieve details | Source permission |
-| --- | --- | --- | --- |
-| `embedding_session.completed` | `embedding_session` | [getEmbeddingSession](/api-reference/endpoints/connections/get-embedding-session) | `connections:read` |
-| `connection.action_required` | `connection` | [getConnection](/api-reference/endpoints/connections/get-connection) | `connections:read` |
-| `connection.status_changed` | `connection` | [getConnection](/api-reference/endpoints/connections/get-connection) | `connections:read` |
-| `origination.action_required` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
-| `origination.status_changed` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
-| `origination.completed` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
-| `origination.failed` | `origination` | [getOrigination](/api-reference/endpoints/insights/get-origination) | `insights:read` |
-| `risk_package.created` | `risk_package` | [getRiskPackage](/api-reference/endpoints/results/get-risk-package) | `results:read` |
-| `monitor.status_changed` | `monitor` | [getMonitor](/api-reference/endpoints/signal/get-monitor) | `signal:read` |
-| `monitoring_run.completed` | `monitoring_run` | [getMonitoringRun](/api-reference/endpoints/signal/get-monitoring-run) | `signal:read` |
-| `monitoring_run.failed` | `monitoring_run` | [getMonitoringRun](/api-reference/endpoints/signal/get-monitoring-run) | `signal:read` |
-| `alert.created` | `alert` | [getAlert](/api-reference/endpoints/signal/get-alert) | `signal:read` |
-| `alert.resolved` | `alert` | [getAlert](/api-reference/endpoints/signal/get-alert) | `signal:read` |
-| `export.ready` | `export` | [getExport](/api-reference/endpoints/exports/get-export) | `exports:read` |
-| `export.failed` | `export` | [getExport](/api-reference/endpoints/exports/get-export) | `exports:read` |
-| `data.updated` | `connection` | [getConnection](/api-reference/endpoints/connections/get-connection) | `data:read` |
-| `document.status_changed` | `document` | [getDocument](/api-reference/endpoints/evidence/get-document) | `evidence:read` |
-| `billing.payment_updated` | `billing_payment` | [getBillingPayment](/api-reference/endpoints/billing/get-billing-payment) | `billing:read` |
-| `billing.transaction_posted` | `billing_transaction` | [getBillingTransaction](/api-reference/endpoints/billing/get-billing-transaction) | `billing:read` |
-| `deal_snapshot.created` | `deal_snapshot` | [getDealSnapshot](/api-reference/endpoints/signal/get-deal-snapshot) | `signal:read` |
+## Envelope and permissions
 
-Event reads and replay also require events access. Source permission applies in addition to that access; billing requires current Owner authority. data.updated can be consumed with data:read and a Data API checkpoint; reading connection details separately requires connections:read. Export events also retain the source permissions used by that export. Destinations cannot subscribe around these authorization checks.
+Every notification uses the same [Event schema](/openapi/amlok.json): `id`, `type`, `occurred_at`, `resource_type`, `resource_id`, `resource_version`, nullable `borrower_id` and `environment` (`sandbox` or `live`). A resource without a direct borrower relationship can have `borrower_id: null`; fetch its parent to resolve the borrower.
 
-## Ordering and versions
+Use `events:read` to inspect events and deliveries, and `events:write` for replay, plus the read scope in each entry below. Lists omit unauthorized entries; direct reads/replays reject them. Billing requires Owner authority. Resource reads also enforce current consent and product access.
 
-Every event carries id, type, occurred_at, resource_type, resource_id, resource_version, nullable borrower_id and environment. Event.resource_version refers to the resource in this table. Every mutable referenced representation exposes record_version; immutable packages, deal snapshots and wallet transactions always use 1. Version numbers are comparable only for the same resource ID/type.
+## `embedding_session.completed`
 
-Deduplicate event IDs. Fetch the current resource, not an assumed event-embedded payload. A fetched newer version is expected; a fetched older version must be retried and must not replace newer local state. Billing snapshot reads intentionally represent an older as-of time; use an unpinned payment read when reconciling a new payment event. Event arrival order does not define wallet posting order; use transaction.sequence.
+The borrower finishes the Hub connection flow.
 
-A resource update and its event are recorded atomically. Several events may refer to one state change; for example origination.completed and risk_package.created. Their delivery order is not guaranteed. A completed monitoring event includes both completed and partial terminal runs; fetch status and limitations. Failed/skipped runs use monitoring_run.failed with a structured reason.
+Fetch the session and its connection IDs. Completion does not mean underwriting is complete.
 
-connection.status_changed also covers collection-state/freshness changes and consent withdrawal. Export readiness, document status changes, payment state changes and snapshot acceptance increment or reference the correct resource version. Events contain no provider credentials, financial records or download URLs.
+Resource: `embedding_session`. Read operation: `getEmbeddingSession`. Additional scope: `connections:read`.
 
-## Recovery
+## `connection.action_required`
 
-Capture an events checkpoint with start=now before collection bootstrap, then consume the saved resume_cursor after the snapshots. Process and checkpoint batches atomically. Replaying a webhook preserves the event ID and uses a fresh signature; it never reruns product work or changes a charge. See [webhook verification](/api-reference/webhooks) and [delivery recovery](/api-reference/webhook-operations).
+A connection needs borrower action, such as renewed authorization.
+
+Fetch the connection and start an authorized Hub reauthorization flow; do not retry credentials yourself.
+
+Resource: `connection`. Read operation: `getConnection`. Additional scope: `connections:read`.
+
+## `connection.status_changed`
+
+Connection authorization, availability or collection status changes.
+
+Reconcile status, data_status, freshness and consent before using source data.
+
+Resource: `connection`. Read operation: `getConnection`. Additional scope: `connections:read`.
+
+## `origination.action_required`
+
+An assessment pauses for documents, consent or another explicit requirement.
+
+Read requirements and supply the requested input; a submission receipt is not an approval.
+
+Resource: `origination`. Read operation: `getOrigination`. Additional scope: `insights:read`.
+
+## `origination.status_changed`
+
+Origination processing enters another nonterminal state, including waiting_for_credits.
+
+Read current status and requirements. Follow the specific completion/failure events for terminal outcomes.
+
+Resource: `origination`. Read operation: `getOrigination`. Additional scope: `insights:read`.
+
+## `origination.completed`
+
+Underwriting processing finishes and a risk package is available.
+
+Fetch the origination and risk package. Completed includes approve, decline and review recommendations; it is not a lending approval.
+
+Resource: `origination`. Read operation: `getOrigination`. Additional scope: `insights:read`.
+
+## `origination.failed`
+
+Underwriting ends without a successful result.
+
+Read failure.code and request_id, correct the cause, and use a new command only for an intentional new assessment.
+
+Resource: `origination`. Read operation: `getOrigination`. Additional scope: `insights:read`.
+
+## `risk_package.created`
+
+A new immutable Insights or Signal risk package is committed.
+
+Read the package, completeness, dimensions, evidence and policy results with results:read and the required product entitlement.
+
+Resource: `risk_package`. Read operation: `getRiskPackage`. Additional scope: `results:read`.
+
+## `monitor.status_changed`
+
+Monitoring configuration or lifecycle changes, including active, paused, requires_action, waiting_for_credits, stopped or failed.
+
+Fetch the monitor. Paused or blocked monitoring must not be interpreted as a clean risk evaluation.
+
+Resource: `monitor`. Read operation: `getMonitor`. Additional scope: `signal:read`.
+
+## `monitoring_run.completed`
+
+A monitoring evaluation finishes as completed or partial.
+
+Fetch the run, sources, limitations, deal snapshot and risk package. Partial coverage is explicit.
+
+Resource: `monitoring_run`. Read operation: `getMonitoringRun`. Additional scope: `signal:read`.
+
+## `monitoring_run.failed`
+
+A monitoring evaluation terminates as failed or skipped without a new risk conclusion.
+
+Inspect the run failure and current monitor. Preserve the previous result; do not treat this as an all-clear.
+
+Resource: `monitoring_run`. Read operation: `getMonitoringRun`. Additional scope: `signal:read`.
+
+## `alert.created`
+
+A policy condition becomes an open monitoring alert.
+
+Fetch severity, rule, evidence and package references. Start your own intervention workflow; this API does not manage lender cases.
+
+Resource: `alert`. Read operation: `getAlert`. Additional scope: `signal:read`.
+
+## `alert.resolved`
+
+Fresh comparable evidence satisfies the policy condition for a previously open alert.
+
+Fetch the resolved alert and package. A delivery retry or manual acknowledgment does not resolve risk.
+
+Resource: `alert`. Read operation: `getAlert`. Additional scope: `signal:read`.
+
+## `export.ready`
+
+An export finishes and can be downloaded.
+
+Fetch the export and request a short-lived download link before expiry. The webhook contains no file or signed URL.
+
+Resource: `export`. Read operation: `getExport`. Additional scope: `exports:read`.
+
+## `export.failed`
+
+Export generation fails.
+
+Read failure and correct format, input or size constraints before requesting a new export.
+
+Resource: `export`. Read operation: `getExport`. Additional scope: `exports:read`.
+
+## `data.updated`
+
+New normalized data is available for a connection.
+
+Resume the normalized-data change feed. resource_version identifies the updated connection, not a count of rows.
+
+Resource: `connection`. Read operation: `getConnection`. Additional scope: `data:read`.
+
+## `document.status_changed`
+
+Document processing or access status changes.
+
+Fetch the document and inspect available, rejected or restricted status and failure before using it.
+
+Resource: `document`. Read operation: `getDocument`. Additional scope: `evidence:read`.
+
+## `billing.payment_updated`
+
+A funding payment changes state, for example pending, succeeded, failed or returned.
+
+Owners with billing:read reconcile the payment; a pending payment is not spendable credit.
+
+Resource: `billing_payment`. Read operation: `getBillingPayment`. Additional scope: `billing:read`.
+
+## `billing.transaction_posted`
+
+An immutable funding, usage, adjustment or refund ledger transaction is posted.
+
+Read the transaction and billing summary. Reconcile by transaction ID, never by webhook arrival order.
+
+Resource: `billing_transaction`. Read operation: `getBillingTransaction`. Additional scope: `billing:read`.
+
+## `deal_snapshot.created`
+
+A new immutable lender-supplied deal snapshot is accepted.
+
+Read its sequence and effective time. This records lender input; it does not rerun historical underwriting.
+
+Resource: `deal_snapshot`. Read operation: `getDealSnapshot`. Additional scope: `signal:read`.
+
+## Delivery semantics
+
+An origination decline is a completed assessment with a decline recommendation, not `origination.failed`. A risk alert is different from a processing failure. There is no webhook for every HTTP 4xx/5xx request: inspect request logs and the [error catalog](/api-reference/errors). Browser `amlok.hub.*` postMessage notifications are a separate channel; see [embedded Hub integration](/api-reference/integration-hub).
+
+Deduplicate by workspace/environment + event ID. Event IDs survive replay; delivery IDs do not. Arrival order is not guaranteed. Reconcile resource versions and use the event feed for gaps. Specific completion/action events can replace a generic status event; do not require both for the same version.
+
+See [signatures and receivers](/api-reference/webhooks), [operations and retries](/api-reference/webhook-operations), and [Console configuration](/console/webhooks).

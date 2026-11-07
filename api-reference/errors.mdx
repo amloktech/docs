@@ -1,37 +1,65 @@
 ---
-title: "Errors and safe retries"
-sidebarTitle: "Errors and safe retries"
-description: "Errors and safe retries for the AMLOK product API."
-keywords: ["AMLOK", "API", "Insights", "Signal"]
+title: "Errors and recovery"
+description: "Complete API error codes, asynchronous failures and webhook transport diagnostics."
+keywords: ["webhooks", "events", "errors", "recovery"]
 ---
 
-AMLOK returns structured errors. Inspect the HTTP status, error code, retryability and any field context. Keep the request ID for support.
+An HTTP error reports request handling. A resource `failure` reports accepted asynchronous work that ended unsuccessfully. A delivery `error_code` reports the attempt to contact your webhook receiver. Keep these three channels separate.
 
-| HTTP | Meaning | Action |
+## API and asynchronous errors
+
+Inspect `error.code`, `message`, `retryable`, `request_id`, nullable `field` and optional `recovery`. For a resource failure, inspect the same fields on `failure`. Preserve `meta.request_id` and the response request ID for support. `field` is a JSON pointer or header context, never a secret.
+
+| Code | Typical surface | Recovery |
 | --- | --- | --- |
-| 400 / 422 | Invalid input or incompatible configuration | Correct the request; do not retry unchanged |
-| 401 / 403 | Authentication or authorization failure | Check the key, environment, scope and source entitlement |
-| 402 | Insufficient credits before acceptance | Resolve funding through the console; no debit is created |
-| 404 | Resource not found in the authorized context | Check the returned ID and environment |
-| 409 | Conflicting idempotency payload or invalid state | Recover the original command or reconcile state |
-| 410 | Cursor expired | Reconcile from a new snapshot; do not silently skip data |
-| 412 | Monitor ETag changed | Retrieve current configuration and review the intended change |
-| 429 | Rate limited | Respect `Retry-After` and apply bounded jittered backoff |
-| 503 | Temporarily unavailable | Retry when permitted, preserving command identity |
+| `validation_error` | 400 / 422 | Correct the named field, schema or incompatible input. Do not retry unchanged. |
+| `unauthenticated` | 401 | Use an unexpired, unrevoked API key for this workspace environment. |
+| `forbidden` | 403 | Check current membership, scopes, product access, Live activation and source consent. |
+| `not_found` | 404 | Check the ID and workspace/environment; foreign records are not exposed. |
+| `invalid_state` | 409 / 422 | Fetch current state and choose an allowed lifecycle action. |
+| `idempotency_conflict` | 409 | Reuse the original payload for that key, or use a fresh key for a genuinely new command. |
+| `insufficient_credits` | 402 | Top up through the Console. For an accepted resource, inspect waiting_for_credits before submitting more work. |
+| `precondition_failed` | 412 | Fetch the current ETag, review the change and submit If-Match again. |
+| `cursor_expired` | 410 | Start a new snapshot and reconcile; retain deduplication state. Expired event replays cannot be queued. |
+| `rate_limited` | 429 | Respect Retry-After and use bounded jittered backoff with the same command identity. |
+| `temporarily_unavailable` | 503 | Respect retryable and Retry-After; recover an uncertain accepted command before repeating it. |
+| `deal_snapshot_conflict` | 409 | Read the current deal snapshot and review previous_snapshot_id before appending. |
+| `payload_too_large` | 413 | Reduce JSON or upload size to the operational profile limit; do not split a single document arbitrarily. |
+| `unsupported_media_type` | 415 | Send the supported Content-Type and matching detected file content. |
+| `document_rejected` | Resource failure | Inspect the rejected document and replace unsafe, corrupt or unsupported content. |
+| `processing_failed` | Resource failure | Inspect the terminal origination, monitor, run or export failure and retain request_id for support. |
+| `session_expired` | 410 | Create a new short-lived embedding session; do not reuse its launch URL. |
+| `consent_purpose_missing` | 422 | Obtain the required borrower purpose through the approved Hub configuration. |
+| `sandbox_only` | 400 | Remove simulation controls from Live; use the Sandbox environment to test scenarios. |
+| `scenario_not_available` | 422 | Choose a scenario returned by the Sandbox catalog and meet its preconditions. |
+| `idempotency_result_expired` | 409 | Look up the durable request receipt and resource; an expired cached response does not authorize duplicate work. |
+| `capacity_exceeded` | 429 | Lower concurrency or resource fan-out and respect Retry-After. |
+| `queue_full` | 429 | Apply bounded backoff; do not replace the idempotency key while retrying submission. |
+| `queue_wait_exceeded` | Resource failure | Inspect the accepted resource failure; review capacity before an intentional new command. |
+| `processing_deadline_exceeded` | Resource failure | Inspect partial evidence and the terminal failure; do not interpret a deadline as a completed result. |
+| `response_too_large` | 413 | Use Error.recovery to choose a summary, section, smaller page or supported export. |
+| `export_too_large` | Resource failure | Reduce the export scope or choose a supported partitioned format. |
+| `export_expired` | 410 | Create a new export; expired downloads are not renewed indefinitely. |
+| `invalid_export_part` | 404 | Read the export manifest and request an existing part number. |
 
-Network failure does not prove that a command failed. Recover accepted commands before attempting a new one. Do not automatically retry every error or repeat a chargeable assessment with a fresh idempotency key.
+HTTP surfaces can vary with the operation; handle the actual status and `retryable` value. After an ambiguous network timeout, use the same idempotency key or look up the request receipt. Never retry an accepted assessment with a fresh key merely because its cached response expired. A partial result, decline, waiting state or alert is not an HTTP failure.
 
-A successful HTTP response may contain incomplete source coverage, an action requirement or an asynchronous status. Inspect resource and metric states before treating the business operation as completed.
+## Webhook delivery diagnostics
 
-## Additional defined errors
+Each delivery attempt records `http_status`, `duration_ms`, `error_code`, `next_attempt_at`, `exhausted`, `delivery_id` and optional `replay_id`. Historical records may omit diagnostic fields. A failed attempt can still have a retry scheduled. A previously recorded retry time does not override the endpoint's current state.
 
-| HTTP | Code | Action |
-| --- | --- | --- |
-| 400 | sandbox_only | Remove test controls from Live or unsupported operations; no side effects occurred |
-| 409 | deal_snapshot_conflict | Read the latest monitor snapshot and review the new input |
-| 413 | payload_too_large | Reduce to the discovered size limit; the command was not accepted |
-| 415 | unsupported_media_type | Submit supported detected file content or JSON media type |
-| 422 | consent_purpose_missing | Obtain the explicit required borrower purpose through a permitted Hub version |
-| 422 | scenario_not_available | Use a scenario returned by Sandbox configuration |
+| Code | Meaning and recovery |
+| --- | --- |
+| `http_error` | The receiver returned a non-2xx HTTP status. Inspect http_status and fix receiver authentication, validation or availability. |
+| `redirect_rejected` | The destination returned 3xx. Redirects are not followed; configure the final HTTPS URL. |
+| `dns_error` | The hostname could not be resolved. Check public DNS and retry after correcting it. |
+| `unsafe_destination` | The URL or a resolved address is not permitted. Use a public HTTPS hostname on port 443; private, local, metadata and mixed public/private DNS addresses are blocked. This delivery stops. |
+| `timeout` | DNS, TLS, connection or acknowledgment exceeded the total 10-second deadline. Persist and return 2xx before asynchronous processing. |
+| `tls_error` | TLS negotiation or certificate validation failed. Install a valid public certificate with the correct hostname and chain. |
+| `connection_error` | A network connection failed or closed before acknowledgment. Check reachability and receiver capacity. |
+| `destination_disabled` | The endpoint was disabled or unsubscribed before this attempt. This delivery stops; re-enable and explicitly replay retained events as needed. |
+| `signing_unavailable` | The service could not access the destination signing secret. Retain the attempt ID and contact support. |
+| `payload_too_large` | The notification exceeded the 64 KiB envelope limit. This delivery stops; reconcile the event feed and contact support. |
+| `demo_delivery_disabled` | Outbound delivery is suppressed in the demonstration deployment. Use a normal Sandbox workspace for receiver tests. |
 
-Asynchronous document_rejected and processing_failed appear in resource.failure; they are not successful business outcomes. Error.field is a JSON pointer into the submitted request (or null). Safe messages never contain provider credentials or full source payloads. 429 and 503 are retryable; validation, authorization, stale-state and terminal processing failures require corrective action.
+A 2xx acknowledgment sets `error_code: null`. Receiver response bodies are not stored in public diagnostics. Disabling a destination or removing its subscription stops queued delivery when it is claimed; an already in-flight request may finish. [Replay](/api-reference/webhook-operations) redelivers an existing event, never repeats an assessment or a charge.

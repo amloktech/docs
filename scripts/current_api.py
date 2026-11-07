@@ -39,7 +39,7 @@ def fixtures():
         'MonitoringRun': {'id':'mr_synthetic','monitor_id':'mon_synthetic','status':'partial','started_at':now,'completed_at':now,'risk_package_id':'rp_signal_synthetic','sources':f['RiskPackage']['sources'],'evidence_set_id':'es_synthetic','limitations':['Debt-service data remains incomplete.']},
         'Alert': {'id':'alert_synthetic','monitor_id':'mon_synthetic','borrower_id':'bor_synthetic','status':'open','severity':'warning','rule_id':'dscr-minimum','policy_version_id':'rpv_synthetic','message':'Required debt-service evidence is unavailable.','detected_at':now,'resolved_at':None,'previous_package_id':'rp_synthetic','current_package_id':'rp_signal_synthetic','metric_key':'dscr','previous_value':None,'current_value':None,'threshold':'1.25','unit':'ratio','evidence_ids':['ev_bank_synthetic']},
         'Export': {'id':'exp_synthetic','status':'queued','created_at':now,'format':'json','source':f['CreateExport'],'failure':None},
-        'Delivery': {'id':'del_synthetic','event_id':'evt_synthetic','endpoint_id':'dest_synthetic','attempt':1,'status':'delivered','attempted_at':now,'http_status':200},
+        'Delivery': {'id':'del_synthetic','event_id':'evt_synthetic','endpoint_id':'dest_synthetic','attempt':1,'status':'delivered','attempted_at':now,'http_status':200,'delivery_id':'delivery_synthetic','replay_id':None,'duration_ms':84,'error_code':None,'next_attempt_at':None,'exhausted':False},
         'ReplayEvent': {'event_id':'evt_synthetic','endpoint_id':'dest_synthetic'},
         'ReplayReceipt': {'id':'replay_synthetic','event_id':'evt_synthetic','status':'accepted'},
         'BillingSummary': {'as_of':now,'currency':'CAD','available_credits':'4935.00','spent_credits':'65.00','billing_account_id':'billing_synthetic','snapshot_id':'snap_synthetic'},
@@ -236,6 +236,8 @@ def build():
     sandbox_operations=sandbox_contract(spec,f)
     from data_model_alignment import annotate_fields
     annotate_fields(spec)
+    from webhook_readiness import extend as webhook_contract
+    webhook_contract(spec)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations()+sandbox_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
@@ -280,6 +282,8 @@ def build():
     model_guides(spec)
     from sandbox_guides import write_guides as sandbox_guides
     sandbox_guides(spec,index)
+    from webhook_readiness import write_guides as webhook_guides
+    webhook_guides(spec)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()
