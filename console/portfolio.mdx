@@ -1,0 +1,51 @@
+---
+title: "Follow a monitored deal"
+sidebarTitle: "Portfolio"
+description: "Review monitored deals, source activity and notifications, and distinguish monitoring signals from lending or servicing decisions."
+keywords: ["portfolio", "Signal", "monitoring", "flags", "alerts", "baseline"]
+---
+
+Use **Portfolio** to follow deals enrolled in Signal. A monitored deal connects the borrower, the monitoring baseline and the changes detected from available evidence.
+
+## Review your portfolio
+
+Open **Portfolio**, filter the table and select a deal. Check the borrower, monitoring status and available deal terms. Use the record identifier when matching a console record to your servicing system.
+
+<Frame caption="The portfolio table gives you a starting point for reviewing active monitoring records.">
+  <img src="/images/console/portfolio.png" alt="Portfolio table with three fictional monitored deals and their monitoring statuses." />
+</Frame>
+
+## Inspect a monitored deal
+
+| Drawer tab | What to inspect |
+| --- | --- |
+| **Overview** | Deal details, available baseline information and related records. |
+| **Daily syncs** | Recorded source refresh activity and its outcomes. Check timestamps rather than assuming every source refreshed together. |
+| **Integrations** | The sources available for monitoring and their connection or freshness information. |
+| **Notifications & flags** | Generated changes, alerts and their current state. |
+
+A tab label is not a service-level guarantee. Coverage and freshness depend on the source, consent and monitoring configuration. An absent value should not be interpreted as a healthy result.
+
+## Investigate a flag
+
+<Steps>
+  <Step title="Open Notifications & flags">
+    Select a monitored deal and review its associated flags. Look at the event time and whether the issue is open or resolved.
+  </Step>
+  <Step title="Read the event in context">
+    Open the relevant record and inspect its reason, available measurements and supporting evidence. Compare the change with the baseline and previous observations where supplied.
+  </Step>
+  <Step title="Check the source and delivery">
+    If the signal reflects missing or stale data, check the associated integration. If your own system did not receive the notification, ask a Developer to check **Deliveries & events** using the related event identifier.
+  </Step>
+</Steps>
+
+<Frame caption="Notifications and flags stay attached to the monitored deal they describe.">
+  <img src="/images/console/monitoring-flags.png" alt="Monitored deal drawer with Notifications and flags selected and an open monitoring alert." />
+</Frame>
+
+## Know what an event means
+
+A monitoring event reports a change or condition; it does not itself change a credit limit, collect a payment or contact the borrower. Your institution decides the appropriate action. Viewing an alert in the console does not acknowledge it in your servicing system or replay a webhook.
+
+Use [webhook delivery troubleshooting](/console/webhooks) for integration issues and [monitoring design](/api-reference/monitoring-design) for enrollment, baseline and event contracts. Test both a changing-risk example and a source-disconnection example in [Sandbox scenarios](/console/sandbox).

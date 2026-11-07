@@ -1,0 +1,56 @@
+---
+title: "Review an underwriting result"
+sidebarTitle: "Origination"
+description: "Find an origination, distinguish processing status from the recommendation, and trace the risk package back to its application and evidence."
+keywords: ["origination", "underwriting", "risk package", "recommendation", "application"]
+---
+
+Use **Origination** to review the underwriting your integration submits to Insights. Each record brings together the application inputs, processing state, risk package, documents and connected sources.
+
+## Find the origination
+
+Open **Origination** in the left navigation. Use the status views, filters and search to locate the borrower or request. Check the selected workspace and environment before searching for an identifier from your application.
+
+<Frame caption="The origination table combines completed results with cases that need attention. These businesses are fictional.">
+  <img src="/images/console/origination.png" alt="Origination table showing six fictional businesses with completed, requires-action and failed processing statuses." />
+</Frame>
+
+## Review a result
+
+<Steps>
+  <Step title="Open the record">
+    Select a row to open its drawer. Confirm the borrower and origination identifier before reviewing the result.
+  </Step>
+  <Step title="Read the overview">
+    Check the processing status, recommendation, summary and available underwriting dimensions. Review coverage and evidence freshness alongside any score or ratio.
+  </Step>
+  <Step title="Compare inputs with output">
+    Use **API request** to inspect submitted inputs and **API response** to inspect the returned result. Check the application facts, product and risk policy references used for this run.
+  </Step>
+  <Step title="Inspect supporting evidence">
+    Open **Documents** for associated files and **Integrations** for connected sources. Follow available related records to understand missing, stale or conflicting information.
+  </Step>
+</Steps>
+
+<Frame caption="The result stays in a drawer over the table, so you can inspect evidence and return to the same list.">
+  <img src="/images/console/origination-drawer.png" alt="Origination drawer for Evergreen Home Supply showing a within-policy risk package and tabs for request, response, documents and integrations." />
+</Frame>
+
+## Interpret the two kinds of status
+
+| What you see | What it tells you |
+| --- | --- |
+| **Completed** | Processing produced a result. It does not mean your institution approved the borrower. |
+| **Requires action** | Processing needs attention or additional input. Inspect the specific reason and missing evidence. |
+| **Failed** | Processing could not complete. Inspect its error and related request records before retrying. |
+| **Within policy** | The assessed inputs meet the evaluated policy conditions, subject to the package's coverage and limitations. |
+| **Outside policy** | The package identifies policy conditions the assessed inputs do not meet. |
+| **Review required** | A person should review the evidence or unresolved conditions. |
+
+The risk package is decision support. Your institution owns the final lending decision. A missing dimension is not a zero value, and a successful HTTP response does not by itself mean underwriting has finished.
+
+## Investigate a case that needs attention
+
+Check application and document completeness, integration connection state, the policy or product reference, and the latest API error. Developers can use [request logs](/console/request-logs) to trace the submission. The console does not edit the application or rerun underwriting when you open a drawer; submit corrections through your integration using the documented API workflow.
+
+Continue with [supporting evidence](/console/evidence), the [risk package contract](/api-reference/risk-package) or [underwriting dimensions](/api-reference/underwriting-dimensions).

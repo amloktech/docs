@@ -1,0 +1,54 @@
+---
+title: "Exercise Sandbox scenarios"
+sidebarTitle: "Sandbox scenarios"
+description: "Load sample businesses, run deterministic cases, inspect generated records and test your integration without real charges."
+keywords: ["Sandbox", "scenarios", "sample data", "testing", "fixtures", "run history"]
+---
+
+Use **Dev Tools > Sandbox scenarios** to exercise known underwriting, monitoring and operational outcomes. Scenarios create test records you can inspect in the console and retrieve through the API.
+
+## Prepare your workspace
+
+At first use, choose sample businesses or an empty workspace. The choice is shared by everyone using that workspace. You can load the sample businesses later from the scenario tools; choosing empty does not prevent future testing.
+
+The sample pack contains **six fictional businesses** with associated application, source, underwriting, monitoring and system records. See [businesses and scenarios](/sandbox/businesses-and-scenarios) for the fixtures and expected outcomes. An Owner loads the complete pack. Owners and Developers use the scenario tools; financial scenarios require an Owner. Analysts review the resulting product records.
+
+## Run a case
+
+<Steps>
+  <Step title="Select a scenario and business">
+    Open the **Scenarios** tab. Choose the category and scenario, then select a compatible fictional business. Read the expected result before running it.
+  </Step>
+  <Step title="Review delivery options">
+    Keep event delivery as record-only unless you intend to test an eligible endpoint you control. The separate demo deployment does not send external webhooks.
+  </Step>
+  <Step title="Run and wait for completion">
+    Select **Run scenario**. Follow its status and steps rather than assuming the initial accepted response means the run has finished.
+  </Step>
+  <Step title="Inspect the generated records">
+    Open **Run history** and select the run. Inspect its outcome, step details and linked records. Follow the generated origination, monitoring event, request log or billing record into the corresponding console area.
+  </Step>
+</Steps>
+
+<Frame caption="Choose a predictable result, inspect what the case exercises and run it against a fictional business.">
+  <img src="/images/console/sandbox-scenarios.png" alt="Sandbox scenarios screen with a within-policy underwriting scenario, fictional business selector and expected outcome." />
+</Frame>
+
+Use the **Developer guide** and available request examples to reproduce the workflow from your own integration. [Data Lookup](/console/data-lookup) explains the fields; the [API Sandbox journeys](/api-reference/sandbox-journeys) document the execution contract.
+
+## Build a useful test sequence
+
+| Case | What your application should handle |
+| --- | --- |
+| Within-policy underwriting | A completed result, risk dimensions and evidence. |
+| Outside-policy or review-required result | A completed assessment whose recommendation needs different handling. |
+| Missing information or disconnected source | An actionable condition without inventing missing values. |
+| Monitoring change | Event ingestion, related evidence and downstream investigation. |
+| Request or webhook failure | Error display, idempotency, retries and deduplication. |
+| Funding and consumption | Simulated credits, debits, payment outcomes and reconciliation. |
+
+## Repeat without confusing your records
+
+A fresh run creates its own records and identifiers; it is not a workspace reset. Preserve run and record IDs when comparing results. Use filters to distinguish earlier runs from the current case.
+
+Sandbox credits and payment records are simulated. There is no real charge, bank debit, refund or transfer. API authentication, validation and record inspection still give your developers a realistic integration workflow. See [simulated billing](/sandbox/simulated-billing) and [Sandbox versus Live](/console/environments).

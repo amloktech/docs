@@ -45,3 +45,11 @@ The Data Model distinguishes 63 source-normalized variants, the detailed verific
 The November 7 direction adds six fictional business fixtures, 30 executable scenarios, a first-use empty/sample choice, and eight Sandbox-only controls. These extend the same API and do not add Live financial mutation commands. Prepare and test on staging; production release requires explicit approval.
 
 The Documentation tab includes a customer-facing Sandbox section immediately after Pricing. Its setup screenshot uses a temporary example workspace. Explain the two starting choices, shared workspace scope, real API test records and simulated money clearly; do not describe test credits or scenario results as real funds, invoices or borrower decisions.
+
+## Console user guides
+
+The Console tab provides task-based onboarding and operations guides for workspace Owners, Developers and Analysts. It sits alongside Documentation, API Reference and Research, without duplicating the endpoint contracts. Screenshots come from the isolated demo deployment using synthetic businesses and payment records; never publish real borrower records, credentials, invitations or authenticator secrets. Demo is a separate deployment, not a third environment inside a customer's workspace.
+
+Cover first-use sample/empty setup, organization/workspace/environment boundaries, read-only borrower review, connection and document evidence, draft Integrations Hub configuration, developer tools, workspace-specific invitations, security, and billing reconciliation. Ground controls and labels in the current console source and browser behavior. Distinguish completed processing from institution approval, events from delivery attempts, API traffic from billable consumption, and simulated funds from real payments. Do not invent Publish, retry, replay, funding or editing buttons that the interface does not expose. Preserve API-based execution instructions where the console is a reference or inspection view.
+
+Organization Owners have broader access than workspace Dev/Analyst invitees. New invitations are workspace-specific; existing organization memberships retain their scope. Product records are read-only in the Console. Live access requires workspace activation. Public guides exclude the internal admin app and hosting or deployment administration.
