@@ -2,7 +2,7 @@
   "info": {
     "name": "AMLOK API 1.0.0",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": "57-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries."
+    "description": "65-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries."
   },
   "auth": {
     "type": "bearer",
@@ -4041,6 +4041,640 @@
             }
           ],
           "body": "{\n  \"data\": {\n    \"id\": \"ds_synthetic\",\n    \"monitor_id\": \"mon_synthetic\",\n    \"borrower_id\": \"bor_synthetic\",\n    \"previous_snapshot_id\": \"ds_initial\",\n    \"sequence\": 2,\n    \"record_version\": 1,\n    \"effective_at\": \"2026-11-06T12:00:00Z\",\n    \"received_at\": \"2026-11-06T12:00:00Z\",\n    \"deal\": {\n      \"institution_reference\": \"LOAN-0042\",\n      \"funded_amount\": {\n        \"amount\": \"50000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"outstanding_amount\": {\n        \"amount\": \"48000.00\",\n        \"currency\": \"CAD\"\n      },\n      \"funded_at\": \"2026-11-05T12:00:00Z\",\n      \"maturity_date\": \"2027-11-06\",\n      \"repayment_frequency\": \"monthly\",\n      \"terms_document_ids\": []\n    },\n    \"performance\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List Sandbox scenarios and businesses",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/catalog",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "catalog"
+          ],
+          "query": []
+        },
+        "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/catalog",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "catalog"
+              ],
+              "query": []
+            },
+            "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"version\": \"2026-11-07.1\",\n    \"businesses\": [\n      {\n        \"id\": \"maple-retail\",\n        \"name\": \"Maple & Pine Retail Ltd.\",\n        \"market\": \"CA\",\n        \"industry\": \"Retail\",\n        \"scenario_id\": \"healthy\",\n        \"annual_revenue\": \"720000.00\",\n        \"monthly_inflows\": \"60000.00\",\n        \"monthly_outflows\": \"45000.00\"\n      },\n      {\n        \"id\": \"harbor-logistics\",\n        \"name\": \"Harbor Route Logistics Inc.\",\n        \"market\": \"US\",\n        \"industry\": \"Transportation\",\n        \"scenario_id\": \"outside_policy\",\n        \"annual_revenue\": \"240000.00\",\n        \"monthly_inflows\": \"20000.00\",\n        \"monthly_outflows\": \"23000.00\"\n      },\n      {\n        \"id\": \"cedar-software\",\n        \"name\": \"Cedar Cloud Software Inc.\",\n        \"market\": \"CA\",\n        \"industry\": \"Software\",\n        \"scenario_id\": \"manual_review\",\n        \"annual_revenue\": \"480000.00\",\n        \"monthly_inflows\": \"40000.00\",\n        \"monthly_outflows\": \"30000.00\"\n      },\n      {\n        \"id\": \"prairie-manufacturing\",\n        \"name\": \"Prairie Precision Manufacturing Ltd.\",\n        \"market\": \"CA\",\n        \"industry\": \"Manufacturing\",\n        \"scenario_id\": \"document_required\",\n        \"annual_revenue\": \"960000.00\",\n        \"monthly_inflows\": \"80000.00\",\n        \"monthly_outflows\": \"64000.00\"\n      },\n      {\n        \"id\": \"summit-hospitality\",\n        \"name\": \"Summit Table Hospitality LLC\",\n        \"market\": \"US\",\n        \"industry\": \"Hospitality\",\n        \"scenario_id\": \"source_reauthorization\",\n        \"annual_revenue\": \"600000.00\",\n        \"monthly_inflows\": \"50000.00\",\n        \"monthly_outflows\": \"42000.00\"\n      },\n      {\n        \"id\": \"atlas-wholesale\",\n        \"name\": \"Atlas Supply Wholesale Ltd.\",\n        \"market\": \"CA\",\n        \"industry\": \"Wholesale\",\n        \"scenario_id\": \"provider_failure\",\n        \"annual_revenue\": \"1200000.00\",\n        \"monthly_inflows\": \"100000.00\",\n        \"monthly_outflows\": \"86000.00\"\n      }\n    ],\n    \"scenarios\": [\n      {\n        \"id\": \"sample_pack\",\n        \"name\": \"Complete sample workspace\",\n        \"category\": \"Getting started\",\n        \"description\": \"Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.\",\n        \"expected\": \"Six businesses and associated records are available in the API and console.\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"healthy\",\n        \"name\": \"Within-policy underwriting\",\n        \"category\": \"Underwriting\",\n        \"description\": \"Complete the borrower-to-risk-package journey with healthy synthetic cash flow.\",\n        \"expected\": \"completed / within_policy\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"outside_policy\",\n        \"name\": \"Outside-policy underwriting\",\n        \"category\": \"Underwriting\",\n        \"description\": \"Run the same test policy against a business with lower cash receipts.\",\n        \"expected\": \"completed / outside_policy\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"manual_review\",\n        \"name\": \"Manual review\",\n        \"category\": \"Underwriting\",\n        \"description\": \"Test a policy metric whose required source input is unavailable.\",\n        \"expected\": \"completed / review_required\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"document_required\",\n        \"name\": \"Additional document required\",\n        \"category\": \"Underwriting\",\n        \"description\": \"Pause underwriting with an actionable document requirement.\",\n        \"expected\": \"requires_action / upload_document\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"document_recovery\",\n        \"name\": \"Upload the missing document\",\n        \"category\": \"Underwriting\",\n        \"description\": \"Run a missing-document flow and resume it with a real synthetic PDF upload.\",\n        \"expected\": \"requires_action \\u2192 completed\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"source_reauthorization\",\n        \"name\": \"Source authorization required\",\n        \"category\": \"Connections\",\n        \"description\": \"Pause a case until the borrower renews the requested source.\",\n        \"expected\": \"requires_action / reauthorize_source\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"source_recovery\",\n        \"name\": \"Renew source authorization\",\n        \"category\": \"Connections\",\n        \"description\": \"Complete the reauthorization Hub and resume underwriting.\",\n        \"expected\": \"requires_action \\u2192 completed\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"consent_cancelled\",\n        \"name\": \"Borrower cancels connection\",\n        \"category\": \"Connections\",\n        \"description\": \"Cancel a synthetic Hub session before consent.\",\n        \"expected\": \"cancelled / no connections\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"consent_revoked\",\n        \"name\": \"Borrower withdraws consent\",\n        \"category\": \"Connections\",\n        \"description\": \"Revoke consent and confirm that normalized source content becomes restricted.\",\n        \"expected\": \"revoked / restricted source data\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"provider_failure\",\n        \"name\": \"Provider unavailable\",\n        \"category\": \"Underwriting\",\n        \"description\": \"Exercise terminal processing failure without fabricating a risk package.\",\n        \"expected\": \"failed / processing_failed\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"insufficient_credits\",\n        \"name\": \"Insufficient credit handling\",\n        \"category\": \"Billing\",\n        \"description\": \"Pause an assessment and then resume it with simulated funding.\",\n        \"expected\": \"waiting_for_credits \\u2192 completed\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"monitoring_alert\",\n        \"name\": \"Cash-flow deterioration\",\n        \"category\": \"Monitoring\",\n        \"description\": \"Create a funded baseline, reduce synthetic receipts, and evaluate monitoring.\",\n        \"expected\": \"alert.created / outside_policy\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"monitoring_recovery\",\n        \"name\": \"Risk recovery\",\n        \"category\": \"Monitoring\",\n        \"description\": \"Restore receipts after a deterioration and resolve the previous alert.\",\n        \"expected\": \"alert.resolved / within_policy\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"monitoring_lifecycle\",\n        \"name\": \"Pause and resume monitoring\",\n        \"category\": \"Monitoring\",\n        \"description\": \"Exercise monitor state changes and a new evaluation after resumption.\",\n        \"expected\": \"active \\u2192 paused \\u2192 active\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"card_success\",\n        \"name\": \"Successful card top-up\",\n        \"category\": \"Billing\",\n        \"description\": \"Post a simulated card payment and matching funding transaction.\",\n        \"expected\": \"succeeded / credits posted\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"card_declined\",\n        \"name\": \"Declined card payment\",\n        \"category\": \"Billing\",\n        \"description\": \"Create a failed test payment with no credit posting.\",\n        \"expected\": \"failed / balance unchanged\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"ach_pending\",\n        \"name\": \"Pending ACH top-up\",\n        \"category\": \"Billing\",\n        \"description\": \"Record an ACH payment before settlement.\",\n        \"expected\": \"pending / balance unchanged\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"ach_settled\",\n        \"name\": \"ACH settlement\",\n        \"category\": \"Billing\",\n        \"description\": \"Move an ACH payment from pending to succeeded and post its credits once.\",\n        \"expected\": \"pending \\u2192 succeeded / credits posted\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"ach_returned\",\n        \"name\": \"ACH returned\",\n        \"category\": \"Billing\",\n        \"description\": \"Settle then return an ACH payment with a linked reversing ledger entry.\",\n        \"expected\": \"returned / net zero funding\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"payment_refund\",\n        \"name\": \"Payment refund\",\n        \"category\": \"Billing\",\n        \"description\": \"Post a payment followed by a full refund and linked immutable transactions.\",\n        \"expected\": \"refunded / net zero funding\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"autopay\",\n        \"name\": \"Automatic top-up\",\n        \"category\": \"Billing\",\n        \"description\": \"Exercise a run-local low-balance trigger and an automatic simulated payment.\",\n        \"expected\": \"automatic_top_up / succeeded\",\n        \"owner_only\": true,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"export_success\",\n        \"name\": \"Download reports and evidence\",\n        \"category\": \"Exports\",\n        \"description\": \"Create JSON, PDF and CSV exports from the same risk package and evidence.\",\n        \"expected\": \"completed / downloadable files\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"export_failure\",\n        \"name\": \"Failed export\",\n        \"category\": \"Exports\",\n        \"description\": \"Exercise the documented export failure state.\",\n        \"expected\": \"failed / export.failed\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"idempotency\",\n        \"name\": \"Safe retries and conflicts\",\n        \"category\": \"API behavior\",\n        \"description\": \"Repeat a create request with the same key, then change its payload.\",\n        \"expected\": \"same resource on retry / 409 on conflict\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"validation_error\",\n        \"name\": \"Invalid input\",\n        \"category\": \"API behavior\",\n        \"description\": \"Submit an invalid borrower request and inspect the structured error.\",\n        \"expected\": \"422 / validation_error\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"pagination\",\n        \"name\": \"Snapshot pagination\",\n        \"category\": \"API behavior\",\n        \"description\": \"Read a frozen page, create another borrower, and continue the original snapshot.\",\n        \"expected\": \"no duplicates / new record excluded from snapshot\",\n        \"owner_only\": false,\n        \"requires_endpoint\": false\n      },\n      {\n        \"id\": \"webhook_delivery\",\n        \"name\": \"Signed webhook delivery\",\n        \"category\": \"Webhooks\",\n        \"description\": \"Create a real Sandbox event and enqueue delivery to the selected Sandbox endpoint.\",\n        \"expected\": \"signed HTTP request / persisted delivery attempt\",\n        \"owner_only\": false,\n        \"requires_endpoint\": true\n      },\n      {\n        \"id\": \"webhook_duplicate\",\n        \"name\": \"Duplicate webhook delivery\",\n        \"category\": \"Webhooks\",\n        \"description\": \"Replay the same persisted event twice to test deduplication by event ID.\",\n        \"expected\": \"same event ID / separate deliveries\",\n        \"owner_only\": false,\n        \"requires_endpoint\": true\n      },\n      {\n        \"id\": \"webhook_out_of_order\",\n        \"name\": \"Out-of-order events\",\n        \"category\": \"Webhooks\",\n        \"description\": \"Replay persisted resource versions in reverse order.\",\n        \"expected\": \"newer event replay queued before older event replay\",\n        \"owner_only\": false,\n        \"requires_endpoint\": true\n      }\n    ]\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Get Sandbox setup choice",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/setup",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "setup"
+          ],
+          "query": []
+        },
+        "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/setup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "setup"
+              ],
+              "query": []
+            },
+            "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"choice\": null,\n    \"chosen_at\": null,\n    \"run_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Choose empty or sample Sandbox",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "configureSandbox-{{command_reference}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/setup",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "setup"
+          ],
+          "query": []
+        },
+        "description": "Persist a workspace-wide initial choice. Samples queue six businesses and associated records. Empty preserves existing data and provides synthetic credits. The choice cannot erase data. Owners can load samples; Owners and Developers can choose empty. Concurrent setup requests return the existing choice. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"choice\": \"empty\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "configureSandbox-{{command_reference}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/setup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "setup"
+              ],
+              "query": []
+            },
+            "description": "Persist a workspace-wide initial choice. Samples queue six businesses and associated records. Empty preserves existing data and provides synthetic credits. The choice cannot erase data. Owners can load samples; Owners and Developers can choose empty. Concurrent setup requests return the existing choice. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"choice\": \"empty\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"choice\": \"empty\",\n    \"chosen_at\": \"2026-11-07T12:00:00Z\",\n    \"run_id\": null\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Run a Sandbox scenario",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "createSandboxRun-{{command_reference}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/runs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "runs"
+          ],
+          "query": []
+        },
+        "description": "Queue a repeatable versioned scenario. Each run owns a new set of resources and preserves other runs. Uses the initiating key permissions; product flows also need borrower, connection, configuration, evidence, Insights, Signal, results and export scopes. Billing scenarios and sample pack require Owner authority and billing:read. Outbound webhooks are disabled unless explicitly requested; webhook scenarios require an enabled endpoint in this Sandbox. Inspect the run steps for real API requests, responses and request IDs. No real provider calls or payments occur. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. A maximum of three runs may be queued or running per workspace environment. Additional runs return 429 with Retry-After. Enabling delivery requires endpoint_id; only that destination is used. Webhook scenarios also require events:write.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"scenario_id\": \"healthy\",\n  \"fixture_id\": \"maple-retail\",\n  \"catalog_version\": \"2026-11-07.1\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "createSandboxRun-{{command_reference}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/runs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "runs"
+              ],
+              "query": []
+            },
+            "description": "Queue a repeatable versioned scenario. Each run owns a new set of resources and preserves other runs. Uses the initiating key permissions; product flows also need borrower, connection, configuration, evidence, Insights, Signal, results and export scopes. Billing scenarios and sample pack require Owner authority and billing:read. Outbound webhooks are disabled unless explicitly requested; webhook scenarios require an enabled endpoint in this Sandbox. Inspect the run steps for real API requests, responses and request IDs. No real provider calls or payments occur. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. A maximum of three runs may be queued or running per workspace environment. Additional runs return 429 with Retry-After. Enabling delivery requires endpoint_id; only that destination is used. Webhook scenarios also require events:write.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"scenario_id\": \"healthy\",\n  \"fixture_id\": \"maple-retail\",\n  \"catalog_version\": \"2026-11-07.1\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Accepted",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"srun_example\",\n    \"scenario_id\": \"healthy\",\n    \"fixture_id\": \"maple-retail\",\n    \"catalog_version\": \"2026-11-07.1\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-07T12:00:00Z\",\n    \"updated_at\": \"2026-11-07T12:00:00Z\",\n    \"completed_at\": null,\n    \"error\": null,\n    \"assertions\": [],\n    \"resources\": [],\n    \"steps\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "List Sandbox runs",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/runs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "runs"
+          ],
+          "query": []
+        },
+        "description": "Returns the newest runs first, bounded to limit. List entries omit steps and resources; retrieve a run to inspect its execution. Billing runs are visible only to Owners with billing:read. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/runs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "runs"
+              ],
+              "query": []
+            },
+            "description": "Returns the newest runs first, bounded to limit. List entries omit steps and resources; retrieve a run to inspect its execution. Billing runs are visible only to Owners with billing:read. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"srun_example\",\n      \"scenario_id\": \"healthy\",\n      \"fixture_id\": \"maple-retail\",\n      \"catalog_version\": \"2026-11-07.1\",\n      \"status\": \"queued\",\n      \"created_at\": \"2026-11-07T12:00:00Z\",\n      \"updated_at\": \"2026-11-07T12:00:00Z\",\n      \"completed_at\": null,\n      \"error\": null,\n      \"assertions\": [],\n      \"resources\": [],\n      \"steps\": []\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Inspect a Sandbox run",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/runs/{{record_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "runs",
+            "{{record_id}}"
+          ],
+          "query": []
+        },
+        "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. Traces require all product read scopes (borrowers, connections, configuration, data, evidence, insights, results, signal, exports and events) and enabled Insights and Signal. Billing-only traces require Owner billing:read. When a source is no longer authorized, saved request/response payloads and assertions are redacted."
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/runs/{{record_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "runs",
+                "{{record_id}}"
+              ],
+              "query": []
+            },
+            "description": "Sandbox only. Uses the same records and API contracts as the normal product endpoints. Live requests are rejected. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. Traces require all product read scopes (borrowers, connections, configuration, data, evidence, insights, results, signal, exports and events) and enabled Insights and Signal. Billing-only traces require Owner billing:read. When a source is no longer authorized, saved request/response payloads and assertions are redacted."
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"srun_example\",\n    \"scenario_id\": \"healthy\",\n    \"fixture_id\": \"maple-retail\",\n    \"catalog_version\": \"2026-11-07.1\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-07T12:00:00Z\",\n    \"updated_at\": \"2026-11-07T12:00:00Z\",\n    \"completed_at\": null,\n    \"error\": null,\n    \"assertions\": [],\n    \"resources\": [],\n    \"steps\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Repeat a scenario with fresh records",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "repeatSandboxRun-{{command_reference}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/runs/{{record_id}}/repeat",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "runs",
+            "{{record_id}}",
+            "repeat"
+          ],
+          "query": []
+        },
+        "description": "Reset the scenario by starting a fresh isolated run with the same version, fixture and settings. Preserves immutable history, billing and other developer records. The existing run is never rewritten or deleted. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "repeatSandboxRun-{{command_reference}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/runs/{{record_id}}/repeat",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "runs",
+                "{{record_id}}",
+                "repeat"
+              ],
+              "query": []
+            },
+            "description": "Reset the scenario by starting a fresh isolated run with the same version, fixture and settings. Preserves immutable history, billing and other developer records. The existing run is never rewritten or deleted. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations.",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "Accepted",
+          "code": 202,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"id\": \"srun_example\",\n    \"scenario_id\": \"healthy\",\n    \"fixture_id\": \"maple-retail\",\n    \"catalog_version\": \"2026-11-07.1\",\n    \"status\": \"queued\",\n    \"created_at\": \"2026-11-07T12:00:00Z\",\n    \"updated_at\": \"2026-11-07T12:00:00Z\",\n    \"completed_at\": null,\n    \"error\": null,\n    \"assertions\": [],\n    \"resources\": [],\n    \"steps\": []\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Simulate a change in a run",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "simulateSandboxAction-{{command_reference}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/v1/sandbox/runs/{{record_id}}/actions",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "v1",
+            "sandbox",
+            "runs",
+            "{{record_id}}",
+            "actions"
+          ],
+          "query": []
+        },
+        "description": "Affects only resources owned by this run. Funding is synthetic and requires Owner billing authority. Receipt changes publish new normalized data versions. Evaluation advances the selected monitor to its next evaluation immediately without changing server time, token expiry or billing periods. resume_credits clears the explicit insufficient-credit test condition after simulated funding. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. The autopay payment outcome tests a synthetic balance of CAD 199 against a CAD 200 threshold, creating a CAD 1,000 simulated top-up. It does not change saved auto-pay settings or deduct funds to force the actual Sandbox balance below the threshold. Source changes require connections:write; evaluation requires signal:write; credit recovery requires insights:write and Owner billing authority.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"action\": \"evaluate_monitor\",\n  \"resource_id\": \"mon_example\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": [
+        {
+          "name": "Synthetic success",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Idempotency-Key",
+                "value": "simulateSandboxAction-{{command_reference}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/v1/sandbox/runs/{{record_id}}/actions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "v1",
+                "sandbox",
+                "runs",
+                "{{record_id}}",
+                "actions"
+              ],
+              "query": []
+            },
+            "description": "Affects only resources owned by this run. Funding is synthetic and requires Owner billing authority. Receipt changes publish new normalized data versions. Evaluation advances the selected monitor to its next evaluation immediately without changing server time, token expiry or billing periods. resume_credits clears the explicit insufficient-credit test condition after simulated funding. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. The autopay payment outcome tests a synthetic balance of CAD 199 against a CAD 200 threshold, creating a CAD 1,000 simulated top-up. It does not change saved auto-pay settings or deduct funds to force the actual Sandbox balance below the threshold. Source changes require connections:write; evaluation requires signal:write; credit recovery requires insights:write and Owner billing authority.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"evaluate_monitor\",\n  \"resource_id\": \"mon_example\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"data\": {\n    \"action\": \"evaluate_monitor\",\n    \"resource_id\": \"mon_example\",\n    \"status\": \"queued\"\n  },\n  \"meta\": {\n    \"request_id\": \"req_example\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  }\n}"
         }
       ]
     }

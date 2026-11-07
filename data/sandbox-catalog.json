@@ -1,0 +1,337 @@
+{
+  "version": "2026-11-07.1",
+  "businesses": [
+    {
+      "id": "maple-retail",
+      "name": "Maple & Pine Retail Ltd.",
+      "market": "CA",
+      "industry": "Retail",
+      "scenario_id": "healthy",
+      "annual_revenue": "720000.00",
+      "monthly_inflows": "60000.00",
+      "monthly_outflows": "45000.00"
+    },
+    {
+      "id": "harbor-logistics",
+      "name": "Harbor Route Logistics Inc.",
+      "market": "US",
+      "industry": "Transportation",
+      "scenario_id": "outside_policy",
+      "annual_revenue": "240000.00",
+      "monthly_inflows": "20000.00",
+      "monthly_outflows": "23000.00"
+    },
+    {
+      "id": "cedar-software",
+      "name": "Cedar Cloud Software Inc.",
+      "market": "CA",
+      "industry": "Software",
+      "scenario_id": "manual_review",
+      "annual_revenue": "480000.00",
+      "monthly_inflows": "40000.00",
+      "monthly_outflows": "30000.00"
+    },
+    {
+      "id": "prairie-manufacturing",
+      "name": "Prairie Precision Manufacturing Ltd.",
+      "market": "CA",
+      "industry": "Manufacturing",
+      "scenario_id": "document_required",
+      "annual_revenue": "960000.00",
+      "monthly_inflows": "80000.00",
+      "monthly_outflows": "64000.00"
+    },
+    {
+      "id": "summit-hospitality",
+      "name": "Summit Table Hospitality LLC",
+      "market": "US",
+      "industry": "Hospitality",
+      "scenario_id": "source_reauthorization",
+      "annual_revenue": "600000.00",
+      "monthly_inflows": "50000.00",
+      "monthly_outflows": "42000.00"
+    },
+    {
+      "id": "atlas-wholesale",
+      "name": "Atlas Supply Wholesale Ltd.",
+      "market": "CA",
+      "industry": "Wholesale",
+      "scenario_id": "provider_failure",
+      "annual_revenue": "1200000.00",
+      "monthly_inflows": "100000.00",
+      "monthly_outflows": "86000.00"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "sample_pack",
+      "name": "Complete sample workspace",
+      "category": "Getting started",
+      "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+      "expected": "Six businesses and associated records are available in the API and console.",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "healthy",
+      "name": "Within-policy underwriting",
+      "category": "Underwriting",
+      "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
+      "expected": "completed / within_policy",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "outside_policy",
+      "name": "Outside-policy underwriting",
+      "category": "Underwriting",
+      "description": "Run the same test policy against a business with lower cash receipts.",
+      "expected": "completed / outside_policy",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "manual_review",
+      "name": "Manual review",
+      "category": "Underwriting",
+      "description": "Test a policy metric whose required source input is unavailable.",
+      "expected": "completed / review_required",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "document_required",
+      "name": "Additional document required",
+      "category": "Underwriting",
+      "description": "Pause underwriting with an actionable document requirement.",
+      "expected": "requires_action / upload_document",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "document_recovery",
+      "name": "Upload the missing document",
+      "category": "Underwriting",
+      "description": "Run a missing-document flow and resume it with a real synthetic PDF upload.",
+      "expected": "requires_action \u2192 completed",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "source_reauthorization",
+      "name": "Source authorization required",
+      "category": "Connections",
+      "description": "Pause a case until the borrower renews the requested source.",
+      "expected": "requires_action / reauthorize_source",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "source_recovery",
+      "name": "Renew source authorization",
+      "category": "Connections",
+      "description": "Complete the reauthorization Hub and resume underwriting.",
+      "expected": "requires_action \u2192 completed",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "consent_cancelled",
+      "name": "Borrower cancels connection",
+      "category": "Connections",
+      "description": "Cancel a synthetic Hub session before consent.",
+      "expected": "cancelled / no connections",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "consent_revoked",
+      "name": "Borrower withdraws consent",
+      "category": "Connections",
+      "description": "Revoke consent and confirm that normalized source content becomes restricted.",
+      "expected": "revoked / restricted source data",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "provider_failure",
+      "name": "Provider unavailable",
+      "category": "Underwriting",
+      "description": "Exercise terminal processing failure without fabricating a risk package.",
+      "expected": "failed / processing_failed",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "insufficient_credits",
+      "name": "Insufficient credit handling",
+      "category": "Billing",
+      "description": "Pause an assessment and then resume it with simulated funding.",
+      "expected": "waiting_for_credits \u2192 completed",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "monitoring_alert",
+      "name": "Cash-flow deterioration",
+      "category": "Monitoring",
+      "description": "Create a funded baseline, reduce synthetic receipts, and evaluate monitoring.",
+      "expected": "alert.created / outside_policy",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "monitoring_recovery",
+      "name": "Risk recovery",
+      "category": "Monitoring",
+      "description": "Restore receipts after a deterioration and resolve the previous alert.",
+      "expected": "alert.resolved / within_policy",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "monitoring_lifecycle",
+      "name": "Pause and resume monitoring",
+      "category": "Monitoring",
+      "description": "Exercise monitor state changes and a new evaluation after resumption.",
+      "expected": "active \u2192 paused \u2192 active",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "card_success",
+      "name": "Successful card top-up",
+      "category": "Billing",
+      "description": "Post a simulated card payment and matching funding transaction.",
+      "expected": "succeeded / credits posted",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "card_declined",
+      "name": "Declined card payment",
+      "category": "Billing",
+      "description": "Create a failed test payment with no credit posting.",
+      "expected": "failed / balance unchanged",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "ach_pending",
+      "name": "Pending ACH top-up",
+      "category": "Billing",
+      "description": "Record an ACH payment before settlement.",
+      "expected": "pending / balance unchanged",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "ach_settled",
+      "name": "ACH settlement",
+      "category": "Billing",
+      "description": "Move an ACH payment from pending to succeeded and post its credits once.",
+      "expected": "pending \u2192 succeeded / credits posted",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "ach_returned",
+      "name": "ACH returned",
+      "category": "Billing",
+      "description": "Settle then return an ACH payment with a linked reversing ledger entry.",
+      "expected": "returned / net zero funding",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "payment_refund",
+      "name": "Payment refund",
+      "category": "Billing",
+      "description": "Post a payment followed by a full refund and linked immutable transactions.",
+      "expected": "refunded / net zero funding",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "autopay",
+      "name": "Automatic top-up",
+      "category": "Billing",
+      "description": "Exercise a run-local low-balance trigger and an automatic simulated payment.",
+      "expected": "automatic_top_up / succeeded",
+      "owner_only": true,
+      "requires_endpoint": false
+    },
+    {
+      "id": "export_success",
+      "name": "Download reports and evidence",
+      "category": "Exports",
+      "description": "Create JSON, PDF and CSV exports from the same risk package and evidence.",
+      "expected": "completed / downloadable files",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "export_failure",
+      "name": "Failed export",
+      "category": "Exports",
+      "description": "Exercise the documented export failure state.",
+      "expected": "failed / export.failed",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "idempotency",
+      "name": "Safe retries and conflicts",
+      "category": "API behavior",
+      "description": "Repeat a create request with the same key, then change its payload.",
+      "expected": "same resource on retry / 409 on conflict",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "validation_error",
+      "name": "Invalid input",
+      "category": "API behavior",
+      "description": "Submit an invalid borrower request and inspect the structured error.",
+      "expected": "422 / validation_error",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "pagination",
+      "name": "Snapshot pagination",
+      "category": "API behavior",
+      "description": "Read a frozen page, create another borrower, and continue the original snapshot.",
+      "expected": "no duplicates / new record excluded from snapshot",
+      "owner_only": false,
+      "requires_endpoint": false
+    },
+    {
+      "id": "webhook_delivery",
+      "name": "Signed webhook delivery",
+      "category": "Webhooks",
+      "description": "Create a real Sandbox event and enqueue delivery to the selected Sandbox endpoint.",
+      "expected": "signed HTTP request / persisted delivery attempt",
+      "owner_only": false,
+      "requires_endpoint": true
+    },
+    {
+      "id": "webhook_duplicate",
+      "name": "Duplicate webhook delivery",
+      "category": "Webhooks",
+      "description": "Replay the same persisted event twice to test deduplication by event ID.",
+      "expected": "same event ID / separate deliveries",
+      "owner_only": false,
+      "requires_endpoint": true
+    },
+    {
+      "id": "webhook_out_of_order",
+      "name": "Out-of-order events",
+      "category": "Webhooks",
+      "description": "Replay persisted resource versions in reverse order.",
+      "expected": "newer event replay queued before older event replay",
+      "owner_only": false,
+      "requires_endpoint": true
+    }
+  ]
+}

@@ -625,5 +625,93 @@
     "many": false,
     "scope": "signal:read",
     "page": "api-reference/endpoints/signal/get-deal-snapshot"
+  },
+  {
+    "id": "getSandboxCatalog",
+    "method": "GET",
+    "path": "/v1/sandbox/catalog",
+    "group": "Sandbox",
+    "response": "SandboxCatalog",
+    "request": null,
+    "many": false,
+    "scope": "sandbox:read",
+    "page": "api-reference/endpoints/sandbox/get-sandbox-catalog"
+  },
+  {
+    "id": "getSandboxSetup",
+    "method": "GET",
+    "path": "/v1/sandbox/setup",
+    "group": "Sandbox",
+    "response": "SandboxState",
+    "request": null,
+    "many": false,
+    "scope": "sandbox:read",
+    "page": "api-reference/endpoints/sandbox/get-sandbox-setup"
+  },
+  {
+    "id": "configureSandbox",
+    "method": "POST",
+    "path": "/v1/sandbox/setup",
+    "group": "Sandbox",
+    "response": "SandboxState",
+    "request": "ConfigureSandboxRequest",
+    "many": false,
+    "scope": "sandbox:write",
+    "page": "api-reference/endpoints/sandbox/configure-sandbox"
+  },
+  {
+    "id": "createSandboxRun",
+    "method": "POST",
+    "path": "/v1/sandbox/runs",
+    "group": "Sandbox",
+    "response": "SandboxRun",
+    "request": "CreateSandboxRunRequest",
+    "many": false,
+    "scope": "sandbox:write",
+    "page": "api-reference/endpoints/sandbox/create-sandbox-run"
+  },
+  {
+    "id": "listSandboxRuns",
+    "method": "GET",
+    "path": "/v1/sandbox/runs",
+    "group": "Sandbox",
+    "response": "SandboxRun",
+    "request": null,
+    "many": true,
+    "scope": "sandbox:read",
+    "page": "api-reference/endpoints/sandbox/list-sandbox-runs"
+  },
+  {
+    "id": "getSandboxRun",
+    "method": "GET",
+    "path": "/v1/sandbox/runs/{id}",
+    "group": "Sandbox",
+    "response": "SandboxRun",
+    "request": null,
+    "many": false,
+    "scope": "sandbox:read",
+    "page": "api-reference/endpoints/sandbox/get-sandbox-run"
+  },
+  {
+    "id": "repeatSandboxRun",
+    "method": "POST",
+    "path": "/v1/sandbox/runs/{id}/repeat",
+    "group": "Sandbox",
+    "response": "SandboxRun",
+    "request": "RepeatSandboxRunRequest",
+    "many": false,
+    "scope": "sandbox:write",
+    "page": "api-reference/endpoints/sandbox/repeat-sandbox-run"
+  },
+  {
+    "id": "simulateSandboxAction",
+    "method": "POST",
+    "path": "/v1/sandbox/runs/{id}/actions",
+    "group": "Sandbox",
+    "response": "SandboxActionResult",
+    "request": "SimulateSandboxActionRequest",
+    "many": false,
+    "scope": "sandbox:write",
+    "page": "api-reference/endpoints/sandbox/simulate-sandbox-action"
   }
 ]

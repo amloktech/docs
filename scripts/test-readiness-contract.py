@@ -68,7 +68,7 @@ for call in log:
   errors_=list(Draft202012Validator({**media['schema'],'components':spec['components']},format_checker=FormatChecker()).iter_errors(call['response']))
   assert not errors_,(call['operationId'],[e.message for e in errors_]);checks+=1
 # No generated scope or operation may silently drift from acceptance coverage.
-assert len(index)==57
+assert len(index)==65
 assert 'x-contract-stage' not in spec
 assert not (ROOT/'api-reference/implementation-status.mdx').exists()
 assert not (ROOT/'api-reference/api-review.mdx').exists()

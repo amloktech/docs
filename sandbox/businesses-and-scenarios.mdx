@@ -1,0 +1,68 @@
+---
+title: "Explore sample businesses and test scenarios"
+sidebarTitle: "Businesses and scenarios"
+description: "Explore six fictional businesses, execute underwriting and monitoring outcomes, test webhook delivery, and inspect each run's requests and records."
+keywords: ["Sandbox scenarios", "fictional businesses", "webhook testing", "underwriting tests"]
+---
+
+AMLOK Sandbox includes six fictional businesses and 30 executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
+
+## The six businesses
+
+| Business | Market | Industry | Starter scenario | What to inspect |
+| --- | --- | --- | --- | --- |
+| Maple & Pine Retail Ltd. | CA | Retail | `healthy` | A completed underwriting with a within-policy recommendation. |
+| Harbor Route Logistics Inc. | US | Transportation | `outside_policy` | A completed underwriting with an outside-policy recommendation. |
+| Cedar Cloud Software Inc. | CA | Software | `manual_review` | A review-required result caused by unavailable policy inputs. |
+| Prairie Precision Manufacturing Ltd. | CA | Manufacturing | `document_required` | An Origination waiting for an additional document. |
+| Summit Table Hospitality LLC | US | Hospitality | `source_reauthorization` | An Origination requiring renewed source authorization. |
+| Atlas Supply Wholesale Ltd. | CA | Wholesale | `provider_failure` | A failed processing result and its failure details. |
+
+Each business includes synthetic bank, accounting, payments, commerce and verification information; normalized source records and provenance; a PDF financial statement; consent and connections; lending-product and policy versions; and an Origination. Completed assessments include results, evidence, exports and funded monitoring. Cases that need action retain the requirement or error to help you build recovery flows.
+
+The sample history covers twelve monthly periods. It is an illustrative dataset, not complete daily coverage or a production-volume dataset. Billing examples use CAD, including the US businesses.
+
+## Run and inspect a scenario
+
+1. Open **Dev Tools > Sandbox scenarios**.
+2. Select the scenario category, scenario and fictional business.
+3. Review **Expected result** before you run it.
+4. Choose **Run scenario**, or execute the provided request from your backend.
+5. Open **Run history** to inspect requests, responses, assertions and generated resource IDs.
+6. Retrieve those records through their normal API endpoints or open them in the console.
+
+The same business can produce different outcomes when you choose different scenarios. For example, `healthy` uses a passing test policy, while `outside_policy` uses a failing threshold. These are test assessments, not decisions about actual businesses.
+
+<Info>
+**Scenario completion and business outcomes are different.** A scenario can complete successfully because it correctly produced a failed underwriting, a declined payment or a missing-document requirement. A failed scenario means a step or expected check did not finish as intended.
+</Info>
+
+## What to cover in your integration
+
+| Area | Useful tests | What your product should handle |
+| --- | --- | --- |
+| Underwriting | Within policy, outside policy, review, missing documents and recovery | Pending work, returned recommendations, required actions and final evidence. |
+| Connections | Reauthorization, recovery, cancellation and revoked consent | Source availability and restricted evidence after authorization changes. |
+| Monitoring | Deterioration, recovery, pause and resume | New alerts, resolved alerts and monitoring state changes. |
+| Billing | Card and ACH outcomes, returns, refunds, automatic top-ups and insufficient credits | Pending funding versus spendable test credits, usage and reversals. |
+| Exports | Successful download and failed export | File readiness, download access and failure recovery. |
+| API behavior | Validation errors, idempotency and pagination | Safe retries, conflicts, invalid inputs and complete result traversal. |
+| Webhooks | Signed delivery, duplicate delivery and out-of-order replay | Signature verification, deduplication and event ordering. |
+
+The [API scenario guide](/api-reference/sandbox-journeys#scenario-catalog) lists all scenario IDs and expected results. Use the [catalog endpoint](/api-reference/endpoints/sandbox/get-sandbox-catalog) to discover the current version, businesses and scenarios programmatically.
+
+## Test monitoring events and webhook delivery
+
+Sample preparation records events without sending webhooks. Read them under **Dev Tools > Deliveries & events** or through `GET /v1/events`. An event marked **Recorded** is not proof that an HTTP request reached your application.
+
+To exercise your receiver, configure an enabled Sandbox endpoint, select it for a run and explicitly enable delivery. Webhook scenarios require the appropriate event scopes and subscriptions. Sandbox delivery sends real HTTP requests to that test endpoint, even though the payloads are fictional. Keep the receiver separate from production actions.
+
+Inspect delivery history and your receiver's logs to verify arrival and attempts. Duplicate delivery retains the event ID; retries and concurrent delivery can change arrival order. You can return `503` and then `2xx` from your receiver to exercise the retry path. See [webhook testing details](/api-reference/sandbox-journeys#webhooks-and-monitoring).
+
+Monitoring scenarios let you create a deterioration event, restore the fixture and resolve the prior alert. **Evaluate monitoring now** evaluates a run-owned active monitor. It does not advance server time or change billing periods.
+
+## Repeat without losing your history
+
+**Repeat with fresh records** creates a new run and new linked records. It preserves previous results, logs and immutable ledger entries. Keep run IDs in your tests, and use new idempotency keys for new executions. Reuse a key only to retry the same intended command.
+
+For request bodies, permissions and automated execution, use the [API scenario guide](/api-reference/sandbox-journeys), [runnable client](/downloads/run-sandbox-scenario.mjs) and **Data Lookup** in the console.

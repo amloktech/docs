@@ -15,7 +15,7 @@ assert all(path.startswith('/v1/') for path in spec['paths'])
 assert not (ROOT/'legacy').exists()
 assert {p.name for p in (ROOT/'openapi').glob('*.json')}=={'amlok.json'}
 target_ops=[op for methods in spec['paths'].values() for op in methods.values()]
-assert len(target_ops)==len({o['operationId'] for o in target_ops})==57
+assert len(target_ops)==len({o['operationId'] for o in target_ops})==65
 for path,methods in spec['paths'].items():
     assert not {'put','delete'} & methods.keys(), path
     if 'patch' in methods: assert path=='/v1/monitors/{id}'
@@ -72,8 +72,8 @@ monitor['baseline']['risk_package_id']='rp_synthetic'
 assert valid('CreateMonitor',monitor)
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
 assert '/v2/' not in json.dumps(collection)
-assert len(collection['item'])==57
-print(json.dumps({'primary_operations':57,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
+assert len(collection['item'])==65
+print(json.dumps({'primary_operations':65,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
 
 # Institution completeness invariants: direct data access, documents and billing.
 paths=spec['paths'];schemas=spec['components']['schemas']

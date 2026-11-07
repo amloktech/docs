@@ -1,0 +1,9 @@
+---
+title: "Simulate a change in a run"
+description: "Simulate a change in a run."
+openapi: "/openapi/amlok.json POST /v1/sandbox/runs/{id}/actions"
+---
+
+Affects only resources owned by this run. Funding is synthetic and requires Owner billing authority. Receipt changes publish new normalized data versions. Evaluation advances the selected monitor to its next evaluation immediately without changing server time, token expiry or billing periods. resume_credits clears the explicit insufficient-credit test condition after simulated funding. See [Sandbox scenarios](/api-reference/sandbox-journeys) for permissions, fixture coverage, expected results, delivery controls and limitations. The autopay payment outcome tests a synthetic balance of CAD 199 against a CAD 200 threshold, creating a CAD 1,000 simulated top-up. It does not change saved auto-pay settings or deduct funds to force the actual Sandbox balance below the threshold. Source changes require connections:write; evaluation requires signal:write; credit recovery requires insights:write and Owner billing authority.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

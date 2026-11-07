@@ -1,44 +1,128 @@
 ---
 title: "Run reproducible Sandbox scenarios"
-sidebarTitle: "Sandbox journeys"
-description: "Test underwriting, monitoring, consent recovery, document requests and billing with deterministic Sandbox scenarios and synthetic borrower data."
-keywords: ["AMLOK", "API", "Insights", "Signal"]
+sidebarTitle: "Sandbox scenarios"
+description: "Run complete fictional business journeys, inspect API responses and logs, test monitoring events, and reconcile simulated credits and payment outcomes."
 ---
 
-AMLOK Sandbox provides deterministic synthetic scenarios to validate your integration without real borrower credentials or funds. Each scenario covers a specific result, recovery path or billing event.
+Use **Dev Tools > Sandbox scenarios** to create records through the same API your integration calls. Run a named scenario, inspect its requests and responses, then retrieve its borrowers, data, documents, results and billing records through their normal endpoints. Each execution creates a fresh set of linked resources.
 
-## Provision and run
+For a guided introduction, start with the [Sandbox overview](/sandbox/overview), [first-use setup](/sandbox/getting-started) and [simulated billing](/sandbox/simulated-billing).
 
-1. Obtain a Sandbox key and read configuration.sandbox. Live returns null.
-2. Publish a Hub containing the returned test_integration_id and both consent purposes. Register your local or test application's return URL and embedding origin.
-3. Create a borrower with X-AMLOK-Sandbox-Scenario set to one of scenario_ids. Omit the header for happy_path. AMLOK saves the selection with that synthetic borrower. Send the header only on createBorrower. Unknown scenarios return 422 scenario_not_available. Live or another operation returns 400 sandbox_only before creating any resource or touching funds.
-4. Launch the Hub. The synthetic integration offers a clearly labeled **Connect test institution** action; it needs no bank username, password or OTP. Explicit acceptance records test consent and connections.
-5. Run the [downloadable journey](/api-reference/runnable-example). The scenario remains bound to the borrower, so ordinary API calls drive the same deterministic outcome.
+## Choose your starting point
 
-Each run uses a new unique client_reference and command prefix. Old records remain immutable. Reset a scenario by creating a new synthetic borrower; no production-style reset/delete API is introduced.
+On first use, an Owner or Developer can choose **Start with an empty workspace**. An Owner can choose **Explore sample businesses** to queue the complete six-business pack, including simulated billing. The choice applies to the workspace's Sandbox and is shared with teammates. Concurrent setup requests return the first saved choice.
 
-| Scenario | Trigger and expected result |
-| --- | --- |
-| happy_path | Complete test consent, submit a valid origination; completed package, evidence and linked Insights usage appear |
-| source_reauthorization | First origination returns requires_action with reauthorize_source; a requirement-bound Hub session resolves it and the same origination completes |
-| document_required | First origination returns upload_document for financial_statement; upload a readable PDF with its requirement ID; the same origination completes |
-| missing_financial_input | Complete package has an unavailable dscr metric with null value and explicit reason; policy result is unavailable and recommendation review_required |
-| restricted_report | Package includes restricted report metadata with explanation; download is denied with 403 and no capability URL |
-| provider_failure | First evaluation terminates failed with processing_failed; no package or Insights debit is published |
-| insufficient_credits | First completion attempt waits for credits; console **Sandbox funding** adds a simulated top-up, then that same request completes with one debit |
-| monitoring_alert | First Signal evaluation establishes baseline; the next configured evaluation publishes an adverse fixture and alert with previous/current values and evidence |
-| payment_return | Console **Sandbox funding** posts a simulated payment, then **Simulate return** creates a linked reversal; earlier wallet entries remain unchanged |
-| export_failure | The first export for that borrower's package fails with processing_failed; a new explicit export command succeeds without another product charge |
+Starting empty preserves any existing records. Every Sandbox receives CAD 5,000 in simulated promotional credits. **Decide later** postpones the choice in the current browser tab. You can load samples or run individual scenarios later. The Sandbox and Live switch remains unchanged; a separate Demo environment is not required.
 
-Sandbox funding controls are labeled as simulations, apply only to the selected Sandbox environment and require Owner authority. They do not invoke a payment processor. Sandbox prices and balances are test fixtures. Live rejects Sandbox headers and controls before creating resources or moving funds.
+The console shows persisted API records. API activity, request logs, source data, risk packages and consumption can be followed using returned resource IDs and request IDs. No sample is a real borrower, credit decision, verification or payment.
 
-## Transport and security tests
+## Run from your integration
 
-- Simulate a client-side timeout after acceptance, then recover via request receipt and retry the original key. Assert one resource and one charge.
-- Deliver the same signed event twice and deliver newer/older resource versions out of order. Assert one durable event inbox entry and no state rollback.
-- Replay via the normal event replay endpoint. Assert the event ID is unchanged and signature timestamp is fresh.
-- Use two independently provisioned workspaces. Cross-workspace IDs, snapshots, cursors, downloads and session associations must fail without leaking resource contents.
-- Use the returned profile to test oversized documents, unsupported MIME types, stale If-Match, expired cursors and invalid purpose scopes.
-- Advance only the Sandbox service's test clock through its authorized console tooling to force configured expiry and scheduled evaluations. Production clocks and real provider data are never affected.
+Create a Sandbox key in the console. Use the base URL provided for your deployment and keep the key on your server.
 
-The [scenario manifest](/downloads/sandbox-scenarios.json) supplies stable IDs and expected states for automated integration tests. Use the scenario IDs and test integration returned by your Sandbox configuration.
+```bash
+curl --fail-with-body "$AMLOK_API_BASE_URL/v1/sandbox/catalog" \
+  -H "Authorization: Bearer $AMLOK_API_KEY"
+
+curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \
+  -H "Authorization: Bearer $AMLOK_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -H 'Idempotency-Key: my-first-healthy-test-001' \
+  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-07.1"}'
+```
+
+The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
+
+Use the [runnable scenario client](/downloads/run-sandbox-scenario.mjs) with Node.js 22 or later:
+
+```bash
+AMLOK_SANDBOX_SCENARIO=healthy node run-sandbox-scenario.mjs
+```
+
+Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains the catalog version, submits one idempotent command and polls its result. For webhook scenarios, set `AMLOK_SANDBOX_ENDPOINT_ID` to your enabled Sandbox endpoint; this explicitly enables delivery.
+
+## Permissions and isolation
+
+- Catalog, setup and history reads require `sandbox:read`; commands require `sandbox:write`.
+- Product journeys require `borrowers:read/write`, `configuration:read/write`, `connections:read/write`, `evidence:read/write`, `insights:read/write`, `signal:read/write`, `exports:read/write`, plus `data:read`, `results:read` and `events:read`.
+- Billing scenarios and the full sample pack require current Owner authority with `billing:read`. Developers can run nonfinancial journeys; Analysts cannot execute scenarios.
+- Detailed product traces require the product read scopes and enabled Insights and Signal. Billing-only traces require Owner billing authority. Revoking source authorization redacts saved trace payloads and assertions as well as the ordinary source-backed reads.
+- Webhook scenarios also require `events:write`. The selected endpoint must belong to the same Sandbox and subscribe to `origination.status_changed` and `origination.completed`.
+- The initiating key must remain valid while a run executes. Revoking it stops subsequent scenario API steps. At most three runs can be queued or running in one workspace environment. Honor `Retry-After` on 429 responses.
+- Sandbox controls reject Live requests. Sandbox keys and resources cannot address another workspace or environment.
+
+## Fictional business pack
+
+Each business has bank, accounting, payment, commerce and verification fixtures; synthetic normalized records and provenance; a PDF financial statement; consent and connection records; a lending product and risk policy; and an Origination with its expected outcome. Completed assessments include evidence, results, exports and funded monitoring. Blocked and failed cases retain their requirements or failure details so you can test those states.
+
+| Fixture | Business | Market | Industry | Initial outcome |
+| --- | --- | --- | --- | --- |
+| `maple-retail` | Maple & Pine Retail Ltd. | CA | Retail | `healthy` |
+| `harbor-logistics` | Harbor Route Logistics Inc. | US | Transportation | `outside_policy` |
+| `cedar-software` | Cedar Cloud Software Inc. | CA | Software | `manual_review` |
+| `prairie-manufacturing` | Prairie Precision Manufacturing Ltd. | CA | Manufacturing | `document_required` |
+| `summit-hospitality` | Summit Table Hospitality LLC | US | Hospitality | `source_reauthorization` |
+| `atlas-wholesale` | Atlas Supply Wholesale Ltd. | CA | Wholesale | `provider_failure` |
+
+The pack includes card success and decline, pending and settled ACH, ACH return, refund and simulated automatic top-up records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD, including US business examples. Fixture banking covers twelve monthly periods; it is sparse synthetic history, not production-scale or complete daily coverage.
+
+## Scenario catalog
+
+The selected business determines the fictional identity and source data. The scenario controls the test condition and the supplied illustrative policy. A `healthy` run uses a passing policy; `outside_policy` uses a failing threshold, even when you select the same business. `manual_review` exercises unavailable policy inputs. These outcomes are assessments against a test policy; your institution makes the lending decision.
+
+| Scenario ID | Journey | Expected result |
+| --- | --- | --- |
+| `sample_pack` | Complete sample workspace | Six businesses and associated records are available in the API and console. |
+| `healthy` | Within-policy underwriting | completed / within_policy |
+| `outside_policy` | Outside-policy underwriting | completed / outside_policy |
+| `manual_review` | Manual review | completed / review_required |
+| `document_required` | Additional document required | requires_action / upload_document |
+| `document_recovery` | Upload the missing document | requires_action → completed |
+| `source_reauthorization` | Source authorization required | requires_action / reauthorize_source |
+| `source_recovery` | Renew source authorization | requires_action → completed |
+| `consent_cancelled` | Borrower cancels connection | cancelled / no connections |
+| `consent_revoked` | Borrower withdraws consent | revoked / restricted source data |
+| `provider_failure` | Provider unavailable | failed / processing_failed |
+| `insufficient_credits` | Insufficient credit handling | waiting_for_credits → completed |
+| `monitoring_alert` | Cash-flow deterioration | alert.created / outside_policy |
+| `monitoring_recovery` | Risk recovery | alert.resolved / within_policy |
+| `monitoring_lifecycle` | Pause and resume monitoring | active → paused → active |
+| `card_success` | Successful card top-up | succeeded / credits posted |
+| `card_declined` | Declined card payment | failed / balance unchanged |
+| `ach_pending` | Pending ACH top-up | pending / balance unchanged |
+| `ach_settled` | ACH settlement | pending → succeeded / credits posted |
+| `ach_returned` | ACH returned | returned / net zero funding |
+| `payment_refund` | Payment refund | refunded / net zero funding |
+| `autopay` | Automatic top-up | automatic_top_up / succeeded |
+| `export_success` | Download reports and evidence | completed / downloadable files |
+| `export_failure` | Failed export | failed / export.failed |
+| `idempotency` | Safe retries and conflicts | same resource on retry / 409 on conflict |
+| `validation_error` | Invalid input | 422 / validation_error |
+| `pagination` | Snapshot pagination | no duplicates / new record excluded from snapshot |
+| `webhook_delivery` | Signed webhook delivery | signed HTTP request / persisted delivery attempt |
+| `webhook_duplicate` | Duplicate webhook delivery | same event ID / separate deliveries |
+| `webhook_out_of_order` | Out-of-order events | newer event replay queued before older event replay |
+
+## Webhooks and monitoring
+
+Outbound delivery is **off by default**, including for the sample pack. Event records are still available through `/v1/events`. Set `send_webhooks: true` and `endpoint_id`, or enable delivery in the console, to send signed events only to that Sandbox destination.
+
+Webhook-specific scenarios suppress automatic delivery during setup, then queue explicit replay attempts for the selected origination events. Duplicate delivery retains the event ID. Out-of-order replay queues newer resource versions before older ones. Delivery is asynchronous; inspect `/v1/webhook-deliveries` and your receiver to confirm actual arrival, status and attempt numbers. Concurrent workers and HTTP retries do not guarantee arrival order. Configure your receiver to return 503 and then 2xx to test the normal retry path. Only actual HTTP attempts appear in delivery history.
+
+`monitoring_alert` publishes reduced synthetic receipts before evaluation. `monitoring_recovery` restores receipts and evaluates again, resolving the prior open alerts. **Evaluate monitoring now** or the `evaluate_monitor` action queues an immediate evaluation for a run-owned active monitor. This does not change server time, token expiry, date-based billing periods or another developer's records.
+
+## Simulated billing
+
+Funding actions require Owner billing authority and never contact a payment processor. Pending and declined payments do not credit the balance. Settled payments credit it; returns and refunds create linked reversals. Existing ledger entries are immutable.
+
+The `autopay` scenario evaluates a fixed synthetic balance of CAD 199 against a CAD 200 trigger and posts a CAD 1,000 automatic top-up. It also checks that a balance equal to the trigger does not trigger that fixture. It does not change saved auto-pay settings or drain your workspace balance. The fixture tests the resulting payment and ledger lifecycle; configure real account auto-pay separately in the billing console.
+
+`insufficient_credits` exercises the blocked underwriting state, funds with simulated credits, clears the explicit test condition and resumes the same origination. It does not drain other developers' test credits. Reconcile `/v1/billing/summary`, `/v1/billing/transactions`, `/v1/billing/payments` and `/v1/billing/usage` after execution.
+
+## Repeat and build your own tests
+
+Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an empty object and a new idempotency key. This creates a new run without deleting prior history, changing prior results, or resetting shared credits. Reuse the same idempotency key only when retrying the same intended command.
+
+Run history lists the newest 25 runs by default, up to 100 with `limit`. Retrieve a known run directly to inspect older history. The list omits detailed steps and resources. Retain returned IDs in your test system.
+
+Use **Data Lookup** for typed requests, responses and field explanations. Copy a run's request sequence to build your own integration tests. Test additional failure conditions with the ordinary endpoints: invalid credentials and scopes, a second workspace's IDs, stale `If-Match`, invalid files, pagination checkpoints, timeouts and accepted-command recovery. Production throughput and real provider behavior require separate verification; these fixtures do not establish those properties.

@@ -606,11 +606,11 @@ No packaged SDK is currently distributed. All published client examples and down
 def navigation(groups):
     path=ROOT/'docs.json';config=json.loads(path.read_text())
     tab=next(t for t in config['navigation']['tabs'] if t['tab'].lower()=='api reference')
-    icons={'Borrowers':'users','Connections':'plug','Configuration':'sliders-horizontal','Insights':'files','Results':'file-search','Data':'database','Evidence':'database','Signal':'activity','Events':'webhook','Exports':'download','Billing':'wallet','Reliability':'shield-check'}
+    icons={'Sandbox':'flask-conical','Borrowers':'users','Connections':'plug','Configuration':'sliders-horizontal','Insights':'files','Results':'file-search','Data':'database','Evidence':'database','Signal':'activity','Events':'webhook','Exports':'download','Billing':'wallet','Reliability':'shield-check'}
     tab['groups']=[
         {'group':'Start here','pages':['api-reference/overview','api-reference/quickstart','api-reference/authentication','api-reference/environments','api-reference/downloads']},
         {'group':'Product guides','pages':['api-reference/integration-hub','api-reference/configuration','api-reference/data-access','api-reference/risk-package','api-reference/monitoring-design','api-reference/evidence-traceability','api-reference/documents']},
-        {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Data','Evidence','Events','Exports','Billing','Reliability'] for p in [groups[g]]]},
+        {'group':'Endpoints','pages':[{'group':g,'icon':icons[g],'expanded':g=='Insights','pages':p} for g in ['Borrowers','Connections','Configuration','Insights','Results','Signal','Data','Evidence','Events','Exports','Billing','Reliability','Sandbox'] for p in [groups[g]]]},
         {'group':'Integration behavior','pages':['api-reference/response-format','api-reference/processing-lifecycle','api-reference/pagination','api-reference/idempotency','api-reference/request-recovery','api-reference/connection-recovery','api-reference/webhooks','api-reference/event-catalog','api-reference/webhook-operations','api-reference/errors','api-reference/rate-limits','api-reference/sandbox-journeys']},
         {'group':'Billing and exports','pages':['api-reference/credit-reporting','api-reference/consumption-reporting','api-reference/workload-reporting','api-reference/export-formats']},
     ]

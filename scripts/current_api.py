@@ -183,7 +183,7 @@ def enrich(spec, f):
 
 def sample_params(op, entry):
     values={'id':'record_synthetic','borrower_id':'bor_synthetic','evidence_set_id':'es_synthetic','operation_id':'createOrigination','idempotency_key':'origination-synthetic-0042','cursor':'data_cursor_synthetic'}
-    return {p['name']:values.get(p['name'],'synthetic') for p in entry['parameters'] if p['in']=='query' and p['required']}
+    return {p['name']:values.get(p['name'],'synthetic') for p in entry['parameters'] if p['in']=='query' and p.get('required',False)}
 
 
 def code_samples(op, entry, f):
@@ -232,10 +232,12 @@ def build():
     spec=enrich(base_spec,f)
     from scale_contract import extend as scale_contract
     spec=scale_contract(spec,f)
+    from sandbox_contract import extend as sandbox_contract
+    sandbox_operations=sandbox_contract(spec,f)
     from data_model_alignment import annotate_fields
     annotate_fields(spec)
     groups=OrderedDict(); index=[]; items=[]
-    for op in operations():
+    for op in operations()+sandbox_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
         entry=spec['paths'][op['path']][op['method'].lower()]
         entry['x-codeSamples']=code_samples(op,entry,f)
@@ -276,6 +278,8 @@ def build():
     scale_guides(spec, f, index)
     from data_model_alignment import write_guides as model_guides
     model_guides(spec)
+    from sandbox_guides import write_guides as sandbox_guides
+    sandbox_guides(spec,index)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()
