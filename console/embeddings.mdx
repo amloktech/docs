@@ -35,10 +35,10 @@ Country and search filters change which entries you see; they do not themselves 
 
 The preview provides one step for each category with selected integrations. Use the step controls to move through the flow and the device controls to inspect phone and desktop layouts. Select a provider in the preview to understand the interaction; the preview does not connect a real account.
 
-Use **Undo** and **Redo** while editing, then select **Save draft** to persist the configuration. If another editor has changed the same record, reload the current version before saving conflicting changes.
+Use **Undo** and **Redo** while editing, then select **Save configuration** to persist the configuration. If another editor has changed the same record, reload the current version before saving conflicting changes.
 
 ## Connect the hub to your application
 
-Saving a draft configures the experience. Your developer uses the [Integrations Hub API workflow](/api-reference/integration-hub) to create the appropriate borrower session and embed it in your application. Keep workspace API credentials on your server.
+Saving creates a versioned configuration for the selected workspace and environment. The record drawer shows its configuration version identifier. Read `embedding_versions` from `GET /v1/configuration` and use that identifier when creating an embedding session. Existing sessions keep the version with which they were created. Your developer uses the [Integrations Hub API workflow](/api-reference/integration-hub) to create the appropriate borrower session and embed it in your application. Keep workspace API credentials on your server.
 
 The resulting connections and evidence belong to the relevant borrower and environment. Inspect them from the [origination evidence](/console/evidence) or [monitoring](/console/portfolio) views. Test with [Sandbox scenarios](/console/sandbox) before arranging Live activation.
