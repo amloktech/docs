@@ -15,6 +15,8 @@ description: "Run complete fictional business journeys, inspect API responses an
 
 Use **Dev Tools > Sandbox scenarios** to create records through the same API your integration calls. Run a named scenario, inspect its requests and responses, then retrieve its borrowers, data, documents, results and billing records through their normal endpoints. Each execution creates a fresh set of linked resources.
 
+For a guided introduction, start with the [Sandbox overview](/sandbox/overview), [first-use setup](/sandbox/getting-started) and [simulated billing](/sandbox/simulated-billing).
+
 ## Choose your starting point
 
 On first use, an Owner or Developer can choose **Start with an empty workspace**. An Owner can choose **Explore sample businesses** to queue the complete six-business pack, including simulated billing. The choice applies to the workspace's Sandbox and is shared with teammates. Concurrent setup requests return the first saved choice.

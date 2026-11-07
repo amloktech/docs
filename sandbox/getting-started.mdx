@@ -1,0 +1,61 @@
+---
+title: "Set up your Sandbox workspace"
+sidebarTitle: "Getting started"
+description: "Choose sample businesses or an empty Sandbox, follow setup progress, and find the generated records and API tools you need for your first test."
+keywords: ["Sandbox setup", "sample businesses", "empty workspace", "onboarding"]
+---
+
+Open your AMLOK workspace and select **Sandbox**. On first use, the setup modal asks how you want to start. This choice controls the starting data for the workspace's Sandbox and is shared with your teammates.
+
+<Frame caption="First-use setup: load six fictional businesses or start with your own test records. Both choices stay inside Sandbox.">
+  <img src="/images/sandbox/choose-starting-data.png" alt="AMLOK Sandbox setup modal with Explore sample businesses and Start with an empty workspace options, plus Decide later." />
+</Frame>
+
+## Choose the right starting point
+
+| Option | What happens | Choose it when |
+| --- | --- | --- |
+| **Explore sample businesses** | Loads six fictional businesses with integrations, documents, underwriting outcomes, monitoring and simulated billing. | You want to explore complete records before writing requests. |
+| **Start with an empty workspace** | Adds no sample business pack. You create your own test records through the API, with simulated credits and scenarios available. | You want to build your integration from its first request. |
+| **Decide later** | Dismisses the choice in the current browser tab without starting sample preparation. | You want to look around before choosing. |
+
+<Note>
+**Empty means no sample business records, not no capabilities.** You still have API tools, scenarios and CAD 5,000.00 in simulated starting credits. Choosing empty does not delete existing records. You can load sample businesses later.
+</Note>
+
+An **Owner** can load the complete pack, including financial scenarios. An **Owner** or **Developer** can choose an empty workspace. Developers can execute nonfinancial scenarios with the required permissions; Analysts cannot execute scenarios. If **Explore sample businesses** is disabled for you, ask a workspace Owner to load the pack.
+
+## Load and explore the sample pack
+
+<Steps>
+  <Step title="Choose Explore sample businesses">
+    The setup modal starts preparing records for your selected Sandbox. Your teammates share the same setup choice.
+  </Step>
+  <Step title="Wait for your workspace to be ready">
+    The progress modal cycles through preparation messages while businesses, use cases and records are created. It reaches completion only after preparation finishes and the records refresh. You then see **Your workspace is ready**, and the modal closes automatically.
+
+    Refreshing the page can resume the progress view. If setup needs attention, use **Open scenario tools** to inspect the run; if the connection was interrupted, use **Check again**. Records already created are preserved.
+  </Step>
+  <Step title="Explore generated records">
+    Open **Origination** to inspect applications and underwriting outcomes, or **Portfolio** for completed assessments with monitoring. Click a record to open its detail drawer and follow its associated documents and integrations.
+
+    In **Dev Tools**, inspect **Request logs**, **Deliveries & events**, and **Sandbox scenarios**. In **Billing**, inspect the simulated balance, funding and consumption.
+  </Step>
+  <Step title="Run a scenario from your product">
+    Open **Dev Tools > Sandbox scenarios**, select a category, scenario and business, and review the expected result. Use **Run scenario** or copy the request example into your server-side integration. Open **Data Lookup** for field types, payload examples and explanations.
+  </Step>
+</Steps>
+
+## Start with your own test records
+
+Choose **Start with an empty workspace**, create a Sandbox API key with the scopes you need, and follow the [API quickstart](/api-reference/quickstart). Use fictional application information and test documents. Select the API origin supplied for your deployment; the workspace environment is determined by the key, not by changing a resource ID.
+
+Use [Sandbox scenarios](/api-reference/sandbox-journeys) when you need deterministic provider data or a specific outcome. An empty workspace does not connect real institutions or populate business data automatically.
+
+You can return to **Dev Tools > Sandbox scenarios** at any time. **Load six sample businesses** adds the complete pack. **Repeat with fresh records** creates another run and preserves earlier records and ledger history; neither action resets your workspace.
+
+<Tip>
+Use a separate test workspace when you need an independent dataset. Within one workspace, keep the returned run and resource IDs so your team can identify which records belong to each test.
+</Tip>
+
+Continue with [businesses and scenarios](/sandbox/businesses-and-scenarios) or [simulated billing](/sandbox/simulated-billing).

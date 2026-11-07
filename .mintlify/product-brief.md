@@ -43,3 +43,5 @@ The Data Model distinguishes 63 source-normalized variants, the detailed verific
 ## Sandbox developer experience
 
 The November 7 direction adds six fictional business fixtures, 30 executable scenarios, a first-use empty/sample choice, and eight Sandbox-only controls. These extend the same API and do not add Live financial mutation commands. Prepare and test on staging; production release requires explicit approval.
+
+The Documentation tab includes a customer-facing Sandbox section immediately after Pricing. Its setup screenshot uses a temporary example workspace. Explain the two starting choices, shared workspace scope, real API test records and simulated money clearly; do not describe test credits or scenario results as real funds, invoices or borrower decisions.

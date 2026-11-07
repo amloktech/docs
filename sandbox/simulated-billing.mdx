@@ -1,0 +1,59 @@
+---
+title: "Test billing without moving real money"
+sidebarTitle: "Simulated billing"
+description: "Learn why Sandbox shows payments, balances and consumption, how to reconcile simulated credits, and which billing outcomes you can test safely."
+keywords: ["Sandbox billing", "simulated credits", "test payments", "consumption"]
+---
+
+AMLOK Sandbox generates billing records so you can build account-balance displays, payment-status handling, usage reports and reconciliation. **Sandbox activity does not incur real usage charges or initiate real payments.** The financial records you see belong only to that workspace's Sandbox.
+
+## Why the Billing screen contains records
+
+Every Sandbox receives **CAD 5,000.00 in simulated starting credits**. Sample underwriting and monitoring consume simulated credits and create usage records. Payment scenarios create fictional funding and reversal records so your integration can exercise both successful and unsuccessful outcomes.
+
+| Record | What it represents in Sandbox | What it does not mean |
+| --- | --- | --- |
+| Available credits | The simulated balance available to test processing. | Money deposited into your Live account. |
+| Funding history | A fictional card or ACH payment and its current state. | A real card charge or bank debit. |
+| Transactions | Simulated credit movements, usage deductions and linked reversals. | An invoice, amount owed or withdrawal of real funds. |
+| Usage and workload | The simulated consumption associated with product processing. | A real bill or a guarantee of future Live pricing. |
+| Refund or return | A linked reversal used to test reconciliation. | Money sent to a bank account. |
+
+Test credits have no cash value and cannot be moved to Live. Sample prices and balances are fixtures; your [Live pricing and agreement](/pricing/overview) govern real operations.
+
+## Payment outcomes you can exercise
+
+- **Successful card top-up:** creates a successful simulated payment and posts test credits.
+- **Declined card payment:** records failure without increasing the balance.
+- **Pending ACH:** appears in funding history while the balance remains unchanged.
+- **ACH settlement:** moves a pending payment to success and posts test credits.
+- **ACH return or refund:** records a linked reversal without rewriting earlier transactions.
+- **Automatic top-up:** evaluates a fixed synthetic CAD 199.00 balance against a CAD 200.00 trigger and posts a CAD 1,000.00 simulated top-up. It does not change your saved automatic top-up settings or drain the shared balance.
+- **Insufficient credits:** pauses an underwriting, applies simulated funding and resumes the same Origination. It does not drain other developers' test credits.
+
+Run these from **Dev Tools > Sandbox scenarios > Billing**. Financial scenarios and the complete sample pack require an Owner with billing authority. Do not enter real card numbers or bank credentials for these tests; the scenarios supply the simulated payment behavior.
+
+## Reconcile the generated activity
+
+<Steps>
+  <Step title="Check the balance">
+    Read `GET /v1/billing/summary` to see simulated available credits and consumption. Confirm that you are using a Sandbox key.
+  </Step>
+  <Step title="Inspect funding states">
+    Read `GET /v1/billing/payments`. Pending and failed payments do not create spendable credits; successful settlement does.
+  </Step>
+  <Step title="Follow credit movements and usage">
+    Read `GET /v1/billing/transactions` and `GET /v1/billing/usage`. Match funding, deductions and reversals using their linked identifiers. Use pagination to retrieve the complete history.
+  </Step>
+  <Step title="Compare with the console">
+    Review the same generated activity in **Billing** and the associated scenario run. Repeating a test adds new records; it does not clear earlier ledger entries or reset credits.
+  </Step>
+</Steps>
+
+See the [billing API guide](/api-reference/credit-reporting) for response fields and [consumption reporting](/api-reference/consumption-reporting) for usage details.
+
+## Keep Live financial settings separate
+
+Sandbox scenario commands never invoke a payment processor and cannot run in Live. They do not configure Live payment methods, automatic top-ups, cancellation or refunds. Use the client portal's Live controls for those operations after your workspace is enabled and the appropriate agreement and funding are in place.
+
+For the broader environment differences, see [Sandbox and Live compared](/sandbox/overview#sandbox-and-live-compared).
