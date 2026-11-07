@@ -1,42 +1,98 @@
 ---
 title: "Review an underwriting result"
 sidebarTitle: "Origination"
-description: "Find an origination, distinguish processing status from the recommendation, and trace the risk package back to its application and evidence."
+description: "Understand every origination drawer tab: the risk package, captured request and response, supporting documents and connected sources."
 keywords: ["origination", "underwriting", "risk package", "recommendation", "application"]
 ---
 
 Use **Origination** to review the underwriting your integration submits to Insights. Each record brings together the application inputs, processing state, risk package, documents and connected sources.
 
-## Find the origination
+## Find and open an origination
 
 Open **Origination** in the left navigation. Use the status views, filters and search to locate the borrower or request. Check the selected workspace and environment before searching for an identifier from your application.
 
 <Frame caption="The origination table combines completed results with cases that need attention. These businesses are fictional.">
-  <img src="/images/console/origination.png" alt="Origination table showing six fictional businesses with completed, requires-action and failed processing statuses." />
+  <img src="/images/console/origination.jpg" alt="Origination table showing six fictional businesses with completed, requires-action and failed processing statuses." />
 </Frame>
 
-## Review a result
+Select a row to open its drawer. Confirm the borrower, origination identifier and environment in the header. The arrows move between records in the list; closing the drawer returns you to the table. **Copy record ID** helps you correlate the case with your own system or a support request.
 
-<Steps>
-  <Step title="Open the record">
-    Select a row to open its drawer. Confirm the borrower and origination identifier before reviewing the result.
-  </Step>
-  <Step title="Read the overview">
-    Check the processing status, recommendation, summary and available underwriting dimensions. Review coverage and evidence freshness alongside any score or ratio.
-  </Step>
-  <Step title="Compare inputs with output">
-    Use **API request** to inspect submitted inputs and **API response** to inspect the returned result. Check the application facts, product and risk policy references used for this run.
-  </Step>
-  <Step title="Inspect supporting evidence">
-    Open **Documents** for associated files and **Integrations** for connected sources. Follow available related records to understand missing, stale or conflicting information.
-  </Step>
-</Steps>
+| Tab | The question it answers |
+| --- | --- |
+| [Overview](#overview) | What did underwriting find, and what information supports it? |
+| [API request](#api-request) | What inputs and references were captured for this run? |
+| [API response](#api-response) | What does the returned origination record contain? |
+| [Documents](#documents) | Which files are associated with this origination? |
+| [Integrations](#integrations) | Which borrower connections are associated with this origination? |
 
-<Frame caption="The result stays in a drawer over the table, so you can inspect evidence and return to the same list.">
-  <img src="/images/console/origination-drawer.png" alt="Origination drawer for Evergreen Home Supply showing a within-policy risk package and tabs for request, response, documents and integrations." />
+<Info>
+  **API request** and **API response** are visible to Owners and Developers. Analysts use Overview, Documents and Integrations. Number badges count associated records, not completed checks or a guarantee of complete evidence.
+</Info>
+
+## Overview
+
+Start here for a readable review of the result. The summary identifies the borrower, product, requested amount and risk policy when supplied. Scroll through the drawer to inspect:
+
+- **Risk package:** the available underwriting result and its supporting dimensions. Expand nested sections to read their values, coverage and qualifications.
+- **Request information** and **Underwriting inputs:** the application facts used for this run, such as requested financing and declared business information.
+- **Borrower information:** the subject of the assessment and its recorded attributes.
+- **Published evidence** and **Activity:** associated published records and recorded activity when available. Open an evidence row for further detail.
+
+<Frame caption="Overview brings the readable risk package and its inputs together. Scroll within the drawer for evidence and additional sections.">
+  <img src="/images/console/origination-drawer.jpg" alt="Evergreen Outdoor Supply Ltd origination drawer with Overview selected, a within-policy risk package and application information." />
 </Frame>
 
-## Interpret the two kinds of status
+For example, review Evergreen Outdoor Supply's requested amount alongside its policy result, then compare the declared application information with the evidence used. A missing risk package means there is no published result to review here; it is not a decline. An absent metric is not zero.
+
+## API request
+
+Use this tab when investigating unexpected results or checking what your integration submitted. Inspect the captured payload for the borrower, application facts, document and connection identifiers, and lending-product and risk-policy version references.
+
+<Frame caption="The captured request view supports technical inspection and JSON download. Check the submitted inputs within the payload.">
+  <img src="/images/console/origination-api-request.jpg" alt="Origination API request tab showing a captured JSON payload, credentials-redacted notice and Download JSON control." />
+</Frame>
+
+Captured record metadata can surround the submitted inputs. In this example, those inputs are under `submitted_request`. Do not use the entire displayed record as a new POST request: use [Data Lookup](/console/data-lookup) to check the endpoint's request fields and required structure.
+
+Use the copy control or **Download JSON** to inspect the payload locally. **Related API requests** lists linked request logs when available. If that list is empty, search [Request logs](/console/request-logs) using the identifiers you have; an empty relationship list does not prove that no request was sent. Opening or downloading the captured request does not submit it again.
+
+## API response
+
+Use this tab to understand the returned origination record and compare it with your application's handling of the result.
+
+<Frame caption="The response identifies the origination's state and associated result. A risk package reference can point to a separately retrieved package.">
+  <img src="/images/console/origination-api-response.jpg" alt="Origination API response tab displaying the completed origination resource, associated identifiers and Download JSON control." />
+</Frame>
+
+Check the resource identifier, processing `status`, timestamps and `record_version`. Inspect `failure` or `requirements` when present, and follow the `risk_package_id` to the published result. The response can contain a reference to the risk package rather than the full package inline. Use **Overview** for the readable result and the [risk package contract](/api-reference/risk-package) for programmatic retrieval.
+
+Copy or download the JSON to compare the fields with [Data Lookup](/console/data-lookup). For the original HTTP status and timing, open the corresponding request log. An accepted asynchronous request is not yet a completed assessment; a completed assessment is not necessarily a within-policy recommendation.
+
+## Documents
+
+Use this tab to find the files associated with this origination. The table includes **File**, **Type**, **Size**, **Status** and **Added (UTC)**. Search for a file or identifier and select its row to inspect the available metadata.
+
+<Frame caption="A file record opened from Documents shows its identity, borrower association and available metadata. This example has no downloadable original.">
+  <img src="/images/console/origination-documents.jpg" alt="File details opened from the Documents tab, showing document and borrower identifiers, available status, record version and Download unavailable." />
+</Frame>
+
+Check the file's identity and status before relying on it. A dash means metadata is not supplied in that view. A file being listed does not mean every verification check passed or every required document is present.
+
+In the file details, **Download original file** is available when an authorized download is provided. **Download unavailable** means there is no usable download for that record at that time. This is a read-only evidence view; submit or associate additional documents through your integration. See [documents and evidence](/console/evidence) for the wider evidence workflow.
+
+## Integrations
+
+Use this tab to identify the borrower connections associated with the origination, such as banking, payments, commerce or accounting sources. These are case-linked connections, not the catalog of providers enabled in your Integrations Hub.
+
+<Frame caption="The Integrations tab shows the connections linked to the underwriting run. Demo sources are synthetic.">
+  <img src="/images/console/origination-integrations.jpg" alt="Origination Integrations tab listing five synthetic connections and their connected statuses." />
+</Frame>
+
+The table shows **Integration**, **Provider**, **Status**, **Frequency** and **Last sync**, where recorded. Select a row for its readable details and available source information. Owners and Developers can also inspect captured technical payloads when present.
+
+Check connection status and the available sync timestamps when a result has incomplete or stale evidence. A **Connected** status describes the connection; it does not guarantee that all expected data was retrieved. Missing frequency or sync information is not proof of a failed or successful refresh. Compare the connection with the risk package's coverage and [supporting evidence](/console/evidence).
+
+## Interpret processing and recommendation separately
 
 | What you see | What it tells you |
 | --- | --- |
@@ -47,10 +103,6 @@ Open **Origination** in the left navigation. Use the status views, filters and s
 | **Outside policy** | The package identifies policy conditions the assessed inputs do not meet. |
 | **Review required** | A person should review the evidence or unresolved conditions. |
 
-The risk package is decision support. Your institution owns the final lending decision. A missing dimension is not a zero value, and a successful HTTP response does not by itself mean underwriting has finished.
+The risk package is decision support. Your institution owns the final lending decision. To investigate a case, compare Overview with the captured inputs, then check its documents, connections and request logs. Opening the drawer does not edit the application or rerun underwriting; submit corrections through the documented API workflow.
 
-## Investigate a case that needs attention
-
-Check application and document completeness, integration connection state, the policy or product reference, and the latest API error. Developers can use [request logs](/console/request-logs) to trace the submission. The console does not edit the application or rerun underwriting when you open a drawer; submit corrections through your integration using the documented API workflow.
-
-Continue with [supporting evidence](/console/evidence), the [risk package contract](/api-reference/risk-package) or [underwriting dimensions](/api-reference/underwriting-dimensions).
+Continue with [underwriting dimensions](/api-reference/underwriting-dimensions) or follow an enrolled deal in [Portfolio](/console/portfolio).

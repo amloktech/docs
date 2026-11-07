@@ -9,7 +9,7 @@ Twenty task-based guides in a new Console tab, positioned after Documentation. E
 ## Evidence
 
 - Actual browser review of the isolated `demo.amlok.io` console, Demo Organization / Demo Workspace B / Sandbox.
-- Nineteen native 1280 x 720 PNG screenshots in `images/console/`, without resizing, compositing or fabricated UI. Existing `images/sandbox/choose-starting-data.png` reused for the first-use choice.
+- Twenty-six native 1280 x 720 JPEG screenshots in `images/console/`, without resizing, compositing or fabricated UI. Existing `images/sandbox/choose-starting-data.png` reused for the first-use choice.
 - Source review in `amloktech/webapp`: identity settings, environment settings, billing settings, account security, invitation form, navigation, workspace catalog, tables, record drawers, case views, Hub builder, Data Lookup, Sandbox scenarios, resources and shared role policy.
 - Existing Sandbox guides, API contracts and pricing rules remain the authorities for fixtures, operation semantics and commercial terms.
 
@@ -17,7 +17,7 @@ Twenty task-based guides in a new Console tab, positioned after Documentation. E
 
 - Account invitation and self-registration, first-session sample/empty choice, preparation progress and first result.
 - Organization/workspace/environment boundaries, Live activation, compact tables and drawers.
-- Origination processing versus underwriting recommendation, monitoring, documents, verification and source evidence.
+- Origination processing versus underwriting recommendation, monitoring, documents, verification and source evidence. Every primary drawer tab is documented individually: five in Origination and four in Portfolio, with screenshots, role boundaries, actions and empty/missing-data interpretation.
 - Integrations Hub draft selection, markets, filtered category selection and API handoff.
 - Scoped keys, incoming requests, outgoing events, Data Lookup and executable scenarios.
 - Organization identity, product access, audit activity, scoped team invitations, personal and organization security.
@@ -37,7 +37,11 @@ Do not infer publication from Save draft in the Hub, retry from opening a reques
 - Mintlify validate: build and validation passed.
 - Mintlify broken-links: no broken links.
 - Navigation/page/image references: all new targets exist.
-- Browser review: Console navigation, overview, onboarding steps, billing screenshot expansion and Data Lookup rendering.
+- Browser review: Console navigation, overview, onboarding steps, billing screenshot expansion and Data Lookup rendering. Follow-up covers all nine Origination/Portfolio tabs and their documentation sections.
 - Git diff whitespace check: passed.
 
 Changes are prepared on `codex/console-guides` for review; live deployment requires publication approval.
+
+## Drawer guide follow-up
+
+Captured seven additional native screenshots. Inspected all five Origination and four Portfolio tabs and the corresponding case-workspace source. Technical request/response tabs are Owner/Developer only. Captured origination JSON can wrap submitted inputs in `submitted_request`; it is not documented as a ready-to-submit POST body. Sparse metadata remains explicitly absent, and a connected source or generated event does not imply fresh data or successful delivery. No application or dataset changes.
