@@ -349,7 +349,19 @@ Delivery is at least once and may be out of order. Deduplicate by event ID. Reso
 A run failure and a risk alert describe different problems. Missing data must not be treated as a healthy risk result. Events never contain borrower credentials, complete financial payloads or signed download URLs.
 ''')
     api('webhook-operations','Troubleshoot and replay webhook delivery','''
-Use `GET /v1/webhook-deliveries` to inspect attempts by `event_id` or `endpoint_id`. Each row has attempt number, delivery state, attempt time and HTTP status. Destination creation, subscriptions and secret rotation are console configuration.
+Use `GET /v1/webhook-deliveries` to inspect attempts by `event_id` or `endpoint_id`. Each row has attempt number, delivery state, attempt time and HTTP status. New delivery records also include `delivery_id`, `replay_id`, `duration_ms`, `error_code`, `next_attempt_at` and `exhausted`. Historical records can omit these fields. Destination creation, subscriptions and secret rotation are [Console configuration](/console/webhooks).
+
+## Diagnose a delivery
+
+1. Confirm the event exists with `GET /v1/events`. Your key needs the event scope and the referenced resource's read scope. Billing events also require current Owner access.
+2. Check the endpoint is enabled in the correct workspace and environment and subscribes to that exact event type. Events recorded before a subscription was created are not sent automatically.
+3. Inspect the attempt's `error_code` and HTTP status. A recorded event is not a delivery acknowledgment; only a 2xx receiver response confirms acceptance.
+4. Resolve the receiver, DNS, certificate, URL or subscription issue. Use the [delivery error catalog](/api-reference/errors#webhook-delivery-diagnostics). Never disable signature verification to fix a failed request.
+5. If `next_attempt_at` is present, another automatic attempt is scheduled. If `exhausted` is true, fix the cause and request a replay while the event is retained.
+
+Each delivery has one initial attempt and six automatic retries at successive delays of 1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours and 24 hours. A manual replay starts a new delivery with its own retry budget. Delivery is at least once: an ambiguous acknowledgment or worker recovery can cause duplicates. Deduplicate the original event ID before applying any business side effect.
+
+## Replay a retained event
 
 '''+sample('replayEvent')+'''
 

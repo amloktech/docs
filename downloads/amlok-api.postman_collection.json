@@ -2356,7 +2356,7 @@
           ],
           "query": []
         },
-        "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
+        "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority."
       },
       "response": [
         {
@@ -2380,7 +2380,7 @@
               ],
               "query": []
             },
-            "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
+            "description": "Read the durable event feed. Start with start=now before a snapshot bootstrap, then retain resume_cursor after each committed batch. Delivery order is not resource-version order. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority."
           },
           "status": "OK",
           "code": 200,
@@ -2416,7 +2416,7 @@
           ],
           "query": []
         },
-        "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
+        "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority."
       },
       "response": [
         {
@@ -2441,7 +2441,7 @@
               ],
               "query": []
             },
-            "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
+            "description": "Get event. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority."
           },
           "status": "OK",
           "code": 200,
@@ -2727,7 +2727,7 @@
           ],
           "query": []
         },
-        "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
+        "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority."
       },
       "response": [
         {
@@ -2751,7 +2751,7 @@
               ],
               "query": []
             },
-            "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata."
+            "description": "List deliveries. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:read. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority."
           },
           "status": "OK",
           "code": 200,
@@ -2761,7 +2761,7 @@
               "value": "application/json"
             }
           ],
-          "body": "{\n  \"data\": [\n    {\n      \"id\": \"del_synthetic\",\n      \"event_id\": \"evt_synthetic\",\n      \"endpoint_id\": \"dest_synthetic\",\n      \"attempt\": 1,\n      \"status\": \"delivered\",\n      \"attempted_at\": \"2026-11-06T12:00:00Z\",\n      \"http_status\": 200\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
+          "body": "{\n  \"data\": [\n    {\n      \"id\": \"del_synthetic\",\n      \"event_id\": \"evt_synthetic\",\n      \"endpoint_id\": \"dest_synthetic\",\n      \"attempt\": 1,\n      \"status\": \"delivered\",\n      \"attempted_at\": \"2026-11-06T12:00:00Z\",\n      \"http_status\": 200,\n      \"delivery_id\": \"delivery_synthetic\",\n      \"replay_id\": null,\n      \"duration_ms\": 84,\n      \"error_code\": null,\n      \"next_attempt_at\": null,\n      \"exhausted\": false\n    }\n  ],\n  \"meta\": {\n    \"request_id\": \"req_synthetic\",\n    \"schema_version\": \"1.0.0\",\n    \"environment\": \"sandbox\"\n  },\n  \"page\": {\n    \"next_cursor\": null,\n    \"has_more\": false,\n    \"snapshot_id\": \"snap_synthetic\",\n    \"expires_at\": \"2026-11-06T13:00:00Z\"\n  }\n}"
         }
       ]
     },
@@ -2794,7 +2794,7 @@
           ],
           "query": []
         },
-        "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
+        "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.",
         "body": {
           "mode": "raw",
           "raw": "{\n  \"event_id\": \"evt_synthetic\",\n  \"endpoint_id\": \"dest_synthetic\"\n}",
@@ -2835,7 +2835,7 @@
               ],
               "query": []
             },
-            "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata.",
+            "description": "Requeue an event for an existing console-managed webhook destination. Replay only retries delivery; it never reruns analysis or adds usage charges. All IDs and cursors must belong to the authorized workspace and environment. Required scope: events:write. Billing notifications require billing:read and current Owner authority in addition to event access. Data notifications require data:read. Lists and replays must not reveal unauthorized resource metadata. Requires the source resource read scope in addition to the event scope. Lists omit unauthorized events and attempts; direct access and replay reject them. Billing events require current Owner authority.",
             "body": {
               "mode": "raw",
               "raw": "{\n  \"event_id\": \"evt_synthetic\",\n  \"endpoint_id\": \"dest_synthetic\"\n}",

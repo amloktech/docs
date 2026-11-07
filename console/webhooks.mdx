@@ -11,8 +11,8 @@ Webhooks notify your integration about underwriting, monitoring and other subscr
 
 1. Select the correct workspace and environment.
 2. Open **Endpoints** and select **Add webhook**.
-3. Enter a recognizable name and an HTTPS destination controlled by your team.
-4. Select the event subscriptions needed by your application and complete the requested identity confirmation.
+3. Enter a recognizable name and a public HTTPS hostname on port 443 controlled by your team. Use the final URL; redirects, private addresses and URL credentials are not supported.
+4. Select individual event subscriptions, or use **Select all** / **Clear**. Saving requires at least one event. Editing preserves the selected subset. Billing events are available only to Owners. Complete the requested identity confirmation.
 5. Store the signing secret securely when it is shown, and implement signature verification in your receiver.
 
 Use the endpoint drawer to inspect or edit its configuration. An endpoint being enabled does not prove that your server has received an event. Confirm delivery with a controlled test.
@@ -49,3 +49,14 @@ Implement signature verification against the original request body, acknowledge 
 Sandbox scenarios record example events and deliveries. Outbound test delivery requires the scenario's explicit delivery option and an eligible endpoint you control. The separate demonstration site suppresses outbound delivery; its records illustrate the experience without contacting external systems.
 
 Start with a successful receiver, then test failure, duplicate and retry handling. See [Sandbox scenarios](/console/sandbox) and the [webhook integration guide](/api-reference/webhooks).
+
+
+## Update and rotate
+
+Choose **Edit endpoint** to change the URL, exact subscriptions or enabled status. Disabling stops future/queued sends once the worker checks the endpoint; a request already in flight can finish. Re-enabling does not backfill events recorded while the endpoint was disabled. Replay retained events explicitly if needed.
+
+Choose **Rotate signing secret** in the endpoint actions. Copy the new secret once and update your receiver within the 24-hour overlap. The drawer displays the previous-secret expiry, retry delays, timeout and replay window. Rotation needs identity confirmation, and a second rotation is blocked during the overlap.
+
+In **Deliveries & events**, a row marked **Recorded** is a business event, not proof of delivery. Attempt rows show the endpoint ID, HTTP result, duration, safe error code and scheduled next attempt when present. `exhausted` means no automatic retry remains. Historical/demo records may have fewer diagnostics. See the [complete error catalog](/api-reference/errors).
+
+Replay is an authenticated API action using `POST /v1/webhook-replays`, an existing event and enabled endpoint ID, and an idempotency key. Use Data Lookup for the request example. Repeating a replay with the same key returns the original receipt; a new key intentionally requests a new delivery. This does not charge for or rerun the original business action.

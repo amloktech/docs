@@ -119,8 +119,21 @@ Do not mark an event complete before its effects are durably committed. A worker
 
 Delivery is at least once, and arrival order is not guaranteed. Keep deduplication records for the agreed replay window, not merely the five-minute signature tolerance.
 
-The retry offsets after the first failed delivery are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours**. Terminal failures require [delivery review and reconciliation](/api-reference/webhook-operations). List retained events to discover missing IDs and delivery attempts to inspect failures.
+There is one initial attempt and at most six automatic retries. Delays after each successive failed attempt are **1 minute, 5 minutes, 30 minutes, 2 hours, 8 hours, and 24 hours** (seven attempts total). These are successive delays, not offsets from the first attempt. Any non-2xx response, including 3xx and 4xx, is unsuccessful. Redirects are never followed; Retry-After from the receiver does not replace this schedule. Unsafe destinations, disabled/unsubscribed endpoints and oversized payloads stop automatic delivery. Terminal failures require [delivery review and reconciliation](/api-reference/webhook-operations). List retained events to discover missing IDs and delivery attempts to inspect failures.
 
-[Replay](/api-reference/endpoints/events/replay-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. Read configured overlap, retention and delivery timeouts in the console delivery settings. Authorized administrators manage URLs, subscriptions, enablement and secret rotation in the client portal; follow the [webhook operations procedure](/api-reference/webhook-operations).
+[Replay](/api-reference/endpoints/events/replay-event) preserves the original event ID. It must use a fresh delivery timestamp/signature so delayed replay can pass timestamp verification. The timeout is 10 seconds including DNS, connection and TLS, the body limit is 64 KiB, the signing-secret overlap is 24 hours and event replay retention is 30 days. The endpoint drawer shows these settings. Authorized administrators manage URLs, subscriptions, enablement and secret rotation in the client portal; follow the [webhook operations procedure](/api-reference/webhook-operations).
 
 Event bodies contain resource references and limited status changes. Retrieve sensitive evidence through authenticated API reads. Do not add provider credentials, identity media, or unrestricted raw payloads to event logs.
+
+
+## Destination requirements
+
+Register a public DNS hostname using HTTPS on port 443. Paths and query parameters are supported; do not place credentials in them. URL usernames, passwords, fragments, IP literals and private/local destinations are rejected. DNS is checked on every attempt and the validated public address is pinned for that connection. All resolved addresses must be public, including IPv6. Your TLS certificate must match the hostname and chain to a trusted authority.
+
+The endpoint is scoped to one workspace and Sandbox or Live environment. Use distinct destinations and signing secrets for each. Your receiver must accept POST with application/json; no browser cookie, CSRF token, Basic authentication, custom Bearer header or mutual TLS is sent. Authenticate with X-AMLOK-Signature. Keep your AMLOK API key on your server for resource reads; never use it as the webhook signing secret. Do not use source IP as the sole authentication check.
+
+## Rotate a signing secret
+
+Open the endpoint drawer and choose **Rotate signing secret**, then confirm your identity. Save the new secret shown once. For 24 hours, each attempt carries both the new and previous signatures as separate `v1` values; the timestamp and raw body are identical. Update your receiver to the new secret during the overlap. The helpers above accept any matching `v1` signature. After expiry only the new secret signs attempts, including replays. Another rotation during the overlap is rejected to avoid unexpectedly invalidating the previous secret.
+
+If a secret is compromised, disable the endpoint immediately, replace the destination/secret and verify your receiver before re-enabling. Rotation overlap is for continuity, not immediate revocation; do not depend on it to revoke a stolen secret.
