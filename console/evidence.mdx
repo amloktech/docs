@@ -1,0 +1,43 @@
+---
+title: "Trace a result to its evidence"
+sidebarTitle: "Documents and evidence"
+description: "Inspect application documents, connected sources and verification information without confusing source facts, derived measurements and underwriting conclusions."
+keywords: ["documents", "evidence", "verification", "KYB", "KYC", "provenance"]
+---
+
+A risk package is useful when you can understand the information behind it. Start from an origination or monitored deal, then follow its documents, integrations and related records to the supporting evidence.
+
+## Follow the evidence trail
+
+1. Open the borrower record in **Origination** or **Portfolio**.
+2. Read the result's summary, coverage and timestamps.
+3. Open **Documents** or **Integrations**, where available, to inspect the supporting records.
+4. Compare the evidence identifiers with those returned in **API response** or the related API records.
+5. Use [Data Lookup](/console/data-lookup) to understand an unfamiliar normalized field, its type and its meaning.
+
+## Read each layer correctly
+
+| Layer | Example | How to use it |
+| --- | --- | --- |
+| Application input | Requested financing amount, business facts or supplied documents | Confirm what your institution submitted. |
+| Source evidence | Account activity, accounting data or verification findings | Check the source, subject, observation date and coverage. |
+| Normalized or enriched data | Standardized transactions, identities and financial measurements | Read units, time period, calculation and provenance when provided. |
+| Underwriting conclusion | A policy result, reason or risk dimension | Review the evidence and limitations behind the conclusion. |
+
+Do not treat an unverified business name match as a completed business verification. For identity and business checks, distinguish the entity from associated people, and a screening match from a confirmed finding. The [verification field reference](/api-reference/verification-fields) defines the normalized structures.
+
+## Work with documents
+
+Your integration submits application documents through the [document workflow](/api-reference/documents). In the console, open the associated document record to inspect its available metadata and status. Use a download or preview action when one is supplied for that record and your access permits it.
+
+Document metadata is not the file itself. A file may still be processing, unavailable or outside your current access. If an issued download link expires, obtain a fresh link through the documented access flow rather than saving the temporary URL as a permanent reference.
+
+## Investigate incomplete or conflicting evidence
+
+- **Missing source:** check whether the borrower connected the required integration and granted the necessary consent.
+- **Stale source:** compare the last observation or refresh with the result's evaluation time.
+- **Missing field:** check whether the field is nullable, not supplied by that source or outside the requested coverage.
+- **Conflicting values:** compare source, subject, currency and reporting period before concluding that values disagree.
+- **Processing error:** trace the related request or job instead of assuming the evidence is empty.
+
+Use stable record identifiers for reconciliation. Avoid copying credentials or unnecessary borrower documents into support messages. For complete data retrieval beyond what the console displays, follow [data access](/api-reference/data-access) and [large results](/api-reference/large-results).

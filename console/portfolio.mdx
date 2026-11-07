@@ -1,0 +1,95 @@
+---
+title: "Follow a monitored deal"
+sidebarTitle: "Portfolio"
+description: "Understand every monitored-deal drawer tab: deal overview, daily syncs, integrations, and notifications with their webhook delivery history."
+keywords: ["portfolio", "Signal", "monitoring", "flags", "alerts", "baseline"]
+---
+
+Use **Portfolio** to follow deals enrolled in Signal. A monitored deal connects the borrower, the monitoring baseline and the changes detected from available evidence.
+
+## Find and open a monitored deal
+
+Open **Portfolio**, filter the table and select a deal. Check the borrower, monitoring status and available deal terms. Use the record identifier when matching a console record to your servicing system.
+
+<Frame caption="The portfolio table gives you a starting point for reviewing active monitoring records. These businesses are fictional.">
+  <img src="/images/console/portfolio.jpg" alt="Portfolio table with three fictional monitored deals and their monitoring statuses." />
+</Frame>
+
+Selecting a row opens a drawer over the table. Its header identifies the deal, environment, status and monitoring start time. Use the arrows to move between records or close the drawer to return to your list.
+
+| Tab | The question it answers |
+| --- | --- |
+| [Overview](#overview) | What is being monitored, and what is the current context? |
+| [Daily syncs](#daily-syncs) | What source refresh activity has been recorded? |
+| [Integrations](#integrations) | Which connections support this monitoring record? |
+| [Notifications & flags](#notifications-and-flags) | What changes need attention, and were their notifications delivered? |
+
+The count on a tab represents associated records. It is not a coverage score. Missing values or an empty list should not be interpreted as a healthy result.
+
+## Overview
+
+Start here to establish the context before investigating a change. The summary shows the borrower, Signal product, deal amount and monitoring frequency when available. Scroll through the drawer for:
+
+- **Linked origination:** the original underwriting record, when linked. Follow it to compare with the original risk package and application evidence. No linked origination means the relationship is absent, not that underwriting failed.
+- **Deal dimensions & terms:** recorded financing details and terms. Expand nested values such as funded or outstanding amounts when provided.
+- **Borrower information:** the subject being monitored and its recorded attributes.
+- **Monitoring overview:** the last evaluation, integration count, recorded syncs and open flags.
+- **Monitoring baselines:** associated baseline records. Open a row to inspect the available baseline information. **Activity** appears when activity is recorded.
+
+<Frame caption="Overview establishes the deal and borrower context before you investigate a sync or flag. Scroll down to review monitoring and baseline information.">
+  <img src="/images/console/portfolio-overview.jpg" alt="Pacific Freight Partners monitored-deal Overview showing linked-origination information, deal terms and borrower details." />
+</Frame>
+
+Use the baseline and evidence dates to understand a reported change. A deal's active monitoring status does not establish that every connected source is current. A dash means the value is not supplied in that view.
+
+## Daily syncs
+
+Use **Daily syncs** to inspect recorded refresh activity associated with this monitored deal. The table shows **Time (UTC)**, **Sync**, **Integration** and **Status**. Filter or search the records, then select a row for its details, available summary and outcome.
+
+<Frame caption="Daily syncs exposes recorded refresh outcomes. This example contains a partial result that deserves further inspection.">
+  <img src="/images/console/portfolio-daily-syncs.jpg" alt="Daily syncs tab for Pacific Freight Partners showing one recorded refresh with partial status." />
+</Frame>
+
+When a value appears stale, check the most recent relevant sync, its source association and its status. Inspect any supplied error or explanation for a partial or failed result. Owners and Developers can inspect captured request or response payloads and download JSON where provided.
+
+**Daily syncs** is the tab name, not a guarantee that all integrations refresh daily or at the same time. A successful sync describes that recorded activity; it does not establish the freshness of every source. An empty tab means no related sync is shown. Opening a row does not trigger a refresh or retry.
+
+## Integrations
+
+Use this tab to review the borrower connections linked to the monitored deal. The table shows **Integration**, **Provider**, **Status**, **Frequency** and **Last sync**, where recorded. Select a row to inspect its details and available source information.
+
+<Frame caption="These five synthetic connections belong to the selected monitored deal. Source status and data freshness answer different questions.">
+  <img src="/images/console/portfolio-integrations.jpg" alt="Portfolio Integrations tab listing synthetic verification, accounting, commerce, payments and bank connections." />
+</Frame>
+
+Check this tab when a flag concerns missing data or a disconnected source. Compare the connection's status with **Daily syncs** and the evidence timestamps. A connected source can still have incomplete or stale observations, and missing sync metadata does not prove that a refresh succeeded.
+
+This list is different from the [Integrations Hub](/console/embeddings): the Hub controls which integrations borrowers can select; this tab shows connections associated with the selected deal. Inspecting a connection does not reconnect it or change the Hub configuration. Owners and Developers can inspect additional captured technical payloads when available.
+
+## Notifications and flags
+
+Open **Notifications & flags** to review detected changes associated with the monitored deal. The table shows **Time (UTC)**, **Flag**, **Severity** and **Status**. Start with the event's reason and current state, then examine the supporting context.
+
+<Frame caption="Notifications and flags stay attached to the monitored deal they describe. Open a flag to inspect its explanation and associated deliveries.">
+  <img src="/images/console/monitoring-flags.jpg" alt="Pacific Freight Partners Notifications and flags tab showing an open monitoring alert." />
+</Frame>
+
+<Steps>
+  <Step title="Read the flag">
+    Select its row. Review the readable fields and summary, including available measurements and evidence references. Compare the change with the baseline and previous observations where supplied. Severity indicates the reported importance; status describes the flag's current state.
+  </Step>
+  <Step title="Inspect the event payload when needed">
+    Owners and Developers can inspect **Webhook event JSON** and download the captured event. Use its identifiers to correlate it with your own system. The readable summary and technical payload describe the same event from different perspectives.
+  </Step>
+  <Step title="Check the delivery history">
+    Review **Webhook deliveries** in the flag details. Open a delivery to inspect recorded attempts, response status, latency and result. A generated flag does not prove your endpoint received it. Multiple delivery attempts can belong to one event; they are not necessarily separate risk changes.
+  </Step>
+</Steps>
+
+If no delivery is shown, use [Dev Tools > Deliveries & events](/console/webhooks) to investigate the destination and related event identifier. If the event concerns stale or missing evidence, check **Integrations** and **Daily syncs** before interpreting it as a change in the business itself.
+
+## Decide what happens next
+
+A monitoring event reports a change or condition; it does not itself change a credit limit, collect a payment or contact the borrower. Your institution decides the appropriate action. Viewing an alert does not acknowledge it in your servicing system, resolve it or replay a webhook.
+
+For a practical exercise, open Pacific Freight Partners in the demo dataset, inspect its partial sync and open flag, then trace the event to its delivery details. Use [Sandbox scenarios](/console/sandbox) to test a changing-risk case and a source-disconnection case. See [monitoring design](/api-reference/monitoring-design) for enrollment, baseline and event contracts.

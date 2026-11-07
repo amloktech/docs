@@ -1,0 +1,49 @@
+---
+title: "Resolve common Console issues"
+sidebarTitle: "Troubleshooting"
+description: "Find the next step for sign-in, workspace access, missing records, failed processing, webhook delivery and billing questions."
+keywords: ["troubleshooting", "support", "missing records", "access", "errors", "billing"]
+---
+
+Start by checking the selected organization, workspace and environment. Many apparent data or access issues come from inspecting a different context from the one used by your integration.
+
+## Account and access
+
+| Issue | What to do |
+| --- | --- |
+| Invitation expired or was replaced | Ask the Owner to resend it and use the newest email link. |
+| Invitation belongs to another email | Sign in with the invited account or ask the Owner to correct the invitation. |
+| Workspace missing from the menu | Confirm the invitation was accepted and that membership applies to this workspace. |
+| Live opens an activation prompt | Ask AMLOK support to activate Live for the workspace. Sandbox access does not activate Live automatically. |
+| A settings page is absent or forbidden | Check your role. Billing and team administration require an Owner. |
+| An action asks you to authenticate again | Complete the current password, recent provider sign-in or MFA prompt, then retry the action. |
+
+See [account access](/console/account-access), [team roles](/console/team) and [security](/console/security).
+
+## Records and processing
+
+| Issue | What to do |
+| --- | --- |
+| A table is empty | Clear search and filters, then confirm workspace, environment and permissions. In a new Sandbox, check whether sample data was loaded. |
+| A record is missing after an API submission | Check the response and request identifier. An accepted asynchronous request may still be processing. |
+| Setup keeps showing progress | Use **Check again** after an interruption or **Open scenario tools** to inspect the setup run. Avoid creating repeated fresh runs as a recovery method. |
+| Underwriting completed but was not approved | Read the recommendation. Completed is a processing state; your institution makes the lending decision. |
+| A value or source is missing | Inspect field nullability, source coverage, consent and freshness. Missing does not mean zero. |
+| Monitoring has no recent change | Check refresh activity and connected sources. No alert is not proof of fresh data or no risk. |
+
+Continue with [Origination](/console/origination), [Portfolio](/console/portfolio), [evidence](/console/evidence) or [Sandbox setup](/sandbox/getting-started).
+
+## Developer and billing issues
+
+- **Key rejected:** check its expiration, scope and environment. Never send the secret to support.
+- **Request failed:** inspect the returned error and follow [request recovery](/api-reference/request-recovery) before resubmitting.
+- **Webhook missing:** distinguish event creation from delivery and inspect the endpoint's subscriptions and attempts in [webhooks](/console/webhooks).
+- **Balance does not match a payment:** check whether funding succeeded and whether a corresponding credit was posted. Review later debits or adjustments.
+- **Counts differ across reports:** compare time periods, filters and units. API traffic, workload and billable product consumption measure different things.
+- **Sandbox payments appear real:** the records model outcomes, but no real charge or money movement occurs. Keep the environment visible when sharing examples.
+
+## Contact support with a useful trace
+
+Email [support@amlok.io](mailto:support@amlok.io) with the affected organization and workspace identifiers, environment, UTC time, record or request identifier, and the error code or unexpected behavior. Explain the steps you took and what you expected.
+
+Include a screenshot only when it helps, with unnecessary personal or borrower information removed. Do not include passwords, API keys, signing secrets, authenticator setup information or full payment details. Your team can use the same identifiers to correlate client logs, console records and webhook attempts.
