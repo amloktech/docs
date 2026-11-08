@@ -23,7 +23,9 @@ The console uses the same compact table and right-side drawer pattern across bor
   <img src="/images/console/origination.jpg" alt="Origination table with six fictional businesses, status views, filters, search, column controls and pagination." />
 </Frame>
 
-The **Export** button downloads the matching table records as CSV. A table export serves the current console view. Use [API exports](/api-reference/large-results) when you need complete datasets beyond the records loaded in the console; do not use a screen count as proof that an enterprise extraction is complete.
+For product records and audit events, **Export** prepares every record matching your filters, including records beyond the visible page. Wait for **Download CSV** before downloading. You can continue browsing while preparation runs. The export contains table summaries; use a record drawer or [API exports](/api-reference/large-results) for complete business payloads and evidence.
+
+Exports expire after one hour. If your permissions, enabled products or source consent change, create a new export. You can have two exports preparing at a time and start ten per hour. If an export exceeds the supported size, narrow your filters and create smaller exports.
 
 ## Open and navigate a record
 
@@ -47,6 +49,10 @@ If a copied link does not open, check [workspace access and environment](/consol
 
 ## See new API activity
 
-Record lists refresh every 30 seconds while the Console is visible and when you return to its window. If a request is still processing, wait for its terminal status or follow its event before expecting the result. Switching workspaces or environments clears the previous record context. Table filters and exports apply to the loaded collection; use API pagination or exports for a complete large dataset.
+Record lists refresh when you return to the Console window or select **Refresh**. Search, filters, sort order and displayed counts apply to all matching product records in the selected workspace and environment. The table loads only the current page; a drawer retrieves its record when you open it.
 
-When more history exists than the Console has loaded, a notice explains this limit. The current window contains up to 500 current API records of each type, 500 API request logs and 1,000 records from the earlier Console data store. Search, view counts, filters and CSV do not search beyond that window. An empty filtered table therefore does not prove that no older matching records exist. Use the relevant API list with its `next_cursor`, or a completed [export](/api-reference/large-results), to retrieve full history.
+New records do not enter an existing page traversal until you refresh. Updates to existing records remain visible, so a change to a sort or filter value can move a record while you browse. Refresh to reconcile a changing list. Use a completed CSV export when you need a consistent set of matching rows.
+
+A page cursor expires after 15 minutes. If you see a page-expired message, refresh the table. Changing filters, workspace or environment starts a fresh traversal. If a query is busy or takes too long, narrow the date range or search and retry.
+
+Large nested objects open only when expanded. Arrays show a bounded group of items with their own page controls. JSON panels may show a shortened preview; use the explicit full-data copy action or API response when you need the complete payload.
