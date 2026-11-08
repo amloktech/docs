@@ -112,3 +112,24 @@ assert Decimal(usage['unit_rate'])*usage['quantity']==Decimal(usage['amount'])==
 assert usage['transaction_id']==txn['id'] and txn['usage_id']==usage['id']
 assert fixtures['Origination']['submitted_request']==fixtures['CreateOrigination']
 print(json.dumps({'institution_completeness':'passed','negative_examples':len(negative)+1,'backend_executed':False}))
+
+# Prepayment discounts are additive reporting fields, separate from usage rates.
+commitment=deepcopy(fixtures['BillingSummary']['pricing']['commitment'])
+assert commitment['prepayment_discount_percent']==0
+assert commitment['pre_discount_payment_amount']==commitment['payment_amount']
+historical=deepcopy(commitment)
+historical.pop('prepayment_discount_percent');historical.pop('pre_discount_payment_amount')
+assert not valid('BillingCommitment',historical), 'Historical snapshots must remain valid'
+negotiated=deepcopy(commitment)
+negotiated.update(monthly_minimum='1000.00',payment_cadence='quarterly',months_per_payment=3,pre_discount_payment_amount='3000.00',prepayment_discount_percent=20,payment_amount='2400.00')
+assert not valid('BillingCommitment',negotiated)
+assert Decimal(negotiated['payment_amount'])==Decimal(negotiated['pre_discount_payment_amount'])*(1-Decimal(str(negotiated['prepayment_discount_percent']))/100)
+for invalid in [-1,100.01,'20',None]:
+ bad=deepcopy(negotiated);bad['prepayment_discount_percent']=invalid
+ assert valid('BillingCommitment',bad), ('accepted invalid prepayment discount',invalid)
+for invalid in ['3000',3000.00,'-3000.00']:
+ bad=deepcopy(negotiated);bad['pre_discount_payment_amount']=invalid
+ assert valid('BillingCommitment',bad), ('accepted invalid gross amount',invalid)
+assert 'do not apply the discount a second time' in schemas['FinancialBillingRate']['properties']['discount_percent']['description']
+assert 'does not reduce' in schemas['BillingCommitment']['properties']['prepayment_discount_percent']['description'].lower()
+print(json.dumps({'negotiated_prepayment_discount':'passed','historical_snapshots':'compatible','backend_executed':False}))
