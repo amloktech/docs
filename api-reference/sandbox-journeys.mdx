@@ -33,7 +33,7 @@ curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \
 
 The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
 
-Use the [runnable scenario client](/downloads/run-sandbox-scenario.mjs) with Node.js 22 or later:
+Use the [runnable scenario client](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-scenario.mjs) with Node.js 22 or later:
 
 ```bash
 AMLOK_SANDBOX_SCENARIO=healthy node run-sandbox-scenario.mjs healthy-run.json

@@ -23,6 +23,7 @@ jobs:
           git diff --exit-code -- openapi downloads api-reference data-model research docs.json data/api-reference-index.json data/product-api-examples.json
       - name: Validate contracts and examples
         run: |
+          python scripts/test-download-links.py
           python scripts/validate-api-reference.py
           python scripts/test-product-api-review.py
           python scripts/test-risk-package.py
