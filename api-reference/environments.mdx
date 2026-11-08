@@ -5,9 +5,51 @@ description: "Sandbox and Live for the AMLOK product API."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Sandbox and Live use separate keys, records, connections and financial balances. Use the institution-issued origin in `AMLOK_API_BASE_URL`, without a version suffix. Do not infer API hostnames from the console or documentation domain.
+## Customer URLs
 
-`meta.environment` and event `environment` identify the context. Sandbox examples and simulated credits do not establish production funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live.
+| Service | URL | Use |
+| --- | --- | --- |
+| Console | [console.amlok.io](https://console.amlok.io) | Sign in, select a workspace and Sandbox or Live, and manage keys and webhook destinations. |
+| API origin | `https://api.amlok.io` | Set `AMLOK_API_BASE_URL` or Postman `base_url` to this value. |
+| Versioned API | `https://api.amlok.io/v1` | Every documented operation has a path beginning with `/v1`. |
+| Documentation | [docs.amlok.io](https://docs.amlok.io) | Read guides, API schemas and downloads. This is not the product API host. |
+
+```bash
+export AMLOK_API_BASE_URL="https://api.amlok.io"
+# Load AMLOK_API_KEY from your server's secret manager.
+curl --fail-with-body --max-time 30 \
+  "$AMLOK_API_BASE_URL/v1/configuration" \
+  --header "Authorization: Bearer $AMLOK_API_KEY"
+```
+
+Do not append `/v1` to the environment variable: the examples already include it. Otherwise the request becomes `/v1/v1/...`. Use HTTPS and the documented hostname directly; do not forward a bearer key through a redirect or send it to the Console, documentation, a provider or your webhook receiver.
+
+## Sandbox and Live use the same API address
+
+Sandbox and Live are separate environments **inside a workspace**, accessed through `https://api.amlok.io`. The API key selects the workspace and environment. There is no separate customer Sandbox hostname, caller-supplied workspace override or environment header. Switching the Console selector does not change an existing API key.
+
+Create your key in the intended Console environment. Sandbox and Live use separate keys, records, connections and financial balances. Authenticated response `meta.environment` is `sandbox` or `live`; event `environment` follows the same convention. Check this field before processing records. Public health endpoints need no key and do not identify or authorize a customer workspace.
+
+Sandbox uses fictional data and simulated financial activity. It does not collect real payments or establish Live funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live. Live activation and product access must be enabled separately; changing the host or requesting broader key scopes does not activate them.
+
+## Deployment staging and demos
+
+Amlok's staging deployment uses [staging-console.amlok.io](https://staging-console.amlok.io) with `https://staging-api.amlok.io`. Use this pair only when Amlok has given you access for a staging review. It has separate accounts, workspaces and credentials. It is **not** the Sandbox environment for customer accounts at `console.amlok.io`. A key issued in one deployment is not valid in the other.
+
+Demo workspaces shown in screenshots are separate demonstration data. Use your own Console workspace and Sandbox key when building an integration; do not use demo records as integration credentials or live evidence.
+
+## URLs in requests and responses
+
+| URL or field | Owner and handling |
+| --- | --- |
+| `return_url` | Your application's registered destination after the borrower finishes or cancels the Hub. Replace `https://institution.example.com/connected` with your own allowed URL. |
+| `embed_origin` | Your frontend's exact registered origin, such as `https://institution.example.com`, without a path. It must match the embedding configuration. |
+| `hub_origin` | Read it from `GET /v1/configuration` for the selected embedding version. Use it for iframe policy and message-origin validation; do not guess it. |
+| `launch_url` | Use the complete, short-lived URL returned by the embedding-session command. Customer deployments currently return `https://api.amlok.io/hub/...`. Do not construct it, change its host or add `/v1`. |
+| Document or export `url` | Use the complete authorized URL from the download command, currently `https://api.amlok.io/downloads/...`. It is time-limited; do not attach the workspace bearer key or log the token. |
+| Webhook destination | Your own public HTTPS receiver, registered in **Dev Tools > Endpoints**. Amlok sends signed event requests here. It is not an Amlok API URL. |
+
+The `institution.example.com` domain, synthetic IDs and synthetic URL tokens in examples are illustrative and do not work as credentials. Obtain real session and download URLs from API responses. Follow the [Integrations Hub guide](/api-reference/integration-hub), [webhook setup](/console/webhooks) and [authentication guide](/api-reference/authentication).
 
 Exercise the borrower connection journey, a completed Origination, missing inputs, expired consent, restricted evidence and monitoring failures. See [Sandbox journeys](/api-reference/sandbox-journeys).
 

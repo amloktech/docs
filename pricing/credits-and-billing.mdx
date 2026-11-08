@@ -3,11 +3,11 @@ title: "Credits and billing"
 description: "Fund your workspace, manage automatic top-ups, and understand how usage consumes credits."
 ---
 
-## Monthly minimum, paid annually
+## Monthly minimum and funding schedule
 
-Your minimum monthly commitment is based on estimated monthly volume and starts at **CAD 1,000.00**. You pay **12 times that amount at signing and every 12 months at renewal**. At the minimum, the payment is **CAD 12,000.00**.
+The default monthly commitment is **CAD 1,000.00**. The default annual schedule funds **CAD 12,000.00**; a quarterly schedule funds **CAD 3,000.00** each quarter. Your negotiated commitment and schedule appear in **Your workspace pricing**.
 
-There is no scheduled monthly payment. Monthly usage is deducted from the prepaid balance. Additional top-ups fund usage when needed and do not start a new agreement term.
+Only settled funding adds spendable credits. Recording or changing agreement terms does not itself charge a card, debit a bank account, create an invoice or add money. The minimum is not also deducted as a separate monthly usage charge.
 
 ## One workspace credit balance
 
@@ -40,7 +40,7 @@ A higher threshold and a suitable top-up amount help avoid interruptions, but pr
 
 ## Renewal and rollover
 
-At each 12-month review, AMLOK reviews actual usage, expected growth, workload complexity, and applicable volume discounts. The next monthly minimum and rates are agreed for renewal, and the payment for the next 12 months is due at renewal.
+At each 12-month review, AMLOK reviews actual usage, expected growth, workload complexity, and applicable volume discounts. The next monthly minimum and rates are agreed for renewal, with funding due according to your quarterly or annual schedule.
 
 Unused credits carry forward while the account remains active. Your agreement specifies how any carried balance is treated when calculating the renewal payment.
 
@@ -64,7 +64,7 @@ Workspace data is deleted after the request month closes and the necessary final
 
 An Insights request checks available credits before acceptance and deducts once when the agreed output is successfully completed and published. Acceptance does not reserve or spend credits. Concurrent completions cannot spend the same credits: the balance check, charge and publication are atomic. If another operation uses the balance before completion, that underwriting waits for funding without publishing its final output or creating a duplicate charge.
 
-Signal deducts before monthly monitoring proceeds. Verification, searches, calculations and investigations are included product stages with no separate AMLOK charge. See [product scope](/api-reference/products-and-endpoints).
+Signal publishes its one borrower-month debit atomically with the first successful evaluation output in that month. Later evaluations reuse it. Verification, searches, calculations and investigations are included product stages with no separate AMLOK charge. See [product scope](/api-reference/products-and-endpoints).
 
 ## Reporting access
 

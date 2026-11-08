@@ -6354,7 +6354,7 @@
     "id": "embs_synthetic",
     "borrower_id": "bor_synthetic",
     "status": "created",
-    "launch_url": "https://borrower.example.com/session/synthetic",
+    "launch_url": "https://api.amlok.io/hub/synthetic-session-token",
     "expires_at": "2026-11-06T12:15:00Z",
     "connection_ids": [],
     "consent_ids": [],
@@ -6432,7 +6432,7 @@
     "purpose": "Institution underwriting review"
   },
   "DownloadLink": {
-    "url": "https://downloads.example.com/synthetic",
+    "url": "https://api.amlok.io/downloads/synthetic-download-token",
     "expires_at": "2026-11-06T12:05:00Z",
     "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
     "mime_type": "application/pdf"
@@ -6639,8 +6639,8 @@
   "BillingSummary": {
     "as_of": "2026-11-06T12:00:00Z",
     "currency": "CAD",
-    "available_credits": "4935.00",
-    "spent_credits": "65.00",
+    "available_credits": "4992.00",
+    "spent_credits": "8.00",
     "billing_account_id": "billing_synthetic",
     "snapshot_id": "snap_synthetic",
     "paid_funding_credits": "5000.00",
@@ -6652,13 +6652,152 @@
       "trigger_amount": "200.00",
       "top_up_amount": "500.00"
     },
-    "snapshot_expires_at": "2026-11-06T13:00:00Z"
+    "snapshot_expires_at": "2026-11-06T13:00:00Z",
+    "pricing": {
+      "id": "pricing_ws_synthetic_1",
+      "object": "billing_rate_card",
+      "record_version": 1,
+      "created_at": "2026-11-07T12:00:00Z",
+      "updated_at": "2026-11-07T12:00:00Z",
+      "workspace_id": "ws_synthetic",
+      "currency": "CAD",
+      "effective_from": "2026-11-07T12:00:00Z",
+      "effective_to": null,
+      "agreement_id": "agreement_ws_synthetic",
+      "agreement_version": "1",
+      "supersedes_id": null,
+      "snapshot_id": "snap_synthetic",
+      "commitment": {
+        "monthly_minimum": "1000.00",
+        "payment_cadence": "annual",
+        "months_per_payment": 12,
+        "payment_amount": "12000.00",
+        "currency": "CAD",
+        "treatment": "wallet_funding"
+      },
+      "rates": [
+        {
+          "product": "insights",
+          "tier": "standard",
+          "unit": "completed_underwriting",
+          "base_rate": "8.00",
+          "effective_rate": "8.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "insights",
+          "tier": "advanced",
+          "unit": "completed_underwriting",
+          "base_rate": "25.00",
+          "effective_rate": "25.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "insights",
+          "tier": "complex",
+          "unit": "completed_underwriting",
+          "base_rate": "45.00",
+          "effective_rate": "45.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "standard",
+          "unit": "active_account_month",
+          "base_rate": "5.00",
+          "effective_rate": "5.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "month_start_or_first_activation",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "advanced",
+          "unit": "active_account_month",
+          "base_rate": "8.00",
+          "effective_rate": "8.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "month_start_or_first_activation",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "complex",
+          "unit": "active_account_month",
+          "base_rate": "12.00",
+          "effective_rate": "12.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "month_start_or_first_activation",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        }
+      ]
+    }
   },
   "BillingTransaction": {
     "id": "txn_usage_synthetic",
     "snapshot_id": "snap_synthetic",
     "posted_at": "2026-11-06T12:00:00Z",
-    "amount": "-40.00",
+    "amount": "-8.00",
     "currency": "CAD",
     "kind": "usage",
     "product": "insights",
@@ -6666,11 +6805,25 @@
     "usage_id": "usage_synthetic",
     "payment_id": null,
     "borrower_id": "bor_synthetic",
-    "balance_after": "4935.00",
+    "balance_after": "4992.00",
     "sequence": 3,
     "funding_type": null,
     "record_version": 1,
-    "related_transaction_id": null
+    "related_transaction_id": null,
+    "charge_details": {
+      "tier": "standard",
+      "quantity": 1,
+      "unit_rate": "8.00",
+      "rate_card_id": "pricing_ws_synthetic_1",
+      "rate_version": "1",
+      "complexity_assessment": {
+        "tier": "standard",
+        "assessed_at": "2026-11-07T12:00:00Z",
+        "policy_version": "sandbox-complexity-1",
+        "basis": "sandbox_fixture",
+        "rationale": "Single domestic entity with straightforward operating finances."
+      }
+    }
   },
   "RequestReceipt": {
     "idempotency_key": "origination-synthetic-0042",
@@ -10949,7 +11102,7 @@
         "allowed_return_urls": [
           "https://institution.example.com/connected"
         ],
-        "hub_origin": "https://borrower.example.com"
+        "hub_origin": "https://api.amlok.io"
       }
     ],
     "sandbox": {
@@ -11077,17 +11230,24 @@
     "charged_at": "2026-11-06T12:00:00Z",
     "tier": "standard",
     "quantity": 1,
-    "unit_rate": "40.00",
-    "amount": "40.00",
+    "unit_rate": "8.00",
+    "amount": "8.00",
     "currency": "CAD",
-    "rate_card_id": "rate_synthetic",
-    "rate_version": "synthetic-1",
+    "rate_card_id": "pricing_ws_synthetic_1",
+    "rate_version": "1",
     "transaction_id": "txn_usage_synthetic",
     "workload": {
       "bank_accounts": 1,
       "business_systems": 2,
       "records": 1500,
       "record_counting_basis": "per_underwriting"
+    },
+    "complexity_assessment": {
+      "tier": "standard",
+      "assessed_at": "2026-11-07T12:00:00Z",
+      "policy_version": "sandbox-complexity-1",
+      "basis": "sandbox_fixture",
+      "rationale": "Single domestic entity with straightforward operating finances."
     }
   },
   "DealSnapshotInput": {
@@ -11137,7 +11297,7 @@
     "performance": null
   },
   "ExportDownloadLink": {
-    "url": "https://downloads.example.com/synthetic",
+    "url": "https://api.amlok.io/downloads/synthetic-download-token",
     "expires_at": "2026-11-06T12:05:00Z",
     "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
     "mime_type": "application/json",

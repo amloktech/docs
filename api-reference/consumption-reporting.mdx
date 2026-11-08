@@ -9,11 +9,11 @@ Only Insights and Signal are paid products. Verification, KYB/KYC, liens, calcul
 
 Insights checks available credits and deducts the charge atomically with risk-package publication. If concurrent activity leaves insufficient funds after acceptance, the Origination waits for credits without publishing or charging. Resume the accepted resource rather than submitting another underwriting.
 
-Signal charges each active borrower/business once per workspace/month, using the combined workload across configurations, deals and sources. The full monthly rate is deducted at 00:00 UTC on the first calendar day, or on first mid-month activation without proration. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
+Signal charges each active borrower/business once per workspace/month, using Amlok-assessed analysis complexity across configurations, deals and sources. The first successful evaluation in each UTC calendar month publishes the full monthly charge with its output, including mid-month activation without proration. The charge pins its tier and effective rate for that month. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
 
 Signal includes change-driven reassessment. A separate full underwriting is a new Insights Origination. Monetary rates and amounts use two-decimal, half-up rounding: round the effective unit rate, then each quantity-times-rate line, and sum the rounded lines.
 
-Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, source IDs and correction links remain available in the report.
+Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, assessed complexity, source IDs and correction links remain available in the report. Follow `transaction_id` to the wallet debit and `rate_card_id` to the agreement used. Successful origination request logs link to the associated usage for Owners; replaying an idempotent request is not another charge. Read requests, source fetches and webhook retries are not separate product usage.
 
 ## Follow one deduction
 

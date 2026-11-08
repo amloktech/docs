@@ -220,7 +220,7 @@ def operations():
 
 def build_spec(source):
     schemas = build_schemas(source['components']['schemas'])
-    spec = {'openapi':'3.1.0', 'info': {'title': 'AMLOK API', 'version': VERSION, 'description': 'AMLOK API: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use your institution-issued API origin.'}, 'x-availability': STATUS, 'security':[{'BearerAuth':[]}], 'paths':{}, 'components': {'schemas':schemas, 'securitySchemes':{'BearerAuth':deepcopy(source['components']['securitySchemes']['BearerAuth'])}}}
+    spec = {'openapi':'3.1.0', 'info': {'title': 'AMLOK API', 'version': VERSION, 'description': 'AMLOK API: borrower connections, Insights origination, immutable risk packages and Signal monitoring. Use https://api.amlok.io for both Sandbox and Live; the API key selects the workspace environment.'}, 'servers':[{'url':'https://api.amlok.io','description':'Customer API. Use a Sandbox or Live workspace key; paths include /v1.'}], 'x-availability': STATUS, 'security':[{'BearerAuth':[]}], 'paths':{}, 'components': {'schemas':schemas, 'securitySchemes':{'BearerAuth':deepcopy(source['components']['securitySchemes']['BearerAuth'])}}}
     def param(name, where='query', required=False, schema=None, description=''):
         return {'name':name,'in':where,'required':required,'schema':schema or text(), 'description':description or name.replace('_',' ')}
     for op in operations():

@@ -1,55 +1,46 @@
 ---
 title: "Complexity tiers"
-description: "Limits for bank accounts, business integrations, underwriting records, monthly monitoring records, and analysis scope."
-mode: "wide"
+description: "How Amlok assesses analysis complexity and applies your workspace's agreed rates."
+keywords: ["complexity", "rates", "pricing", "Standard", "Advanced", "Complex"]
 ---
 
-AMLOK assigns complexity based on the full borrower-permissioned workload: bank accounts, business integrations, records processed, and analysis scope. Insights and Signal can use different tiers when their work differs.
+Amlok assesses the complexity of the borrower and the analysis required. **Standard, Advanced and Complex are analysis-complexity tiers. They are not volume bands.** More API calls, accounts or records do not automatically select a more expensive tier. Approval, decline, credit score and requested loan amount do not determine the price by themselves.
 
-## Regular pay-as-you-go rates
+## Published rates
 
-| Complexity tier | Insights / completed underwriting | Signal / active borrower or business / month |
+| Complexity | Insights / completed underwriting | Signal / active borrower-month |
 | --- | ---: | ---: |
 | Standard | CAD 8.00 | CAD 5.00 |
 | Advanced | CAD 25.00 | CAD 8.00 |
 | Complex | CAD 45.00 | CAD 12.00 |
 
-These rates apply to the regular pay-as-you-go plan. Enterprise clients use the negotiated rates and explicit workload limits in their agreement, under Standard, Advanced, or Complex. See [pricing](/pricing/overview) for funding terms.
+Each workspace has six agreed rates. Your negotiated rates replace these defaults independently for each product and tier. Your monthly minimum and quarterly or annual funding schedule are separate agreement terms; neither selects the analysis tier.
 
-## Compare the limits
+## What the assessment considers
 
-| Workload dimension | Standard | Advanced | Complex |
-| --- | ---: | ---: | ---: |
-| Connected bank accounts, up to | 2 | 4 | 8 |
-| Business integrations in addition to banking, up to | 5 | 10 | 20 |
-| Insights: total records per underwriting, up to | 75,000 | 250,000 | 1,000,000 |
-| Signal: newly processed records per borrower/business per month, up to | 75,000 | 250,000 | 1,000,000 |
-| Analysis scope | Routine reconciliation and standard analysis | Multiple entities or channels and deeper reconciliation | Extensive relationships, exceptions, and investigation |
+| Tier | Illustrative analysis |
+| --- | --- |
+| Standard | Straightforward operating finances and routine reconciliation for a domestic entity. |
+| Advanced | Specialized revenue recognition, asset finance, or operating structures that require additional reconciliation. |
+| Complex | Interdependent entities, cross-border obligations, inventory and work-in-progress, or substantial exceptions requiring deeper analysis. |
 
-These are **workload limits**. They cover all relevant sources: bank transactions, payment records, commerce orders, accounting records, documents, and separately analyzed line items. Banking connections do not count toward the business-integration limit.
+These examples explain the distinction, not a customer-side classification formula. Amlok evaluates the required analysis and returns the assessed tier and rationale. Insights and Signal may differ when their analysis differs. Clients do not submit a price or tier in an underwriting or monitoring request.
 
-## Insights: full underwriting history
+## How the assessment becomes a charge
 
-A full underwriting analyzes the agreed historical evidence. Banking statements and transactions cover **at least 12 months**, and all records processed for that history count inside the tier limit.
+1. Amlok assesses complexity and records its rationale and assessment-policy version.
+2. Insights uses the workspace rate in effect when the successful output and charge are published together.
+3. Signal uses one assessed tier and agreed rate for each borrower/workspace/UTC calendar month. The first successful evaluation in that month publishes the monthly charge with its output. Further checks, monitors and reassessments reuse that charge.
+4. Each charge retains its historical tier, rate-card ID and agreement version. Later rate changes do not rewrite it. Reassessed Signal complexity or changed rates apply to the next new monthly charge.
 
-For Standard, the entire underwriting must fit within **75,000 total records**, including the banking history and other business-system data. A longer agreed lookback uses the same total allowance. Missing history is a coverage issue; it is not represented as complete evidence.
+Read `complexity_assessment` and `tier` on a [billing usage record](/api-reference/endpoints/billing/get-billing-usage). `unit_rate × quantity = amount` is the positive cost; its linked wallet transaction carries the negative debit. Older records may not include the newer assessment metadata. Missing metadata does not mean Standard.
 
-## Signal: new monthly processing
+## Operational capacity is separate
 
-Signal counts **only records newly processed during the month** for the monitored borrower/business. It uses the existing underwriting baseline together with new evidence and changes to reassess risk. Each updated version of an existing record counts as a new record when processed. Count a distinct source record and version once in the applicable processing window; retries and repeated reads of that unchanged version do not add records. Unchanged historical records retained in the baseline do not count again merely because Signal consults them. For example, 1,000 new records and 200 updated versions of existing records count as 1,200 newly processed records.
+[Workload reports](/api-reference/workload-reporting) show connected accounts, systems and processed records. Those counts explain capacity, not price. The current default capacity is 8 bank accounts, 20 business integrations and 1,000,000 records, independently of complexity. Read the effective rate card's `workload_limits` for the applicable capacity.
 
-Monitoring and change-driven reassessment are included in the Signal rate. A detected event does not launch a separately billed Insights underwriting. The total monthly workload combines the borrower/business's monitoring checks and data sources.
+Insights counts records in the complete underwriting evidence set. Signal counts new or updated versions processed during the UTC month across the borrower's monitors; unchanged baseline records and retries of the same version are excluded. If an analysis exceeds capacity, processing fails without publishing a new result or usage debit; contact support to arrange capacity. It does not automatically move to another complexity price.
 
-## How AMLOK assigns the tier
+## Try deterministic Sandbox examples
 
-The AMLOK team selects the lowest tier that covers **every workload dimension and the required scope**. The most demanding dimension determines the tier; limits cannot be mixed across tiers.
-
-For example, two bank accounts, six business integrations, and 40,000 applicable records require at least Advanced because six integrations exceed Standard. A workload of 300,000 applicable records requires at least Complex even when the source counts fit Standard.
-
-If no published tier covers the work, AMLOK provides a custom quote with agreed limits and scope. Reporting represents it as **Standard, Advanced, or Complex with a negotiated rate and explicit limits**, rather than a fourth tier.
-
-We review tiers, workload limits, and rates at the annual agreement review. Agree a change in scope with AMLOK before running work that exceeds the current limits during the term.
-
-## If the workload reaches its limit
-
-Work already within every agreed limit can continue. AMLOK rejects known over-limit requests, or pauses an ongoing assessment before processing newly discovered records beyond the allowance. We agree any expanded scope and effective rate card before processing resumes. There is no automatic tier upgrade or surcharge. Signal record counts combine all monitors for the borrower/business and reset each UTC calendar month. [Workload reports](/api-reference/workload-reporting) show used and remaining capacity and any blocking dimension.
+The [Sandbox businesses](/sandbox/simulated-billing#complexity-examples) have fixed synthetic assessments. They exercise the same negotiated-price calculation with simulated credits. Choosing an approval or decline scenario does not change that business's complexity tier.

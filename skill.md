@@ -9,13 +9,13 @@ metadata:
 
 # AMLOK integration
 
-Read the [OpenAPI contract](https://docs.amlok.io/openapi/amlok.json), [quickstart](https://docs.amlok.io/api-reference/quickstart) and relevant endpoint schemas before implementing requests. AMLOK has one public API with 45 operations under `/v1`. Do not create provider sync jobs, input manifests or workflow executions from client code.
+Read the [OpenAPI contract](https://docs.amlok.io/openapi/amlok.json), [quickstart](https://docs.amlok.io/api-reference/quickstart) and relevant endpoint schemas before implementing requests. AMLOK has one public API with 65 operations under `/v1`. Do not create provider sync jobs, input manifests or workflow executions from client code.
 
 Inspect the customer's existing application, identity mapping and selected products. Use existing permissions, storage and event handling where possible. This skill provides guidance, not permission to access records, transmit messages or execute chargeable requests. Never request credentials in chat or invent hostnames, fields, endpoints, packages or successful results.
 
 ## Access
 
-Use the institution-issued origin as `AMLOK_API_BASE_URL`, without `/v1`, and keep `AMLOK_API_KEY` on the server. Each key binds one workspace and environment. A caller-supplied tenant identifier cannot override that scope. Owners manage organization and billing configuration; Owners and Devs manage integration configuration; Analysts read authorized product results. Product data cannot be modified or deleted.
+Set `AMLOK_API_BASE_URL=https://api.amlok.io`, without `/v1`, for both Sandbox and Live, and keep `AMLOK_API_KEY` on the server. Each key binds one workspace and environment. The customer Sandbox uses the same API origin as Live; staging-api.amlok.io is a separate deployment and requires separately issued staging credentials. Never send a workspace key to docs.amlok.io or console.amlok.io. A caller-supplied tenant identifier cannot override that scope. Owners manage organization and billing configuration; Owners and Devs manage integration configuration; Analysts read authorized product results. Product data cannot be modified or deleted.
 
 Read `GET /v1/configuration` for approved application and pricing schemas, integration IDs, embedding versions and monitoring cadences. Catalog coverage does not grant provider entitlements.
 

@@ -46,15 +46,19 @@ export const PricingCalculator = () => {
     const signalCents = rows.filter((row) => row.product === "signal").reduce((sum, row) => sum + row.cents, 0);
     const monthlyCents = insightsCents + signalCents;
     const usageCents = monthlyCents * 12;
-    const paymentCents = Math.round(commitment * 100) * 12;
+    const paymentCadence = input.paymentCadence || "annual";
+    if (!["annual", "quarterly"].includes(paymentCadence)) return { valid: false, errors: { paymentCadence: "Choose quarterly or annual funding." } };
+    const monthsPerPayment = paymentCadence === "quarterly" ? 3 : 12;
+    const paymentCents = Math.round(commitment * 100) * monthsPerPayment;
+    const annualFundingCents = Math.round(commitment * 100) * 12;
     const topUpAmountCents = Math.round(topUpAmount * 100);
     const triggerCents = input.autoPay ? Math.round(topUpThreshold * 100) : 0;
     // Aggregate planning assumes prompt funding; the trigger is not a spending restriction.
     // With auto-pay off, estimate manual top-ups needed to fund the projected usage.
-    const fundingGapCents = Math.max(0, usageCents + triggerCents - paymentCents);
+    const fundingGapCents = Math.max(0, usageCents + triggerCents - annualFundingCents);
     const topUpCents = Math.ceil(fundingGapCents / topUpAmountCents) * topUpAmountCents;
-    const unusedCents = paymentCents + topUpCents - usageCents;
-    return { valid: true, errors, rows, insightsCents, signalCents, monthlyCents, usageCents, paymentCents, topUpCents, unusedCents, fundingCents: paymentCents + topUpCents, commitment, discount };
+    const unusedCents = annualFundingCents + topUpCents - usageCents;
+    return { valid: true, errors, rows, insightsCents, signalCents, monthlyCents, usageCents, paymentCents, topUpCents, unusedCents, fundingCents: annualFundingCents + topUpCents, commitment, discount, monthsPerPayment, paymentCadence, annualFundingCents };
   };
   // PRICING_MATH_END
 
@@ -76,11 +80,12 @@ export const PricingCalculator = () => {
   const [topUpAmount, setTopUpAmount] = useState("500");
   const [topUpThreshold, setTopUpThreshold] = useState("200");
   const [customVolumes, setCustomVolumes] = useState({});
+  const [paymentCadence, setPaymentCadence] = useState("annual");
   const [commitment, setCommitment] = useState("1000");
   const [discount, setDiscount] = useState("0");
   const [useAgreedRates, setUseAgreedRates] = useState(false);
   const [agreedRates, setAgreedRates] = useState({ insights: ["8", "25", "45"], signal: ["5", "8", "12"] });
-  const estimate = calculatePricing({ enabled, volumes, selectedTiers, commitment, discount, useAgreedRates, agreedRates, autoPay, topUpAmount, topUpThreshold });
+  const estimate = calculatePricing({ enabled, volumes, selectedTiers, commitment, paymentCadence, discount, useAgreedRates, agreedRates, autoPay, topUpAmount, topUpThreshold });
   const money = (cents) => `CAD ${(cents / 100).toLocaleString("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   const updateVolume = (product, index, value) => setVolumes((current) => ({ ...current, [product]: current[product].map((quantity, i) => i === index ? value : quantity) }));
   const chooseVolumePreset = (product, index, position) => {
@@ -93,7 +98,7 @@ export const PricingCalculator = () => {
     updateVolume(product, index, value);
     if (value !== "") setCustomVolumes((current) => ({ ...current, [`${product}-${index}`]: Number(value) >= 10000 }));
   };
-  const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["50", "50", "50"], signal: ["50", "50", "50"] }); setSelectedTiers({ insights: [true, false, false], signal: [true, false, false] }); setAutoPay(true); setTopUpAmount("500"); setTopUpThreshold("200"); setCustomVolumes({}); setCommitment("1000"); setDiscount("0"); setUseAgreedRates(false); setAgreedRates({ insights: ["8", "25", "45"], signal: ["5", "8", "12"] }); };
+  const reset = () => { setEnabled({ insights: true, signal: true }); setVolumes({ insights: ["50", "50", "50"], signal: ["50", "50", "50"] }); setSelectedTiers({ insights: [true, false, false], signal: [true, false, false] }); setAutoPay(true); setTopUpAmount("500"); setTopUpThreshold("200"); setCustomVolumes({}); setCommitment("1000"); setPaymentCadence("annual"); setDiscount("0"); setUseAgreedRates(false); setAgreedRates({ insights: ["8", "25", "45"], signal: ["5", "8", "12"] }); };
   const products = [
     { key: "insights", name: "AMLOK Insights", description: "Completed underwritings per month", unit: "underwriting", accessibleUnit: "underwritings per month" },
     { key: "signal", name: "AMLOK Signal", description: "Active monitored accounts each month", unit: "account / month", accessibleUnit: "active accounts per month" },
@@ -105,7 +110,7 @@ export const PricingCalculator = () => {
         <span className="apc-badge">CAD estimates · 12-month view</span>
         <button type="button" onClick={reset} className="apc-reset">Reset example</button>
       </div>
-      <p className="apc-volume-help" id="apc-volume-help">Select the tiers you use. Each selected volume starts at 50. Choose a slider preset or type an exact volume; for 10,000+, enter your exact quantity.</p>
+      <p className="apc-volume-help" id="apc-volume-help">Estimate the mix of Amlok-assessed complexity tiers. Counts do not assign tiers. Each selected volume starts at 50. Choose a slider preset or type an exact volume; for 10,000+, enter your exact quantity.</p>
       <div className="apc-layout">
         <div className="apc-inputs">
           {products.map((product) => (
@@ -150,10 +155,12 @@ export const PricingCalculator = () => {
               <div>
                 <label htmlFor="apc-commitment">Minimum monthly commitment (CAD)</label>
                 <input id="apc-commitment" type="number" min="1000" max="100000000" step="0.01" inputMode="decimal" value={commitment} onChange={(event) => setCommitment(event.target.value)} aria-invalid={Boolean(estimate.errors.commitment)} aria-describedby="apc-commitment-help apc-error-commitment" />
-                <p id="apc-commitment-help">Starts at CAD 1,000. Paid annually at signing and each renewal.</p>
+                <p id="apc-commitment-help">Default CAD 1,000. Funding follows your agreed quarterly or annual schedule.</p>
                 <p id="apc-error-commitment" className="apc-error">{estimate.errors.commitment || ""}</p>
               </div>
               <div>
+                <label htmlFor="apc-cadence">Payment schedule</label>
+                <select id="apc-cadence" value={paymentCadence} onChange={event => setPaymentCadence(event.target.value)}><option value="annual">Annual · 12 months</option><option value="quarterly">Quarterly · 3 months</option></select>
                 <label htmlFor="apc-discount">Agreed unit-rate discount (%)</label>
                 <input id="apc-discount" type="number" min="0" max="100" step="0.01" inputMode="decimal" value={discount} disabled={useAgreedRates} onChange={(event) => setDiscount(event.target.value)} aria-invalid={Boolean(estimate.errors.discount)} aria-describedby="apc-discount-help apc-error-discount" />
                 <p id="apc-discount-help">{useAgreedRates ? "Your agreed rates already include discounts. No additional discount is applied." : "Optional. Applies equally to both products. No discount is assumed."}</p>
@@ -210,19 +217,19 @@ export const PricingCalculator = () => {
                 <div><dt>Signal / month</dt><dd data-testid="signal-monthly">{money(estimate.signalCents)}</dd></div>
                 <div className="apc-total-row"><dt>Usage over 12 months</dt><dd data-testid="usage-12-months">{money(estimate.usageCents)}</dd></div>
               </dl>
-              <div className="apc-payment"><span>Payment at signing or renewal</span><strong data-testid="payment-due">{money(estimate.paymentCents)}</strong><p>{money(Math.round(estimate.commitment * 100))} monthly minimum × 12</p></div>
+              <div className="apc-payment"><span>Each scheduled prepayment</span><strong data-testid="payment-due">{money(estimate.paymentCents)}</strong><p>{money(Math.round(estimate.commitment * 100))} monthly minimum × {estimate.monthsPerPayment}</p></div>
               <dl className="apc-breakdown">
                 <div><dt>Additional credits needed</dt><dd data-testid="additional-credits">{money(estimate.topUpCents)}</dd></div>
                 <div><dt>Projected unused credits</dt><dd data-testid="unused-credits">{money(estimate.unusedCents)}</dd></div>
                 <div className="apc-total-row"><dt>Total funding over 12 months</dt><dd data-testid="total-funding">{money(estimate.fundingCents)}</dd></div>
               </dl>
               <p className="apc-explanation">{autoPay ? "Estimated top-ups use your selected trigger and amount. Credits below the trigger can still fund requests while a payment is pending." : "Auto-pay is off. Additional credits shown are manual funding needed to cover this estimate. Processing stops only when credits cannot cover the next billable operation."}</p>
-              <p className="apc-footnote">The prepayment is counted once. Funding is an aggregate estimate with prompt settlement; actual request timing and payment delays affect top-ups. Agreed rates or discounts change usage deductions, not your monthly minimum.</p>
+              <p className="apc-footnote">Scheduled funding is counted once over the year: one annual payment or four quarterly payments. Funding is an aggregate estimate with prompt settlement; actual request timing and payment delays affect top-ups. Agreed rates or discounts change usage deductions, not your monthly minimum.</p>
             </div>
           ) : <p className="apc-invalid-summary">Complete the highlighted fields to see your estimate.</p>}
         </aside>
       </div>
-      <p className="apc-sr-only" role="status" aria-live="polite" aria-atomic="true">{estimate.valid ? `Estimate updated. Monthly usage ${money(estimate.monthlyCents)}. Payment at signing or renewal ${money(estimate.paymentCents)}. Additional credits ${money(estimate.topUpCents)}. Unused credits ${money(estimate.unusedCents)}.` : "Estimate unavailable. Check the highlighted fields."}</p>
+      <p className="apc-sr-only" role="status" aria-live="polite" aria-atomic="true">{estimate.valid ? `Estimate updated. Monthly usage ${money(estimate.monthlyCents)}. Each scheduled prepayment ${money(estimate.paymentCents)}. Additional credits ${money(estimate.topUpCents)}. Unused credits ${money(estimate.unusedCents)}.` : "Estimate unavailable. Check the highlighted fields."}</p>
     </div>
   );
 };

@@ -20,21 +20,21 @@ Use Node.js 22 or newer, which supplies fetch, FormData, Blob and structuredClon
 
 ## Provision the test environment
 
-An Owner obtains the API origin, creates a Sandbox key, and publishes a Hub containing configuration.sandbox.test_integration_id. Approve your return URL and both credit_assessment and continuous_monitoring purposes. For this complete example, the Owner key needs borrowers:read/write, connections:read/write, configuration:read/write, insights:read/write, results:read, evidence:read/write, data:read, signal:read/write, billing:read, exports:read/write and reliability:read.
+An Owner uses `https://api.amlok.io`, creates a Sandbox key in [the Console](https://console.amlok.io), and publishes a Hub containing configuration.sandbox.test_integration_id. Approve your return URL and both credit_assessment and continuous_monitoring purposes. For this complete example, the Owner key needs borrowers:read/write, connections:read/write, configuration:read/write, insights:read/write, results:read, evidence:read/write, data:read, signal:read/write, billing:read, exports:read/write and reliability:read.
 
 Set AMLOK_BORROWER_TYPE=person and use a fresh state file to run the consumer fixture, which uses gross monthly income, monthly debt payments and a synthetic debt_to_income rule. Check configuration for the corresponding application schema and supported policy dimensions.
 
 The default development input file uses a Canadian business, a fixed-rate term loan, annual_revenue application data and a dscr rule. Match the application schema, pricing schema and metric IDs to those returned by configuration. Update the input file if your environment uses different schemas.
 
 ```bash
-export AMLOK_API_BASE_URL="<institution-issued Sandbox origin>"
+export AMLOK_API_BASE_URL="https://api.amlok.io"
 export AMLOK_API_KEY="<server-side Sandbox key>"
 export AMLOK_EMBEDDING_VERSION_ID="<published test Hub version>"
 export AMLOK_RETURN_URL="<approved return URL>"
 node amlok-journey.mjs prepare amlok-journey-state.json
 ```
 
-The placeholders above are provisioning values, not working credentials. Prefer a secret manager instead of shell history on shared systems. The state file contains synthetic inputs and resource IDs but no API key or launch URL. Keep it private; use a distinct file for each new journey.
+The API origin above is the customer API for both Sandbox and Live. Use a Sandbox key for this journey. The remaining placeholders are your workspace configuration values, not working credentials. See [URLs and environments](/api-reference/environments). Prefer a secret manager instead of shell history on shared systems. The state file contains synthetic inputs and resource IDs but no API key or launch URL. Keep it private; use a distinct file for each new journey.
 
 ## Connect, submit and reconcile
 

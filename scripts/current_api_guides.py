@@ -68,12 +68,14 @@ Use your backend to create a borrower, launch an Integrations Hub session and su
 
 ## 1. Configure server access
 
+Follow [Create and manage API keys](/console/api-keys) in the Console. Choose **Origination integration** for this underwriting journey, or **All products** if the same service will also manage Signal monitoring. The default **Read product data** profile cannot submit the commands below. Use a Sandbox key for dummy-data testing.
+
 ```bash
-export AMLOK_API_BASE_URL="<your-institution-api-origin>"
+export AMLOK_API_BASE_URL="https://api.amlok.io"
 export AMLOK_API_KEY="<your-workspace-api-key>"
 ```
 
-The origin excludes `/v1`. Keep the key on your server. Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
+Both Sandbox and Live use this API origin. The workspace key selects the environment; Sandbox does not use a different hostname. The origin excludes `/v1` because every endpoint path already includes it. Keep the key on your server. See [URLs and environments](/api-reference/environments). Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
 
 ## 2. Register the borrower
 
@@ -228,8 +230,34 @@ Create a short-lived link with `POST /v1/documents/{id}/download-links`, supplyi
 Use the original files and provider reports referenced by [evidence](/api-reference/evidence-traceability). There is no update or delete operation for product documents.
 ''')
     scopes=sorted({o['scope'] for o in index if o['scope']!='public'})
+    scope_meanings={
+        'billing:read':'Read wallet summaries, payments, transactions and usage. Requires current Owner authority; does not collect payments or change billing settings.',
+        'borrowers:read':'List borrowers and retrieve a borrower profile.',
+        'borrowers:write':'Register a business or consumer borrower.',
+        'configuration:read':'Read lending-product and risk-policy versions, approved schemas and environment capabilities.',
+        'configuration:write':'Create immutable lending-product and risk-policy versions.',
+        'connections:read':'Inspect embedding sessions, connections, consent and connection status.',
+        'connections:write':'Create borrower embedding sessions and revoke consent. Hub configuration and webhook destinations are managed in the Console.',
+        'data:read':'Retrieve collected and normalized records and their change feed, subject to source access.',
+        'events:read':'List and retrieve permitted events and inspect webhook deliveries. Also requires access to each event\'s source resource.',
+        'events:write':'Replay an authorized event to a registered webhook destination. Does not register destinations or grant access to the event\'s source.',
+        'evidence:read':'List and retrieve assessment evidence and document metadata, and request permitted document download links.',
+        'evidence:write':'Upload documents for a borrower, origination, lending product or risk policy.',
+        'exports:read':'Inspect existing export jobs and request download links. Source permissions are checked separately.',
+        'exports:write':'Create an export job for data you are authorized to access. Does not grant access to the underlying data.',
+        'insights:read':'List and retrieve originations and their status. Risk packages require results:read.',
+        'insights:write':'Submit an origination with application data, documents and lending context for underwriting.',
+        'reliability:read':'Look up a request receipt for recovery. The original operation\'s permissions are also required.',
+        'results:read':'Retrieve an authorized risk package, including its supported summary or section views.',
+        'sandbox:read':'Read the scenario catalog, setup choice and permitted Sandbox runs. Run details can require additional product or billing scopes.',
+        'sandbox:write':'Choose Sandbox setup, execute or repeat scenarios, and simulate changes. Product scenarios need their underlying product scopes; Owner-only financial actions also require billing:read.',
+        'signal:read':'Read monitors, monitoring runs, alerts and funded-deal snapshots.',
+        'signal:write':'Create or update a monitor and submit an immutable funded-deal snapshot.',
+    }
     api('authentication','Authentication and access','''
-Create scoped API keys through the authorized console administrator. Send the key as `Authorization: Bearer ...` from your backend. Each key belongs to exactly one institution, workspace and environment; callers cannot override that boundary with a workspace parameter.
+Create a key in **Dev Tools > API keys** as an Owner or Dev, following the [Console API key guide](/console/api-keys). Choose the workspace, Sandbox or Live environment, access profile and expiration. The default profile is **Read product data**; expiration defaults to 90 days and accepts 1 to 365 days. Confirm your identity and save the secret when it is shown once.
+
+Send the key as `Authorization: Bearer ...` from your backend. Each key belongs to exactly one institution, workspace and environment; callers cannot override that boundary with a workspace parameter. A Sandbox key starts with `amlok_test_`; a Live key starts with `amlok_live_`. Switching environments in the Console does not change a key's permissions or environment.
 
 ```text
 Authorization: Bearer <your-workspace-api-key>
@@ -241,18 +269,88 @@ An API key is never a browser embedding token or a webhook signing secret. Send 
 
 Every endpoint lists its required scope. Console roles and machine scopes work together: Owners manage organization/workspace identity, team permissions and billing; Owners and Devs manage integration configuration; Analysts read permitted reporting and product data. Analysts do not manage keys or Dev Tools. Billing reporting and billing exports require Owner authority and `billing:read`.
 
-| Scope | Operations |
-| --- | ---: |
-'''+ '\n'.join('| `'+s+'` | '+str(sum(o['scope']==s for o in index))+' |' for s in scopes)+'''
+### Console profiles and exact scope rules
+
+The [profile comparison](/console/api-keys#choose-an-access-profile) explains which option to select. Each preset grants the following scopes from the table below:
+
+| Profile | Included scopes |
+| --- | --- |
+| **Read product data** | Every listed `:read` scope except `billing:read`. Includes reads for both Insights and Signal, with no `:write` scopes. |
+| **All products** | Every listed scope except `billing:read`. Includes read and write access for both products and their shared operations. |
+| **Origination integration** | Every listed scope except `billing:read`, `signal:read` and `signal:write`. |
+| **Monitoring integration** | Every listed scope except `billing:read`, `insights:read` and `insights:write`. |
+| **Billing reports** | Only `billing:read`, `exports:read` and `exports:write`. Available to Owners. |
+
+The key's stored scopes define its access. A preset is not a wildcard, does not upgrade existing keys and does not enable a product or activate Live. To change a key's permissions, create a replacement key, update your server and revoke the old key.
+
+Origination and Monitoring profiles both include shared `results:read`, `data:read` and `evidence:read`. They restrict their named product endpoints, but do not create separate data boundaries within the workspace. Consent, source entitlements and resource authorization still apply.
+
+### What each scope allows
+
+The operation count lists endpoints with that primary scope. Additional checks can apply to the underlying resource, export source, scenario or original request. A `:read` scope can authorize a `POST` that creates a short-lived download link; HTTP method alone does not define access.
+
+| Scope | What it allows | Operations |
+| --- | --- | ---: |
+'''+ '\n'.join('| `'+s+'` | '+scope_meanings[s]+' | '+str(sum(o['scope']==s for o in index))+' |' for s in scopes)+'''
+
+### Additional access checks
 
 Export access also checks the exported content: `exports:read` does not grant access to the underlying content. Risk-package exports also require `results:read`, billing exports require `billing:read` and Owner authority, and evidence exports require `evidence:read` and source entitlement. The same source entitlements apply on export creation, retrieval and download. All linked IDs and cursor state are checked against the authorized workspace/environment.
 
-`401` means authentication failed; `403` means access was denied. A resource ID is not a permission. Product records have no edit or deletion operations, even for Owners. Creating new assessment inputs or changing future monitor configuration does not modify historical data.
+Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can use the [Console Sandbox tools](/console/sandbox) for these simulations.
+
+The API checks the creator's current workspace access and role as well as the key's scopes, expiry and revocation. Product access also requires that product to be enabled in the environment. Live requests require activated Live access.
+
+`401 unauthenticated` means the credential is missing, invalid, expired, revoked or no longer has workspace access. `403 forbidden` means the request lacks the required scopes, product access, current role or resource authorization. See [API key troubleshooting](/console/api-keys#troubleshoot-authorization).
+
+A resource ID is not a permission. Product records have no edit or deletion operations, even for Owners. Creating new assessment inputs or changing future monitor configuration does not modify historical data.
 ''')
     api('environments','Sandbox and Live','''
-Sandbox and Live use separate keys, records, connections and financial balances. Use the institution-issued origin in `AMLOK_API_BASE_URL`, without a version suffix. Do not infer API hostnames from the console or documentation domain.
+## Customer URLs
 
-`meta.environment` and event `environment` identify the context. Sandbox examples and simulated credits do not establish production funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live.
+| Service | URL | Use |
+| --- | --- | --- |
+| Console | [console.amlok.io](https://console.amlok.io) | Sign in, select a workspace and Sandbox or Live, and manage keys and webhook destinations. |
+| API origin | `https://api.amlok.io` | Set `AMLOK_API_BASE_URL` or Postman `base_url` to this value. |
+| Versioned API | `https://api.amlok.io/v1` | Every documented operation has a path beginning with `/v1`. |
+| Documentation | [docs.amlok.io](https://docs.amlok.io) | Read guides, API schemas and downloads. This is not the product API host. |
+
+```bash
+export AMLOK_API_BASE_URL="https://api.amlok.io"
+# Load AMLOK_API_KEY from your server's secret manager.
+curl --fail-with-body --max-time 30 \\
+  "$AMLOK_API_BASE_URL/v1/configuration" \\
+  --header "Authorization: Bearer $AMLOK_API_KEY"
+```
+
+Do not append `/v1` to the environment variable: the examples already include it. Otherwise the request becomes `/v1/v1/...`. Use HTTPS and the documented hostname directly; do not forward a bearer key through a redirect or send it to the Console, documentation, a provider or your webhook receiver.
+
+## Sandbox and Live use the same API address
+
+Sandbox and Live are separate environments **inside a workspace**, accessed through `https://api.amlok.io`. The API key selects the workspace and environment. There is no separate customer Sandbox hostname, caller-supplied workspace override or environment header. Switching the Console selector does not change an existing API key.
+
+Create your key in the intended Console environment. Sandbox and Live use separate keys, records, connections and financial balances. Authenticated response `meta.environment` is `sandbox` or `live`; event `environment` follows the same convention. Check this field before processing records. Public health endpoints need no key and do not identify or authorize a customer workspace.
+
+Sandbox uses fictional data and simulated financial activity. It does not collect real payments or establish Live funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live. Live activation and product access must be enabled separately; changing the host or requesting broader key scopes does not activate them.
+
+## Deployment staging and demos
+
+Amlok's staging deployment uses [staging-console.amlok.io](https://staging-console.amlok.io) with `https://staging-api.amlok.io`. Use this pair only when Amlok has given you access for a staging review. It has separate accounts, workspaces and credentials. It is **not** the Sandbox environment for customer accounts at `console.amlok.io`. A key issued in one deployment is not valid in the other.
+
+Demo workspaces shown in screenshots are separate demonstration data. Use your own Console workspace and Sandbox key when building an integration; do not use demo records as integration credentials or live evidence.
+
+## URLs in requests and responses
+
+| URL or field | Owner and handling |
+| --- | --- |
+| `return_url` | Your application's registered destination after the borrower finishes or cancels the Hub. Replace `https://institution.example.com/connected` with your own allowed URL. |
+| `embed_origin` | Your frontend's exact registered origin, such as `https://institution.example.com`, without a path. It must match the embedding configuration. |
+| `hub_origin` | Read it from `GET /v1/configuration` for the selected embedding version. Use it for iframe policy and message-origin validation; do not guess it. |
+| `launch_url` | Use the complete, short-lived URL returned by the embedding-session command. Customer deployments currently return `https://api.amlok.io/hub/...`. Do not construct it, change its host or add `/v1`. |
+| Document or export `url` | Use the complete authorized URL from the download command, currently `https://api.amlok.io/downloads/...`. It is time-limited; do not attach the workspace bearer key or log the token. |
+| Webhook destination | Your own public HTTPS receiver, registered in **Dev Tools > Endpoints**. Amlok sends signed event requests here. It is not an Amlok API URL. |
+
+The `institution.example.com` domain, synthetic IDs and synthetic URL tokens in examples are illustrative and do not work as credentials. Obtain real session and download URLs from API responses. Follow the [Integrations Hub guide](/api-reference/integration-hub), [webhook setup](/console/webhooks) and [authentication guide](/api-reference/authentication).
 
 Exercise the borrower connection journey, a completed Origination, missing inputs, expired consent, restricted evidence and monitoring failures. See [Sandbox journeys](/api-reference/sandbox-journeys).
 ''')
@@ -376,7 +474,7 @@ Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits
 
 There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 
-The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. The agreed monthly minimum is at least CAD 1,000, funded for 12 months at signing and annual renewal; this is not a monthly funding schedule.
+The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. Billing summary `pricing` contains the six effective rates and `commitment`: monthly minimum, quarterly or annual cadence, and calculated payment amount. The default is CAD 1,000/month and annual funding of CAD 12,000; quarterly funding at that minimum is CAD 3,000. This funds the wallet, rather than creating a second monthly usage debit. Saving terms does not collect payment.
 
 Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
 
@@ -387,24 +485,20 @@ Only Insights and Signal are paid products. Verification, KYB/KYC, liens, calcul
 
 Insights checks available credits and deducts the charge atomically with risk-package publication. If concurrent activity leaves insufficient funds after acceptance, the Origination waits for credits without publishing or charging. Resume the accepted resource rather than submitting another underwriting.
 
-Signal charges each active borrower/business once per workspace/month, using the combined workload across configurations, deals and sources. The full monthly rate is deducted at 00:00 UTC on the first calendar day, or on first mid-month activation without proration. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
+Signal charges each active borrower/business once per workspace/month, using Amlok-assessed analysis complexity across configurations, deals and sources. The first successful evaluation in each UTC calendar month publishes the full monthly charge with its output, including mid-month activation without proration. The charge pins its tier and effective rate for that month. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
 
 Signal includes change-driven reassessment. A separate full underwriting is a new Insights Origination. Monetary rates and amounts use two-decimal, half-up rounding: round the effective unit rate, then each quantity-times-rate line, and sum the rounded lines.
 
-Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, source IDs and correction links remain available in the report.
+Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, assessed complexity, source IDs and correction links remain available in the report. Follow `transaction_id` to the wallet debit and `rate_card_id` to the agreement used. Successful origination request logs link to the associated usage for Owners; replaying an idempotent request is not another charge. Read requests, source fetches and webhook retries are not separate product usage.
 ''')
     api('workload-reporting','Workload and complexity reporting','''
-AMLOK determines a workload tier from the highest required dimension: connected bank accounts, business systems and processed records. The underwriting and monitoring APIs expose product outcomes; clients do not construct workload manifests or checkpoints.
+Amlok assesses analysis complexity independently of API request or record volume. Usage records expose `tier`, `complexity_assessment.rationale`, `complexity_assessment.policy_version`, `unit_rate`, `rate_card_id` and `rate_version`. The client does not choose the tier. These explain **price**.
 
-| Tier | Bank accounts | Business systems | Records |
-| --- | ---: | ---: | ---: |
-| Standard | 2 | 5 | 75,000 |
-| Advanced | 4 | 10 | 250,000 |
-| Complex | 8 | 20 | 1,000,000 |
+Workload reports explain **operational capacity**: accounts, business integrations and distinct processed record versions. The default capacity is 8 bank accounts, 20 business integrations and 1,000,000 records for each complexity tier; the effective rate card remains authoritative. No count automatically raises the charged tier. Work beyond capacity fails before result publication and before a new debit; contact support to arrange capacity.
 
-Insights counts the complete assessment and includes at least 12 months of banking history. Signal counts newly processed records during the month; unchanged baseline history is not counted again. Updated versions count as new records, while retries of the same unchanged version are deduplicated. Negotiated quotes retain an existing tier with explicit limits and rates.
+Insights counts its complete evidence set. Signal counts new or updated versions processed in the UTC month across monitors for the borrower; unchanged baseline records and retries of the same version are excluded. The workload report can advance during the month while its original usage charge retains the counts at charging time.
 
-Request `POST /v1/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Workload and billing reports preserve the evidence versions and financial reconciliation identifiers needed to explain the tier without requiring execution of internal stages.
+Request `POST /v1/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Use `billing_report_type: rates` for historical rates. Billing summary `pricing` shows the current agreement captured at the reporting snapshot. Rate changes do not rewrite old charges or an already paid Signal month.
 ''')
     api('export-formats','Exports and file formats','''
 Create exports through `POST /v1/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v1/exports/{id}/download-links` with a purpose.
@@ -555,7 +649,7 @@ For continuous monitoring, enroll the funded deal with `POST /v1/monitors`. Insp
 Use the [quickstart](/api-reference/quickstart), [risk-package guide](/api-reference/risk-package) and [Signal guide](/api-reference/monitoring-design) for the complete sequences.
 ''')
     api('examples','API request examples','''
-These examples follow API 1.0.0 and use synthetic values. Configure your institution-issued origin and server-side key, then replace IDs with returned values. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
+These examples follow API 1.0.0 and use synthetic values. Set `AMLOK_API_BASE_URL=https://api.amlok.io` and load a workspace key on your server, then replace IDs with returned values. The key selects Sandbox or Live. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
 
 ## Start underwriting
 
@@ -589,7 +683,7 @@ Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/
 - [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
 - [Python webhook signature verifier](/downloads/verify_webhook.py)
 
-Set your institution-issued origin and key in a private environment. Keys and secrets are not included. The [OpenAPI specification](/overview/openapi-spec) is the source of truth. [SDK guidance](/overview/sdks) covers client generation.
+The Postman collection defaults `base_url` to `https://api.amlok.io`, without `/v1`. Set `api_key` in a private environment. Use a Sandbox key for tests or a Live key for activated operations; do not change the hostname when switching between them. Keys and secrets are not included. The [OpenAPI specification](/overview/openapi-spec) is the source of truth. [SDK guidance](/overview/sdks) covers client generation.
 ''')
     page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 1.0.0 contract.', '''
 Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 57 public operations, typed inputs and outputs, scopes, errors and examples.
@@ -603,7 +697,7 @@ Use the [Postman collection](/downloads/amlok-api.postman_collection.json) and [
     page('overview/sdks','SDKs and API clients','Build a client from the authoritative AMLOK contract.', '''
 Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 57 operations with typed request and response models.
 
-Set your institution-issued API origin explicitly. Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
+Use `https://api.amlok.io` as the API origin. The OpenAPI server excludes `/v1` because each operation path includes it. A Sandbox key and a Live key use the same origin. See [URLs and environments](/api-reference/environments). Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
 
 ## Client generation
 

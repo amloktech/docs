@@ -24,14 +24,14 @@ def fixtures():
     now = '2026-11-06T12:00:00Z'
     f.update({
         'Borrower': {'id':'bor_synthetic','type':'business','subject_id':'biz_synthetic','created_at':now,'client_reference':'LOS-B-0042','profile':f['CreateBorrower']},
-        'EmbeddingSession': {'id':'embs_synthetic','borrower_id':'bor_synthetic','status':'created','launch_url':'https://borrower.example.com/session/synthetic','expires_at':'2026-11-06T12:15:00Z','connection_ids':[],'consent_ids':[]},
+        'EmbeddingSession': {'id':'embs_synthetic','borrower_id':'bor_synthetic','status':'created','launch_url':'https://api.amlok.io/hub/synthetic-session-token','expires_at':'2026-11-06T12:15:00Z','connection_ids':[],'consent_ids':[]},
         'Connection': {'id':'con_synthetic','borrower_id':'bor_synthetic','integration_id':'bank_synthetic','status':'connected','consent_id':'consent_synthetic','last_successful_sync_at':now,'source_as_of':now,'coverage':f['RiskPackage']['sources'][0]['window'],'missing_reason':None},
         'Consent': {'id':'consent_synthetic','borrower_id':'bor_synthetic','status':'active','purposes':['credit_assessment','continuous_monitoring'],'captured_at':now,'expires_at':None,'revoked_at':None},
         'RevokeConsent': {'reason':'Borrower withdrew authorization.'},
         'UploadDocument': {'file':'<binary file bytes>','context':'borrower','borrower_id':'bor_synthetic','document_type':'financial_statement'},
         'Document': {'id':'doc_synthetic','context':'borrower','borrower_id':'bor_synthetic','file_name':'financial-statement.pdf','mime_type':'application/pdf','sha256':'0'*64,'size_bytes':12500,'status':'available','restriction_reason':None},
         'DownloadPurpose': {'purpose':'Institution underwriting review'},
-        'DownloadLink': {'url':'https://downloads.example.com/synthetic','expires_at':'2026-11-06T12:05:00Z','sha256':'0'*64,'mime_type':'application/pdf'},
+        'DownloadLink': {'url':'https://api.amlok.io/downloads/synthetic-download-token','expires_at':'2026-11-06T12:05:00Z','sha256':'0'*64,'mime_type':'application/pdf'},
         'LendingProductVersion': f['RiskPackage']['lending_product'],
         'RiskPolicyVersion': f['RiskPackage']['risk_policy'],
         'EvidenceSummary': f['Evidence']['record'],
@@ -238,6 +238,8 @@ def build():
     annotate_fields(spec)
     from webhook_readiness import extend as webhook_contract
     webhook_contract(spec)
+    from workspace_billing_contract import extend as workspace_billing_contract
+    workspace_billing_contract(spec,f)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations()+sandbox_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
@@ -266,7 +268,7 @@ def build():
     save('data/api-reference-index.json',index)
     save('data/product-api-examples.json',f)
     save('downloads/risk-package-example.json',f['RiskPackage'])
-    save('downloads/amlok-api.postman_collection.json',{'info':{'name':'AMLOK API '+VERSION,'schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':str(len(index))+'-operation product API contract. Set the institution-issued base_url and API key in a private environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries.'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':k,'value':v} for k,v in {'base_url':'','api_key':'','record_id':'record_synthetic','record_etag':'"1"','command_reference':'replace-for-each-new-command'}.items()],'item':items})
+    save('downloads/amlok-api.postman_collection.json',{'info':{'name':'AMLOK API '+VERSION,'schema':'https://schema.getpostman.com/json/collection/v2.1.0/collection.json','description':str(len(index))+'-operation product API contract. base_url defaults to https://api.amlok.io without /v1. Set a Sandbox or Live API key in a private environment; the key selects the workspace environment. All sample identifiers are synthetic. Fresh command_reference for each new action; preserve it for retries.'},'auth':{'type':'bearer','bearer':[{'key':'token','value':'{{api_key}}','type':'string'}]},'variable':[{'key':k,'value':v} for k,v in {'base_url':'https://api.amlok.io','api_key':'','record_id':'record_synthetic','record_etag':'"1"','command_reference':'replace-for-each-new-command'}.items()],'item':items})
     from current_api_guides import write_guides, navigation
     write_guides(spec,f,index)
     navigation(groups)
@@ -284,6 +286,9 @@ def build():
     sandbox_guides(spec,index)
     from webhook_readiness import write_guides as webhook_guides
     webhook_guides(spec)
+    from workspace_billing_contract import write_billing_guides
+    write_billing_guides(ROOT)
+
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re
     for guide in ['api-reference/examples', 'api-reference/downloads', 'api-reference/overview',

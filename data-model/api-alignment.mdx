@@ -36,6 +36,12 @@ The [integration catalog](/integrations/status) has **238 entries: 22 Active and
 
 Internal verification and registry sources supplement borrower-connected integrations. They are not additional customer-selectable Hub integrations. Their authorized results use the [KYC/KYB model](/api-reference/verification), source records, evidence and document references. No provider's entire API is promised, and denied or unavailable information stays explicit.
 
+## Workspace billing agreements
+
+Financial institution billing is separate from a borrower's normalized payment or accounting records. `GET /v1/billing/summary` returns `pricing` with six product/complexity rates and `commitment` (monthly minimum, quarterly/annual cadence and prepayment). `GET /v1/billing/usage` returns the historical tier, effective unit rate, amount, rate version, assessment rationale and linked transaction for each charge. Transactions carry the actual wallet movement and optional `charge_details`.
+
+Amlok assesses complexity; request and record volumes do not select the price. Monetary values are exact two-decimal CAD strings. Historical records preserve their original terms. See [consumption reporting](/api-reference/consumption-reporting) and [billing](/console/billing).
+
 ## Financial and verification definitions
 
 The [source dictionary](/data-model/field-dictionary) documents normalized fields and partial-source behavior. The [verification dictionary](/api-reference/verification-fields) documents 25 detailed observation sections. The [risk metric catalog](/api-reference/underwriting-dimensions) documents 24 dimension families and 149 approved metric keys. The 56 [source-derived attribute definitions](/data-model/derived-attributes) are supporting calculations, not an alternative risk metric enum.
