@@ -83,7 +83,8 @@
               "standard",
               "advanced",
               "complex"
-            ]
+            ],
+            "description": "Historical Amlok-assessed complexity. Record volume does not select this price."
           },
           "source_resource_id": {
             "type": "string",
@@ -229,6 +230,48 @@
             "type": "string",
             "minLength": 1,
             "description": "Immutable workspace billing snapshot used for this financial representation."
+          },
+          "rate_version": {
+            "type": "string",
+            "description": "Agreement version used for the original charge."
+          },
+          "complexity_assessment": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "tier",
+              "assessed_at",
+              "policy_version",
+              "basis",
+              "rationale"
+            ],
+            "properties": {
+              "tier": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "advanced",
+                  "complex"
+                ]
+              },
+              "assessed_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "policy_version": {
+                "type": "string"
+              },
+              "basis": {
+                "type": "string",
+                "enum": [
+                  "amlok_assessment",
+                  "sandbox_fixture"
+                ]
+              },
+              "rationale": {
+                "type": "string"
+              }
+            }
           }
         },
         "required": [

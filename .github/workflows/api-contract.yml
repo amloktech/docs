@@ -2,7 +2,7 @@ name: API contract
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, staging]
 permissions:
   contents: read
 jobs:
@@ -32,3 +32,4 @@ jobs:
           python scripts/test-readiness-contract.py
           python scripts/test-enterprise-scale.py
           python scripts/test-data-model-alignment.py
+          node scripts/test-pricing-calculator.mjs

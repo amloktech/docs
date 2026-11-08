@@ -474,7 +474,7 @@ Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits
 
 There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 
-The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. The agreed monthly minimum is at least CAD 1,000, funded for 12 months at signing and annual renewal; this is not a monthly funding schedule.
+The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. Billing summary `pricing` contains the six effective rates and `commitment`: monthly minimum, quarterly or annual cadence, and calculated payment amount. The default is CAD 1,000/month and annual funding of CAD 12,000; quarterly funding at that minimum is CAD 3,000. This funds the wallet, rather than creating a second monthly usage debit. Saving terms does not collect payment.
 
 Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
 
@@ -485,24 +485,20 @@ Only Insights and Signal are paid products. Verification, KYB/KYC, liens, calcul
 
 Insights checks available credits and deducts the charge atomically with risk-package publication. If concurrent activity leaves insufficient funds after acceptance, the Origination waits for credits without publishing or charging. Resume the accepted resource rather than submitting another underwriting.
 
-Signal charges each active borrower/business once per workspace/month, using the combined workload across configurations, deals and sources. The full monthly rate is deducted at 00:00 UTC on the first calendar day, or on first mid-month activation without proration. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
+Signal charges each active borrower/business once per workspace/month, using Amlok-assessed analysis complexity across configurations, deals and sources. The first successful evaluation in each UTC calendar month publishes the full monthly charge with its output, including mid-month activation without proration. The charge pins its tier and effective rate for that month. A paid borrower/workspace/month is not charged twice. Unfunded monitoring pauses without debt; resume funds only the current period.
 
 Signal includes change-driven reassessment. A separate full underwriting is a new Insights Origination. Monetary rates and amounts use two-decimal, half-up rounding: round the effective unit rate, then each quantity-times-rate line, and sum the rounded lines.
 
-Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, source IDs and correction links remain available in the report.
+Read summary movements through billing transactions and create a `billing` export with `billing_report_type: usage` for detailed consumption. Historical rate versions, assessed complexity, source IDs and correction links remain available in the report. Follow `transaction_id` to the wallet debit and `rate_card_id` to the agreement used. Successful origination request logs link to the associated usage for Owners; replaying an idempotent request is not another charge. Read requests, source fetches and webhook retries are not separate product usage.
 ''')
     api('workload-reporting','Workload and complexity reporting','''
-AMLOK determines a workload tier from the highest required dimension: connected bank accounts, business systems and processed records. The underwriting and monitoring APIs expose product outcomes; clients do not construct workload manifests or checkpoints.
+Amlok assesses analysis complexity independently of API request or record volume. Usage records expose `tier`, `complexity_assessment.rationale`, `complexity_assessment.policy_version`, `unit_rate`, `rate_card_id` and `rate_version`. The client does not choose the tier. These explain **price**.
 
-| Tier | Bank accounts | Business systems | Records |
-| --- | ---: | ---: | ---: |
-| Standard | 2 | 5 | 75,000 |
-| Advanced | 4 | 10 | 250,000 |
-| Complex | 8 | 20 | 1,000,000 |
+Workload reports explain **operational capacity**: accounts, business integrations and distinct processed record versions. The default capacity is 8 bank accounts, 20 business integrations and 1,000,000 records for each complexity tier; the effective rate card remains authoritative. No count automatically raises the charged tier. Work beyond capacity fails before result publication and before a new debit; contact support to arrange capacity.
 
-Insights counts the complete assessment and includes at least 12 months of banking history. Signal counts newly processed records during the month; unchanged baseline history is not counted again. Updated versions count as new records, while retries of the same unchanged version are deduplicated. Negotiated quotes retain an existing tier with explicit limits and rates.
+Insights counts its complete evidence set. Signal counts new or updated versions processed in the UTC month across monitors for the borrower; unchanged baseline records and retries of the same version are excluded. The workload report can advance during the month while its original usage charge retains the counts at charging time.
 
-Request `POST /v1/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Workload and billing reports preserve the evidence versions and financial reconciliation identifiers needed to explain the tier without requiring execution of internal stages.
+Request `POST /v1/exports` with `kind: billing`, `billing_report_type: workload`, a UTC window and JSON or CSV format. Use `billing_report_type: rates` for historical rates. Billing summary `pricing` shows the current agreement captured at the reporting snapshot. Rate changes do not rewrite old charges or an already paid Signal month.
 ''')
     api('export-formats','Exports and file formats','''
 Create exports through `POST /v1/exports`. Use one typed source: a risk-package ID, an evidence-set ID, or a billing report type with a UTC window. Poll the export or consume `export.ready`, then call `POST /v1/exports/{id}/download-links` with a purpose.

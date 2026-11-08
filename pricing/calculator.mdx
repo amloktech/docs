@@ -1,12 +1,12 @@
 ---
 title: "Pricing calculator"
-description: "Estimate usage by product and complexity, then compare it with your monthly minimum paid annually."
+description: "Estimate usage by product and complexity, then compare it with your quarterly or annual funding commitment."
 mode: "wide"
 ---
 
 import { PricingCalculator } from "/snippets/pricing-calculator.jsx";
 
-Choose your products and enter monthly volumes for each complexity tier. The calculator starts with regular pay-as-you-go rates: Insights CAD 8.00 / 25.00 / 45.00 and Signal CAD 5.00 / 8.00 / 12.00 for Standard / Advanced / Complex. The estimate separates **usage deductions** from the **payment due at agreement signing or renewal**.
+Choose your products and enter monthly volumes for each complexity tier. The calculator starts with regular pay-as-you-go rates: Insights CAD 8.00 / 25.00 / 45.00 and Signal CAD 5.00 / 8.00 / 12.00 for Standard / Advanced / Complex. The estimate separates **usage deductions** from **each scheduled prepayment**.
 
 <PricingCalculator />
 
@@ -14,13 +14,13 @@ Choose your products and enter monthly volumes for each complexity tier. The cal
 
 - **Insights:** enter completed underwritings per month. Select the tiers in your portfolio and enter at least 50 for each selected tier. Unselected tiers contribute no usage; their quantity field is disabled.
 - **Signal:** enter the average number of distinct active borrowers/businesses in each full month. Count each once in the workspace, regardless of the number of checks, lending facilities, connected bank accounts, or integrations. Assign each to its agreed tier without duplicating it across tiers.
-- **Minimum monthly commitment:** starts at CAD 1,000.00, paid annually as 12 times the agreed amount at signing and each renewal.
+- **Minimum monthly commitment:** defaults to CAD 1,000.00. Select quarterly (3 × monthly minimum) or annual (12 × monthly minimum) funding.
 - **Agreed discount:** enter a discount only if it applies to your agreement. It applies equally to published product rates, without reducing the monthly minimum.
 - **Enterprise negotiated rates:** select **Use my agreed unit rates** to enter final CAD rates for each product and tier. These replace published rates, and the percentage discount is not applied again. Custom quotes keep the tier assigned by AMLOK.
 
 ## Calculation assumptions
 
-The estimate repeats the entered monthly volumes for 12 months, uses full monitoring months, and starts with no carried credit balance. It rounds the effective unit rate to two decimals first using decimal half-up rounding, multiplies by the whole-number quantity, and projects 12 months. Reported monetary values have two decimals.
+The estimate assumes all scheduled payments settle: one annual prepayment or four quarterly prepayments. It repeats the entered monthly volumes for 12 months, uses full monitoring months, and starts with no carried credit balance. It rounds the effective unit rate to two decimals first using decimal half-up rounding, multiplies by the whole-number quantity, and projects 12 months. Reported monetary values have two decimals.
 
 Automatic top-up planning starts with a CAD 200.00 trigger and CAD 500.00 amount. You can change these assumptions or turn auto-pay off. With auto-pay off, additional funding means manual top-ups needed to cover the projected usage. Requests can use credits below CAD 200.00; they are rejected only if available credits cannot cover them.
 

@@ -57,3 +57,20 @@ See the [billing API guide](/api-reference/credit-reporting) for response fields
 Sandbox scenario commands never invoke a payment processor and cannot run in Live. They do not configure Live payment methods, automatic top-ups, cancellation or refunds. Use the client portal's Live controls for those operations after your workspace is enabled and the appropriate agreement and funding are in place.
 
 For the broader environment differences, see [Sandbox and Live compared](/sandbox/overview#sandbox-and-live-compared).
+
+## Complexity examples
+
+Amlok assigns a deterministic synthetic assessment to each example business. Selecting approval, decline or another scenario does not alter its complexity. Your workspace's agreed rates apply to simulated usage.
+
+| Business | Synthetic complexity | Published Insights / Signal monthly rate |
+| --- | --- | --- |
+| Maple Retail | Standard | CAD 8.00 / CAD 5.00 |
+| Harbor Logistics | Advanced | CAD 25.00 / CAD 8.00 |
+| Cedar Software | Advanced | CAD 25.00 / CAD 8.00 |
+| Prairie Manufacturing | Complex | CAD 45.00 / CAD 12.00 |
+| Summit Hospitality | Advanced | CAD 25.00 / CAD 8.00 |
+| Atlas Wholesale | Complex | CAD 45.00 / CAD 12.00 |
+
+Custom synthetic borrowers use Standard. Inspect `complexity_assessment` on usage for the rationale and policy version. One successful underwriting charges once. Multiple monitors for a borrower reuse its first paid UTC-month charge, including its original tier and price.
+
+Billing summary `pricing` shows the current workspace rates, monthly minimum and quarterly or annual payment amount. Updating an agreement does not deposit credits, send an invoice or charge a payment method. All Sandbox funding and charges remain simulated.

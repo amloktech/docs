@@ -238,6 +238,8 @@ def build():
     annotate_fields(spec)
     from webhook_readiness import extend as webhook_contract
     webhook_contract(spec)
+    from workspace_billing_contract import extend as workspace_billing_contract
+    workspace_billing_contract(spec,f)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations()+sandbox_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
@@ -284,6 +286,9 @@ def build():
     sandbox_guides(spec,index)
     from webhook_readiness import write_guides as webhook_guides
     webhook_guides(spec)
+    from workspace_billing_contract import write_billing_guides
+    write_billing_guides(ROOT)
+
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re
     for guide in ['api-reference/examples', 'api-reference/downloads', 'api-reference/overview',

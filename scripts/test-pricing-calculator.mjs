@@ -76,4 +76,10 @@ test("Maximum supported inputs remain exact integer cents",()=>{
  const r=calculate(i);assert.equal(r.valid,true);for(const k of ["monthlyCents","usageCents","fundingCents","unusedCents"])assert.ok(Number.isSafeInteger(r[k]),k);
  assert.equal(r.fundingCents-r.usageCents,r.unusedCents);
 });
+test("Quarterly prepayment divides annual commitment without adding funding twice",()=>{
+ const i=baseline();i.paymentCadence="quarterly";const r=calculate(i);
+ assert.equal(r.paymentCents,300000);assert.equal(r.monthsPerPayment,3);assert.equal(r.annualFundingCents,1200000);
+ assert.equal(r.fundingCents,calculate(baseline()).fundingCents);assert.equal(r.unusedCents,420000);
+ i.paymentCadence="monthly";assert.equal(calculate(i).valid,false);
+});
 console.log(tests+" pricing calculator checks passed.");

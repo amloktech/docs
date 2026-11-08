@@ -52221,7 +52221,8 @@
               "standard",
               "advanced",
               "complex"
-            ]
+            ],
+            "description": "Amlok-assessed analysis complexity. Not an API call or record-volume band."
           },
           "unit": {
             "type": "string",
@@ -52237,7 +52238,8 @@
           },
           "discount_percent": {
             "type": "string",
-            "pattern": "^(?:100(?:\\.0{1,2})?|[0-9]{1,2}(?:\\.[0-9]{1,2})?)$"
+            "pattern": "^(?:100(?:\\.0{1,2})?|[0-9]{1,2}(?:\\.[0-9]{1,2})?)$",
+            "description": "Informational discount from the published rate. Effective rate is authoritative; do not apply this discount again."
           },
           "effective_rate": {
             "type": "string",
@@ -52417,7 +52419,8 @@
           "minimum_banking_history_months",
           "analysis_scope"
         ],
-        "additionalProperties": false
+        "additionalProperties": false,
+        "description": "Operational capacity independent of analysis-complexity pricing. Record or API request counts do not select a charged tier."
       },
       "BillingRateCard": {
         "type": "object",

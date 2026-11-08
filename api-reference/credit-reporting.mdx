@@ -11,7 +11,7 @@ Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits
 
 There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 
-The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. The agreed monthly minimum is at least CAD 1,000, funded for 12 months at signing and annual renewal; this is not a monthly funding schedule.
+The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. Billing summary `pricing` contains the six effective rates and `commitment`: monthly minimum, quarterly or annual cadence, and calculated payment amount. The default is CAD 1,000/month and annual funding of CAD 12,000; quarterly funding at that minimum is CAD 3,000. This funds the wallet, rather than creating a second monthly usage debit. Saving terms does not collect payment.
 
 Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
 
