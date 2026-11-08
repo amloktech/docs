@@ -90,7 +90,9 @@ for (const c of cases) {
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
 assert len(collection['item'])==sum(len(methods) for methods in spec['paths'].values())
 variables={item['key']:item['value'] for item in collection['variable']}
-assert variables['api_key']=='' and variables['base_url']==''
+assert variables['api_key']=='' and variables['base_url']=='https://api.amlok.io'
+assert spec['servers'][0]['url']==variables['base_url']
+assert all(path.startswith('/v1/') for path in spec['paths'])
 pages=list((ROOT/'api-reference').glob('*.mdx'))
 index=json.loads((ROOT/'data/api-reference-index.json').read_text())
 assert len(index)==65

@@ -72,7 +72,7 @@ curl --request GET \
   --header "Authorization: Bearer $AMLOK_API_KEY"
 ```
 
-`AMLOK_API_BASE_URL` is the API origin supplied for your deployment, without `/v1`. Set `AMLOK_API_KEY` from your secret manager. A successful request returns `200` with `data`, `meta` and `page`; an empty Sandbox can return an empty `data` array. `meta.environment` identifies Sandbox or Live.
+`AMLOK_API_BASE_URL` is `https://api.amlok.io`, without `/v1`, for both Sandbox and Live. The key selects the environment. See [URLs and environments](/api-reference/environments). Set `AMLOK_API_KEY` from your secret manager. A successful request returns `200` with `data`, `meta` and `page`; an empty Sandbox can return an empty `data` array. `meta.environment` identifies Sandbox or Live.
 
 For **Monitoring integration**, use `GET /v1/monitors?limit=1`. For **Billing reports**, use `GET /v1/billing/summary`. These checks read existing records and do not start underwriting, monitoring or payment collection.
 

@@ -71,11 +71,11 @@ Use your backend to create a borrower, launch an Integrations Hub session and su
 Follow [Create and manage API keys](/console/api-keys) in the Console. Choose **Origination integration** for this underwriting journey, or **All products** if the same service will also manage Signal monitoring. The default **Read product data** profile cannot submit the commands below. Use a Sandbox key for dummy-data testing.
 
 ```bash
-export AMLOK_API_BASE_URL="<your-institution-api-origin>"
+export AMLOK_API_BASE_URL="https://api.amlok.io"
 export AMLOK_API_KEY="<your-workspace-api-key>"
 ```
 
-The origin excludes `/v1`. Keep the key on your server. Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
+Both Sandbox and Live use this API origin. The workspace key selects the environment; Sandbox does not use a different hostname. The origin excludes `/v1` because every endpoint path already includes it. Keep the key on your server. See [URLs and environments](/api-reference/environments). Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
 
 ## 2. Register the borrower
 
@@ -306,9 +306,51 @@ The API checks the creator's current workspace access and role as well as the ke
 A resource ID is not a permission. Product records have no edit or deletion operations, even for Owners. Creating new assessment inputs or changing future monitor configuration does not modify historical data.
 ''')
     api('environments','Sandbox and Live','''
-Sandbox and Live use separate keys, records, connections and financial balances. Use the institution-issued origin in `AMLOK_API_BASE_URL`, without a version suffix. Do not infer API hostnames from the console or documentation domain.
+## Customer URLs
 
-`meta.environment` and event `environment` identify the context. Sandbox examples and simulated credits do not establish production funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live.
+| Service | URL | Use |
+| --- | --- | --- |
+| Console | [console.amlok.io](https://console.amlok.io) | Sign in, select a workspace and Sandbox or Live, and manage keys and webhook destinations. |
+| API origin | `https://api.amlok.io` | Set `AMLOK_API_BASE_URL` or Postman `base_url` to this value. |
+| Versioned API | `https://api.amlok.io/v1` | Every documented operation has a path beginning with `/v1`. |
+| Documentation | [docs.amlok.io](https://docs.amlok.io) | Read guides, API schemas and downloads. This is not the product API host. |
+
+```bash
+export AMLOK_API_BASE_URL="https://api.amlok.io"
+# Load AMLOK_API_KEY from your server's secret manager.
+curl --fail-with-body --max-time 30 \\
+  "$AMLOK_API_BASE_URL/v1/configuration" \\
+  --header "Authorization: Bearer $AMLOK_API_KEY"
+```
+
+Do not append `/v1` to the environment variable: the examples already include it. Otherwise the request becomes `/v1/v1/...`. Use HTTPS and the documented hostname directly; do not forward a bearer key through a redirect or send it to the Console, documentation, a provider or your webhook receiver.
+
+## Sandbox and Live use the same API address
+
+Sandbox and Live are separate environments **inside a workspace**, accessed through `https://api.amlok.io`. The API key selects the workspace and environment. There is no separate customer Sandbox hostname, caller-supplied workspace override or environment header. Switching the Console selector does not change an existing API key.
+
+Create your key in the intended Console environment. Sandbox and Live use separate keys, records, connections and financial balances. Authenticated response `meta.environment` is `sandbox` or `live`; event `environment` follows the same convention. Check this field before processing records. Public health endpoints need no key and do not identify or authorize a customer workspace.
+
+Sandbox uses fictional data and simulated financial activity. It does not collect real payments or establish Live funding or provider authorization. Never copy a Sandbox resource ID, embedding URL or cursor into Live. Live activation and product access must be enabled separately; changing the host or requesting broader key scopes does not activate them.
+
+## Deployment staging and demos
+
+Amlok's staging deployment uses [staging-console.amlok.io](https://staging-console.amlok.io) with `https://staging-api.amlok.io`. Use this pair only when Amlok has given you access for a staging review. It has separate accounts, workspaces and credentials. It is **not** the Sandbox environment for customer accounts at `console.amlok.io`. A key issued in one deployment is not valid in the other.
+
+Demo workspaces shown in screenshots are separate demonstration data. Use your own Console workspace and Sandbox key when building an integration; do not use demo records as integration credentials or live evidence.
+
+## URLs in requests and responses
+
+| URL or field | Owner and handling |
+| --- | --- |
+| `return_url` | Your application's registered destination after the borrower finishes or cancels the Hub. Replace `https://institution.example.com/connected` with your own allowed URL. |
+| `embed_origin` | Your frontend's exact registered origin, such as `https://institution.example.com`, without a path. It must match the embedding configuration. |
+| `hub_origin` | Read it from `GET /v1/configuration` for the selected embedding version. Use it for iframe policy and message-origin validation; do not guess it. |
+| `launch_url` | Use the complete, short-lived URL returned by the embedding-session command. Customer deployments currently return `https://api.amlok.io/hub/...`. Do not construct it, change its host or add `/v1`. |
+| Document or export `url` | Use the complete authorized URL from the download command, currently `https://api.amlok.io/downloads/...`. It is time-limited; do not attach the workspace bearer key or log the token. |
+| Webhook destination | Your own public HTTPS receiver, registered in **Dev Tools > Endpoints**. Amlok sends signed event requests here. It is not an Amlok API URL. |
+
+The `institution.example.com` domain, synthetic IDs and synthetic URL tokens in examples are illustrative and do not work as credentials. Obtain real session and download URLs from API responses. Follow the [Integrations Hub guide](/api-reference/integration-hub), [webhook setup](/console/webhooks) and [authentication guide](/api-reference/authentication).
 
 Exercise the borrower connection journey, a completed Origination, missing inputs, expired consent, restricted evidence and monitoring failures. See [Sandbox journeys](/api-reference/sandbox-journeys).
 ''')
@@ -611,7 +653,7 @@ For continuous monitoring, enroll the funded deal with `POST /v1/monitors`. Insp
 Use the [quickstart](/api-reference/quickstart), [risk-package guide](/api-reference/risk-package) and [Signal guide](/api-reference/monitoring-design) for the complete sequences.
 ''')
     api('examples','API request examples','''
-These examples follow API 1.0.0 and use synthetic values. Configure your institution-issued origin and server-side key, then replace IDs with returned values. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
+These examples follow API 1.0.0 and use synthetic values. Set `AMLOK_API_BASE_URL=https://api.amlok.io` and load a workspace key on your server, then replace IDs with returned values. The key selects Sandbox or Live. Each endpoint has cURL, Python and JavaScript examples generated from the same contract.
 
 ## Start underwriting
 
@@ -645,7 +687,7 @@ Use these artifacts for the primary API 1.0.0 contract. Endpoint pages, request/
 - [Node.js webhook signature verifier](/downloads/verify-webhook.mjs)
 - [Python webhook signature verifier](/downloads/verify_webhook.py)
 
-Set your institution-issued origin and key in a private environment. Keys and secrets are not included. The [OpenAPI specification](/overview/openapi-spec) is the source of truth. [SDK guidance](/overview/sdks) covers client generation.
+The Postman collection defaults `base_url` to `https://api.amlok.io`, without `/v1`. Set `api_key` in a private environment. Use a Sandbox key for tests or a Live key for activated operations; do not change the hostname when switching between them. Keys and secrets are not included. The [OpenAPI specification](/overview/openapi-spec) is the source of truth. [SDK guidance](/overview/sdks) covers client generation.
 ''')
     page('overview/openapi-spec','OpenAPI specification','Download the primary AMLOK API 1.0.0 contract.', '''
 Use the [OpenAPI 3.1 specification](/openapi/amlok.json) as the authoritative machine-readable contract for AMLOK API **1.0.0**. It defines all 57 public operations, typed inputs and outputs, scopes, errors and examples.
@@ -659,7 +701,7 @@ Use the [Postman collection](/downloads/amlok-api.postman_collection.json) and [
     page('overview/sdks','SDKs and API clients','Build a client from the authoritative AMLOK contract.', '''
 Generate a server-side client from the [current OpenAPI 3.1 contract](/openapi/amlok.json), or use the cURL, Python and JavaScript examples on each endpoint. The current contract contains 57 operations with typed request and response models.
 
-Set your institution-issued API origin explicitly. Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
+Use `https://api.amlok.io` as the API origin. The OpenAPI server excludes `/v1` because each operation path includes it. A Sandbox key and a Live key use the same origin. See [URLs and environments](/api-reference/environments). Keep keys server-side, configure timeouts, reject cross-origin redirects and preserve idempotency keys during retries. Generated client types do not replace server authorization or JSON Schema conditional validation.
 
 ## Client generation
 

@@ -12,11 +12,11 @@ Use your backend to create a borrower, launch an Integrations Hub session and su
 Follow [Create and manage API keys](/console/api-keys) in the Console. Choose **Origination integration** for this underwriting journey, or **All products** if the same service will also manage Signal monitoring. The default **Read product data** profile cannot submit the commands below. Use a Sandbox key for dummy-data testing.
 
 ```bash
-export AMLOK_API_BASE_URL="<your-institution-api-origin>"
+export AMLOK_API_BASE_URL="https://api.amlok.io"
 export AMLOK_API_KEY="<your-workspace-api-key>"
 ```
 
-The origin excludes `/v1`. Keep the key on your server. Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
+Both Sandbox and Live use this API origin. The workspace key selects the environment; Sandbox does not use a different hostname. The origin excludes `/v1` because every endpoint path already includes it. Keep the key on your server. See [URLs and environments](/api-reference/environments). Retrieve [configuration](/api-reference/endpoints/configuration/get-configuration) to discover approved schemas and capabilities.
 
 ## 2. Register the borrower
 

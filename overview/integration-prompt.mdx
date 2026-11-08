@@ -60,7 +60,9 @@ ACCESS AND SETUP
 1. The account manager provides client portal access and environment details.
    Authorized administrators create API keys in the portal. Do not implement
    programmatic signup, API-key creation, or a new portal workflow.
-2. Read AMLOK_API_BASE_URL and AMLOK_API_KEY server-side. Never expose the key
+2. Set AMLOK_API_BASE_URL=https://api.amlok.io (without /v1) and read
+   AMLOK_API_KEY server-side. Sandbox and Live use the same origin; the key
+   selects the workspace environment. Never expose the key
    in the browser, prompts, logs, source control, or exported examples. Store
    webhook signing secrets separately. Use HTTPS and reject unexpected redirects.
 3. One API key identifies one workspace, institution, and environment. Derive
