@@ -18,7 +18,7 @@ The console shows persisted API records. API activity, request logs, source data
 
 ## Run from your integration
 
-Create a Sandbox key in the console. Use the base URL provided for your deployment and keep the key on your server.
+Create an **All products** Sandbox key in the Console for nonfinancial product scenarios. Set `AMLOK_API_BASE_URL=https://api.amlok.io` and `AMLOK_API_KEY` to that server-side key. Use the [Console scenario tools](/console/sandbox) as an Owner for the complete sample pack and financial simulations; standard Console key profiles do not combine billing permission with scenario commands.
 
 ```bash
 curl --fail-with-body "$AMLOK_API_BASE_URL/v1/sandbox/catalog" \
@@ -36,10 +36,10 @@ The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id
 Use the [runnable scenario client](/downloads/run-sandbox-scenario.mjs) with Node.js 22 or later:
 
 ```bash
-AMLOK_SANDBOX_SCENARIO=healthy node run-sandbox-scenario.mjs
+AMLOK_SANDBOX_SCENARIO=healthy node run-sandbox-scenario.mjs healthy-run.json
 ```
 
-Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains the catalog version, submits one idempotent command and polls its result. For webhook scenarios, set `AMLOK_SANDBOX_ENDPOINT_ID` to your enabled Sandbox endpoint; this explicitly enables delivery.
+Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains the catalog version, saves the intended command and idempotency key to a private state file, submits it and polls its result. If the connection drops or polling times out, rerun with the **same file and key** to resume the original run. A new filename starts a new run; changing environment variables does not replace a command already saved in a state file. Keep the file private; it contains request and resource IDs but no API key. For webhook scenarios, set `AMLOK_SANDBOX_ENDPOINT_ID` to your enabled Sandbox endpoint before the first run; this explicitly enables delivery.
 
 ## Permissions and isolation
 

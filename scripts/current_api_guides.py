@@ -383,6 +383,8 @@ Every POST requires `Idempotency-Key`, including uploads, downloads and delivery
 
 Full-response replay lasts 24 hours. After it expires, repeating an accepted command returns `409 idempotency_result_expired` without executing it again. Accepted-command receipts survive that response cache until workspace deletion. After a timeout, recover the original command with `GET /v1/request-receipts/lookup?operation_id=...&idempotency_key=...`, then retrieve its resource. Never use a fresh key merely because the cached response expired.
 
+A replay returns the original accepted response body, including its original `meta.request_id`. The `X-Request-ID` response header identifies the current HTTP attempt and can therefore differ from the body when `Idempotency-Replayed` is `true`. Preserve both IDs with the idempotency key when troubleshooting retries.
+
 A rejected unfunded request does not produce a debit. An already accepted Origination can enter `waiting_for_credits`; continue following that ID rather than creating another assessment.
 
 Monitor configuration updates use `If-Match` with the current ETag. On `412`, retrieve and reconcile the latest configuration before retrying. Do not blindly overwrite another administrator's change.
@@ -515,7 +517,7 @@ JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `sche
 
 ## Financial report compatibility
 
-The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute.
+The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute. Funding exports use their report status vocabulary: successful funding, including a later refunded payment, is `settled`; returned or failed payments are `failed`; pending/processing payments are `pending`. Read `/v1/billing/payments` for the full payment state, including `returned` or `refunded`, and reconcile linked transaction reversals. The export method comes from the payment's `method.type`.
 
 | Report type | File schema / example |
 | --- | --- |

@@ -157,7 +157,7 @@ def extend_fixtures(f):
  f['DealSnapshot']={'id':'ds_synthetic','monitor_id':'mon_synthetic','borrower_id':'bor_synthetic','previous_snapshot_id':'ds_initial','sequence':2,'record_version':1,'effective_at':now,'received_at':now,'deal':deepcopy(f['DealSnapshotInput']['deal']),'performance':None}
  f['Monitor']['deal']=deepcopy(f['DealSnapshot']['deal'])
  f['CreateMonitor']['deal']['funded_at']=previous
- f['Configuration'].update(operational_profile=deepcopy(PROFILE),embedding_versions=[{'id':'embed_synthetic','name':'Synthetic borrower Hub','integration_ids':['bank_synthetic'],'consent_purposes':['credit_assessment','continuous_monitoring'],'allowed_embed_origins':['https://institution.example.com'],'allowed_return_urls':['https://institution.example.com/connected'],'hub_origin':'https://api.amlok.io'}],sandbox={'scenario_ids':['happy_path','source_reauthorization','document_required','missing_financial_input','restricted_report','provider_failure','insufficient_credits','monitoring_alert','payment_return','export_failure'],'test_integration_id':'bank_synthetic'})
+ f['Configuration'].update(operational_profile=deepcopy(PROFILE),embedding_versions=[{'id':'embed_synthetic','name':'Synthetic borrower Hub','integration_ids':['bank_synthetic'],'consent_purposes':['credit_assessment','continuous_monitoring'],'allowed_embed_origins':['https://institution.example.com'],'allowed_return_urls':['https://institution.example.com/connected'],'hub_origin':'https://api.amlok.io'}],sandbox={'scenario_ids':['happy_path','source_reauthorization','document_required','missing_financial_input','provider_failure','insufficient_credits','export_failure'],'test_integration_id':'bank_synthetic'})
  f['Configuration']['application_schemas'].append({'id':'consumer_app_schema_synthetic','version':'1','json_schema':{'type':'object','required':['gross_monthly_income','monthly_debt_payments'],'properties':{'gross_monthly_income':{'type':'string','pattern':r'^[0-9]+\.[0-9]{2}$'},'monthly_debt_payments':{'type':'string','pattern':r'^[0-9]+\.[0-9]{2}$'}},'additionalProperties':False}})
  f['Configuration']['dimensions'].append({'key':'debt_to_income','description':'Eligible monthly debt payments divided by established gross monthly income. Missing inputs yield unavailable, never zero.','unit':'ratio','calculation_version':'consumer-dti-synthetic-v1','borrower_types':['person']})
  return f
@@ -176,12 +176,16 @@ def enrich(spec,f):
    if oid in ['createDealSnapshot','listDealSnapshots']:
     op['parameters']=[p for p in op['parameters'] if p['name']!='borrower_id']
     next(p for p in op['parameters'] if p['name']=='id')['description']='Monitor ID whose lender input history is being accessed.'
-   if method=='post':
-    op['parameters'].append({'name':'X-AMLOK-Sandbox-Scenario','in':'header','required':False,'schema':enum(*f['Configuration']['sandbox']['scenario_ids']),'description':'Sandbox-only deterministic test scenario on borrower creation, persisted for that borrower. On other operations or any Live request, reject before side effects with 400 sandbox_only. Omit for happy_path.'}) if oid=='createBorrower' else None
+   header_scenarios={
+    'createOrigination':['happy_path','source_reauthorization','document_required','missing_financial_input','provider_failure','insufficient_credits'],
+    'createMonitor':['happy_path','source_reauthorization','missing_financial_input','provider_failure','insufficient_credits'],
+    'createExport':['happy_path','export_failure'],
+   }
+   if oid in header_scenarios:
+    op['parameters'].append({'name':'X-AMLOK-Sandbox-Scenario','in':'header','required':False,'schema':enum(*header_scenarios[oid]),'description':'Sandbox-only simulation for this command. Omit for happy_path. The choice is not stored on the borrower and does not change other commands. Use an identifier enabled in configuration.sandbox.scenario_ids and supported by this operation. Unsupported operations return 400 validation_error; unsupported scenarios return 422 scenario_not_available; any use in Live returns 422 sandbox_only before command acceptance.'})
    if oid=='createDealSnapshot':op['description']+=' previous_snapshot_id is mandatory optimistic concurrency; 409 deal_snapshot_conflict when stale. Same idempotency key replays the accepted snapshot even if the monitor has since advanced. New snapshot affects evaluations starting after acceptance; no retroactive analysis or new Insights charge.'
    if oid=='getConfiguration':op['description']+=' operational_profile and embedding_versions are required discovery; sandbox is null in Live. Never infer production quotas from synthetic examples.'
    for status,res in op['responses'].items():
-    res.setdefault('headers',{})['X-Request-ID']={'schema':text(),'description':'Same request ID as meta.request_id or error.request_id.'}
     if status.startswith('2'):
      example=res['content']['application/json']['example']
      if 'page' in example:

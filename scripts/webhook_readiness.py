@@ -43,8 +43,8 @@ ERRORS={
 'processing_failed':('Resource failure','Inspect the terminal origination, monitor, run or export failure and retain request_id for support.'),
 'session_expired':('410','Create a new short-lived embedding session; do not reuse its launch URL.'),
 'consent_purpose_missing':('422','Obtain the required borrower purpose through the approved Hub configuration.'),
-'sandbox_only':('400','Remove simulation controls from Live; use the Sandbox environment to test scenarios.'),
-'scenario_not_available':('422','Choose a scenario returned by the Sandbox catalog and meet its preconditions.'),
+'sandbox_only':('422','Remove simulation controls from Live; use the Sandbox environment to test scenarios.'),
+'scenario_not_available':('422','For a command header, choose a scenario enabled in configuration.sandbox.scenario_ids and supported by that endpoint. Named scenario runs use the separate Sandbox catalog.'),
 'idempotency_result_expired':('409','Look up the durable request receipt and resource; an expired cached response does not authorize duplicate work.'),
 'capacity_exceeded':('429','Lower concurrency or resource fan-out and respect Retry-After.'),
 'queue_full':('429','Apply bounded backoff; do not replace the idempotency key while retrying submission.'),
@@ -53,7 +53,7 @@ ERRORS={
 'response_too_large':('413','Use Error.recovery to choose a summary, section, smaller page or supported export.'),
 'export_too_large':('Resource failure','Reduce the export scope or choose a supported partitioned format.'),
 'export_expired':('410','Create a new export; expired downloads are not renewed indefinitely.'),
-'invalid_export_part':('404','Read the export manifest and request an existing part number.'),
+'invalid_export_part':('422','Read the export manifest and request an existing part number.'),
 }
 DELIVERY_ERRORS={
 'http_error':'The receiver returned a non-2xx HTTP status. Inspect http_status and fix receiver authentication, validation or availability.',
