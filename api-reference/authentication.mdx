@@ -5,7 +5,9 @@ description: "Authentication and access for the AMLOK product API."
 keywords: ["AMLOK", "API", "Insights", "Signal"]
 ---
 
-Create scoped API keys through the authorized console administrator. Send the key as `Authorization: Bearer ...` from your backend. Each key belongs to exactly one institution, workspace and environment; callers cannot override that boundary with a workspace parameter.
+Create a key in **Dev Tools > API keys** as an Owner or Dev, following the [Console API key guide](/console/api-keys). Choose the workspace, Sandbox or Live environment, access profile and expiration. The default profile is **Read product data**; expiration defaults to 90 days and accepts 1 to 365 days. Confirm your identity and save the secret when it is shown once.
+
+Send the key as `Authorization: Bearer ...` from your backend. Each key belongs to exactly one institution, workspace and environment; callers cannot override that boundary with a workspace parameter. A Sandbox key starts with `amlok_test_`; a Live key starts with `amlok_live_`. Switching environments in the Console does not change a key's permissions or environment.
 
 ```text
 Authorization: Bearer <your-workspace-api-key>
@@ -17,33 +19,61 @@ An API key is never a browser embedding token or a webhook signing secret. Send 
 
 Every endpoint lists its required scope. Console roles and machine scopes work together: Owners manage organization/workspace identity, team permissions and billing; Owners and Devs manage integration configuration; Analysts read permitted reporting and product data. Analysts do not manage keys or Dev Tools. Billing reporting and billing exports require Owner authority and `billing:read`.
 
-| Scope | Operations |
-| --- | ---: |
-| `billing:read` | 7 |
-| `borrowers:read` | 2 |
-| `borrowers:write` | 1 |
-| `configuration:read` | 5 |
-| `configuration:write` | 2 |
-| `connections:read` | 4 |
-| `connections:write` | 2 |
-| `data:read` | 3 |
-| `events:read` | 3 |
-| `events:write` | 1 |
-| `evidence:read` | 5 |
-| `evidence:write` | 1 |
-| `exports:read` | 2 |
-| `exports:write` | 1 |
-| `insights:read` | 2 |
-| `insights:write` | 1 |
-| `reliability:read` | 1 |
-| `results:read` | 1 |
-| `sandbox:read` | 4 |
-| `sandbox:write` | 4 |
-| `signal:read` | 8 |
-| `signal:write` | 3 |
+### Console profiles and exact scope rules
+
+The [profile comparison](/console/api-keys#choose-an-access-profile) explains which option to select. Each preset grants the following scopes from the table below:
+
+| Profile | Included scopes |
+| --- | --- |
+| **Read product data** | Every listed `:read` scope except `billing:read`. Includes reads for both Insights and Signal, with no `:write` scopes. |
+| **All products** | Every listed scope except `billing:read`. Includes read and write access for both products and their shared operations. |
+| **Origination integration** | Every listed scope except `billing:read`, `signal:read` and `signal:write`. |
+| **Monitoring integration** | Every listed scope except `billing:read`, `insights:read` and `insights:write`. |
+| **Billing reports** | Only `billing:read`, `exports:read` and `exports:write`. Available to Owners. |
+
+The key's stored scopes define its access. A preset is not a wildcard, does not upgrade existing keys and does not enable a product or activate Live. To change a key's permissions, create a replacement key, update your server and revoke the old key.
+
+Origination and Monitoring profiles both include shared `results:read`, `data:read` and `evidence:read`. They restrict their named product endpoints, but do not create separate data boundaries within the workspace. Consent, source entitlements and resource authorization still apply.
+
+### What each scope allows
+
+The operation count lists endpoints with that primary scope. Additional checks can apply to the underlying resource, export source, scenario or original request. A `:read` scope can authorize a `POST` that creates a short-lived download link; HTTP method alone does not define access.
+
+| Scope | What it allows | Operations |
+| --- | --- | ---: |
+| `billing:read` | Read wallet summaries, payments, transactions and usage. Requires current Owner authority; does not collect payments or change billing settings. | 7 |
+| `borrowers:read` | List borrowers and retrieve a borrower profile. | 2 |
+| `borrowers:write` | Register a business or consumer borrower. | 1 |
+| `configuration:read` | Read lending-product and risk-policy versions, approved schemas and environment capabilities. | 5 |
+| `configuration:write` | Create immutable lending-product and risk-policy versions. | 2 |
+| `connections:read` | Inspect embedding sessions, connections, consent and connection status. | 4 |
+| `connections:write` | Create borrower embedding sessions and revoke consent. Hub configuration and webhook destinations are managed in the Console. | 2 |
+| `data:read` | Retrieve collected and normalized records and their change feed, subject to source access. | 3 |
+| `events:read` | List and retrieve permitted events and inspect webhook deliveries. Also requires access to each event's source resource. | 3 |
+| `events:write` | Replay an authorized event to a registered webhook destination. Does not register destinations or grant access to the event's source. | 1 |
+| `evidence:read` | List and retrieve assessment evidence and document metadata, and request permitted document download links. | 5 |
+| `evidence:write` | Upload documents for a borrower, origination, lending product or risk policy. | 1 |
+| `exports:read` | Inspect existing export jobs and request download links. Source permissions are checked separately. | 2 |
+| `exports:write` | Create an export job for data you are authorized to access. Does not grant access to the underlying data. | 1 |
+| `insights:read` | List and retrieve originations and their status. Risk packages require results:read. | 2 |
+| `insights:write` | Submit an origination with application data, documents and lending context for underwriting. | 1 |
+| `reliability:read` | Look up a request receipt for recovery. The original operation's permissions are also required. | 1 |
+| `results:read` | Retrieve an authorized risk package, including its supported summary or section views. | 1 |
+| `sandbox:read` | Read the scenario catalog, setup choice and permitted Sandbox runs. Run details can require additional product or billing scopes. | 4 |
+| `sandbox:write` | Choose Sandbox setup, execute or repeat scenarios, and simulate changes. Product scenarios need their underlying product scopes; Owner-only financial actions also require billing:read. | 4 |
+| `signal:read` | Read monitors, monitoring runs, alerts and funded-deal snapshots. | 8 |
+| `signal:write` | Create or update a monitor and submit an immutable funded-deal snapshot. | 3 |
+
+### Additional access checks
 
 Export access also checks the exported content: `exports:read` does not grant access to the underlying content. Risk-package exports also require `results:read`, billing exports require `billing:read` and Owner authority, and evidence exports require `evidence:read` and source entitlement. The same source entitlements apply on export creation, retrieval and download. All linked IDs and cursor state are checked against the authorized workspace/environment.
 
-`401` means authentication failed; `403` means access was denied. A resource ID is not a permission. Product records have no edit or deletion operations, even for Owners. Creating new assessment inputs or changing future monitor configuration does not modify historical data.
+Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can use the [Console Sandbox tools](/console/sandbox) for these simulations.
+
+The API checks the creator's current workspace access and role as well as the key's scopes, expiry and revocation. Product access also requires that product to be enabled in the environment. Live requests require activated Live access.
+
+`401 unauthenticated` means the credential is missing, invalid, expired, revoked or no longer has workspace access. `403 forbidden` means the request lacks the required scopes, product access, current role or resource authorization. See [API key troubleshooting](/console/api-keys#troubleshoot-authorization).
+
+A resource ID is not a permission. Product records have no edit or deletion operations, even for Owners. Creating new assessment inputs or changing future monitor configuration does not modify historical data.
 
 Collected data requires data:read. Assessment evidence requires evidence:read. Export scopes alone grant neither: a data export additionally requires data:read; each other kind retains its documented source permission. Billing events, deliveries and replays require billing:read and Owner authority in addition to event scopes. Data notifications require data:read. Unauthorized event metadata must be filtered from feeds and denied on direct reads/replays.

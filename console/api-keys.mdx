@@ -1,25 +1,27 @@
 ---
 title: "Create and manage API keys"
 sidebarTitle: "API keys"
-description: "Create an environment-specific credential, choose an access profile and expiration, and replace or revoke it safely."
+description: "Create a workspace API key, compare all five permission profiles, test your first request, and manage expiration, replacement and revocation."
 keywords: ["API keys", "credentials", "scopes", "expiration", "authentication"]
 ---
 
-An API key gives your server access to the selected workspace environment. Create keys in **Dev Tools > API keys** as an Owner or Developer. A Sandbox key does not grant access to Live data.
+An API key gives your server access to one workspace and its selected environment. Create keys in **Dev Tools > API keys** as an **Owner** or **Dev** (Developer). Analysts cannot create or manage keys. One key can access both Origination (Insights) and Monitoring (Signal); you do not need a separate key for each product.
 
 ## Create a key
 
 <Steps>
   <Step title="Confirm the context">
-    Check the workspace profile and environment banner. Choose a name that identifies the service or integration using the key.
+    Select the organization and workspace in the workspace profile, then check the environment banner. Start in **Sandbox** for dummy-data testing. A Sandbox key cannot access Live records, and switching the Console to another environment does not change an existing key.
   </Step>
   <Step title="Choose access and expiration">
-    Select **Create API key**. Enter the key name, choose an **API access** profile and set its expiration. The form defaults to 90 days and accepts 1 to 365 days.
+    Open **Dev Tools > API keys** and select **Create API key**. Enter a **Key name** that identifies the service, such as `Lending backend - Sandbox`.
 
-    Profiles include **Read product data**, **Origination integration** and **Monitoring integration**. **Billing reports** is available to Owners. Choose the access your service actually needs.
+    Choose an **API access** profile from the comparison below. **Read product data** is selected by default. Choose **All products** when the same backend needs to submit underwriting and manage monitoring.
+
+    Set **Expires after (days, 1–365)**. The default is 90 days; the allowed range is 1 to 365 days.
   </Step>
   <Step title="Confirm your identity">
-    Complete the requested password, recent provider sign-in or MFA check. These checks protect credential creation and other sensitive settings.
+    Complete the identity check shown in the form, then select **Save changes**. Password accounts confirm their current password. Provider-only accounts use a recent provider sign-in. If MFA is enabled, enter an authenticator code. If the Console requires MFA enrollment first, complete it in **Account security** and return to the form.
   </Step>
   <Step title="Save the credential securely">
     Copy the new secret when it is shown. Store it in your server's secret manager. The full secret is shown once; the key list displays identifying metadata rather than a recoverable secret.
@@ -30,13 +32,57 @@ An API key gives your server access to the selected workspace environment. Creat
   <img src="/images/console/create-api-key.jpg" alt="Create API key form with a service name, Read product data access, 90-day expiration and an empty identity confirmation field." />
 </Frame>
 
-Never put a workspace API key in a browser, mobile bundle, screenshot or support message. Use the [authentication reference](/api-reference/authentication) for the request header and environment rules.
+Never put a workspace API key in a browser, mobile bundle, screenshot or support message. API keys are server credentials; they are different from borrower embedding-session URLs and webhook signing secrets.
+
+## Choose an access profile
+
+A profile is a preset collection of API scopes, not a Console user role. The following profiles apply only within the key's workspace and environment.
+
+| API access | Access and typical use |
+| --- | --- |
+| **Read product data** | Read existing records from both products and shared resources, including permitted data, evidence, events, exports and Sandbox run details. No product commands, uploads, new exports or scenario execution. Default for reporting services. |
+| **All products** | Read and execute both Origination and Monitoring, with shared operations. Use for a backend that handles underwriting and post-funding monitoring, or nonfinancial end-to-end Sandbox scenarios. |
+| **Origination integration** | Submit and read originations, with shared operations. Excludes Signal endpoints for monitors, monitoring runs, alerts and deal snapshots. Use for an underwriting service. |
+| **Monitoring integration** | Create and update monitors, submit deal snapshots, and read monitors, runs and alerts, with shared operations. Cannot submit or read originations. Use for post-funding monitoring. |
+| **Billing reports** | Read the wallet summary, payments, transactions and usage; create and download authorized billing exports. Use for financial reconciliation. Owner-only, with no product access or payment collection commands. |
+
+Billing is excluded from the first four profiles, including **All products**. **Billing reports** includes only `billing:read`, `exports:read` and `exports:write`. The creator must retain Owner authority for billing access. It does not let a service charge payment methods or change automatic top-ups.
+
+### What shared operations include
+
+**All products**, **Origination integration** and **Monitoring integration** include borrower registration; embedding sessions and consent revocation; lending-product and risk-policy versions; document upload; collected data, evidence and risk-package retrieval; exports; event inspection and replay; request receipts; and Sandbox controls.
+
+These permissions remain subject to the operation's other requirements:
+
+- A product must be enabled for the key's environment. Selecting **All products** does not enable products or activate Live access.
+- Data, documents and risk packages still require valid source access, consent and provider entitlements. The two product-specific profiles share `results:read`, `data:read` and `evidence:read`; they are not a guarantee that every shared result is isolated by its originating product.
+- Events and exports also check permission to their underlying records. Export permission alone does not expose billing or restricted evidence.
+- Sandbox scenarios can require both products and additional scopes. **All products** supports nonfinancial product scenarios; it does not grant Owner-only sample-pack setup or financial simulations that also require `billing:read`. Owners can perform those actions through the [Sandbox tools](/console/sandbox). **Billing reports** alone cannot run scenarios because it has no `sandbox:write` scope.
+- Write scopes allow the documented commands. They do not allow editing or deleting historical underwriting results, evidence or billing entries.
+
+See [Authentication and access](/api-reference/authentication#permissions) for the exact scopes and what each one means. Inspect the **Scopes** on a key's record to see what was actually granted. Creating another key or choosing a different profile does not change existing keys.
+
+## Test the key from your server
+
+For **Read product data**, **All products** or **Origination integration**, make a small read request after loading the API origin and key into your server's environment:
+
+```bash
+curl --request GET \
+  --url "$AMLOK_API_BASE_URL/v1/originations?limit=1" \
+  --header "Authorization: Bearer $AMLOK_API_KEY"
+```
+
+`AMLOK_API_BASE_URL` is the API origin supplied for your deployment, without `/v1`. Set `AMLOK_API_KEY` from your secret manager. A successful request returns `200` with `data`, `meta` and `page`; an empty Sandbox can return an empty `data` array. `meta.environment` identifies Sandbox or Live.
+
+For **Monitoring integration**, use `GET /v1/monitors?limit=1`. For **Billing reports**, use `GET /v1/billing/summary`. These checks read existing records and do not start underwriting, monitoring or payment collection.
+
+Continue with the [API quickstart](/api-reference/quickstart) to submit underwriting or [Sandbox journeys](/api-reference/sandbox-journeys) for repeatable dummy-data outcomes.
 
 ## Inspect and replace a key
 
 Open a key record to inspect its name, prefix, access and expiration. Match request activity to the key's identifying metadata when investigating a service.
 
-To replace a credential, create a new key, update your server's stored secret and verify a successful request. Then revoke the previous key. Revocation prevents further use; it does not erase historical requests.
+To replace a credential, change its permissions or replace a lost secret, create a new key with the required profile and expiration. Update your server's stored secret and verify a successful request. Then revoke the previous key from its record. Revocation prevents further use; it does not erase historical requests. Keep separate keys for independently deployed services when you need to replace or revoke them separately.
 
 ## Use developer resources
 
@@ -46,8 +92,9 @@ To replace a credential, create a new key, update your server's stored secret an
 
 ## Troubleshoot authorization
 
-- **Authentication fails:** confirm the secret, expiration and selected environment.
-- **A specific operation is forbidden:** compare the operation's required scope with the key's access profile.
-- **Creation is unavailable:** confirm your role, recent sign-in and any required authenticator setup.
+- **`401 unauthenticated`:** check the Bearer header, key value, expiration and revocation status. The creator must still have workspace access. A key from another deployment is not interchangeable.
+- **`403 forbidden`:** compare the endpoint's required scopes with the key's scopes. Check enabled products, Live activation and any extra source permissions. Billing requires `billing:read` and current Owner authority; **All products** intentionally excludes it.
+- **Creation is unavailable:** confirm you are an Owner or Dev for the workspace, then complete recent sign-in and any required authenticator setup.
+- **Records are missing:** check the workspace, Sandbox/Live context and permissions before assuming a record was deleted. Each key has its own fixed workspace and environment.
 
 Use [Data Lookup](/console/data-lookup) to understand a payload, [Sandbox scenarios](/console/sandbox) to exercise outcomes and [request logs](/console/request-logs) to verify what reached AMLOK.
