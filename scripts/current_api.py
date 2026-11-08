@@ -300,6 +300,9 @@ def build():
                   'api-reference/product-api-design', 'overview/sdks', 'overview/openapi-spec']:
         target = ROOT / (guide + '.mdx')
         target.write_text(re.sub(r'\b57(?= (?:public )?operations|\-operation)', str(len(index)), target.read_text()))
+    # Run after every guide writer so regeneration cannot restore broken asset URLs.
+    from download_links import normalize_download_links
+    normalize_download_links(ROOT)
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()

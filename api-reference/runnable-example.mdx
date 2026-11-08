@@ -11,10 +11,10 @@ Use this reference client to connect a borrower, submit an origination, retrieve
 
 Save these files together:
 
-- [amlok-journey.mjs](/downloads/amlok-journey.mjs)
+- [amlok-journey.mjs](https://raw.githubusercontent.com/amloktech/docs/main/downloads/amlok-journey.mjs)
 - [journey-inputs.json](/downloads/journey-inputs.json)
 - [consumer-journey-inputs.json](/downloads/consumer-journey-inputs.json)
-- [synthetic-statement.pdf](/downloads/synthetic-statement.pdf)
+- [synthetic-statement.pdf](https://raw.githubusercontent.com/amloktech/docs/main/downloads/synthetic-statement.pdf)
 
 Use Node.js 22 or newer, which supplies fetch, FormData, Blob and structuredClone. No package installation is needed. The file is a reference client, not a distributed product SDK.
 
@@ -57,12 +57,12 @@ The journey stops visibly on requires_action, waiting_for_credits or failed. Fol
 
 ## Browser integration and event handling
 
-Use the [browser helper](/downloads/hub-embed.js) and [Hub protocol](/api-reference/integration-hub) to integrate into your own UI. Your authenticated backend supplies the session and verifies completion. Use the downloadable [Node.js verifier](/downloads/verify-webhook.mjs) or [Python verifier](/downloads/verify_webhook.py) with a durable event inbox before acknowledging webhooks.
+Use the [browser helper](https://raw.githubusercontent.com/amloktech/docs/main/downloads/hub-embed.js) and [Hub protocol](/api-reference/integration-hub) to integrate into your own UI. Your authenticated backend supplies the session and verifies completion. Use the downloadable [Node.js verifier](https://raw.githubusercontent.com/amloktech/docs/main/downloads/verify-webhook.mjs) or [Python verifier](https://raw.githubusercontent.com/amloktech/docs/main/downloads/verify_webhook.py) with a durable event inbox before acknowledging webhooks.
 
 ## Test failures deliberately
 
-For per-command failures, set `AMLOK_SCENARIO` to an identifier returned in `configuration.sandbox.scenario_ids` and use a new state file. The client sends the header on the affected origination, monitor or export command; it is not a setting stored on the borrower. Named scenarios such as `healthy`, `outside_policy`, payment outcomes and monitoring recovery use the separate [scenario client](/downloads/run-sandbox-scenario.mjs) and [catalog](/api-reference/sandbox-journeys). This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Use the [integration checklist](/api-reference/integration-acceptance) to verify your application's handling of each outcome.
+For per-command failures, set `AMLOK_SCENARIO` to an identifier returned in `configuration.sandbox.scenario_ids` and use a new state file. The client sends the header on the affected origination, monitor or export command; it is not a setting stored on the borrower. Named scenarios such as `healthy`, `outside_policy`, payment outcomes and monitoring recovery use the separate [scenario client](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-scenario.mjs) and [catalog](/api-reference/sandbox-journeys). This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Use the [integration checklist](/api-reference/integration-acceptance) to verify your application's handling of each outcome.
 
 ## Large datasets
 
-This journey exercises a small synthetic package and obtains the first export-part capability. A completed export can contain multiple parts; use artifact.part_count and the [enterprise transfer helper](/downloads/enterprise-client.py) for the complete file. For large datasets, use [summary/section views and oversized-response recovery](/api-reference/large-results).
+This journey exercises a small synthetic package and obtains the first export-part capability. A completed export can contain multiple parts; use artifact.part_count and the [enterprise transfer helper](https://raw.githubusercontent.com/amloktech/docs/main/downloads/enterprise-client.py) for the complete file. For large datasets, use [summary/section views and oversized-response recovery](/api-reference/large-results).

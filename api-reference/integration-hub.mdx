@@ -37,7 +37,7 @@ Use launch_url for either full-page navigation or an iframe. A session without e
 
 Set the iframe source from your own authenticated backend response. Never put an API key into HTML. Providers that require a new window open it only after a borrower action. If browser restrictions prevent completion, offer a borrower-initiated full-page link to the same unexpired launch URL. The Hub persists the session's confirmed connections across these presentations.
 
-The [browser example](/downloads/hub-embed.js) uses the typed HubMessage contract. Every message contains protocol_version, event_id, session_id and type. Types are amlok.hub.ready, amlok.hub.completed, amlok.hub.cancelled, amlok.hub.expired and amlok.hub.failed. The Hub sends messages only to the exact embed_origin, never `*`.
+The [browser example](https://raw.githubusercontent.com/amloktech/docs/main/downloads/hub-embed.js) uses the typed HubMessage contract. Every message contains protocol_version, event_id, session_id and type. Types are amlok.hub.ready, amlok.hub.completed, amlok.hub.cancelled, amlok.hub.expired and amlok.hub.failed. The Hub sends messages only to the exact embed_origin, never `*`.
 
 Validate event.origin against the configured hub_origin, event.source against the iframe's contentWindow, and session_id against the session your backend created. Deduplicate event_id. No message includes provider tokens, financial data or proof of consent. Your backend retrieves the session before trusting a terminal state.
 
