@@ -67,12 +67,13 @@ test('Hub helper rejects spoofed origins, wrong frames, duplicate IDs and expire
  const {mountAmlokHub}=await import('../downloads/hub-embed.js');
  const frame={contentWindow:{},setAttribute(){},removeAttribute(){}};let verified=0,states=0;
  const session={...fixtures.EmbeddingSession,embed_origin:window.location.origin,expires_at:new Date(Date.now()+90000).toISOString()};
- const cleanup=mountAmlokHub({iframe:frame,session,hubOrigin:'https://borrower.example.com',fetchSession:async()=>{verified++;return {...session,status:'completed'};},onState:()=>states++});
+ assert.throws(()=>mountAmlokHub({iframe:frame,session:{...session,launch_url:'https://evil.example/hub/token'},hubOrigin:'https://api.amlok.io'}),/Untrusted Hub URL/);
+ const cleanup=mountAmlokHub({iframe:frame,session,hubOrigin:'https://api.amlok.io',fetchSession:async()=>{verified++;return {...session,status:'completed'};},onState:()=>states++});
  const data={protocol_version:'1',event_id:'message-1',session_id:session.id,type:'amlok.hub.completed'};
  await listeners.get('message')({origin:'https://evil.example',source:frame.contentWindow,data});
- await listeners.get('message')({origin:'https://borrower.example.com',source:{},data});assert.equal(verified,0);
- await listeners.get('message')({origin:'https://borrower.example.com',source:frame.contentWindow,data});
- await listeners.get('message')({origin:'https://borrower.example.com',source:frame.contentWindow,data});assert.equal(verified,1);assert.equal(states,1);
+ await listeners.get('message')({origin:'https://api.amlok.io',source:{},data});assert.equal(verified,0);
+ await listeners.get('message')({origin:'https://api.amlok.io',source:frame.contentWindow,data});
+ await listeners.get('message')({origin:'https://api.amlok.io',source:frame.contentWindow,data});assert.equal(verified,1);assert.equal(states,1);
  cleanup();assert.equal(listeners.size,0);
- assert.throws(()=>mountAmlokHub({iframe:frame,session:{...session,expires_at:'2000-01-01T00:00:00Z'},hubOrigin:'https://borrower.example.com'}));
+ assert.throws(()=>mountAmlokHub({iframe:frame,session:{...session,expires_at:'2000-01-01T00:00:00Z'},hubOrigin:'https://api.amlok.io'}));
 });
