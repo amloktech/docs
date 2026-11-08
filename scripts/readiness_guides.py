@@ -190,9 +190,9 @@ AMLOK Sandbox provides deterministic synthetic scenarios to validate your integr
 
 1. Obtain a Sandbox key and read configuration.sandbox. Live returns null.
 2. Publish a Hub containing the returned test_integration_id and both consent purposes. Register your local or test application's return URL and embedding origin.
-3. Create a borrower with X-AMLOK-Sandbox-Scenario set to one of scenario_ids. Omit the header for happy_path. AMLOK saves the selection with that synthetic borrower. Send the header only on createBorrower. Unknown scenarios return 422 scenario_not_available. Live or another operation returns 400 sandbox_only before creating any resource or touching funds.
+3. Create the borrower normally. Use X-AMLOK-Sandbox-Scenario on the origination, monitor or export command whose outcome you want to simulate. The endpoint lists supported values; the identifier must also appear in configuration.sandbox.scenario_ids. Omit the header for happy_path. Unknown or inapplicable scenarios return 422 scenario_not_available; unsupported operations return 400 validation_error; Live returns 422 sandbox_only before command acceptance.
 4. Launch the Hub. The synthetic integration offers a clearly labeled **Connect test institution** action; it needs no bank username, password or OTP. Explicit acceptance records test consent and connections.
-5. Run the [downloadable journey](/api-reference/runnable-example). The scenario remains bound to the borrower, so ordinary API calls drive the same deterministic outcome.
+5. Run the [downloadable journey](/api-reference/runnable-example). It sends the selected scenario on the affected command. A scenario header does not persist on the borrower or affect later commands automatically. For full business, monitoring and payment fixtures, use the named Sandbox scenario catalog.
 
 Each run uses a new unique client_reference and command prefix. Old records remain immutable. Reset a scenario by creating a new synthetic borrower; no production-style reset/delete API is introduced.
 
@@ -276,7 +276,7 @@ embedding_versions exposes each published Hub's allowed origins, return URLs, in
 
 | HTTP | Code | Action |
 | --- | --- | --- |
-| 400 | sandbox_only | Remove test controls from Live or unsupported operations; no side effects occurred |
+| 422 | sandbox_only | Use the Sandbox environment for simulation controls; no command was accepted |
 | 409 | deal_snapshot_conflict | Read the latest monitor snapshot and review the new input |
 | 413 | payload_too_large | Reduce to the discovered size limit; the command was not accepted |
 | 415 | unsupported_media_type | Submit supported detected file content or JSON media type |
@@ -307,7 +307,7 @@ Use these resources with the [runnable walkthrough](/api-reference/runnable-exam
   (ROOT/(source.lstrip('/')+'.mdx')).unlink(missing_ok=True)
  (ROOT/'docs.json').write_text(json.dumps(nav,indent=2)+'\n')
  (ROOT/'downloads/development-profile.json').write_text(json.dumps(PROFILE,indent=2)+'\n')
- scenarios={name:{'id':name,'environment':'sandbox','selected_on':'createBorrower','header':'X-AMLOK-Sandbox-Scenario','expected':value} for name,value in {
+ scenarios={name:{'id':name,'environment':'sandbox','selected_on':'processing_command','header':'X-AMLOK-Sandbox-Scenario','expected':value} for name,value in {
   'happy_path':{'origination':'completed','insights_debits':1},'source_reauthorization':{'initial_origination':'requires_action','action':'reauthorize_source','after_resolution':'completed'},'document_required':{'initial_origination':'requires_action','action':'upload_document','document_type':'financial_statement','after_resolution':'completed'},'missing_financial_input':{'metric':'dscr','value':None,'recommendation':'review_required'},'restricted_report':{'evidence_access':'restricted','download_status':403},'provider_failure':{'origination':'failed','failure_code':'processing_failed','insights_debits':0},'insufficient_credits':{'initial_origination':'waiting_for_credits','after_simulated_funding':'completed','insights_debits':1},'monitoring_alert':{'subsequent_event':'alert.created'},'payment_return':{'historical_entries_unchanged':True,'new_linked_reversal':True},'export_failure':{'first_export':'failed','explicit_new_export':'ready'},}.items()}
  (ROOT/'downloads/sandbox-scenarios.json').write_text(json.dumps({'contract_version':'1.0.0','scenarios':list(scenarios.values())},indent=2)+'\n')
  inputs={k:deepcopy_value(f[k]) for k in ['CreateBorrower','LendingProductInput','RiskPolicyInput','CreateOrigination','CreateMonitor','DealSnapshotInput']}

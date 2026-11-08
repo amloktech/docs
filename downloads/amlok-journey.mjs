@@ -64,10 +64,16 @@ export class AmlokClient {
   }
 }
 
-export async function runJourney({ phase, client, state, inputs, persist, launch, documentBytes }) {
+export async function runJourney({ phase, client, billingClient = null, state, inputs, persist, launch, documentBytes }) {
   const config = (await client.request('GET','/v1/configuration')).data;
   if (!config.sandbox) throw new Error('This reference journey runs only in Sandbox');
   const profile = config.operational_profile;
+  const scenario = state.scenario || 'happy_path';
+  if (!config.sandbox.scenario_ids.includes(scenario)) throw new Error('Choose a scenario from configuration.sandbox.scenario_ids; catalog scenarios use run-sandbox-scenario.mjs');
+  const scenarioHeaders = operation => {
+    const applies = operation === 'createExport' ? scenario === 'export_failure' : ['createOrigination','createMonitor'].includes(operation) && scenario !== 'export_failure' && !(operation === 'createMonitor' && scenario === 'document_required');
+    return applies ? {'X-AMLOK-Sandbox-Scenario': scenario} : {};
+  };
   async function command(label, operationId, path, body, readPath, headers={}) {
     // Persist intended request and key before sending. Retain the same identity after interruption.
     const previous = state.commands[label];
@@ -75,7 +81,7 @@ export async function runJourney({ phase, client, state, inputs, persist, launch
     if (!previous) { state.commands[label]={key:state.runId+'-'+label,body}; await persist(state); }
     const saved=state.commands[label];
     let result;
-    try { result=await client.request('POST',path,saved.body,{'Idempotency-Key':saved.key,...headers}); }
+    try { result=await client.request('POST',path,saved.body,{'Idempotency-Key':saved.key,...scenarioHeaders(operationId),...headers}); }
     catch (error) {
       if (error.status && error.detail?.code!=='idempotency_result_expired') throw error;
       const receipt=await client.request('GET','/v1/request-receipts/lookup?operation_id='+operationId+'&idempotency_key='+encodeURIComponent(saved.key));
@@ -84,7 +90,7 @@ export async function runJourney({ phase, client, state, inputs, persist, launch
     saved.id=result.data.id; await persist(state); return result.data;
   }
   if (phase==='prepare') {
-    const borrower=await command('borrower','createBorrower','/v1/borrowers',{...inputs.CreateBorrower,[inputs.CreateBorrower.type]:{...inputs.CreateBorrower[inputs.CreateBorrower.type],client_reference:state.runId}},id=>'/v1/borrowers/'+id,{'X-AMLOK-Sandbox-Scenario':state.scenario});
+    const borrower=await command('borrower','createBorrower','/v1/borrowers',{...inputs.CreateBorrower,[inputs.CreateBorrower.type]:{...inputs.CreateBorrower[inputs.CreateBorrower.type],client_reference:state.runId}},id=>'/v1/borrowers/'+id);
     const product=structuredClone(inputs.LendingProductInput);product.external_id=state.runId; product.pricing_schema_id=config.pricing_schemas[0].id;
     const policy=structuredClone(inputs.RiskPolicyInput);policy.external_id=state.runId;
     await command('product','createLendingProductVersion','/v1/lending-product-versions',product,id=>'/v1/lending-product-versions/'+id);
@@ -131,10 +137,14 @@ export async function runJourney({ phase, client, state, inputs, persist, launch
   // Capability URLs are not printed or persisted. Stream/hash file bytes in your own secure downloader.
   const link=await client.request('POST','/v1/exports/'+exportResult.id+'/download-links',{purpose:'Sandbox integration acceptance'},{'Idempotency-Key':state.runId+'-download-'+randomUUID()});
   if(!link.data.sha256 || !link.data.expires_at)throw new Error('Incomplete download capability');
-  const summary=(await client.request('GET','/v1/billing/summary')).data;
+  const result={phase:'completed',monitoring_runs:runs.length,alerts:alerts.length,export_id:exportResult.id,origination_id:completed.id,risk_package_id:pkg.id,evidenceCount,dataCount,monitor_id:active.id,deal_snapshot_id:snapshot.id};
+  if (!billingClient) return {...result,billing:'skipped: set AMLOK_BILLING_API_KEY to an Owner Billing reports key for this same Sandbox'};
+  const summaryResponse=await billingClient.request('GET','/v1/billing/summary');
+  if(summaryResponse.meta?.environment !== 'sandbox') throw new Error('Billing reconciliation requires a Sandbox key');
+  const summary=summaryResponse.data;
   const totals={payments:0,transactions:0,usage:0};
-  for(const kind of Object.keys(totals))for await(const batch of client.pages('/v1/billing/'+kind+'?snapshot_id='+summary.snapshot_id))totals[kind]+=batch.data.length;
-  return {phase:'completed',monitoring_runs:runs.length,alerts:alerts.length,export_id:exportResult.id,origination_id:completed.id,risk_package_id:pkg.id,evidenceCount,dataCount,monitor_id:active.id,deal_snapshot_id:snapshot.id,billing_snapshot_id:summary.snapshot_id,available_credits:summary.available_credits,...totals};
+  for(const kind of Object.keys(totals))for await(const batch of billingClient.pages('/v1/billing/'+kind+'?snapshot_id='+summary.snapshot_id))totals[kind]+=batch.data.length;
+  return {...result,billing_snapshot_id:summary.snapshot_id,available_credits:summary.available_credits,...totals};
 }
 
 async function main(){
@@ -143,7 +153,10 @@ async function main(){
   let state;try{state=JSON.parse(await readFile(statePath,'utf8'));}catch(error){if(error.code!=='ENOENT')throw error;state={runId:randomUUID(),commands:{},scenario:process.env.AMLOK_SCENARIO||'happy_path',embeddingVersionId:process.env.AMLOK_EMBEDDING_VERSION_ID,returnUrl:process.env.AMLOK_RETURN_URL};}
   const inputs=JSON.parse(await readFile(new URL(process.env.AMLOK_BORROWER_TYPE==='person'?'./consumer-journey-inputs.json':'./journey-inputs.json',import.meta.url),'utf8'));
   const client=new AmlokClient({baseUrl:process.env.AMLOK_API_BASE_URL,apiKey:process.env.AMLOK_API_KEY});
-  const result=await runJourney({phase,client,state,inputs,persist:async value=>{await writeFile(statePath,JSON.stringify(value,null,2),{mode:0o600});await chmod(statePath,0o600);},launch:url=>process.stdout.write('Open this short-lived borrower URL privately: '+url+'\n'),documentBytes:await readFile(new URL('./synthetic-statement.pdf',import.meta.url))});
+  const billingKey=process.env.AMLOK_BILLING_API_KEY;
+  if(billingKey && !billingKey.startsWith('amlok_test_')) throw new Error('AMLOK_BILLING_API_KEY must be a Sandbox key for the same workspace');
+  const billingClient=billingKey?new AmlokClient({baseUrl:process.env.AMLOK_API_BASE_URL,apiKey:billingKey}):null;
+  const result=await runJourney({phase,client,billingClient,state,inputs,persist:async value=>{await writeFile(statePath,JSON.stringify(value,null,2),{mode:0o600});await chmod(statePath,0o600);},launch:url=>process.stdout.write('Open this short-lived borrower URL privately: '+url+'\n'),documentBytes:await readFile(new URL('./synthetic-statement.pdf',import.meta.url))});
   console.log(JSON.stringify(result,null,2));
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(process.argv[1]).href)main().catch(error=>{console.error(error.message);process.exitCode=1;});

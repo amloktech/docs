@@ -11,6 +11,8 @@ def extend(spec,fixtures):
     result=[]
     for path,methods in patch['paths'].items():
         for method,operation in methods.items():
+            # Scenario controls select their fixture in the JSON body, not a product-command header.
+            operation['parameters']=[p for p in operation.get('parameters',[]) if p['name']!='X-AMLOK-Sandbox-Scenario']
             operation['x-availability']='published_contract'
             operation['security']=[{'BearerAuth':[]}]
             media=operation.get('requestBody',{}).get('content',{}).get('application/json')

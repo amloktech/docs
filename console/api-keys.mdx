@@ -1,7 +1,7 @@
 ---
 title: "Create and manage API keys"
 sidebarTitle: "API keys"
-description: "Create a workspace API key, compare all five permission profiles, test your first request, and manage expiration, replacement and revocation."
+description: "Create a workspace API key, compare all six permission profiles, test your first request, and manage expiration, replacement and revocation."
 keywords: ["API keys", "credentials", "scopes", "expiration", "authentication"]
 ---
 
@@ -16,7 +16,7 @@ An API key gives your server access to one workspace and its selected environmen
   <Step title="Choose access and expiration">
     Open **Dev Tools > API keys** and select **Create API key**. Enter a **Key name** that identifies the service, such as `Lending backend - Sandbox`.
 
-    Choose an **API access** profile from the comparison below. **Read product data** is selected by default. Choose **All products** when the same backend needs to submit underwriting and manage monitoring.
+    Choose an **API access** profile from the comparison below. **Read product data** is selected by default. Choose **All products** when the same backend needs to submit underwriting and manage monitoring. For a complete Sandbox test including sample-pack setup and simulated billing, an Owner can select **Sandbox testing**. That profile is available only in Sandbox.
 
     Set **Expires after (days, 1–365)**. The default is 90 days; the allowed range is 1 to 365 days.
   </Step>
@@ -45,26 +45,27 @@ A profile is a preset collection of API scopes, not a Console user role. The fol
 | **Origination integration** | Submit and read originations, with shared operations. Excludes Signal endpoints for monitors, monitoring runs, alerts and deal snapshots. Use for an underwriting service. |
 | **Monitoring integration** | Create and update monitors, submit deal snapshots, and read monitors, runs and alerts, with shared operations. Cannot submit or read originations. Use for post-funding monitoring. |
 | **Billing reports** | Read the wallet summary, payments, transactions and usage; create and download authorized billing exports. Use for financial reconciliation. Owner-only, with no product access or payment collection commands. |
+| **Sandbox testing** | Run the complete sample pack and product, financial and webhook scenarios, then read their records with one key. Includes all product, shared, event, Sandbox and billing-report scopes. Owner-only and available only in Sandbox; no real payment collection. |
 
-Billing is excluded from the first four profiles, including **All products**. **Billing reports** includes only `billing:read`, `exports:read` and `exports:write`. The creator must retain Owner authority for billing access. It does not let a service charge payment methods or change automatic top-ups.
+Billing is excluded from the first four profiles, including **All products**. **Billing reports** includes only `billing:read`, `exports:read` and `exports:write`; **Sandbox testing** combines those permissions with the product and scenario scopes for end-to-end Sandbox tests. The creator must retain Owner authority for billing access. Neither profile lets a service collect real payments or change Live automatic top-ups.
 
 ### What shared operations include
 
-**All products**, **Origination integration** and **Monitoring integration** include borrower registration; embedding sessions and consent revocation; lending-product and risk-policy versions; document upload; collected data, evidence and risk-package retrieval; exports; event inspection and replay; request receipts; and Sandbox controls.
+**All products**, **Origination integration**, **Monitoring integration** and **Sandbox testing** include borrower registration; embedding sessions and consent revocation; lending-product and risk-policy versions; document upload; collected data, evidence and risk-package retrieval; exports; event inspection and replay; request receipts; and Sandbox controls.
 
 These permissions remain subject to the operation's other requirements:
 
 - A product must be enabled for the key's environment. Selecting **All products** does not enable products or activate Live access.
 - Data, documents and risk packages still require valid source access, consent and provider entitlements. The two product-specific profiles share `results:read`, `data:read` and `evidence:read`; they are not a guarantee that every shared result is isolated by its originating product.
 - Events and exports also check permission to their underlying records. Export permission alone does not expose billing or restricted evidence.
-- Sandbox scenarios can require both products and additional scopes. **All products** supports nonfinancial product scenarios; it does not grant Owner-only sample-pack setup or financial simulations that also require `billing:read`. Owners can perform those actions through the [Sandbox tools](/console/sandbox). **Billing reports** alone cannot run scenarios because it has no `sandbox:write` scope.
+- Sandbox scenarios can require both products and additional scopes. **All products** supports nonfinancial product scenarios; it does not grant Owner-only sample-pack setup or financial simulations that also require `billing:read`. Use an Owner-created **Sandbox testing** key for those API requests, or the [Sandbox tools](/console/sandbox). **Billing reports** alone cannot run scenarios because it has no `sandbox:write` scope. A request uses one Bearer key; two narrower keys cannot combine their permissions for a single scenario command.
 - Write scopes allow the documented commands. They do not allow editing or deleting historical underwriting results, evidence or billing entries.
 
 See [Authentication and access](/api-reference/authentication#permissions) for the exact scopes and what each one means. Inspect the **Scopes** on a key's record to see what was actually granted. Creating another key or choosing a different profile does not change existing keys.
 
 ## Test the key from your server
 
-For **Read product data**, **All products** or **Origination integration**, make a small read request after loading the API origin and key into your server's environment:
+For **Read product data**, **All products**, **Origination integration** or **Sandbox testing**, make a small read request after loading the API origin and key into your server's environment:
 
 ```bash
 curl --request GET \
@@ -94,7 +95,7 @@ To replace a credential, change its permissions or replace a lost secret, create
 
 - **`401 unauthenticated`:** check the Bearer header, key value, expiration and revocation status. The creator must still have workspace access. A key from another deployment is not interchangeable.
 - **`403 forbidden`:** compare the endpoint's required scopes with the key's scopes. Check enabled products, Live activation and any extra source permissions. Billing requires `billing:read` and current Owner authority; **All products** intentionally excludes it.
-- **Creation is unavailable:** confirm you are an Owner or Dev for the workspace, then complete recent sign-in and any required authenticator setup.
+- **Creation is unavailable:** confirm you are an Owner or Dev for the workspace, then complete recent sign-in and any required authenticator setup. **Sandbox testing** additionally requires an Owner and the Sandbox environment; it is not a Live profile.
 - **Records are missing:** check the workspace, Sandbox/Live context and permissions before assuming a record was deleted. Each key has its own fixed workspace and environment.
 
 Use [Data Lookup](/console/data-lookup) to understand a payload, [Sandbox scenarios](/console/sandbox) to exercise outcomes and [request logs](/console/request-logs) to verify what reached AMLOK.

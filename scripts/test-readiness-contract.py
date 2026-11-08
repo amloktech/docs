@@ -74,3 +74,22 @@ assert not (ROOT/'api-reference/implementation-status.mdx').exists()
 assert not (ROOT/'api-reference/api-review.mdx').exists()
 summary={'schema_and_client_checks':checks,'event_types':len(EVENT_RESOURCES),'offline_client_calls':len(log),'backend_execution':'not_run'}
 (ROOT/'artifacts/backend-readiness.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(summary))
+
+# Header simulations belong only to the commands that execute them.
+header_operations = {}
+for path, methods in spec['paths'].items():
+ for operation in methods.values():
+  headers = [p for p in operation.get('parameters', []) if p['name'] == 'X-AMLOK-Sandbox-Scenario']
+  if headers: header_operations[operation['operationId']] = headers[0]['schema']['enum']
+assert set(header_operations) == {'createOrigination', 'createMonitor', 'createExport'}
+assert header_operations['createExport'] == ['happy_path', 'export_failure']
+assert 'document_required' in header_operations['createOrigination']
+assert 'document_required' not in header_operations['createMonitor']
+assert all(set(values) <= set(f['Configuration']['sandbox']['scenario_ids']) for values in header_operations.values())
+
+# Cached replay bodies retain their accepted request ID; the header identifies this HTTP attempt.
+assert 'Preserve both IDs' in (ROOT/'api-reference/idempotency.mdx').read_text()
+for path, methods in spec['paths'].items():
+ for operation in methods.values():
+  for response in operation['responses'].values():
+   assert 'current HTTP attempt' in response['headers']['X-Request-ID']['description']

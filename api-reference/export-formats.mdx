@@ -29,7 +29,7 @@ JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `sche
 
 ## Financial report compatibility
 
-The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute.
+The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute. Funding exports use their report status vocabulary: successful funding, including a later refunded payment, is `settled`; returned or failed payments are `failed`; pending/processing payments are `pending`. Read `/v1/billing/payments` for the full payment state, including `returned` or `refunded`, and reconcile linked transaction reversals. The export method comes from the payment's `method.type`.
 
 | Report type | File schema / example |
 | --- | --- |

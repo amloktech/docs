@@ -240,6 +240,11 @@ def build():
     webhook_contract(spec)
     from workspace_billing_contract import extend as workspace_billing_contract
     workspace_billing_contract(spec,f)
+    # Apply shared transport metadata after all generators have added their responses.
+    for methods in spec['paths'].values():
+        for entry in methods.values():
+            for response in entry['responses'].values():
+                response.setdefault('headers',{})['X-Request-ID']={'schema':{'type':'string'},'description':'Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting.'}
     groups=OrderedDict(); index=[]; items=[]
     for op in operations()+sandbox_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}

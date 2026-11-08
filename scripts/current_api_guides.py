@@ -280,6 +280,7 @@ The [profile comparison](/console/api-keys#choose-an-access-profile) explains wh
 | **Origination integration** | Every listed scope except `billing:read`, `signal:read` and `signal:write`. |
 | **Monitoring integration** | Every listed scope except `billing:read`, `insights:read` and `insights:write`. |
 | **Billing reports** | Only `billing:read`, `exports:read` and `exports:write`. Available to Owners. |
+| **Sandbox testing** | Every listed scope, including `billing:read`. Available only to Owners in Sandbox, for full sample-pack, product, financial and webhook scenarios. |
 
 The key's stored scopes define its access. A preset is not a wildcard, does not upgrade existing keys and does not enable a product or activate Live. To change a key's permissions, create a replacement key, update your server and revoke the old key.
 
@@ -297,7 +298,7 @@ The operation count lists endpoints with that primary scope. Additional checks c
 
 Export access also checks the exported content: `exports:read` does not grant access to the underlying content. Risk-package exports also require `results:read`, billing exports require `billing:read` and Owner authority, and evidence exports require `evidence:read` and source entitlement. The same source entitlements apply on export creation, retrieval and download. All linked IDs and cursor state are checked against the authorized workspace/environment.
 
-Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can use the [Console Sandbox tools](/console/sandbox) for these simulations.
+Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can create a **Sandbox testing** key, which combines the required product, event, scenario and billing scopes for these requests, or use the [Console Sandbox tools](/console/sandbox). Each API request authenticates with one key; separate product and billing keys cannot combine permissions for a single scenario command. The **Sandbox testing** profile is unavailable in Live and does not enable Live access or real payment collection.
 
 The API checks the creator's current workspace access and role as well as the key's scopes, expiry and revocation. Product access also requires that product to be enabled in the environment. Live requests require activated Live access.
 
@@ -382,6 +383,8 @@ Webhook notifications may be duplicated or out of order. Deduplicate by event ID
 Every POST requires `Idempotency-Key`, including uploads, downloads and delivery replays. Generate one key for each intended command, retain it with the exact request and reuse both for retries. Keys are scoped to the operation, workspace and environment. Reusing a key with a different payload returns `409 idempotency_conflict`. The fingerprint includes the resolved target path and payload; a key cannot be reused for a different target.
 
 Full-response replay lasts 24 hours. After it expires, repeating an accepted command returns `409 idempotency_result_expired` without executing it again. Accepted-command receipts survive that response cache until workspace deletion. After a timeout, recover the original command with `GET /v1/request-receipts/lookup?operation_id=...&idempotency_key=...`, then retrieve its resource. Never use a fresh key merely because the cached response expired.
+
+A replay returns the original accepted response body, including its original `meta.request_id`. The `X-Request-ID` response header identifies the current HTTP attempt and can therefore differ from the body when `Idempotency-Replayed` is `true`. Preserve both IDs with the idempotency key when troubleshooting retries.
 
 A rejected unfunded request does not produce a debit. An already accepted Origination can enter `waiting_for_credits`; continue following that ID rather than creating another assessment.
 
@@ -515,7 +518,7 @@ JSON risk-package exports use the `RiskPackage` schema. Evidence JSON uses `sche
 
 ## Financial report compatibility
 
-The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute.
+The simplified API retains the established financial report row schemas and monetary semantics. File schema versions are independent from API route versions. The existing `1.4.2` report schemas remain valid for usage, credit movements, statements and funding; internal reconciliation identifiers in these files are informational, not commands the client must execute. Funding exports use their report status vocabulary: successful funding, including a later refunded payment, is `settled`; returned or failed payments are `failed`; pending/processing payments are `pending`. Read `/v1/billing/payments` for the full payment state, including `returned` or `refunded`, and reconcile linked transaction reversals. The export method comes from the payment's `method.type`.
 
 | Report type | File schema / example |
 | --- | --- |

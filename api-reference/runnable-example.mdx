@@ -20,7 +20,11 @@ Use Node.js 22 or newer, which supplies fetch, FormData, Blob and structuredClon
 
 ## Provision the test environment
 
-An Owner uses `https://api.amlok.io`, creates a Sandbox key in [the Console](https://console.amlok.io), and publishes a Hub containing configuration.sandbox.test_integration_id. Approve your return URL and both credit_assessment and continuous_monitoring purposes. For this complete example, the Owner key needs borrowers:read/write, connections:read/write, configuration:read/write, insights:read/write, results:read, evidence:read/write, data:read, signal:read/write, billing:read, exports:read/write and reliability:read.
+Use `https://api.amlok.io` and, as an Owner, create a **Sandbox testing** key in [the Console](https://console.amlok.io) for the complete journey including billing. This profile is available only in Sandbox. Publish a Hub containing `configuration.sandbox.test_integration_id`, and approve your return URL and both `credit_assessment` and `continuous_monitoring` purposes. The product key handles the borrower, source, document, underwriting, monitoring and export steps.
+
+With a **Sandbox testing** key, set `AMLOK_BILLING_API_KEY="$AMLOK_API_KEY"` to use that credential for billing reconciliation too. Alternatively, use **All products** as `AMLOK_API_KEY` and an Owner-created **Billing reports** key from the **same workspace and Sandbox** as `AMLOK_BILLING_API_KEY`. **All products** deliberately excludes billing access; **Billing reports** does not create product records. The client uses the billing variable only for billing reads. Without it, the product journey still completes and explicitly reports that billing was skipped. No secret is written to the state file.
+
+The separate-key alternative works for this journey because product commands and billing reads are separate requests. To execute a full sample-pack or financial scenario command, use the **Sandbox testing** key; two keys cannot combine permissions for one request.
 
 Set AMLOK_BORROWER_TYPE=person and use a fresh state file to run the consumer fixture, which uses gross monthly income, monthly debt payments and a synthetic debt_to_income rule. Check configuration for the corresponding application schema and supported policy dimensions.
 
@@ -28,25 +32,26 @@ The default development input file uses a Canadian business, a fixed-rate term l
 
 ```bash
 export AMLOK_API_BASE_URL="https://api.amlok.io"
-export AMLOK_API_KEY="<server-side Sandbox key>"
+export AMLOK_API_KEY="<Owner Sandbox testing key>"
+export AMLOK_BILLING_API_KEY="$AMLOK_API_KEY"
 export AMLOK_EMBEDDING_VERSION_ID="<published test Hub version>"
 export AMLOK_RETURN_URL="<approved return URL>"
 node amlok-journey.mjs prepare amlok-journey-state.json
 ```
 
-The API origin above is the customer API for both Sandbox and Live. Use a Sandbox key for this journey. The remaining placeholders are your workspace configuration values, not working credentials. See [URLs and environments](/api-reference/environments). Prefer a secret manager instead of shell history on shared systems. The state file contains synthetic inputs and resource IDs but no API key or launch URL. Keep it private; use a distinct file for each new journey.
+The API origin above is the customer API for both Sandbox and Live. Use a Sandbox key for this journey. Replace the placeholders with your workspace values. Omit `AMLOK_BILLING_API_KEY` entirely if you are not testing billing. See [URLs and environments](/api-reference/environments). Prefer a secret manager instead of shell history on shared systems. The state file contains synthetic inputs and resource IDs but no API key or launch URL. Keep it private; use a distinct file for each new journey.
 
 ## Connect, submit and reconcile
 
-Prepare creates the borrower, product/policy versions and embedding session. Open the printed short-lived URL privately and select **Connect test institution**. Affirm both purposes. Then run:
+Prepare creates the borrower, product/policy versions and embedding session. Open the printed short-lived URL privately and select **Sandbox bank**, confirm the consent checkbox for underwriting and ongoing monitoring, and click **Connect**. Then run:
 
 ```bash
 node amlok-journey.mjs complete amlok-journey-state.json
 ```
 
-Complete retrieves the authoritative session, uploads the supplied PDF, submits the origination and waits within a bounded interval. It reads the risk package, all evidence and a complete data snapshot, obtains a change-feed checkpoint, enrolls Signal, appends a lender deal snapshot, reads monitoring runs and alerts, prepares a JSON risk-package export and a controlled download capability, and reads payments, usage and transactions against one billing snapshot.
+Complete retrieves the authoritative session, uploads the supplied PDF, submits the origination and waits within a bounded interval. It reads the risk package, all evidence and a complete data snapshot, obtains a change-feed checkpoint, enrolls Signal, appends a lender deal snapshot, reads monitoring runs and alerts, prepares a JSON risk-package export and a controlled download capability, and, when a billing key is supplied, reads payments, usage and transactions against one billing snapshot.
 
-Expected output identifies the origination, package, monitor, deal snapshot and billing snapshot, plus record counts and available credits. IDs and counts come from your API responses.
+Expected output identifies the origination, package, monitor and deal snapshot, plus record counts. With a billing key, it also includes the billing snapshot and available credits; otherwise it reports billing as skipped. IDs and counts come from your API responses.
 
 The journey stops visibly on requires_action, waiting_for_credits or failed. Follow [recovery instructions](/api-reference/processing-lifecycle), then rerun complete with the same state file. Never replace an accepted origination simply because your client timed out. The example uses bounded transport retries and request receipts; production applications should use a transactional database/outbox for durable state instead of a local JSON file.
 
@@ -56,7 +61,7 @@ Use the [browser helper](/downloads/hub-embed.js) and [Hub protocol](/api-refere
 
 ## Test failures deliberately
 
-Set AMLOK_SCENARIO to a documented [Sandbox scenario](/api-reference/sandbox-journeys) and use a new state file. This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Use the [integration checklist](/api-reference/integration-acceptance) to verify your application's handling of each outcome.
+For per-command failures, set `AMLOK_SCENARIO` to an identifier returned in `configuration.sandbox.scenario_ids` and use a new state file. The client sends the header on the affected origination, monitor or export command; it is not a setting stored on the borrower. Named scenarios such as `healthy`, `outside_policy`, payment outcomes and monitoring recovery use the separate [scenario client](/downloads/run-sandbox-scenario.mjs) and [catalog](/api-reference/sandbox-journeys). This client exercises the main happy path and exposes structured blocking states. The scenario manifest and acceptance checklist cover additional security, failure, expiry, event and billing behaviors. Use the [integration checklist](/api-reference/integration-acceptance) to verify your application's handling of each outcome.
 
 ## Large datasets
 
