@@ -40245,6 +40245,8 @@
                         "payment_cadence": "annual",
                         "months_per_payment": 12,
                         "payment_amount": "12000.00",
+                        "pre_discount_payment_amount": "12000.00",
+                        "prepayment_discount_percent": 0,
                         "currency": "CAD",
                         "treatment": "wallet_funding"
                       },
@@ -118054,7 +118056,7 @@
           "monthly_minimum": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "CAD amount as an exact decimal string."
+            "description": "Nominal monthly CAD commitment before any prepayment-only discount. This is not a separate monthly usage deduction."
           },
           "payment_cadence": {
             "type": "string",
@@ -118073,13 +118075,24 @@
           "payment_amount": {
             "type": "string",
             "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
-            "description": "CAD amount as an exact decimal string."
+            "description": "Net agreed CAD prepayment after the prepayment-only discount, rounded half-up to two decimals. This stored amount is authoritative for the snapshot; it is not proof that payment settled."
           },
           "currency": {
             "const": "CAD"
           },
           "treatment": {
             "const": "wallet_funding"
+          },
+          "pre_discount_payment_amount": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]*)\\.[0-9]{2}$",
+            "description": "Gross CAD prepayment before its negotiated discount: monthly_minimum \u00d7 months_per_payment. Present on new snapshots; may be absent on historical snapshots."
+          },
+          "prepayment_discount_percent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "Agreed prepayment-only discount percentage, reported to at most two decimal places. 20 means 20%, not 0.20. Does not reduce monthly_minimum or apply again to product effective_rate. Present on new snapshots; may be absent on historical snapshots."
           }
         },
         "required": [
@@ -118091,7 +118104,7 @@
           "treatment"
         ],
         "additionalProperties": false,
-        "description": "Negotiated funding commitment. Quarterly = monthly minimum \u00d7 3; annual = monthly minimum \u00d7 12. Funds credit the wallet on settlement. This is not an additional usage deduction, payment instruction, invoice or proof of payment."
+        "description": "Negotiated funding commitment. Gross prepayment = monthly minimum \u00d7 3 quarterly or \u00d7 12 annually. Apply the separately agreed prepayment discount to obtain payment_amount, rounded to two CAD decimals using half-up rounding. The nominal monthly minimum and product rates are unchanged. Funds credit the wallet on settlement. This is not an additional usage deduction, payment instruction, invoice or proof of payment."
       },
       "BillingChargeDetails": {
         "type": "object",

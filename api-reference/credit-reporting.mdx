@@ -11,7 +11,7 @@ Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits
 
 There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
 
-The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. Billing summary `pricing` contains the six effective rates and `commitment`: monthly minimum, quarterly or annual cadence, and calculated payment amount. The default is CAD 1,000/month and annual funding of CAD 12,000; quarterly funding at that minimum is CAD 3,000. This funds the wallet, rather than creating a second monthly usage debit. Saving terms does not collect payment.
+The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. Billing summary `pricing` contains the six effective rates and `commitment`: monthly minimum, quarterly or annual cadence, gross prepayment, prepayment-only discount and net payment amount. The default is CAD 1,000/month and annual funding of CAD 12,000; quarterly funding at that minimum is CAD 3,000 before any agreed prepayment discount. This funds the wallet, rather than creating a second monthly usage debit. Saving terms does not collect payment.
 
 Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
 
@@ -42,3 +42,19 @@ All totals use posted CAD wallet entries. A payment attempt is not itself a cred
 Usage amounts are positive costs; their ledger entries are negative. Historical unit_rate, quantity, tier, workload and rate_version explain the deduction. Example rates are synthetic and are not price quotations. Signal groups all monitored deals for one borrower/workspace/month, so do not sum one monthly charge per monitor.
 
 The summary also reports actual auto_pay settings read-only. Payment collection, method updates and top-up settings remain console actions. Billing events and delivery/replay metadata require billing:read and current Owner authority; event scope alone must not reveal financial information. Use typed exports for statements, receipts of funding activity and full-period reports.
+
+## Negotiated prepayment discounts
+
+Read `pricing.commitment` as agreement terms, independently of individual funding transactions:
+
+| Field | Meaning |
+| --- | --- |
+| `monthly_minimum` | Nominal monthly commitment before a prepayment discount |
+| `months_per_payment` | 3 for quarterly or 12 for annual funding |
+| `pre_discount_payment_amount` | Monthly minimum multiplied by months per payment |
+| `prepayment_discount_percent` | Discount on that scheduled prepayment; `20` means 20% |
+| `payment_amount` | Net prepayment after discount, rounded half-up to two CAD decimals |
+
+For a synthetic CAD 1,000.00 monthly commitment with quarterly funding and a 20% prepayment discount, the gross amount is CAD 3,000.00 and `payment_amount` is `2400.00`. The monthly minimum remains `1000.00`. This discount does not reduce the six negotiated product rates again, change past charges or create promotional credit. Use settled funding and ledger records to determine the amount actually credited. Saving or editing terms does not collect money.
+
+The gross amount and discount fields may be absent on historical snapshots. Use the snapshot's stored `payment_amount`; do not infer a zero discount or recompute history from the current agreement.
