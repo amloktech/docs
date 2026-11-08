@@ -284,6 +284,12 @@ def build():
     sandbox_guides(spec,index)
     from webhook_readiness import write_guides as webhook_guides
     webhook_guides(spec)
+    # Include Sandbox controls in count-sensitive guides, as in the download.
+    import re
+    for guide in ['api-reference/examples', 'api-reference/downloads', 'api-reference/overview',
+                  'api-reference/product-api-design', 'overview/sdks', 'overview/openapi-spec']:
+        target = ROOT / (guide + '.mdx')
+        target.write_text(re.sub(r'\b57(?= (?:public )?operations|\-operation)', str(len(index)), target.read_text()))
     print(f'Generated primary API {VERSION}: {len(index)} operations, endpoint pages and Postman requests.')
 
 if __name__=='__main__':build()
