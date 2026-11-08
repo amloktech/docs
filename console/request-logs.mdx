@@ -1,7 +1,7 @@
 ---
 title: "Trace API requests and errors"
 sidebarTitle: "Request logs"
-description: "Find a request, inspect its payload and response, and troubleshoot asynchronous processing or failures without losing the original identifiers."
+description: "Find a request, inspect its status and error code, and troubleshoot asynchronous processing or failures without losing the original identifiers."
 keywords: ["request logs", "errors", "HTTP", "retry", "idempotency", "troubleshooting"]
 ---
 
@@ -15,7 +15,9 @@ Filter by status, request details and time, or search for the identifier you rec
   <img src="/images/console/request-logs.jpg" alt="API request log table with HTTP methods, endpoint paths, response statuses and timestamps." />
 </Frame>
 
-Select a row to open its drawer. Use the available tabs to inspect the overview, request, response, related records and activity. Payloads and metadata can be redacted; the log is not a place to recover secrets.
+Select a row to open its drawer. The overview, request and response tabs show the retained request identifier, method, endpoint, API key, HTTP status, duration and normalized error code when available. Historical requests recorded before error-code retention may have no error code. Request bodies, authorization headers and full response bodies are not retained in these logs. Read the linked product records through their Console drawer or API endpoint to inspect business results; use Data Lookup for complete payload examples.
+
+Requests rejected before authentication establishes an authorized workspace context may not appear in a workspace's logs. Preserve the client-side status, error code and request ID when investigating authentication failures.
 
 ## Read the response before retrying
 
@@ -28,10 +30,6 @@ Select a row to open its drawer. Use the available tabs to inspect the overview,
 | `409` | Read the conflict reason, including idempotency or resource-state conflicts. |
 | `429` | Respect the returned retry guidance and reduce request pressure. |
 | Timeout or server error | Use the recovery and idempotency contract to determine whether the original request was accepted. |
-
-<Frame caption="The response view shows the returned error payload. Use the error code and request identifier in your investigation.">
-  <img src="/images/console/request-response.jpg" alt="Request drawer showing a 429 rate-limit response payload for an origination request." />
-</Frame>
 
 For a retry of the same write, retain the same idempotency key and payload as required by the [idempotency contract](/api-reference/idempotency). Do not repeatedly create new originations to recover from a lost response.
 

@@ -49,10 +49,10 @@ For example, review Evergreen Outdoor Supply's requested amount alongside its po
 Use this tab when investigating unexpected results or checking what your integration submitted. Inspect the captured payload for the borrower, application facts, document and connection identifiers, and lending-product and risk-policy version references.
 
 <Frame caption="The captured request view supports technical inspection and JSON download. Check the submitted inputs within the payload.">
-  <img src="/images/console/origination-api-request.jpg" alt="Origination API request tab showing a captured JSON payload, credentials-redacted notice and Download JSON control." />
+  <img src="/images/console/origination-api-request.jpg" alt="Origination API request tab showing a submitted request JSON payload, credentials-redacted notice and Download JSON control." />
 </Frame>
 
-Captured record metadata can surround the submitted inputs. In this example, those inputs are under `submitted_request`. Do not use the entire displayed record as a new POST request: use [Data Lookup](/console/data-lookup) to check the endpoint's request fields and required structure.
+This tab shows the submitted request fields, including `application`, `borrower_id`, document and connection references, and the policy/product versions. The returned resource and its `submitted_request` copy appear separately in **API response**. Use [Data Lookup](/console/data-lookup) to check the endpoint's request fields and required structure before submitting another request.
 
 Use the copy control or **Download JSON** to inspect the payload locally. **Related API requests** lists linked request logs when available. If that list is empty, search [Request logs](/console/request-logs) using the identifiers you have; an empty relationship list does not prove that no request was sent. Opening or downloading the captured request does not submit it again.
 
@@ -85,12 +85,12 @@ In the file details, **Download original file** is available when an authorized 
 Use this tab to identify the borrower connections associated with the origination, such as banking, payments, commerce or accounting sources. These are case-linked connections, not the catalog of providers enabled in your Integrations Hub.
 
 <Frame caption="The Integrations tab shows the connections linked to the underwriting run. Demo sources are synthetic.">
-  <img src="/images/console/origination-integrations.jpg" alt="Origination Integrations tab listing five synthetic connections and their connected statuses." />
+  <img src="/images/console/origination-integrations.jpg" alt="Origination Integrations tab listing five synthetic connections, data availability, and source and sync timestamps." />
 </Frame>
 
-The table shows **Integration**, **Provider**, **Status**, **Frequency** and **Last sync**, where recorded. Select a row for its readable details and available source information. Owners and Developers can also inspect captured technical payloads when present.
+The table shows **Integration**, **Data availability**, **Status**, **Source as of (UTC)** and **Last sync (UTC)**, where recorded. Select a row for its readable details and available source information. Owners and Developers can also inspect captured technical payloads when present.
 
-Check connection status and the available sync timestamps when a result has incomplete or stale evidence. A **Connected** status describes the connection; it does not guarantee that all expected data was retrieved. Missing frequency or sync information is not proof of a failed or successful refresh. Compare the connection with the risk package's coverage and [supporting evidence](/console/evidence).
+Check connection status and the available sync timestamps when a result has incomplete or stale evidence. A **Connected** status describes the connection; it does not guarantee that all expected data was retrieved. Missing source or sync information is not proof of a failed or successful refresh. Compare the connection with the risk package's coverage and [supporting evidence](/console/evidence).
 
 ## Interpret processing and recommendation separately
 

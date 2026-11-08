@@ -23,7 +23,9 @@ The console uses the same compact table and right-side drawer pattern across bor
   <img src="/images/console/origination.jpg" alt="Origination table with six fictional businesses, status views, filters, search, column controls and pagination." />
 </Frame>
 
-The **Export** button downloads the matching table records as CSV. A table export serves the current console view. Use [API exports](/api-reference/large-results) when you need complete datasets beyond the records loaded in the console; do not use a screen count as proof that an enterprise extraction is complete.
+For product records and audit events, **Export** prepares every record matching your filters, including records beyond the visible page. Wait for **Download CSV** before downloading. You can continue browsing while preparation runs. The export contains table summaries; use a record drawer or [API exports](/api-reference/large-results) for complete business payloads and evidence.
+
+Exports expire after one hour. If your permissions, enabled products or source consent change, create a new export. Each user can have two exports preparing at a time and start ten per hour. Each CSV is limited to 256 MiB. If an export exceeds that limit, narrow your filters and create smaller exports.
 
 ## Open and navigate a record
 
@@ -35,6 +37,8 @@ Select the record name or its row to open a drawer from the right. The table sta
 - Use **Copy record ID** for investigation and **Copy record link** to share with an authorized teammate.
 - Close with **Close details**, the close icon or Escape to return to the table.
 
+Copied record links include the organization, workspace and Sandbox or Live environment. The recipient still needs access to that workspace. A Live link cannot activate Live access for a Sandbox-only workspace.
+
 An **Actions** menu contains the operations permitted for that collection and your role. Opening details is read-only. Editing configuration requires its own action and may ask you to confirm your identity.
 
 ## Read values carefully
@@ -42,3 +46,13 @@ An **Actions** menu contains the operations permitted for that collection and yo
 A dash or an absent field means that the view has no value to show; it is not proof of zero, no risk or a successful verification. Review the payload, coverage and source evidence before drawing a conclusion. Timestamps labeled **UTC** use UTC, even if your computer uses a different timezone.
 
 If a copied link does not open, check [workspace access and environment](/console/environments) before asking the sender to create another record.
+
+## See new API activity
+
+Record lists refresh when you return to the Console window or select **Refresh**. Search, filters, sort order and displayed counts apply to all matching product records in the selected workspace and environment. The table loads only the current page; a drawer retrieves its record when you open it.
+
+New records do not enter an existing page traversal until you refresh. Updates to existing records remain visible, so a change to a sort or filter value can move a record while you browse. Refresh to reconcile a changing list. Use a completed CSV export when you need a consistent set of matching rows.
+
+A page cursor expires after 15 minutes. If you see a page-expired message, refresh the table. Changing filters, workspace or environment starts a fresh traversal. If a query is busy or takes too long, narrow the date range or search and retry.
+
+Large nested objects open only when expanded. Arrays show a bounded group of items with their own page controls. JSON panels may show a shortened preview; use the explicit full-data copy action or API response when you need the complete payload.
