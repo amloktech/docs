@@ -24,7 +24,7 @@ def write_guides(spec,f,index):
   p=ROOT/('api-reference/'+name+'.mdx');s=p.read_text();assert old in s,(name,old);p.write_text(s.replace(old,new))
  endpoints={x['id']:'/'+x['page'] for x in index}
  api('integration-hub','Embed the Integrations Hub','''
-AMLOK's Integrations Hub collects borrower authorization and connects sources selected by the institution in the console. Your backend creates a borrower-bound session; your frontend displays its short-lived launch URL. AMLOK performs collection and normalization.
+AMLOK's Integrations Hub collects borrower authorization and connects sources selected by the institution in the console. Your backend creates a borrower-bound session; your frontend displays its short-lived launch URL. AMLOK performs collection and normalization. The borrower selects one provider per category step. Selecting another provider replaces that step's previous choice; a session can include one provider from each of several categories.
 
 ## Publish and discover a Hub
 
