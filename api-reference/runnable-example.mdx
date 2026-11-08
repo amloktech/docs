@@ -20,9 +20,11 @@ Use Node.js 22 or newer, which supplies fetch, FormData, Blob and structuredClon
 
 ## Provision the test environment
 
-Use `https://api.amlok.io` and create an **All products** Sandbox key in [the Console](https://console.amlok.io). Publish a Hub containing `configuration.sandbox.test_integration_id`, and approve your return URL and both `credit_assessment` and `continuous_monitoring` purposes. The product key handles the borrower, source, document, underwriting, monitoring and export steps.
+Use `https://api.amlok.io` and, as an Owner, create a **Sandbox testing** key in [the Console](https://console.amlok.io) for the complete journey including billing. This profile is available only in Sandbox. Publish a Hub containing `configuration.sandbox.test_integration_id`, and approve your return URL and both `credit_assessment` and `continuous_monitoring` purposes. The product key handles the borrower, source, document, underwriting, monitoring and export steps.
 
-To include billing reconciliation, an Owner creates a second **Billing reports** key in the **same workspace and Sandbox**, then sets `AMLOK_BILLING_API_KEY`. **All products** deliberately excludes billing access; **Billing reports** does not create product records. The client uses the billing key only for billing reads. Without it, the product journey still completes and explicitly reports that billing was skipped. No secret is written to the state file.
+With a **Sandbox testing** key, set `AMLOK_BILLING_API_KEY="$AMLOK_API_KEY"` to use that credential for billing reconciliation too. Alternatively, use **All products** as `AMLOK_API_KEY` and an Owner-created **Billing reports** key from the **same workspace and Sandbox** as `AMLOK_BILLING_API_KEY`. **All products** deliberately excludes billing access; **Billing reports** does not create product records. The client uses the billing variable only for billing reads. Without it, the product journey still completes and explicitly reports that billing was skipped. No secret is written to the state file.
+
+The separate-key alternative works for this journey because product commands and billing reads are separate requests. To execute a full sample-pack or financial scenario command, use the **Sandbox testing** key; two keys cannot combine permissions for one request.
 
 Set AMLOK_BORROWER_TYPE=person and use a fresh state file to run the consumer fixture, which uses gross monthly income, monthly debt payments and a synthetic debt_to_income rule. Check configuration for the corresponding application schema and supported policy dimensions.
 
@@ -30,8 +32,8 @@ The default development input file uses a Canadian business, a fixed-rate term l
 
 ```bash
 export AMLOK_API_BASE_URL="https://api.amlok.io"
-export AMLOK_API_KEY="<All products Sandbox key>"
-export AMLOK_BILLING_API_KEY="<optional Owner Billing reports Sandbox key>"
+export AMLOK_API_KEY="<Owner Sandbox testing key>"
+export AMLOK_BILLING_API_KEY="$AMLOK_API_KEY"
 export AMLOK_EMBEDDING_VERSION_ID="<published test Hub version>"
 export AMLOK_RETURN_URL="<approved return URL>"
 node amlok-journey.mjs prepare amlok-journey-state.json

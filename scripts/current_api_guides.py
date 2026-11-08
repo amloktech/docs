@@ -280,6 +280,7 @@ The [profile comparison](/console/api-keys#choose-an-access-profile) explains wh
 | **Origination integration** | Every listed scope except `billing:read`, `signal:read` and `signal:write`. |
 | **Monitoring integration** | Every listed scope except `billing:read`, `insights:read` and `insights:write`. |
 | **Billing reports** | Only `billing:read`, `exports:read` and `exports:write`. Available to Owners. |
+| **Sandbox testing** | Every listed scope, including `billing:read`. Available only to Owners in Sandbox, for full sample-pack, product, financial and webhook scenarios. |
 
 The key's stored scopes define its access. A preset is not a wildcard, does not upgrade existing keys and does not enable a product or activate Live. To change a key's permissions, create a replacement key, update your server and revoke the old key.
 
@@ -297,7 +298,7 @@ The operation count lists endpoints with that primary scope. Additional checks c
 
 Export access also checks the exported content: `exports:read` does not grant access to the underlying content. Risk-package exports also require `results:read`, billing exports require `billing:read` and Owner authority, and evidence exports require `evidence:read` and source entitlement. The same source entitlements apply on export creation, retrieval and download. All linked IDs and cursor state are checked against the authorized workspace/environment.
 
-Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can use the [Console Sandbox tools](/console/sandbox) for these simulations.
+Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can create a **Sandbox testing** key, which combines the required product, event, scenario and billing scopes for these requests, or use the [Console Sandbox tools](/console/sandbox). Each API request authenticates with one key; separate product and billing keys cannot combine permissions for a single scenario command. The **Sandbox testing** profile is unavailable in Live and does not enable Live access or real payment collection.
 
 The API checks the creator's current workspace access and role as well as the key's scopes, expiry and revocation. Product access also requires that product to be enabled in the environment. Live requests require activated Live access.
 

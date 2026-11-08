@@ -18,7 +18,7 @@ The console shows persisted API records. API activity, request logs, source data
 
 ## Run from your integration
 
-Create an **All products** Sandbox key in the Console for nonfinancial product scenarios. Set `AMLOK_API_BASE_URL=https://api.amlok.io` and `AMLOK_API_KEY` to that server-side key. Use the [Console scenario tools](/console/sandbox) as an Owner for the complete sample pack and financial simulations; standard Console key profiles do not combine billing permission with scenario commands.
+As an Owner, create a **Sandbox testing** key in [Dev Tools > API keys](/console/api-keys) to run the complete sample pack, financial simulations and product or webhook scenarios through the API. Set `AMLOK_API_BASE_URL=https://api.amlok.io` and `AMLOK_API_KEY` to that server-side key. This profile combines the required permissions in one Sandbox-only credential. **All products** remains suitable for nonfinancial product scenarios, but excludes billing; a separate Billing reports key cannot add permission to the same scenario request. You can also use the [Console scenario tools](/console/sandbox) with the appropriate role.
 
 ```bash
 curl --fail-with-body "$AMLOK_API_BASE_URL/v1/sandbox/catalog" \
@@ -45,7 +45,7 @@ Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains 
 
 - Catalog, setup and history reads require `sandbox:read`; commands require `sandbox:write`.
 - Product journeys require `borrowers:read/write`, `configuration:read/write`, `connections:read/write`, `evidence:read/write`, `insights:read/write`, `signal:read/write`, `exports:read/write`, plus `data:read`, `results:read` and `events:read`.
-- Billing scenarios and the full sample pack require current Owner authority with `billing:read`. Developers can run nonfinancial journeys; Analysts cannot execute scenarios.
+- Billing scenarios and the full sample pack require current Owner authority with `billing:read` alongside the applicable product and Sandbox scopes. Use the **Sandbox testing** profile for those API commands. Developers can run nonfinancial journeys with **All products**; Analysts cannot execute scenarios.
 - Detailed product traces require the product read scopes and enabled Insights and Signal. Billing-only traces require Owner billing authority. Revoking source authorization redacts saved trace payloads and assertions as well as the ordinary source-backed reads.
 - Webhook scenarios also require `events:write`. The selected endpoint must belong to the same Sandbox and subscribe to `origination.status_changed` and `origination.completed`.
 - The initiating key must remain valid while a run executes. Revoking it stops subsequent scenario API steps. At most three runs can be queued or running in one workspace environment. Honor `Retry-After` on 429 responses.
