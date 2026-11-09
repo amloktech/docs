@@ -7,6 +7,17 @@ keywords: ["portfolio", "Signal", "monitoring", "flags", "alerts", "baseline"]
 
 Use **Portfolio** to follow deals enrolled in Signal. A monitored deal connects the borrower, the monitoring baseline and the changes detected from available evidence.
 
+## Watch a short walkthrough
+
+This 62-second walkthrough covers a monitored deal, its flags and the associated event. It was recorded on [demo.amlok.io](https://demo.amlok.io) with fictional data. It uses on-screen instructions and has no audio. Use full screen to read the controls. The written steps below cover the same workflow.
+
+<video controls playsInline preload="metadata" poster="/images/console/portfolio-review.png" aria-label="A monitored deal, its flags and the associated event walkthrough recorded in the demo environment" width="100%">
+  <source src="/videos/console/portfolio-review.mp4" type="video/mp4" />
+  Your browser does not support embedded video. <a href="/videos/console/portfolio-review.mp4">Download the walkthrough</a>.
+</video>
+
+[Download the video](/videos/console/portfolio-review.mp4) · [Download captions (WebVTT)](https://raw.githubusercontent.com/amloktech/docs/main/videos/console/portfolio-review.vtt)
+
 ## Find and open a monitored deal
 
 Open **Portfolio**, filter the table and select a deal. Check the borrower, monitoring status and available deal terms. Use the record identifier when matching a console record to your servicing system.
@@ -44,15 +55,15 @@ Use the baseline and evidence dates to understand a reported change. A deal's ac
 
 ## Monitoring runs
 
-Use **Monitoring runs** to inspect evaluations associated with this monitored deal. The table shows **Time (UTC)**, **Evaluation**, **Sources** and **Status**. Filter or search the records, then select a row for its details, available summary and outcome.
+Use **Monitoring runs** to inspect evaluations associated with this monitored deal. The table shows **Record**, **Status** and **Created (UTC)**. Filter or search the records, then select a row for its details, available summary and outcome.
 
-<Frame caption="Monitoring runs shows evaluation outcomes and source counts. This fictional example contains a partial result that deserves further inspection.">
-  <img src="/images/console/portfolio-monitoring-runs.jpg" alt="Monitoring runs tab for Harbor Route Logistics showing one evaluation with partial status and its source count." />
+<Frame caption="Monitoring runs shows recorded evaluations and their outcomes. These fictional partial results deserve further inspection.">
+  <img src="/images/console/portfolio-monitoring-runs.jpg" alt="Monitoring runs tab for Pacific Freight Partners showing two evaluations with partial status and their creation timestamps." />
 </Frame>
 
 When a value appears stale, check the most recent relevant sync, its source association and its status. Inspect any supplied error or explanation for a partial or failed result. Owners and Developers can inspect captured request or response payloads and download JSON where provided.
 
-**Monitoring runs** lists scheduled or change-driven evaluations, which can combine several sources. The Sources column counts source entries in the run. A successful evaluation describes that recorded activity; it does not establish the freshness of every source. An empty tab means no related evaluation is shown. Opening a row does not trigger a refresh or retry.
+**Monitoring runs** lists scheduled or change-driven evaluations, which can combine several sources. Inspect a run for its available source details. A successful evaluation describes that recorded activity; it does not establish the freshness of every source. An empty tab means no related evaluation is shown. Opening a row does not trigger a refresh or retry.
 
 ## Integrations
 
@@ -68,10 +79,10 @@ This list is different from the [Integrations Hub](/console/embeddings): the Hub
 
 ## Notifications and flags
 
-Open **Notifications & flags** to review detected changes associated with the monitored deal. The table shows **Time (UTC)**, **Flag**, **Severity** and **Status**. Start with the event's reason and current state, then examine the supporting context.
+Open **Notifications & flags** to review detected changes associated with the monitored deal. The table shows **Notification**, **Severity**, **Status** and **Created (UTC)**. Start with the event's reason and current state, then examine the supporting context.
 
 <Frame caption="Notifications and flags stay attached to the monitored deal they describe. Open a flag to inspect its explanation and associated deliveries.">
-  <img src="/images/console/monitoring-flags.jpg" alt="Pacific Freight Partners Notifications and flags tab showing an open monitoring alert." />
+  <img src="/images/console/monitoring-flags.jpg" alt="Pacific Freight Partners Notifications and flags tab showing two open monitoring alerts." />
 </Frame>
 
 <Steps>
@@ -79,10 +90,10 @@ Open **Notifications & flags** to review detected changes associated with the mo
     Select its row. Review the readable fields and summary, including available measurements and evidence references. Compare the change with the baseline and previous observations where supplied. Severity indicates the reported importance; status describes the flag's current state.
   </Step>
   <Step title="Inspect the event payload when needed">
-    Owners and Developers can inspect **Webhook event JSON** and download the captured event. Use its identifiers to correlate it with your own system. The readable summary and technical payload describe the same event from different perspectives.
+    Owners and Developers can open **Raw data** to inspect the alert payload, including its metric, threshold, policy rule and evidence references when supplied. Use the alert and monitor identifiers to correlate it with your own system.
   </Step>
   <Step title="Check the delivery history">
-    Review **Webhook deliveries** in the flag details. Open a delivery to inspect recorded attempts, response status, latency and result. A generated flag does not prove your endpoint received it. Multiple delivery attempts can belong to one event; they are not necessarily separate risk changes.
+    Open **Related records**, then select the associated event, such as `alert.created`. Its **Overview** shows **Delivery attempts** and the event payload. Open an attempt for its recorded result and available response details. A generated flag does not prove your endpoint received it. Multiple attempts can belong to one event; they are not necessarily separate risk changes.
   </Step>
 </Steps>
 
@@ -92,4 +103,4 @@ If no delivery is shown, use [Dev Tools > Deliveries & events](/console/webhooks
 
 A monitoring event reports a change or condition; it does not itself change a credit limit, collect a payment or contact the borrower. Your institution decides the appropriate action. Viewing an alert does not acknowledge it in your servicing system, resolve it or replay a webhook.
 
-For a practical exercise, open Pacific Freight Partners in the demo dataset, inspect its partial sync and open flag, then trace the event to its delivery details. Use [Sandbox scenarios](/console/sandbox) to test a changing-risk case and a source-disconnection case. See [monitoring design](/api-reference/monitoring-design) for enrollment, baseline and event contracts.
+For a practical exercise, open Pacific Freight Partners in the demo dataset, inspect its partial monitoring run and open flag, then trace the associated event. The walkthrough shows an event with no delivery attempts, illustrating why event creation and successful delivery are separate checks. Use [Sandbox scenarios](/console/sandbox) to test a changing-risk case and a source-disconnection case. See [monitoring design](/api-reference/monitoring-design) for enrollment, baseline and event contracts.
