@@ -26,9 +26,9 @@ def write_guides(spec,f,index):
  api('integration-hub','Embed the Integrations Hub','''
 AMLOK's Integrations Hub collects borrower authorization and connects sources selected by the institution in the console. Your backend creates a borrower-bound session; your frontend displays its short-lived launch URL. AMLOK performs collection and normalization. The borrower selects one provider per category step. Selecting another provider replaces that step's previous choice; a session can include one provider from each of several categories.
 
-## Publish and discover a Hub
+## Save and discover a Hub
 
-In **Embeddings**, publish the integrations, branding and requested consent purposes. Approve exact HTTPS embedding origins and return URLs. AMLOK rejects wildcard origins, embedded URL credentials, fragments and unregistered destinations. Sandbox alone may permit explicitly registered loopback HTTP origins for development; Live requires HTTPS.
+In **Embeddings**, select the integrations, customize the branding in the [style designer](/console/embedding-style-designer), then select **Save configuration**. Approve exact HTTPS embedding origins and return URLs. AMLOK rejects wildcard origins, embedded URL credentials, fragments and unregistered destinations. Sandbox alone may permit explicitly registered loopback HTTP origins for development; Live requires HTTPS.
 
 Read `GET /v1/configuration`. Each embedding_versions entry lists its ID, integrations, consent purposes, allowed origins, return URLs and hub_origin. Configure the customer-facing logo, colors, typography, controls and text in the [Console appearance panel](/console/embeddings#customize-the-appearance). The saved design belongs to that version. Existing sessions retain their version's integrations and appearance, including when a borrower returns to an in-progress session. Create new sessions with the new version ID to use a saved update. Use a version whose integration set and purposes fit the borrower flow.
 
