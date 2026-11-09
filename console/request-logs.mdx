@@ -7,9 +7,22 @@ keywords: ["request logs", "errors", "HTTP", "retry", "idempotency", "troublesho
 
 Use **Dev Tools > Request logs** to inspect calls made to the product API. Use **Errors & retries** to focus on failed requests. These views are available to Owners and Developers.
 
+## Watch a short walkthrough
+
+This 42-second walkthrough covers finding a failed request, reading its response summary and using Errors & retries. It was recorded on [demo.amlok.io](https://demo.amlok.io) with fictional data. It uses on-screen instructions and has no audio. Use full screen to read the controls. The written guidance below explains the same workflow.
+
+<video controls playsInline preload="metadata" poster="/images/console/request-logs.png" aria-label="Request logs and error investigation walkthrough recorded in the demo environment" width="100%">
+  <source src="/videos/console/request-logs.mp4" type="video/mp4" />
+  Your browser does not support embedded video. <a href="/videos/console/request-logs.mp4">Download the walkthrough</a>.
+</video>
+
+[Download the video](/videos/console/request-logs.mp4) · [Download captions (WebVTT)](https://raw.githubusercontent.com/amloktech/docs/main/videos/console/request-logs.vtt)
+
+The clip inspects an existing HTTP `429` example. It does not retry the request. Its older demo record has no retained error code; preserve the actual error response in your client when troubleshooting.
+
 ## Find the request
 
-Filter by status, request details and time, or search for the identifier you recorded in your client. Confirm the workspace and environment first. Times marked **UTC** use UTC rather than your browser's local time.
+Select **Needs attention** to focus on failures. Filter by status, request details and time, or search for the identifier you recorded in your client. Confirm the workspace and environment first. Times marked **UTC** use UTC rather than your browser's local time.
 
 <Frame caption="Request logs show method, path, status and timing so you can identify the call to inspect.">
   <img src="/images/console/request-logs.jpg" alt="API request log table with HTTP methods, endpoint paths, response statuses and timestamps." />

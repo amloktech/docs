@@ -7,6 +7,21 @@ keywords: ["webhooks", "endpoints", "events", "deliveries", "signatures", "repla
 
 Webhooks notify your integration about underwriting, monitoring and other subscribed events. Owners and Developers manage destinations in **Dev Tools > Endpoints** and inspect outgoing activity in **Deliveries & events**.
 
+## Watch a short walkthrough
+
+This 46-second walkthrough covers endpoint configuration, event subscriptions and inspecting a recorded event. It was recorded on [demo.amlok.io](https://demo.amlok.io) with fictional data. It uses on-screen instructions and has no audio. Use full screen to read the controls. The written guidance below explains the same workflow.
+
+<video controls playsInline preload="metadata" poster="/images/console/webhooks.png" aria-label="Webhook endpoint and event inspection walkthrough recorded in the demo environment" width="100%">
+  <source src="/videos/console/webhooks.mp4" type="video/mp4" />
+  Your browser does not support embedded video. <a href="/videos/console/webhooks.mp4">Download the walkthrough</a>.
+</video>
+
+[Download the video](/videos/console/webhooks.mp4) · [Download captions (WebVTT)](https://raw.githubusercontent.com/amloktech/docs/main/videos/console/webhooks.vtt)
+
+<Note>
+  The demo endpoints use disabled `example.invalid` placeholders. Supply a public HTTPS destination that your team controls when setting up your own receiver. This clip reviews configuration and cancels editing without saving. The demo site suppresses outbound delivery, so this is not a live delivery or signature-verification test.
+</Note>
+
 ## Register an endpoint
 
 1. Select the correct workspace and environment.
@@ -19,7 +34,7 @@ Use the endpoint drawer to inspect or edit its configuration. An endpoint being 
 
 ## Inspect a delivery
 
-Open **Deliveries & events** and filter or search for the event associated with your record. Select a row to inspect the available event payload, destination, status, response and attempt details.
+Open **Deliveries & events** and filter or search for the event associated with your record. Select a row to inspect the available event payload, destination, status, response and attempt details. **Overview** shows the event payload and delivery summary. **Raw data** shows the stored representation; **Related records** connects it to the associated business records. A row marked **Recorded** can have no delivery attempts.
 
 <Frame caption="Use event and delivery records to follow notifications independently of incoming API requests.">
   <img src="/images/console/webhook-deliveries.jpg" alt="Deliveries and events table showing seeded webhook activity, event types and delivery statuses." />
