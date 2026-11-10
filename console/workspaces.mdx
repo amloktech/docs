@@ -22,7 +22,7 @@ The video uses on-screen instructions and has no audio. Use full screen to inspe
 
 ## Open settings
 
-Open the workspace profile at the top of the left navigation, then choose the relevant settings area. Confirm the selected organization before making changes. Organization and workspace administration require an **Owner** and may require a recent identity check or MFA.
+Open the workspace profile at the top of the left navigation, then choose the relevant settings area. Confirm the selected organization before making changes. Owners manage organization settings, workspace names and team access. **Owners and Developers** can create workspaces in an organization where they already have that role. Sensitive actions may require a recent identity check or MFA.
 
 ## Create an organization or workspace
 
@@ -31,17 +31,38 @@ Open the workspace profile at the top of the left navigation, then choose the re
     In **Organizations**, select an existing organization. To create a separate organization, select **Create organization**, enter its name and complete the confirmation. You become its Owner; its membership and workspaces are separate from your other organizations.
   </Step>
   <Step title="Create the workspace">
-    Open **Workspaces**, select **Create workspace**, and enter its name. The workspace belongs to the currently selected organization.
+    Open **Workspaces**, select **Create workspace**, and enter its name. The workspace belongs to the currently selected organization. A Developer remains a Developer in the new workspace; creation does not grant Owner access or access to other workspaces.
   </Step>
   <Step title="Select it and prepare Sandbox">
     Select the new workspace and complete its [first-use Sandbox setup](/console/quickstart). New workspaces start with Sandbox access. Live access requires activation by AMLOK.
   </Step>
   <Step title="Invite the right team">
-    Open **Team members** in this workspace and invite the people who need access. New invitations apply only to the selected workspace.
+    An Owner opens **Team members** in this workspace and invites the people who need access. New invitations apply only to the selected workspace.
   </Step>
 </Steps>
 
-Open a workspace row for its details and **Rename** action. Changing the display name does not create a new workspace or move records between workspaces.
+Open a workspace row for its details. Owners can use **Rename**. Changing the display name does not create a new workspace or move records between workspaces.
+
+## Reset Sandbox data
+
+Select the workspace and switch to **Sandbox**, then open **Workspaces > Sandbox data**. An Owner can choose **Start empty** or **Load fresh sample data** as often as needed.
+
+<Warning>
+Both actions permanently delete **all Sandbox test data**, including data your team created through the API. The reset affects everyone using this workspace. Coordinate with your team and stop active requests and processing first.
+</Warning>
+
+| Option | Result |
+| --- | --- |
+| **Start empty** | Clears test data and creates a fresh CAD 5,000.00 simulated starting credit allocation. |
+| **Load fresh sample data** | Clears test data, restores the starting credits and prepares the six-business sample package. Its simulated activity then affects the balance. |
+
+The confirmation lists what will change. Type the exact workspace name, complete the identity check if requested, and confirm. Sample preparation shows its progress until the run finishes. If processing is still active, wait for it to finish before retrying.
+
+A reset removes borrowers, applications, source data, documents, results, monitoring, events, deliveries, exports, scenario history, API logs and simulated funding and consumption. Old record IDs, download links and pagination cursors no longer work. Previously downloaded files and webhooks already received by your systems cannot be recalled.
+
+It keeps the organization, workspace, team access, API keys, embeddings, webhook settings, negotiated rates and audit history. **Live data and other workspaces are unchanged.** Your existing Sandbox API keys continue to work with the new dataset. The initial setup prompt does not reappear after this explicit choice.
+
+To add another set of samples **without deleting existing tests**, use **Dev Tools > Sandbox scenarios > Load six sample businesses** instead. See [Sandbox scenarios](/console/sandbox).
 
 ## Update organization identity
 
