@@ -37,7 +37,7 @@ curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \\
   -H "Authorization: Bearer $AMLOK_API_KEY" \\
   -H 'Content-Type: application/json' \\
   -H 'Idempotency-Key: my-first-healthy-test-001' \\
-  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-07.1"}'
+  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-09.1"}'
 ```
 
 The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
@@ -62,13 +62,13 @@ Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains 
 
 ## Fictional business pack
 
-Each business has bank, accounting, payment, commerce and verification fixtures; synthetic normalized records and provenance; a PDF financial statement; consent and connection records; a lending product and risk policy; and an Origination with its expected outcome. Completed assessments include evidence, results, exports and funded monitoring. Blocked and failed cases retain their requirements or failure details so you can test those states.
+Each business has bank, accounting, payment, commerce and verification fixtures; synthetic normalized records and provenance; six downloadable PDF reports and documents; consent and connection records; a lending product and risk policy; and an Origination with its expected outcome. Completed assessments include evidence, results, exports and funded monitoring. Blocked and failed cases retain their requirements or failure details so you can test those states.
 
 | Fixture | Business | Market | Industry | Initial outcome |
 | --- | --- | --- | --- | --- |
 '''+businesses+'''
 
-The pack includes card success and decline, pending and settled ACH, ACH return, refund and simulated automatic top-up records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD, including US business examples. Fixture banking covers twelve monthly periods; it is sparse synthetic history, not production-scale or complete daily coverage.
+The pack includes card success and decline, pending and settled ACH, ACH return, refund and simulated automatic top-up records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. Fixture banking covers twelve complete calendar months, including daily closing balances; it is an illustrative dataset, not a production-volume test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
 
 ## Scenario catalog
 

@@ -1,0 +1,97 @@
+---
+title: "Explore the complete sample package"
+sidebarTitle: "Sample data and documents"
+description: "Follow linked fictional businesses, source records, underwriting evidence, downloadable PDFs, monitoring and billing through the Console and API."
+---
+
+Load **Explore sample businesses** during first-use setup, or choose **Dev Tools > Sandbox scenarios > Load six sample businesses**. The package creates six separate business journeys. Use a completed `healthy` journey to explore the full result, then use the other cases to test missing information and recovery.
+
+## What each business contains
+
+| Area | Included data | Where to inspect it |
+| --- | --- | --- |
+| Business and owner | Fictional registered business, industry, address, registration number, sole owner and director, and ownership relationship. | Borrower profile, verification source records and the risk package's `verification`. |
+| Banking | Operating account, twelve months of categorized receipts and payments, monthly balances and daily closing balances. | Connection data, bank statement and cash-flow dimensions. |
+| Accounting | Four customers, 48 paid invoices, financial statement and supporting schedules, two existing credit facilities, and a tax obligation. | Normalized records, financial dimensions and `analyses.financial_statements`. |
+| Payments and commerce | 48 settled payments and 48 orders with matched invoice references, refunds, channels and customer references. | Source records, revenue metrics, concentrations and reconciliation. |
+| KYB and owner verification | Simulated company registration, owner identity, liveness, ownership, screening and account-holder checks. | `verification`, its provenance and the associated reports. |
+| Documents | Six readable PDFs: financial statement, bank statement, business registration, identity verification report, tax filing and lending terms. | Origination documents and the document endpoints. |
+| Underwriting | Submitted application, versioned lending product and risk policy, assessment, dimensions, source evidence and analysis sections. | Origination drawer and immutable risk package. |
+| Monitoring | Funded deal, baseline, evaluations, events and scenario-specific alerts. | Portfolio drawer and monitoring endpoints. |
+| System records | API requests, scenario steps and assertions, exports, usage, complexity assessments, test funding, credit movements and statements. | Dev Tools, Billing and the corresponding API endpoints. |
+
+Completed assessments create risk packages and monitoring records. An Origination that requires a document, requires reauthorization or fails retains that state; it does not invent completed results. Recovery scenarios continue the same workflow after the required action. A cancelled connection scenario intentionally creates no connected sources or document pack.
+
+## Understand the figures
+
+The reporting period covers the **twelve complete calendar months before the run's current month**, with an exclusive end date. For example, a run in November covers November 1 of the preceding year through November 1 of the current year. Each month has receipts on day 5 and payments on day 20, with daily closing balances between them.
+
+Canadian businesses report in **CAD**; US businesses report in **USD**. The workspace's simulated wallet and API consumption remain **CAD**. Business revenue and financing currency do not change the currency of your AMLOK invoice.
+
+For a normal healthy run, bank receipts, paid invoice totals and net commerce sales reconcile. Financial statements include supporting schedules used by the metrics. Amounts are decimal strings; ratios such as `"0.20"` mean 20%. Evidence references identify the collected record and field used in a calculation. Do not assume all 149 metric keys must be available: consumer-only metrics are not applicable, and unsupported bureau information and calibrated model outputs remain explicitly unavailable.
+
+<Note>
+The data, people, verification results and files are fictional. Identity files are **verification reports**, not genuine identity documents. A simulated passing check does not establish that any real person, business or document was verified.
+</Note>
+
+## Retrieve real document URLs
+
+Document IDs are durable references; download URLs are temporary capabilities. **Do not hard-code a URL from a screenshot, example response or previous run.** Request a fresh link when the user opens a file and use its `expires_at` value.
+
+1. Wait for `GET /v1/sandbox/runs/{id}` to return `completed`.
+2. Find resources with `kind: "document"`, or read `document_ids` from the Origination's submitted request.
+3. Read `GET /v1/documents/{id}` and check that `status` is `available`.
+4. Call `POST /v1/documents/{id}/download-links` with a `purpose` describing the access and a new idempotency key.
+5. Fetch the returned `data.url` without forwarding your API key. Check the file's SHA-256 against the returned `sha256`.
+
+This Node.js 22+ example downloads one file from your own completed run. Set `AMLOK_DOCUMENT_ID` to a document resource ID; keep `AMLOK_API_KEY` server-side.
+
+```javascript
+import { randomUUID, createHash } from 'node:crypto';
+import { writeFile } from 'node:fs/promises';
+
+const base = process.env.AMLOK_API_BASE_URL || 'https://api.amlok.io';
+const id = process.env.AMLOK_DOCUMENT_ID;
+if (!id || !process.env.AMLOK_API_KEY?.startsWith('amlok_test_')) {
+  throw new Error('Set a document ID and Sandbox API key.');
+}
+const response = await fetch(`${base}/v1/documents/${encodeURIComponent(id)}/download-links`, {
+  method: 'POST', redirect: 'error', signal: AbortSignal.timeout(30000),
+  headers: {
+    Authorization: `Bearer ${process.env.AMLOK_API_KEY}`,
+    'Content-Type': 'application/json',
+    'Idempotency-Key': randomUUID(),
+  },
+  body: JSON.stringify({ purpose: 'Review fictional Sandbox evidence' }),
+});
+const body = await response.json();
+if (!response.ok) throw new Error(`${response.status}: ${body.error?.message}`);
+if (body.meta.environment !== 'sandbox') throw new Error('Expected Sandbox.');
+const link = body.data;
+if (Date.parse(link.expires_at) <= Date.now()) throw new Error('Request a fresh link.');
+const download = await fetch(link.url, {
+  redirect: 'error', signal: AbortSignal.timeout(30000),
+});
+if (!download.ok) throw new Error(`Download failed: ${download.status}`);
+const bytes = Buffer.from(await download.arrayBuffer());
+if (createHash('sha256').update(bytes).digest('hex') !== link.sha256) {
+  throw new Error('File checksum mismatch.');
+}
+await writeFile('sandbox-document.pdf', bytes, { mode: 0o600 });
+```
+
+Treat signed URLs as secrets while valid. A URL can stop working after expiry, key revocation or an authorization change. Keep the document ID and request a new link when access is still authorized. See [files and downloads](/api-reference/downloads) for range requests and download errors.
+
+## Follow the result back to its sources
+
+From a completed Origination, retrieve its `risk_package_id`. Inspect `assessment`, then a dimension's `metrics`. An available metric includes its value, unit, calculation version, assumptions and inputs. Follow the input's `evidence_id` and `field_path` to the source observation; use `document_id` when a file supports that observation.
+
+Use `GET /v1/data/records` to inspect normalized integration data and its source envelope. Traverse the returned pagination cursors to retrieve the whole collection. The package also includes financial statements, obligations and repayment schedules, collateral, tax, concentration, reconciliation and deterministic cash projections under `analyses`. Verification sections include the source report references and missing-field explanations.
+
+The `manual_review` case deliberately omits the proposed repayment schedule, so DSCR and dependent debt-service metrics remain unavailable. The lending-terms PDF explains that omission. The `monitoring_alert` case reduces bank receipts while keeping the accounting observations, producing both deterioration and a reconciliation difference. `monitoring_recovery` restores receipts and reevaluates the monitor.
+
+## Refresh samples without losing prior tests
+
+The catalog version identifies the sample release. Fetch it from `GET /v1/sandbox/catalog` before starting a new run. Existing runs, documents and risk packages remain unchanged when the sample package is updated. **Load six sample businesses** or **Repeat with fresh records** creates new records with the current package; it does not rewrite old results or reset shared credits.
+
+For expected outcomes, permissions and executable commands, see [businesses and scenarios](/sandbox/businesses-and-scenarios) and [API Sandbox journeys](/api-reference/sandbox-journeys). Use [simulated billing](/sandbox/simulated-billing) to reconcile funding and consumption. Initial sample preparation records events without sending webhooks; explicitly enable delivery to your test receiver when you want real HTTP delivery.
