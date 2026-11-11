@@ -1,0 +1,51 @@
+---
+title: "Find a borrower"
+sidebarTitle: "Borrowers"
+description: "Find businesses and people created through the API, inspect their profiles and open linked underwriting, monitoring and evidence records."
+keywords: ["borrowers", "business", "person", "client reference", "borrower profile"]
+---
+
+Use **Borrowers** in the Console's left navigation to find every registered business and person in the selected workspace and environment. A borrower appears here after it is created through the API, even if you have not submitted an underwriting request or enrolled it in monitoring.
+
+## Find the right record
+
+1. Confirm the organization, workspace and **Sandbox** or **Live** environment in the workspace selector. Use the same workspace and environment as the API key that created the borrower.
+2. Open **Borrowers** and use **Refresh records** if you created the record while the page was already open.
+3. Search by name, borrower ID, client reference or business registration number. Use **Borrower type** to filter **Business** or **Person**.
+4. Select the row to open its profile.
+
+The table shows **Borrower**, **Type**, **Client reference**, **Registration number**, **Incorporation country** and **Created (UTC)**. Fields without supplied values show a dash. Business registration and incorporation fields are not person attributes.
+
+Two borrowers can have the same name. Use their borrower IDs and client references to distinguish them; a shared name does not mean they are the same API resource. Search and filters apply across the complete collection, including records beyond the current page.
+
+## Understand the drawer
+
+| Tab | What you can inspect |
+| --- | --- |
+| **Overview** | The borrower ID, subject ID, type, client reference, creation time, submitted profile and available linked records. |
+| **Related records** | Associated records, such as originations, monitoring enrollments, connections and documents, when present and permitted by your role. Select a record to inspect it. |
+| **Raw data** | The record representation available to your role. Owners and Developers can inspect captured technical payloads; Analysts receive the readable record representation. |
+| **Activity** | Available recorded activity. A newly registered borrower can have only its creation entry. |
+
+The borrower ID identifies the resource used by borrower-scoped API operations. The subject ID identifies its underlying business or person. Use the borrower ID where an endpoint asks for `borrower_id`.
+
+## Borrowers, Origination and Portfolio
+
+| Area | When a record belongs there |
+| --- | --- |
+| **Borrowers** | A business or person has been registered through [Create borrower](/api-reference/endpoints/borrowers/create-borrower). |
+| **Origination** | An underwriting request has been submitted for that borrower. See [review an underwriting result](/console/origination). |
+| **Portfolio** | Monitoring has been created for a funded deal. See [Portfolio](/console/portfolio). |
+
+Registering a borrower does not start underwriting, create a risk package, enroll monitoring or approve a lending application. An empty related-records list is expected until your integration creates associated records.
+
+## If a borrower is missing
+
+- Compare the API key's workspace and environment with the Console selection. Sandbox and Live records are separate; staging and production deployments are also separate.
+- Clear search, type and date filters, then refresh the list.
+- Search the exact `id` returned by the creation request. A business `subject_id` is not the borrower ID.
+- Retrieve the borrower with the same key using [Get borrower](/api-reference/endpoints/borrowers/get-borrower), or check [List borrowers](/api-reference/endpoints/borrowers/list-borrower).
+- Inspect [Request logs](/console/request-logs) for the creation request and its outcome. If you need help, share the request ID, borrower ID and selected workspace with support, without sharing your API key.
+
+Owners, Developers and Analysts can review borrowers in workspaces they can access. Related technical and billing information follows your existing role permissions.
+
