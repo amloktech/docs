@@ -43,26 +43,31 @@ Open the workspace profile at the top of the left navigation, then choose the re
 
 Open a workspace row for its details. Owners can use **Rename**. Changing the display name does not create a new workspace or move records between workspaces.
 
+## Create a workspace as a Developer
+
+A **Developer** can create a workspace inside an organization where they already have Developer or Owner access, including through a workspace-specific membership. Select the intended organization, open **Workspaces**, choose **Create workspace**, enter a name and submit the form. The Console selects the new workspace after creation.
+
+You remain a **Developer** in the new workspace. This does not make you an Owner, grant organization-wide membership, or unlock unrelated workspaces. The new workspace starts with Sandbox access; Live still requires AMLOK activation.
+
+You can choose **Start with an empty workspace** and begin your API tests. Ask an Owner to load the complete sample package, reset the dataset, manage invitations or configure billing. Creating a workspace does not copy another workspace's test records or API keys. Create credentials for the new workspace before using it from your integration.
+
+| Action | Owner | Developer | Analyst |
+| --- | --- | --- | --- |
+| Create a workspace within an accessible organization | Yes | Yes | No |
+| Choose an empty Sandbox on first use | Yes | Yes | No |
+| Load the complete six-business sample pack | Yes | No | No |
+| Clear or replace existing Sandbox data | Yes | No | No |
+| Manage workspace invitations and billing | Yes | No | No |
+
 ## Reset Sandbox data
 
-Select the workspace and switch to **Sandbox**, then open **Workspaces > Sandbox data**. An Owner can choose **Start empty** or **Load fresh sample data** as often as needed.
+An Owner selects **Sandbox**, opens **Workspaces**, and uses the **Sandbox data** section below the table. **Start empty** clears all test records. **Load fresh sample data** clears them and prepares six fictional businesses. Both options require workspace-name confirmation and a recent identity check.
 
 <Warning>
-Both actions permanently delete **all Sandbox test data**, including data your team created through the API. The reset affects everyone using this workspace. Coordinate with your team and stop active requests and processing first.
+Both actions delete all Sandbox test data, including records created through the API and simulated billing history. Team access, API keys, embeddings, webhook settings, negotiated rates and Live data are preserved. Coordinate with everyone using the workspace before resetting it.
 </Warning>
 
-| Option | Result |
-| --- | --- |
-| **Start empty** | Clears test data and creates a fresh CAD 5,000.00 simulated starting credit allocation. |
-| **Load fresh sample data** | Clears test data, restores the starting credits and prepares the six-business sample package. Its simulated activity then affects the balance. |
-
-The confirmation lists what will change. Type the exact workspace name, complete the identity check if requested, and confirm. Sample preparation shows its progress until the run finishes. If processing is still active, wait for it to finish before retrying.
-
-A reset removes borrowers, applications, source data, documents, results, monitoring, events, deliveries, exports, scenario history, API logs and simulated funding and consumption. Old record IDs, download links and pagination cursors no longer work. Previously downloaded files and webhooks already received by your systems cannot be recalled.
-
-It keeps the organization, workspace, team access, API keys, embeddings, webhook settings, negotiated rates and audit history. **Live data and other workspaces are unchanged.** Your existing Sandbox API keys continue to work with the new dataset. The initial setup prompt does not reappear after this explicit choice.
-
-To add another set of samples **without deleting existing tests**, use **Dev Tools > Sandbox scenarios > Load six sample businesses** instead. See [Sandbox scenarios](/console/sandbox).
+Follow [Reset your Sandbox data](/console/reset-sandbox) for the complete steps, what is removed or preserved, and how to resume your API tests. To add sample records without deleting current tests, use [Sandbox scenarios](/console/sandbox).
 
 ## Update organization identity
 
