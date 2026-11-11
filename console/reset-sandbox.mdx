@@ -1,0 +1,99 @@
+---
+title: "Reset your Sandbox data"
+sidebarTitle: "Reset Sandbox"
+description: "Clear a workspace's Sandbox or replace its records with fresh sample businesses. Review permissions, retained settings and the checks after a reset."
+keywords: ["reset Sandbox", "clear sample data", "start empty", "load samples", "workspace", "Owner"]
+---
+
+Use **Workspaces > Sandbox data** to move between a clean Sandbox and a fresh sample dataset. You do not need another account or another API key. This guide covers the reset confirmation, what changes, and how to resume testing afterward.
+
+<Warning>
+Both reset options permanently delete **all test records in the selected workspace's Sandbox**, including records your team created through the API. This affects every teammate using that Sandbox. A reset cannot be undone in the Console.
+</Warning>
+
+## Choose the right action
+
+| Your goal | Action | Existing test records |
+| --- | --- | --- |
+| Choose a starting point on first use | **Explore sample businesses** or **Start with an empty workspace** in the setup modal | Kept; this initial choice is not a reset. |
+| Add examples alongside your own tests | **Dev Tools > Sandbox scenarios > Load six sample businesses** | Kept; the run adds records. |
+| Clear the Sandbox for your own API tests | **Workspaces > Sandbox data > Start empty** | Deleted. |
+| Replace everything with fresh examples | **Workspaces > Sandbox data > Load fresh sample data** | Deleted, then replaced with the six-business sample package. |
+| Keep an independent dataset for another project | [Create another workspace](/console/workspaces#create-an-organization-or-workspace) | Other workspaces are unchanged. |
+
+<Note>
+An empty Sandbox still has API access, scenario tools and **CAD 5,000.00 in simulated starting credits**. Sandbox funding and consumption never charge a card or debit a bank account.
+</Note>
+
+## Before you reset
+
+You must be an **Owner** of the selected workspace and have **Sandbox** selected. Developers and Analysts do not see the reset controls. Live cannot be reset through this feature.
+
+Coordinate with your team, stop requests from your test clients, and let active processing finish. Export anything you need to keep before continuing. If you want to preserve the current dataset, create a separate workspace instead.
+
+## Clear or replace the data
+
+<Steps>
+  <Step title="Select the workspace and Sandbox">
+    Open the workspace profile at the top of the left navigation. Check the organization and workspace, then select **Sandbox**. Open **Workspaces** from workspace settings.
+  </Step>
+  <Step title="Choose how to start again">
+    Find **Sandbox data** below the workspace table. Its heading names the workspace that will be reset.
+
+    Choose **Start empty** to clear test records, or **Load fresh sample data** to clear them and prepare six fictional businesses with their associated records.
+
+    **Last setup** describes the most recent setup choice. Your team may have added or changed test records since then; it is not a count of what the workspace currently contains.
+  </Step>
+  <Step title="Review and confirm">
+    The dialog is named **Clear Sandbox data** or **Replace Sandbox data with samples**. Review its description, type the exact workspace name, and complete the identity confirmation when requested.
+
+    Select **Clear Sandbox data** or **Clear and load samples** to proceed. **Cancel** closes the dialog without resetting anything.
+  </Step>
+  <Step title="Wait for the result">
+    **Start empty** refreshes the workspace and confirms it is ready for your own test data.
+
+    **Load fresh sample data** starts the preparation dialog. Its progress messages continue while the real setup runs. Wait for **Your workspace is ready** before exploring the results. The dialog closes after completion.
+
+    If the page is interrupted, refresh to resume the progress view. Use **Check again** or **Open scenario tools** when offered; avoid starting another reset just because the browser lost its connection.
+  </Step>
+  <Step title="Check your new starting point">
+    For an empty reset, confirm that **Origination** has no borrower records and **Billing** shows the fresh simulated allocation. For samples, inspect the six businesses in **Origination**, then open their documents, integrations and results. The pack includes 36 downloadable example documents.
+
+    The sample pack creates simulated funding and consumption, so its resulting balance can differ from the starting allocation. Follow the [sample package guide](/sandbox/sample-package) for the complete dataset.
+  </Step>
+</Steps>
+
+## What changes and what stays
+
+| Reset removes | Reset preserves |
+| --- | --- |
+| Borrowers, originations and application data | Organization, workspace and team access |
+| Collected source data, connections, documents and results | API keys and their existing scopes |
+| Monitoring records, events and delivery history | Embedding configurations and webhook destination settings |
+| Scenario runs, exports and API request logs | Negotiated rates and workspace settings |
+| Simulated funding and consumption history | Administrative audit history |
+
+**Live data and every other workspace stay unchanged.** Switching the workspace profile between Sandbox and Live does not itself delete data. The reset options only appear in Sandbox.
+
+Files and export links associated with deleted records stop working. Copies your team already downloaded, and webhook messages your systems already received, cannot be recalled. A reset removes delivery history; it does not remove your webhook destinations.
+
+## Resume your API tests
+
+Your existing Sandbox API keys continue to work with the new dataset. Their permissions and expiry do not change. Continue to use `https://api.amlok.io`; the key selects the workspace and Sandbox environment.
+
+Discard old resource IDs, download links and pagination cursors from your test client. Query the collections again and use the new IDs returned by sample preparation or your own requests. Restart pagination from its first page.
+
+The first-use setup prompt stays dismissed after an explicit reset. Return to **Workspaces > Sandbox data** whenever you need to start again. To rerun a case while keeping earlier results, use [Sandbox scenarios](/console/sandbox) instead.
+
+## If something prevents a reset
+
+| What you see | Next step |
+| --- | --- |
+| No **Sandbox data** section | Confirm Sandbox is selected and that you have the Owner role in this workspace. Ask an Owner to reset it for you. |
+| Workspace-name confirmation fails | Enter the exact current name shown in the dialog. Check that you selected the intended workspace. |
+| An identity confirmation is required | Complete the requested authentication and submit the confirmation again. |
+| Active requests or processing prevent the reset | Stop your test clients, wait for processing to finish, then retry. |
+| Sample preparation needs attention | Inspect the run in **Sandbox scenarios** and follow the available recovery action. Do not assume an accepted setup request means every record is ready. |
+| An old record or file is unavailable | Retrieve the new dataset; deleted records and their file links are no longer valid. |
+
+For a separate workspace without deleting the current dataset, follow [workspace creation](/console/workspaces#create-an-organization-or-workspace). For request examples, continue with [API keys](/console/api-keys) and [Sandbox journeys](/api-reference/sandbox-journeys).
