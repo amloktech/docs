@@ -39,9 +39,29 @@ Read alerts through `GET /v1/alerts?monitor_id=...`, receive signed events and t
 
 ## Change future configuration
 
-Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. A replacement risk policy must retain the existing policy's borrower type and market; an incompatible policy returns `422 validation_error` and leaves the monitor unchanged. Stopped is terminal. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
+Use `PATCH /v1/monitors/{id}` with the ETag returned by the monitor. You may change its future policy, cadence or active/paused/stopped state. A stale ETag returns `412`. A replacement risk policy must retain the existing policy's borrower type and market; an incompatible policy returns `422 validation_error` and leaves the monitor unchanged. A stopped Monitor can be explicitly reactivated with `status: active` after current prerequisites pass; reuse its ID and facility reference. Neither a configuration change nor an alert resolution rewrites historical packages, evidence or charges.
 
 Signal includes change-driven reassessment. A separately requested full underwriting is Insights. Signal counts a borrower/business once per workspace/month, using its combined workload; see [consumption reporting](/api-reference/consumption-reporting).
 
 
 Current lender balance and terms arrive through [immutable deal snapshots](/api-reference/deal-inputs). Read [processing states and recovery](/api-reference/processing-lifecycle) for typed requirements, consent renewal and funding resumption.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Start without a previous underwriting
+
+A Signal-only integration registers or reuses the borrower, obtains `continuous_monitoring` consent, uploads the funded facility's documents, and creates the required product and policy versions. Submit `POST /v1/monitors` with `baseline.portfolio`, containing `lending_product_version_id`, `application` (the supplied application or null when unavailable), and `document_ids`. Supply the funded `deal`, `risk_policy_version_id`, `cadence_id` and authorized `connection_ids` as usual.
+
+This path creates monitoring and its baseline result without creating an Origination or an Insights charge. A Monitor can instead use `baseline.risk_package_id`; the two baseline forms are mutually exclusive. Only choose a package your current key and product entitlement can access.
+
+Supply related parties through top-level `participants`, or through `baseline.portfolio.application.participants` when the top-level list is omitted. If both are present, they must describe the same participants; a conflicting empty list does not silently discard submitted parties. Nonempty application `related_borrower_ids` must match those participants. Every admitted party needs continuous-monitoring authority and authorized evidence. See [related parties](/api-reference/related-person-verification).
+
+## Recover and re-enroll the same facility
+
+Retrieve the Monitor, resolve its `requirements` or `failure`, and obtain the latest ETag. Use `PATCH /v1/monitors/{id}` with `If-Match` and `{"status":"active"}` to resume `paused`, `requires_action`, `waiting_for_credits` or `failed`, or re-enroll `stopped`. Activation validates the active borrower, current product access, documents, policy and continuous-monitoring consent, then schedules evaluation durably. It does not invent a successful result or bypass missing prerequisites.
+
+For changed sources, replace `connection_ids` with the full desired future source set. Reauthorize through the Hub first when consent is absent or revoked. Restore an archived borrower before resuming. Pausing or stopping fences pending publication; subsequent work cannot publish a package or charge against that suspended evaluation. Prior completed packages and charges remain unchanged.
+
+## Find the same activity across resources
+
+Use `GET /v1/monitors?institution_reference=...` with the facility's `deal.institution_reference`. Filter monitoring runs using `borrower_id` or `monitor_id`; each run returns its primary `borrower_id`. The corresponding events carry that borrower reference, so `GET /v1/events?borrower_id=...` can correlate product activity. Keep pagination filters unchanged while following a cursor.
+{/* END BORROWER LIFECYCLE */}

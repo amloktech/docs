@@ -14,7 +14,7 @@ Use **Borrowers** in the Console's left navigation to find every registered busi
 3. Search by name, borrower ID, client reference or business registration number. Use **Borrower type** to filter **Business** or **Person**.
 4. Select the row to open its profile.
 
-The table shows **Borrower**, **Type**, **Client reference**, **Registration number**, **Incorporation country** and **Created (UTC)**. Fields without supplied values show a dash. Business registration and incorporation fields are not person attributes.
+The table includes identity fields, **Profile status**, **Identity revision**, **Underwriting requests**, **Monitored deals** and **Created (UTC)**. Fields without supplied values show a dash. Business registration and incorporation fields are not person attributes.
 
 Two borrowers can have the same name. Use their borrower IDs and client references to distinguish them; a shared name does not mean they are the same API resource. Search and filters apply across the complete collection, including records beyond the current page.
 
@@ -22,7 +22,7 @@ Two borrowers can have the same name. Use their borrower IDs and client referenc
 
 | Tab | What you can inspect |
 | --- | --- |
-| **Overview** | The borrower ID, subject ID, type, client reference, creation time, submitted profile and available linked records. |
+| **Overview** | The borrower ID, subject ID, type, stable client reference, current profile, lifecycle state, identity revision, timestamps, underwriting count, monitored-deal count and active monitors. |
 | **Related records** | Associated records, such as originations, monitoring enrollments, connections and documents, when present and permitted by your role. Select a record to inspect it. |
 | **Raw data** | The record representation available to your role. Owners and Developers can inspect captured technical payloads; Analysts receive the readable record representation. |
 | **Activity** | Available recorded activity. A newly registered borrower can have only its creation entry. |
@@ -49,3 +49,18 @@ Registering a borrower does not start underwriting, create a risk package, enrol
 
 Owners, Developers and Analysts can review borrowers in workspaces they can access. Related technical and billing information follows your existing role permissions.
 
+{/* BEGIN BORROWER LIFECYCLE */}
+## Correct or archive the profile
+
+Owners and Developers can select **Edit profile** in the borrower drawer to correct current business or person details. The stable client reference and borrower type do not change. Saving creates a new identity revision; earlier accepted underwriting and published results retain their original identity snapshot. Analysts can review profiles but cannot change them.
+
+Select **Archive profile** to close unused intake after all associated underwriting is terminal and all monitors are stopped. This also applies when the identity participates in another borrower's assessment. Archival stops new intake and cancels unfinished Hub sessions; it does not delete history or revoke consent. Select **Restore profile** to permit new intake again. Restoration does not restart old sessions or products.
+
+If another teammate changes the record first, refresh and review the latest profile before saving again. The Console uses the same version checks and lifecycle rules as the [borrower API](/api-reference/borrower-lifecycle).
+
+## Read activity separately from identity
+
+**Active** means the profile can accept intake; it does not mean the borrower is approved or currently monitored. Underwriting and monitored-deal counts describe separate linked activity, restricted to the products you can access. A new profile can have zero of both.
+
+Use **View shared borrower profiles** from Origination or Portfolio to open this same directory in your selected workspace and environment. A monitoring-only borrower belongs here even when it has never had an underwriting request.
+{/* END BORROWER LIFECYCLE */}

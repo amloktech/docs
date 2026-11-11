@@ -62,3 +62,11 @@ Use `resource_type=verification_assessment` to retrieve authorized KYC/KYB resul
 ## Large-record recovery
 
 Collections are bounded by both items and bytes. An oversized indivisible record returns a typed export source; it is never skipped. Bootstrap errors preserve an atomic data checkpoint. See [large results](/api-reference/large-results).
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Shared identity and ongoing access
+
+Use the primary or participant's `bor_…` ID when a query requires `borrower_id`; `subject_id` and normalized source resource IDs are different namespaces. Data access does not require a completed Origination or a Monitor, but it still requires currently authorized sources, purposes and entitlements.
+
+An archived profile has no ongoing intake collection. Archival does not erase retained records or grant continued source access after consent withdrawal. Use [borrower lifecycle](/api-reference/borrower-lifecycle) for restore, revocation and retention boundaries.
+{/* END BORROWER LIFECYCLE */}

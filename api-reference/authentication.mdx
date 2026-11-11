@@ -44,7 +44,7 @@ The operation count lists endpoints with that primary scope. Additional checks c
 | --- | --- | ---: |
 | `billing:read` | Read wallet summaries, payments, transactions and usage. Requires current Owner authority; does not collect payments or change billing settings. | 7 |
 | `borrowers:read` | List borrowers and retrieve a borrower profile. | 2 |
-| `borrowers:write` | Register a business or consumer borrower. | 1 |
+| `borrowers:write` | Register a business or consumer borrower. | 2 |
 | `configuration:read` | Read lending-product and risk-policy versions, approved schemas and environment capabilities. | 5 |
 | `configuration:write` | Create immutable lending-product and risk-policy versions. | 2 |
 | `connections:read` | Inspect embedding sessions, connections, consent and connection status. | 4 |
@@ -57,7 +57,7 @@ The operation count lists endpoints with that primary scope. Additional checks c
 | `exports:read` | Inspect existing export jobs and request download links. Source permissions are checked separately. | 2 |
 | `exports:write` | Create an export job for data you are authorized to access. Does not grant access to the underlying data. | 1 |
 | `insights:read` | List and retrieve originations and their status. Risk packages require results:read. | 2 |
-| `insights:write` | Submit an origination with application data, documents and lending context for underwriting. | 1 |
+| `insights:write` | Submit an origination with application data, documents and lending context for underwriting. | 2 |
 | `reliability:read` | Look up a request receipt for recovery. The original operation's permissions are also required. | 1 |
 | `results:read` | Retrieve an authorized risk package, including its supported summary or section views. | 1 |
 | `sandbox:read` | Read the scenario catalog, setup choice and permitted Sandbox runs. Run details can require additional product or billing scopes. | 4 |
@@ -69,7 +69,7 @@ The operation count lists endpoints with that primary scope. Additional checks c
 
 Export access also checks the exported content: `exports:read` does not grant access to the underlying content. Risk-package exports also require `results:read`, billing exports require `billing:read` and Owner authority, and evidence exports require `evidence:read` and source entitlement. The same source entitlements apply on export creation, retrieval and download. All linked IDs and cursor state are checked against the authorized workspace/environment.
 
-Sandbox controls only work in Sandbox. Product scenarios may need both Insights and Signal scopes and enabled products. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can create a **Sandbox testing** key, which combines the required product, event, scenario and billing scopes for these requests, or use the [Console Sandbox tools](/console/sandbox). Each API request authenticates with one key; separate product and billing keys cannot combine permissions for a single scenario command. The **Sandbox testing** profile is unavailable in Live and does not enable Live access or real payment collection.
+Sandbox controls only work in Sandbox. The selected scenario declares its exact required scopes and products in the catalog. Underwriting-only and monitoring-only scenarios need only their own product; the full sample pack needs both. **All products** does not include the `billing:read` permission required for Owner-only sample-pack setup and financial simulations. **Billing reports** does not include `sandbox:write`; it is for reports, not scenario execution. Owners can create a **Sandbox testing** key, which combines the required product, event, scenario and billing scopes for these requests, or use the [Console Sandbox tools](/console/sandbox). Each API request authenticates with one key; separate product and billing keys cannot combine permissions for a single scenario command. The **Sandbox testing** profile is unavailable in Live and does not enable Live access or real payment collection.
 
 The API checks the creator's current workspace access and role as well as the key's scopes, expiry and revocation. Product access also requires that product to be enabled in the environment. Live requests require activated Live access.
 

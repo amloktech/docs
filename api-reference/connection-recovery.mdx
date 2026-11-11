@@ -27,3 +27,11 @@ When a source requires authorization again, create an embedding session with `pu
 Complete Origination requirements through the indicated connection or document action. AMLOK resumes collection and assessment when dependencies permit. Do not start a provider sync or retry an internal workflow.
 
 Revoke authorization with `POST /v1/consents/{id}/revoke` when appropriate. Revocation stops future collection under that consent and does not rewrite previous assessments or bypass retention policy.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Restart collection and monitoring
+
+If the source is failed or needs renewed authorization, complete a fresh borrower-bound reauthorization session and confirm the source's returned state. That completion schedules source collection again. An archived borrower must be restored first; cancelled old Hub sessions are not reused.
+
+For a failed, paused, blocked or stopped Monitor, resolve the source issue and then explicitly PATCH the Monitor to `active` using its current ETag. Updating the connection alone must not be interpreted as a completed monitoring evaluation.
+{/* END BORROWER LIFECYCLE */}

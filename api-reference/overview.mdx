@@ -7,21 +7,20 @@ keywords: ["AMLOK", "API", "Insights", "Signal"]
 
 AMLOK helps financial institutions underwrite business and consumer borrowers with **Insights** and monitor funded deals with **Signal**. Borrowers connect their sources through an embedded Integrations Hub. Your institution submits its application, lending product and risk policy; AMLOK returns a risk package and the evidence behind it.
 
-**One API covers the complete borrower-to-monitoring journey in 65 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
+**One API covers the complete borrower-to-monitoring journey in 67 operations.** Use the [quickstart](/api-reference/quickstart), [endpoint reference](/api-reference/endpoints/insights/create-origination) and [OpenAPI download](/openapi/amlok.json).
 
 ## The integration flow
 
 ```mermaid
 flowchart LR
-    B[Borrower] --> H[Embedded Integrations Hub]
-    H --> E[Authorized source data and files]
-    A[Application + product version + policy version] --> I[Insights origination]
-    E --> I
-    I --> R[Risk package + evidence]
+    B[Shared borrower profile] --> H[Authorized Hub collection and documents]
+    H --> I[New application: Insights Origination]
+    H --> S[Funded portfolio: Signal Monitor]
+    I --> R[Underwriting risk package]
     R --> D[Institution decision and funding]
-    D --> S[Signal monitor]
-    E --> S
-    S --> N[Monitoring runs + updated packages + alerts]
+    D --> S
+    P[Existing funded deal and portfolio baseline] --> S
+    S --> M[Monitoring runs, packages and alerts]
 ```
 
 AMLOK handles collection, normalization, KYB/KYC, included checks and calculations. You do not orchestrate provider sync jobs, verification jobs, manifests or workflow runs. You can retrieve authorized normalized records, licensed reports and documents through the [Data API](/api-reference/data-access), evidence and download interfaces.
@@ -39,7 +38,7 @@ AMLOK handles collection, normalization, KYB/KYC, included checks and calculatio
 | Events and webhook deliveries | Receive notifications, recover missed events and troubleshoot delivery |
 | Billing summary, payments, usage and transactions | Reconcile top-ups, available credit and the exact product consumption behind each deduction |
 
-The organization owns billing identity, payment methods and team roles. Each workspace has a shared CAD wallet and isolated Sandbox and Live environments. API keys are scoped to one workspace and environment. Product records cannot be edited or deleted; authorized configuration changes apply prospectively.
+The organization owns billing identity, payment methods and team roles. Each workspace has a shared CAD wallet and isolated Sandbox and Live environments. API keys are scoped to one workspace and environment. Historical assessments and evidence are immutable. Current borrower identity and monitoring configuration have explicit, versioned updates; see [borrower lifecycle](/api-reference/borrower-lifecycle).
 
 <Columns cols={2}>
 <Card title="Start integrating" icon="terminal" href="/api-reference/quickstart">Connect a borrower and submit an Origination.</Card>

@@ -1,0 +1,79 @@
+---
+title: "Manage borrower identity and product journeys"
+sidebarTitle: "Borrower lifecycle"
+description: "Register and reuse borrower profiles, correct identity safely, start underwriting or portfolio monitoring, and preserve assessment history."
+keywords: ["borrowers", "lifecycle", "Insights", "Signal", "identity"]
+---
+
+A borrower is the shared business or person profile you use to collect authorized inputs and associate product work. Register it before opening the Integrations Hub or uploading its documents. Registration does not verify identity, submit an application, start monitoring or create a product usage charge.
+
+## Choose the product journey
+
+| Goal | Sequence | Result |
+| --- | --- | --- |
+| Underwrite a new application | Register or reuse borrower, collect credit-assessment inputs, submit Origination | An Insights risk package and its frozen evidence |
+| Monitor an existing funded portfolio | Register or reuse borrower, collect continuous-monitoring inputs, submit Monitor with `baseline.portfolio` | Signal evaluations, risk packages and alerts, without an Insights Origination |
+| Monitor a deal underwritten by AMLOK | Reuse borrower and completed package, confirm continuous-monitoring authority, submit Monitor | Signal evaluations linked to the chosen baseline |
+| Assess a business's owner or guarantor | Register the related person and include a typed participant with authorized evidence in the parent product request | Participant coverage and findings inside the parent result |
+
+A borrower can have no product activity yet, several applications, and several monitored facilities. Its profile state cannot represent all those product states. The Console's [shared Borrowers directory](/console/borrowers) is accessible from both Origination and Portfolio.
+
+## Register once and reuse the ID
+
+Use [Create borrower](/api-reference/endpoints/borrowers/create-borrower), supplying your stable `client_reference` when available. Save both returned identifiers:
+
+| Identifier | Use |
+| --- | --- |
+| `Borrower.id` (`bor_…`) | `borrower_id` on Hub sessions, documents, applications, monitors, data queries and billing usage |
+| `Borrower.subject_id` (`biz_…` or `person_…`) | The canonical business/person identity in verification and billing `subject_id` fields |
+| `DataRecord.id` | One immutable collected-data version |
+| `DataRecord.resource_id` / `normalized.id` | A logical source-normalized record, identified together with its resource type and version |
+| `application.institution_reference` | Your stable application identity across explicit assessment attempts |
+| `deal.institution_reference` | Your stable funded-facility identity for a Monitor |
+
+Use `GET /v1/borrowers?client_reference=...` to find an existing profile before creating another. Client-reference uniqueness is within the selected environment and borrower type. Names are not unique and are never sufficient to merge profiles. A new reference creates a separate identity, even if its name matches another record.
+
+There is no public merge or delete operation. Correct the existing profile when it represents the same legal identity. If duplicate IDs already have financial or assessment history, contact support to resolve them without rewriting that history. Do not create duplicates to restart an application or monitoring service.
+
+## Correct current identity
+
+Retrieve the borrower and retain its `ETag`. Call `PATCH /v1/borrowers/{id}` with `borrowers:write` and the returned `If-Match` value. The body can contain a full replacement `profile`, a `lifecycle_status`, or both.
+
+The profile uses the same business/person shape as Create borrower. Keep its type and stable client reference. Omitting the client reference from a replacement retains the current reference; it does not erase it. A stale ETag returns `412 precondition_failed`. Read the latest representation, reconcile the change, and retry with its new ETag.
+
+`record_version` changes when the resource changes. `profile_version` identifies changes to identity content. `updated_at` records the latest update. Archival alone does not create a new identity revision.
+
+An accepted Origination keeps `borrower_snapshot` and `borrower_profile_version`; editing today's profile does not change that assessment. A Monitor retains enrollment identity, while each new evaluation pins the current authorized identity into its resulting package. Previously published risk packages and evidence remain immutable.
+
+## Separate retries from new assessments
+
+A timeout retry uses the original payload and `Idempotency-Key`. Recover accepted work through [request receipts](/api-reference/request-recovery) and continue following the existing Origination ID.
+
+To reassess the same application after its latest attempt is `completed`, `failed` or `cancelled`, send a new `POST /v1/originations` with:
+
+- The same primary borrower and `application.institution_reference`.
+- `supersedes_origination_id` identifying the latest terminal attempt.
+- The intended current application, configuration and evidence inputs.
+- A new idempotency key for this new assessment command.
+
+The response has a new Origination ID and incremented `attempt_number`. A prior attempt still in progress returns `409 invalid_state`; cancel it first if the application is withdrawn. Each successfully completed Insights attempt is priced independently. A new idempotency key alone does not authorize a duplicate or reassessment.
+
+To withdraw unfinished underwriting, call `PATCH /v1/originations/{id}` with its current `If-Match` and `{"status":"cancelled"}`. Completed or failed results cannot be cancelled. Cancellation stops pending processing; it does not erase history or reverse a completed charge. An unfinished cancelled assessment creates no assessment charge.
+
+## Archive abandoned intake
+
+Set `lifecycle_status` to `archived` through the borrower PATCH. Every associated Origination must be terminal and every associated Monitor must be stopped, including associations as a participant. Otherwise the API returns `409 invalid_state`.
+
+Archival cancels unfinished Hub sessions, stops pending source collection and rejects new Hub sessions, borrower document uploads, originations and monitors. Historical records remain available subject to current access authorization. Archiving is neither consent revocation nor deletion.
+
+Restore with `{"lifecycle_status":"active"}` and the latest ETag. Restoration does not restart cancelled sessions or stopped products. Create a fresh Hub session for any needed collection or reauthorization, then explicitly resume monitoring or submit the intended new assessment attempt.
+
+Collection starts only through an authorized source journey; a saved profile alone does not schedule collection. Hub intake is bounded collection, not a perpetual refresh subscription. Signal handles configured recurring evaluations while active. Registering a profile or completing intake does not create an Insights or Signal consumption entry. See your agreement for any provider-specific commercial terms; [usage records](/api-reference/consumption-reporting) identify actual product charges.
+
+## Consent, history and retention
+
+Use the [consent revocation endpoint](/api-reference/endpoints/connections/revoke-consent) to withdraw source authorization. Current consent and source access are checked again for source-backed results, data, evidence and exports, including historical records. An immutable result is not a promise of indefinite access to restricted source content.
+
+Archive, revoke consent and remove retained data are distinct actions. The public API does not promise an automatic deletion schedule or expose a purge command. Retention and any authorized removal follow your applicable agreement and support process; do not infer a retention period from an archived state.
+
+Test both product paths with the [independent Sandbox scenarios](/api-reference/sandbox-journeys), and use [Data Lookup](/console/data-lookup) for the fields and exact endpoint contracts.

@@ -4,7 +4,7 @@ description: "Trace integration coverage, normalized fields, risk-package result
 keywords: ["AMLOK", "data model", "API contract"]
 ---
 
-The API reference, Data Model and console Data Lookup describe one public API. Use this correspondence to choose the correct resource and interpret integration and research coverage. There are **65 public operations**, **64 normalized evidence variants**, **961 source field definitions**, **860 detailed verification fields**, and **149 risk metrics**. These are different counts; none guarantees a populated value for every borrower.
+The API reference, Data Model and console Data Lookup describe one public API. Use this correspondence to choose the correct resource and interpret integration and research coverage. There are **67 public operations**, **64 normalized evidence variants**, **961 source field definitions**, **860 detailed verification fields**, and **149 risk metrics**. These are different counts; none guarantees a populated value for every borrower.
 
 ## From authorized source to API result
 
@@ -61,3 +61,13 @@ An observed debit is not the complete debt obligation; a provider score is not a
 | Training and evaluation | Research datasets, labels and reproducibility artifacts | Consent to connect does not authorize shared training; benchmark results do not become borrower facts |
 
 Read the [research data foundations](/research/data-foundations), [record model](/research/record-model), [financial analysis](/research/financial-analysis) and [evaluation](/research/evaluation). Proposed research models and measured public-data experiments remain distinct from the API contract and production performance claims.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Product identity and lifecycle
+
+`Borrower.id` (`bor_…`) is the shared product identity used for intake, applications, monitors and billing `borrower_id`. Its canonical `subject_id` (`biz_…` / `person_…`) is the business or person used in verification and billing `subject_id`. Source-normalized business/person observations keep their own record identities and provenance.
+
+The current profile has `lifecycle_status`, `profile_version`, `record_version` and update/archive timestamps. Origination identity is pinned at acceptance; monitoring packages pin identity at evaluation. Risk-package `participants` reports the submitted related parties, their authorized evidence, coverage and limitations. This does not turn declared roles or ownership percentages into verified facts.
+
+See [borrower lifecycle](/api-reference/borrower-lifecycle) for reuse, corrections, explicit assessment attempts and archive/restore, and [related parties](/api-reference/related-person-verification) for the association contract.
+{/* END BORROWER LIFECYCLE */}

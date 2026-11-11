@@ -76,7 +76,12 @@
                         "incorporation_country": "CA",
                         "client_reference": "LOS-B-0042"
                       }
-                    }
+                    },
+                    "lifecycle_status": "active",
+                    "archived_at": null,
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "record_version": 1,
+                    "profile_version": 1
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -542,7 +547,7 @@
             }
           }
         },
-        "description": "Register a business or consumer borrower. Registration records institution-supplied identity; it does not assert successful KYB or KYC. All IDs and cursors must belong to the authorized workspace and environment. Required scope: borrowers:write.",
+        "description": "Register a reusable business or person identity before collection, underwriting or monitoring. Registration records institution-supplied identity and creates no product assessment charge; it does not assert KYB/KYC or product enrollment. Reuse stable client_reference within borrower type/workspace/environment. Required scope: borrowers:write.",
         "security": [
           {
             "BearerAuth": []
@@ -624,6 +629,32 @@
               "minLength": 1
             },
             "description": "client reference"
+          },
+          {
+            "name": "lifecycle_status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "archived"
+              ]
+            },
+            "description": "Filter by lifecycle status. Omission includes all states/types."
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "business",
+                "person"
+              ]
+            },
+            "description": "Filter by type. Omission includes all states/types."
           }
         ],
         "responses": {
@@ -669,7 +700,12 @@
                           "incorporation_country": "CA",
                           "client_reference": "LOS-B-0042"
                         }
-                      }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
                     }
                   ],
                   "meta": {
@@ -1079,7 +1115,12 @@
                         "incorporation_country": "CA",
                         "client_reference": "LOS-B-0042"
                       }
-                    }
+                    },
+                    "lifecycle_status": "active",
+                    "archived_at": null,
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "record_version": 1,
+                    "profile_version": 1
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -1095,6 +1136,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Quoted record_version for conditional updates."
               }
             }
           },
@@ -1420,6 +1468,586 @@
           {
             "lang": "JavaScript",
             "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/borrowers/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "updateBorrower",
+        "summary": "Update borrower",
+        "tags": [
+          "Borrowers"
+        ],
+        "x-availability": "published_contract",
+        "x-required-scopes": [
+          "borrowers:write"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "id"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Required current ETag from the borrower. Stale versions return 412. PATCH uses optimistic concurrency; Idempotency-Key does not create a replay receipt."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Borrower"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "id": "bor_synthetic",
+                    "type": "business",
+                    "subject_id": "biz_synthetic",
+                    "created_at": "2026-11-06T12:00:00Z",
+                    "client_reference": "LOS-B-0042",
+                    "profile": {
+                      "type": "business",
+                      "business": {
+                        "legal_name": "Synthetic Borrower Inc.",
+                        "incorporation_country": "CA",
+                        "client_reference": "LOS-B-0042"
+                      }
+                    },
+                    "lifecycle_status": "archived",
+                    "archived_at": "2026-11-06T12:00:00Z",
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "record_version": 2,
+                    "profile_version": 1
+                  },
+                  "meta": {
+                    "request_id": "req_synthetic",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Quoted record_version for conditional updates."
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_state",
+                    "message": "Invalid state.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "412": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "precondition_failed",
+                    "message": "Precondition failed.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          }
+        },
+        "description": "Update current identity or archive/restore a borrower with its ETag. Archive requires every associated origination to be terminal and every associated monitor to be stopped. Historical results and evidence remain immutable; archival does not revoke consent or delete records. No automatic deletion/retention period is implied. New intake is rejected until restored. Required scope: borrowers:write. Archiving cancels outstanding Hub sessions and fences pending source ingestion; restoration requires a fresh Hub session and explicit product resumption. PATCH uses ETag concurrency, not a command-replay receipt.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBorrower"
+              },
+              "example": {
+                "lifecycle_status": "archived"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request PATCH --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/borrowers/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'If-Match: \"1\"' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"lifecycle_status\":\"archived\"}'"
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'If-Match': '\"1\"', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('PATCH', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/borrowers/record_synthetic', headers=headers, json={'lifecycle_status': 'archived'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "const headers = {\"Accept\": \"application/json\", \"If-Match\": \"\\\"1\\\"\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/borrowers/record_synthetic\", {\n  method: \"PATCH\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"lifecycle_status\": \"archived\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       }
@@ -9292,7 +9920,31 @@
                     "document_ids": [],
                     "connection_ids": [
                       "con_synthetic"
-                    ]
+                    ],
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": [],
+                    "attempt_number": 1,
+                    "supersedes_origination_id": null
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -9758,7 +10410,7 @@
             }
           }
         },
-        "description": "Submit the borrower application with exact product and policy versions, connections and documents. AMLOK collects and normalizes data, runs included checks and publishes the risk package. All IDs and cursors must belong to the authorized workspace and environment. Required scope: insights:write.",
+        "description": "Submit an underwriting assessment for an active borrower. The first attempt reserves application.institution_reference. Later attempts reuse that reference and borrower only with supersedes_origination_id identifying the latest completed, failed or cancelled attempt. A new attempt is a new assessment; transport retries use the same Idempotency-Key. Each completed new Insights attempt is priced independently. Required scope: insights:write.",
         "security": [
           {
             "BearerAuth": []
@@ -9942,7 +10594,31 @@
                       "document_ids": [],
                       "connection_ids": [
                         "con_synthetic"
-                      ]
+                      ],
+                      "borrower_snapshot": {
+                        "id": "bor_synthetic",
+                        "type": "business",
+                        "subject_id": "biz_synthetic",
+                        "created_at": "2026-11-06T12:00:00Z",
+                        "client_reference": "LOS-B-0042",
+                        "profile": {
+                          "type": "business",
+                          "business": {
+                            "legal_name": "Synthetic Borrower Inc.",
+                            "incorporation_country": "CA",
+                            "client_reference": "LOS-B-0042"
+                          }
+                        },
+                        "lifecycle_status": "active",
+                        "archived_at": null,
+                        "updated_at": "2026-11-06T12:00:00Z",
+                        "record_version": 1,
+                        "profile_version": 1
+                      },
+                      "borrower_profile_version": 1,
+                      "participants": [],
+                      "attempt_number": 1,
+                      "supersedes_origination_id": null
                     }
                   ],
                   "meta": {
@@ -10375,7 +11051,31 @@
                     "document_ids": [],
                     "connection_ids": [
                       "con_synthetic"
-                    ]
+                    ],
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": [],
+                    "attempt_number": 1,
+                    "supersedes_origination_id": null
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -10391,6 +11091,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Quoted record_version for conditional updates."
               }
             }
           },
@@ -10718,6 +11425,628 @@
             "source": "const headers = {\"Accept\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/originations/record_synthetic\", {\n  method: \"GET\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000)\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
+      },
+      "patch": {
+        "operationId": "updateOrigination",
+        "summary": "Cancel origination",
+        "tags": [
+          "Insights"
+        ],
+        "x-availability": "published_contract",
+        "x-required-scopes": [
+          "insights:write"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "id"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Required current ETag from the origination. Stale versions return 412. PATCH uses optimistic concurrency; Idempotency-Key does not create a replay receipt."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Origination"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/Meta"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "meta"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "data": {
+                    "id": "orgn_synthetic",
+                    "borrower_id": "bor_synthetic",
+                    "institution_reference": "LOS-2026-0042",
+                    "status": "cancelled",
+                    "created_at": "2026-11-06T12:00:00Z",
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "requirements": [],
+                    "risk_package_id": null,
+                    "failure": null,
+                    "record_version": 2,
+                    "submitted_request": {
+                      "borrower_id": "bor_synthetic",
+                      "application": {
+                        "institution_reference": "LOS-2026-0042",
+                        "requested_amount": {
+                          "amount": "50000.00",
+                          "currency": "CAD"
+                        },
+                        "requested_term_months": 12,
+                        "purpose": "Working capital",
+                        "application_schema_id": "app_schema_synthetic",
+                        "declared_data": {
+                          "annual_revenue": "600000.00"
+                        }
+                      },
+                      "lending_product_version_id": "lpv_synthetic",
+                      "risk_policy_version_id": "rpv_synthetic",
+                      "connection_ids": [
+                        "con_synthetic"
+                      ],
+                      "document_ids": []
+                    },
+                    "document_ids": [],
+                    "connection_ids": [
+                      "con_synthetic"
+                    ],
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": [],
+                    "attempt_number": 1,
+                    "supersedes_origination_id": null
+                  },
+                  "meta": {
+                    "request_id": "req_synthetic",
+                    "schema_version": "1.0.0",
+                    "environment": "sandbox"
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "description": "Quoted record_version for conditional updates."
+              }
+            }
+          },
+          "400": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "401": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unauthenticated",
+                    "message": "Unauthenticated.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "403": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "forbidden",
+                    "message": "Forbidden.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "404": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "not_found",
+                    "message": "Not found.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "409": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "invalid_state",
+                    "message": "Invalid state.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "410": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "cursor_expired",
+                    "message": "Cursor expired.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "429": {
+            "description": "Rate budget, shared in-flight limit or ready-queue limit exceeded before admission. Retry-After is mandatory in whole seconds. Preserve command identity. No accepted receipt or charge is created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "rate_limited",
+                    "message": "Rate limited.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "503": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "temporarily_unavailable",
+                    "message": "Temporarily unavailable.",
+                    "retryable": true,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "description": "Minimum delay in seconds before retry.",
+                "schema": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              },
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "412": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "precondition_failed",
+                    "message": "Precondition failed.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "422": {
+            "description": "Inspect structured error; retry only when retryable. 429 and 503 can include Retry-After.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "validation_error",
+                    "message": "Validation error.",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "413": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "payload_too_large",
+                    "message": "payload too large",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          },
+          "415": {
+            "description": "Request exceeds the effective profile size limit or media type is unsupported. No command is accepted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ],
+                  "additionalProperties": false
+                },
+                "example": {
+                  "error": {
+                    "code": "unsupported_media_type",
+                    "message": "unsupported media type",
+                    "retryable": false,
+                    "request_id": "req_synthetic",
+                    "field": null
+                  }
+                }
+              }
+            },
+            "headers": {
+              "X-Request-ID": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              }
+            }
+          }
+        },
+        "description": "Cancel an unfinished origination with its current ETag. Cancelling invalidates queued work; completed and failed results cannot be changed. A new assessment uses supersedes_origination_id and the same stable application reference. Historical results/charges are preserved; unfinished cancelled work creates no assessment charge. Required scope: insights:write.",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrigination"
+              },
+              "example": {
+                "status": "cancelled"
+              }
+            }
+          }
+        },
+        "x-codeSamples": [
+          {
+            "lang": "Shell",
+            "label": "cURL",
+            "source": "curl --request PATCH --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/originations/record_synthetic\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'If-Match: \"1\"' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"status\":\"cancelled\"}'"
+          },
+          {
+            "lang": "Python",
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'If-Match': '\"1\"', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('PATCH', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/originations/record_synthetic', headers=headers, json={'status': 'cancelled'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+          },
+          {
+            "lang": "JavaScript",
+            "source": "const headers = {\"Accept\": \"application/json\", \"If-Match\": \"\\\"1\\\"\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/originations/record_synthetic\", {\n  method: \"PATCH\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"status\": \"cancelled\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+          }
+        ]
       }
     },
     "/v1/risk-packages/{id}": {
@@ -10811,7 +12140,8 @@
                 "verification.signatures",
                 "verification.field_comparisons",
                 "verification.source_scores",
-                "verification.duplicate_checks"
+                "verification.duplicate_checks",
+                "participants"
               ]
             },
             "description": "Required only with view=section. Names select the documented collection, not arbitrary JSON paths."
@@ -16906,7 +18236,7 @@
                         "acct_synthetic"
                       ],
                       "entity_ids": [
-                        "bor_synthetic"
+                        "biz_synthetic"
                       ],
                       "consolidation": "single_entity",
                       "accounting_basis": "mixed",
@@ -17017,7 +18347,29 @@
                       "unavailable_metric_count": 128,
                       "not_applicable_metric_count": 20,
                       "coverage_statement": "All catalog entries are accounted for. Availability describes supplied evidence, not borrower credit quality."
-                    }
+                    },
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": []
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -23050,7 +24402,7 @@
                             "acct_synthetic"
                           ],
                           "entity_ids": [
-                            "bor_synthetic"
+                            "biz_synthetic"
                           ],
                           "consolidation": "single_entity",
                           "accounting_basis": "mixed",
@@ -23161,7 +24513,29 @@
                           "unavailable_metric_count": 128,
                           "not_applicable_metric_count": 20,
                           "coverage_statement": "All catalog entries are accounted for. Availability describes supplied evidence, not borrower credit quality."
-                        }
+                        },
+                        "borrower_snapshot": {
+                          "id": "bor_synthetic",
+                          "type": "business",
+                          "subject_id": "biz_synthetic",
+                          "created_at": "2026-11-06T12:00:00Z",
+                          "client_reference": "LOS-B-0042",
+                          "profile": {
+                            "type": "business",
+                            "business": {
+                              "legal_name": "Synthetic Borrower Inc.",
+                              "incorporation_country": "CA",
+                              "client_reference": "LOS-B-0042"
+                            }
+                          },
+                          "lifecycle_status": "active",
+                          "archived_at": null,
+                          "updated_at": "2026-11-06T12:00:00Z",
+                          "record_version": 1,
+                          "profile_version": 1
+                        },
+                        "borrower_profile_version": 1,
+                        "participants": []
                       },
                       "meta": {
                         "request_id": "req_synthetic",
@@ -31452,6 +32826,51 @@
                         "expires_at": "2026-11-06T13:00:00Z"
                       }
                     }
+                  },
+                  "participants": {
+                    "title": "participants (view=section)",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/RiskSectionParticipants"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        },
+                        "page": {
+                          "$ref": "#/components/schemas/Page"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta",
+                        "page"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "example": {
+                      "data": {
+                        "view": "section",
+                        "risk_package_id": "rp_synthetic",
+                        "record_version": 1,
+                        "section": "participants",
+                        "section_metadata": null,
+                        "items": [],
+                        "total_items": 0
+                      },
+                      "meta": {
+                        "request_id": "req_synthetic",
+                        "schema_version": "1.0.0",
+                        "environment": "sandbox"
+                      },
+                      "page": {
+                        "next_cursor": null,
+                        "has_more": false,
+                        "snapshot_id": "risk_section_synthetic",
+                        "expires_at": "2026-11-06T13:00:00Z"
+                      }
+                    }
                   }
                 }
               }
@@ -32888,7 +34307,29 @@
                     "requirements": [],
                     "failure": null,
                     "latest_deal_snapshot_id": "ds_initial",
-                    "updated_at": "2026-11-06T12:00:00Z"
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": []
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -33361,7 +34802,7 @@
             }
           }
         },
-        "description": "Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write.",
+        "description": "Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write. Participants may be supplied at the top level or in baseline.portfolio.application; conflicting definitions are rejected. Existing package participants are inherited only when no explicit participant definition is supplied.",
         "security": [
           {
             "BearerAuth": []
@@ -33544,7 +34985,29 @@
                       "requirements": [],
                       "failure": null,
                       "latest_deal_snapshot_id": "ds_synthetic",
-                      "updated_at": "2026-11-06T12:00:00Z"
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "borrower_snapshot": {
+                        "id": "bor_synthetic",
+                        "type": "business",
+                        "subject_id": "biz_synthetic",
+                        "created_at": "2026-11-06T12:00:00Z",
+                        "client_reference": "LOS-B-0042",
+                        "profile": {
+                          "type": "business",
+                          "business": {
+                            "legal_name": "Synthetic Borrower Inc.",
+                            "incorporation_country": "CA",
+                            "client_reference": "LOS-B-0042"
+                          }
+                        },
+                        "lifecycle_status": "active",
+                        "archived_at": null,
+                        "updated_at": "2026-11-06T12:00:00Z",
+                        "record_version": 1,
+                        "profile_version": 1
+                      },
+                      "borrower_profile_version": 1,
+                      "participants": []
                     }
                   ],
                   "meta": {
@@ -33972,7 +35435,29 @@
                     "requirements": [],
                     "failure": null,
                     "latest_deal_snapshot_id": "ds_synthetic",
-                    "updated_at": "2026-11-06T12:00:00Z"
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": []
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -34408,7 +35893,29 @@
                     "requirements": [],
                     "failure": null,
                     "latest_deal_snapshot_id": "ds_synthetic",
-                    "updated_at": "2026-11-06T12:00:00Z"
+                    "updated_at": "2026-11-06T12:00:00Z",
+                    "borrower_snapshot": {
+                      "id": "bor_synthetic",
+                      "type": "business",
+                      "subject_id": "biz_synthetic",
+                      "created_at": "2026-11-06T12:00:00Z",
+                      "client_reference": "LOS-B-0042",
+                      "profile": {
+                        "type": "business",
+                        "business": {
+                          "legal_name": "Synthetic Borrower Inc.",
+                          "incorporation_country": "CA",
+                          "client_reference": "LOS-B-0042"
+                        }
+                      },
+                      "lifecycle_status": "active",
+                      "archived_at": null,
+                      "updated_at": "2026-11-06T12:00:00Z",
+                      "record_version": 1,
+                      "profile_version": 1
+                    },
+                    "borrower_profile_version": 1,
+                    "participants": []
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -34881,7 +36388,7 @@
             }
           }
         },
-        "description": "Change future monitoring configuration with the current ETag. Historical assessments, alerts, evidence and charges remain immutable. A stopped monitor cannot resume. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write.",
+        "description": "Change monitoring configuration with the current ETag. Set active to resume paused, stopped, failed or blocked monitoring after satisfying current product, identity, document and consent prerequisites; this durably schedules the next evaluation on the same facility. Historical assessments, evidence and charges remain immutable. Set paused or stopped to halt future processing. Required scope: signal:write.",
         "security": [
           {
             "BearerAuth": []
@@ -35031,7 +36538,8 @@
                       ],
                       "record_version": 1,
                       "deal_snapshot_id": "ds_synthetic",
-                      "failure": null
+                      "failure": null,
+                      "borrower_id": "bor_synthetic"
                     }
                   ],
                   "meta": {
@@ -35457,7 +36965,8 @@
                     ],
                     "record_version": 1,
                     "deal_snapshot_id": "ds_synthetic",
-                    "failure": null
+                    "failure": null,
+                    "borrower_id": "bor_synthetic"
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -50046,7 +51555,8 @@
                         "policy_version": "sandbox-complexity-1",
                         "basis": "sandbox_fixture",
                         "rationale": "Single domestic entity with straightforward operating finances."
-                      }
+                      },
+                      "subject_id": "biz_synthetic"
                     }
                   ],
                   "meta": {
@@ -50488,7 +51998,8 @@
                       "policy_version": "sandbox-complexity-1",
                       "basis": "sandbox_fixture",
                       "rationale": "Single domestic entity with straightforward operating finances."
-                    }
+                    },
+                    "subject_id": "biz_synthetic"
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -52329,7 +53840,7 @@
                 },
                 "example": {
                   "data": {
-                    "version": "2026-11-09.1",
+                    "version": "2026-11-11.1",
                     "businesses": [
                       {
                         "id": "maple-retail",
@@ -52400,7 +53911,115 @@
                         "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
                         "expected": "Six businesses and associated records are available in the API and console.",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "signal:read",
+                          "signal:write",
+                          "billing:read",
+                          "exports:read",
+                          "exports:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "signal:read",
+                          "billing:read",
+                          "exports:read"
+                        ],
+                        "required_products": [
+                          "insights",
+                          "signal"
+                        ]
+                      },
+                      {
+                        "id": "underwriting_only",
+                        "name": "Underwriting only",
+                        "category": "Underwriting",
+                        "description": "Register a business, collect authorized evidence and complete Insights without creating a monitoring enrollment.",
+                        "expected": "completed / within_policy; no monitor or Signal charge",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "monitoring_only",
+                        "name": "Monitor an existing funded business",
+                        "category": "Monitoring",
+                        "description": "Import a funded deal using a portfolio baseline, collect monitoring-authorized evidence and activate Signal without an Insights underwriting request.",
+                        "expected": "active monitor with portfolio baseline; no origination or Insights charge",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "signal:read",
+                          "signal:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "signal:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "signal"
+                        ]
                       },
                       {
                         "id": "healthy",
@@ -52409,7 +54028,34 @@
                         "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
                         "expected": "completed / within_policy",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "outside_policy",
@@ -52418,7 +54064,34 @@
                         "description": "Run the same test policy against a business with lower cash receipts.",
                         "expected": "completed / outside_policy",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "manual_review",
@@ -52427,7 +54100,34 @@
                         "description": "Test a policy metric whose required source input is unavailable.",
                         "expected": "completed / review_required",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "document_required",
@@ -52436,7 +54136,34 @@
                         "description": "Pause underwriting with an actionable document requirement.",
                         "expected": "requires_action / upload_document",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "document_recovery",
@@ -52445,7 +54172,34 @@
                         "description": "Run a missing-document flow and resume it with a real synthetic PDF upload.",
                         "expected": "requires_action \u2192 completed",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "source_reauthorization",
@@ -52454,7 +54208,34 @@
                         "description": "Pause a case until the borrower renews the requested source.",
                         "expected": "requires_action / reauthorize_source",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "source_recovery",
@@ -52463,7 +54244,34 @@
                         "description": "Complete the reauthorization Hub and resume underwriting.",
                         "expected": "requires_action \u2192 completed",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "consent_cancelled",
@@ -52472,7 +54280,21 @@
                         "description": "Cancel a synthetic Hub session before consent.",
                         "expected": "cancelled / no connections",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "connections:read",
+                          "connections:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "connections:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "consent_revoked",
@@ -52481,7 +54303,36 @@
                         "description": "Revoke consent and confirm that normalized source content becomes restricted.",
                         "expected": "revoked / restricted source data",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "data:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "data:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "provider_failure",
@@ -52490,7 +54341,34 @@
                         "description": "Exercise terminal processing failure without fabricating a risk package.",
                         "expected": "failed / processing_failed",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "insufficient_credits",
@@ -52499,7 +54377,36 @@
                         "description": "Pause an assessment and then resume it with simulated funding.",
                         "expected": "waiting_for_credits \u2192 completed",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "billing:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "monitoring_alert",
@@ -52508,7 +54415,34 @@
                         "description": "Create a funded baseline, reduce synthetic receipts, and evaluate monitoring.",
                         "expected": "alert.created / outside_policy",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "signal:read",
+                          "signal:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "signal:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "signal"
+                        ]
                       },
                       {
                         "id": "monitoring_recovery",
@@ -52517,7 +54451,34 @@
                         "description": "Restore receipts after a deterioration and resolve the previous alert.",
                         "expected": "alert.resolved / within_policy",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "signal:read",
+                          "signal:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "signal:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "signal"
+                        ]
                       },
                       {
                         "id": "monitoring_lifecycle",
@@ -52526,7 +54487,34 @@
                         "description": "Exercise monitor state changes and a new evaluation after resumption.",
                         "expected": "active \u2192 paused \u2192 active",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "signal:read",
+                          "signal:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "signal:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "signal"
+                        ]
                       },
                       {
                         "id": "card_success",
@@ -52535,7 +54523,17 @@
                         "description": "Post a simulated card payment and matching funding transaction.",
                         "expected": "succeeded / credits posted",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "card_declined",
@@ -52544,7 +54542,17 @@
                         "description": "Create a failed test payment with no credit posting.",
                         "expected": "failed / balance unchanged",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "ach_pending",
@@ -52553,7 +54561,17 @@
                         "description": "Record an ACH payment before settlement.",
                         "expected": "pending / balance unchanged",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "ach_settled",
@@ -52562,7 +54580,17 @@
                         "description": "Move an ACH payment from pending to succeeded and post its credits once.",
                         "expected": "pending \u2192 succeeded / credits posted",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "ach_returned",
@@ -52571,7 +54599,17 @@
                         "description": "Settle then return an ACH payment with a linked reversing ledger entry.",
                         "expected": "returned / net zero funding",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "payment_refund",
@@ -52580,7 +54618,17 @@
                         "description": "Post a payment followed by a full refund and linked immutable transactions.",
                         "expected": "refunded / net zero funding",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "autopay",
@@ -52589,7 +54637,17 @@
                         "description": "Exercise a run-local low-balance trigger and an automatic simulated payment.",
                         "expected": "automatic_top_up / succeeded",
                         "owner_only": true,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "billing:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "billing:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "export_success",
@@ -52598,7 +54656,37 @@
                         "description": "Create JSON, PDF and CSV exports from the same risk package and evidence.",
                         "expected": "completed / downloadable files",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "exports:read",
+                          "exports:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "exports:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "export_failure",
@@ -52607,7 +54695,37 @@
                         "description": "Exercise the documented export failure state.",
                         "expected": "failed / export.failed",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "exports:read",
+                          "exports:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "exports:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "idempotency",
@@ -52616,7 +54734,18 @@
                         "description": "Repeat a create request with the same key, then change its payload.",
                         "expected": "same resource on retry / 409 on conflict",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "validation_error",
@@ -52625,7 +54754,18 @@
                         "description": "Submit an invalid borrower request and inspect the structured error.",
                         "expected": "422 / validation_error",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "pagination",
@@ -52634,7 +54774,18 @@
                         "description": "Read a frozen page, create another borrower, and continue the original snapshot.",
                         "expected": "no duplicates / new record excluded from snapshot",
                         "owner_only": false,
-                        "requires_endpoint": false
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read"
+                        ],
+                        "required_products": []
                       },
                       {
                         "id": "webhook_delivery",
@@ -52643,7 +54794,37 @@
                         "description": "Create a real Sandbox event and enqueue delivery to the selected Sandbox endpoint.",
                         "expected": "signed HTTP request / persisted delivery attempt",
                         "owner_only": false,
-                        "requires_endpoint": true
+                        "requires_endpoint": true,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "events:read",
+                          "events:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "events:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "webhook_duplicate",
@@ -52652,7 +54833,37 @@
                         "description": "Replay the same persisted event twice to test deduplication by event ID.",
                         "expected": "same event ID / separate deliveries",
                         "owner_only": false,
-                        "requires_endpoint": true
+                        "requires_endpoint": true,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "events:read",
+                          "events:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "events:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       },
                       {
                         "id": "webhook_out_of_order",
@@ -52661,7 +54872,37 @@
                         "description": "Replay persisted resource versions in reverse order.",
                         "expected": "newer event replay queued before older event replay",
                         "owner_only": false,
-                        "requires_endpoint": true
+                        "requires_endpoint": true,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read",
+                          "events:read",
+                          "events:write"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read",
+                          "events:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
                       }
                     ]
                   },
@@ -54275,7 +56516,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-09.1",
+                    "catalog_version": "2026-11-11.1",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -54759,7 +57000,7 @@
               "example": {
                 "scenario_id": "healthy",
                 "fixture_id": "maple-retail",
-                "catalog_version": "2026-11-09.1"
+                "catalog_version": "2026-11-11.1"
               }
             }
           }
@@ -54774,15 +57015,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createSandboxRun-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"scenario_id\":\"healthy\",\"fixture_id\":\"maple-retail\",\"catalog_version\":\"2026-11-09.1\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createSandboxRun-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"scenario_id\":\"healthy\",\"fixture_id\":\"maple-retail\",\"catalog_version\":\"2026-11-11.1\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createSandboxRun-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/sandbox/runs', headers=headers, json={'scenario_id': 'healthy', 'fixture_id': 'maple-retail', 'catalog_version': '2026-11-09.1'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createSandboxRun-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/sandbox/runs', headers=headers, json={'scenario_id': 'healthy', 'fixture_id': 'maple-retail', 'catalog_version': '2026-11-11.1'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createSandboxRun-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/sandbox/runs\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"scenario_id\": \"healthy\", \"fixture_id\": \"maple-retail\", \"catalog_version\": \"2026-11-09.1\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createSandboxRun-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/sandbox/runs\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"scenario_id\": \"healthy\", \"fixture_id\": \"maple-retail\", \"catalog_version\": \"2026-11-11.1\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -54838,7 +57079,7 @@
                       "id": "srun_example",
                       "scenario_id": "healthy",
                       "fixture_id": "maple-retail",
-                      "catalog_version": "2026-11-09.1",
+                      "catalog_version": "2026-11-11.1",
                       "status": "queued",
                       "created_at": "2026-11-07T12:00:00Z",
                       "updated_at": "2026-11-07T12:00:00Z",
@@ -55384,7 +57625,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-09.1",
+                    "catalog_version": "2026-11-11.1",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -55939,7 +58180,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-09.1",
+                    "catalog_version": "2026-11-11.1",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -57311,7 +59552,7 @@
           "client_reference": {
             "type": "string",
             "minLength": 1,
-            "description": "Optional caller-owned correlation identifier."
+            "description": "Stable institution-owned identity reference, unique by borrower type within workspace/environment. Reuse the borrower across applications; lookup with GET /v1/borrowers?client_reference=. Immutable once created."
           },
           "registration_number": {
             "type": "string",
@@ -57403,7 +59644,7 @@
               "person"
             ],
             "additionalProperties": false,
-            "title": "Consumer borrower"
+            "title": "Person borrower or related party"
           }
         ]
       },
@@ -57426,7 +59667,7 @@
           "subject_id": {
             "type": "string",
             "minLength": 1,
-            "description": "Opaque identifier, authorized within the API key workspace and environment."
+            "description": "Canonical business (biz_) or person (person_) identity used by normalized records, verification and billing. Use id (bor_) with public borrower routes."
           },
           "created_at": {
             "type": "string",
@@ -57449,6 +59690,38 @@
           "profile": {
             "$ref": "#/components/schemas/CreateBorrower",
             "description": "Profile for Borrower. Constraints, requiredness and allowed values are defined by this schema."
+          },
+          "lifecycle_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ],
+            "description": "Profile availability, independent of underwriting and monitoring outcomes. Archived profiles cannot start intake or product activity; restore with PATCH."
+          },
+          "archived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "profile_version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Identity-profile revision. Changes only when supplied identity fields change; lifecycle-only changes increment record_version instead."
           }
         },
         "required": [
@@ -57457,7 +59730,12 @@
           "subject_id",
           "created_at",
           "client_reference",
-          "profile"
+          "profile",
+          "lifecycle_status",
+          "archived_at",
+          "updated_at",
+          "record_version",
+          "profile_version"
         ],
         "additionalProperties": false
       },
@@ -58697,7 +60975,15 @@
               "description": "Opaque identifier, authorized within the API key workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Related borrower ids for ApplicationInput. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Optional correlation list. When nonempty, it must exactly match participants[].borrower_id. An ID alone never requests or proves a related-person verification."
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantInput"
+            },
+            "description": "Explicit related-party roles, authority and evidence. Omit or use [] when no related party is submitted. For a Signal portfolio baseline, these participants are used when CreateMonitor.participants is omitted; if both are supplied their definitions must match (set ordering is ignored). Continuous-monitoring authority and source consent are required for Signal.",
+            "maxItems": 100
           }
         },
         "required": [
@@ -58751,6 +61037,11 @@
             },
             "uniqueItems": true,
             "description": "Document ids for CreateOrigination. Constraints, requiredness and allowed values are defined by this schema."
+          },
+          "supersedes_origination_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "For a new assessment attempt of an existing application, provide the latest terminal origination for the same borrower and institution_reference. Omit for the first attempt."
           }
         },
         "required": [
@@ -58854,6 +61145,18 @@
             },
             "uniqueItems": true,
             "description": "Consent purposes for Requirement. Constraints, requiredness and allowed values are defined by this schema."
+          },
+          "borrower_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Participant borrower requiring action, or null/omitted for the primary borrower. Hub recovery must use this identity and the matching requirement."
           }
         },
         "required": [
@@ -58974,7 +61277,7 @@
           "institution_reference": {
             "type": "string",
             "minLength": 1,
-            "description": "Institution reference for Origination. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Stable institution application identity reused across explicit assessment attempts. Borrower and reference must remain unchanged when superseding an attempt."
           },
           "status": {
             "type": "string",
@@ -59061,6 +61364,36 @@
             "type": "integer",
             "minimum": 1,
             "description": "Monotonic version for this resource; compare with event.resource_version."
+          },
+          "borrower_snapshot": {
+            "$ref": "#/components/schemas/Borrower",
+            "description": "Exact institution-supplied identity pinned when this assessment attempt was accepted. Later profile edits do not change this assessment or its results; registration is not verification."
+          },
+          "borrower_profile_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantSnapshot"
+            },
+            "maxItems": 100
+          },
+          "attempt_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "supersedes_origination_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         "required": [
@@ -59076,7 +61409,12 @@
           "submitted_request",
           "document_ids",
           "connection_ids",
-          "record_version"
+          "record_version",
+          "borrower_snapshot",
+          "borrower_profile_version",
+          "participants",
+          "attempt_number",
+          "supersedes_origination_id"
         ],
         "additionalProperties": false,
         "allOf": [
@@ -63824,6 +66162,21 @@
           },
           "verification": {
             "$ref": "#/components/schemas/VerificationAssessment"
+          },
+          "borrower_snapshot": {
+            "$ref": "#/components/schemas/Borrower",
+            "description": "Exact identity used for this evaluation: origination acceptance identity for Insights, or current authorized identity when a Signal run starts. Identity registration is not verification."
+          },
+          "borrower_profile_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantAssessment"
+            },
+            "maxItems": 100
           }
         },
         "required": [
@@ -63855,7 +66208,10 @@
           "findings",
           "analyses",
           "required_actions",
-          "verification"
+          "verification",
+          "borrower_snapshot",
+          "borrower_profile_version",
+          "participants"
         ],
         "additionalProperties": false,
         "description": "Immutable completed result. Summaries, metrics and evidence must reference the exact input versions. A Signal package does not incur another Insights charge. A model version is null when no validated, entitled model was used. Includes every defined metric with an explicit availability state, source-linked analyses and exact catalog/calculation versions. Completeness is evidence coverage, not creditworthiness. Cross-field invariants are specified in the risk-package methodology.",
@@ -64455,7 +66811,7 @@
             "title": "Explicit portfolio baseline"
           }
         ],
-        "description": "Use an existing compatible risk package, or explicit portfolio inputs for Signal baseline preparation. Portfolio initialization is included in Signal; no separate Insights purchase or undocumented reference is needed."
+        "description": "Use an existing compatible risk package, or explicit portfolio inputs for Signal baseline preparation. Portfolio initialization is included in Signal; no separate Insights purchase or undocumented reference is needed. Portfolio application participants are admitted when top-level monitor participants are omitted. Conflicting definitions are rejected, and nonempty related_borrower_ids must match the admitted participants."
       },
       "CreateMonitor": {
         "type": "object",
@@ -64492,6 +66848,14 @@
             },
             "uniqueItems": true,
             "description": "Connection ids for CreateMonitor. Constraints, requiredness and allowed values are defined by this schema."
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantInput"
+            },
+            "description": "Related parties for continuous monitoring. When omitted, use baseline.portfolio.application.participants if supplied, otherwise participants from an existing baseline risk package; validate continuous_monitoring authority and source consent in every case. Top-level and nested portfolio definitions, when both supplied, must match; ordering of participants, roles, purposes and source/document IDs does not matter. An explicit [] selects none and conflicts with nonempty nested participants. Nonempty portfolio application.related_borrower_ids must exactly match the admitted participant IDs.",
+            "maxItems": 100
           }
         },
         "required": [
@@ -64535,12 +66899,20 @@
             },
             "uniqueItems": true,
             "description": "Replacement set for future evaluations. Each source must belong to the borrower and authorize continuous_monitoring. Change uses If-Match and leaves past runs untouched."
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantInput"
+            },
+            "description": "Related parties for continuous monitoring. On creation, omission reuses baseline-package participants but validates continuous_monitoring authority and source consent. [] explicitly selects none.",
+            "maxItems": 100
           }
         },
         "required": [],
         "additionalProperties": false,
         "minProperties": 1,
-        "description": "Configuration only, with If-Match. Changes apply prospectively and never rewrite packages, evidence, events or historical charges. Stopped is terminal."
+        "description": "Future configuration changes use If-Match and preserve historical packages, evidence, events and charges. Setting active explicitly resumes paused, stopped, failed or blocked monitoring after current prerequisites pass and durably schedules work on the same facility."
       },
       "Monitor": {
         "type": "object",
@@ -64664,6 +67036,21 @@
             "minLength": 1,
             "description": "UTC timestamp in RFC 3339 format.",
             "format": "date-time"
+          },
+          "borrower_snapshot": {
+            "$ref": "#/components/schemas/Borrower",
+            "description": "Borrower identity pinned at monitoring enrollment. Each subsequent risk package pins the current authorized identity for that evaluation; historical packages never change."
+          },
+          "borrower_profile_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantSnapshot"
+            },
+            "maxItems": 100
           }
         },
         "required": [
@@ -64681,7 +67068,10 @@
           "requirements",
           "failure",
           "latest_deal_snapshot_id",
-          "updated_at"
+          "updated_at",
+          "borrower_snapshot",
+          "borrower_profile_version",
+          "participants"
         ],
         "additionalProperties": false,
         "allOf": [
@@ -64837,6 +67227,11 @@
               }
             ],
             "description": "Failure for MonitoringRun. Constraints, requiredness and allowed values are defined by this schema."
+          },
+          "borrower_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Primary borrower owning this monitoring run; usable with GET /v1/borrowers/{id}."
           }
         },
         "required": [
@@ -64851,7 +67246,8 @@
           "limitations",
           "record_version",
           "deal_snapshot_id",
-          "failure"
+          "failure",
+          "borrower_id"
         ],
         "additionalProperties": false,
         "description": "One scheduled or change-driven evaluation, with per-integration coverage and frozen evidence. A skipped or stale sync is not a clean risk result.",
@@ -65118,7 +67514,7 @@
               "billing.transaction_posted",
               "deal_snapshot.created"
             ],
-            "description": "Event name. embedding_session.completed: The borrower finishes the Hub connection flow. connection.action_required: A connection needs borrower action, such as renewed authorization. connection.status_changed: Connection authorization, availability or collection status changes. origination.action_required: An assessment pauses for documents, consent or another explicit requirement. origination.status_changed: Origination processing enters another nonterminal state, including waiting_for_credits. origination.completed: Underwriting processing finishes and a risk package is available. origination.failed: Underwriting ends without a successful result. risk_package.created: A new immutable Insights or Signal risk package is committed. monitor.status_changed: Monitoring configuration or lifecycle changes, including active, paused, requires_action, waiting_for_credits, stopped or failed. monitoring_run.completed: A monitoring evaluation finishes as completed or partial. monitoring_run.failed: A monitoring evaluation terminates as failed or skipped without a new risk conclusion. alert.created: A policy condition becomes an open monitoring alert. alert.resolved: Fresh comparable evidence satisfies the policy condition for a previously open alert. export.ready: An export finishes and can be downloaded. export.failed: Export generation fails. data.updated: New normalized data is available for a connection. document.status_changed: Document processing or access status changes. billing.payment_updated: A funding payment changes state, for example pending, succeeded, failed or returned. billing.transaction_posted: An immutable funding, usage, adjustment or refund ledger transaction is posted. deal_snapshot.created: A new immutable lender-supplied deal snapshot is accepted."
+            "description": "Event name. embedding_session.completed: The borrower finishes the Hub connection flow. connection.action_required: A connection needs borrower action, such as renewed authorization. connection.status_changed: Connection authorization, availability or collection status changes. origination.action_required: An assessment pauses for documents, consent or another explicit requirement. origination.status_changed: Origination processing enters an operational state, including waiting_for_credits or explicit cancellation. origination.completed: Underwriting processing finishes and a risk package is available. origination.failed: Underwriting ends without a successful result. risk_package.created: A new immutable Insights or Signal risk package is committed. monitor.status_changed: Monitoring configuration or lifecycle changes, including active, paused, requires_action, waiting_for_credits, stopped or failed. monitoring_run.completed: A monitoring evaluation finishes as completed or partial. monitoring_run.failed: A monitoring evaluation terminates as failed or skipped without a new risk conclusion. alert.created: A policy condition becomes an open monitoring alert. alert.resolved: Fresh comparable evidence satisfies the policy condition for a previously open alert. export.ready: An export finishes and can be downloaded. export.failed: Export generation fails. data.updated: New normalized data is available for a connection. document.status_changed: Document processing or access status changes. billing.payment_updated: A funding payment changes state, for example pending, succeeded, failed or returned. billing.transaction_posted: An immutable funding, usage, adjustment or refund ledger transaction is posted. deal_snapshot.created: A new immutable lender-supplied deal snapshot is accepted."
           },
           "occurred_at": {
             "type": "string",
@@ -67789,6 +70185,11 @@
           },
           "complexity_assessment": {
             "$ref": "#/components/schemas/BillingComplexityAssessment"
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Canonical biz_/person_ identity for borrower_id. Matches Borrower.subject_id."
           }
         },
         "required": [
@@ -67809,7 +70210,8 @@
           "rate_card_id",
           "rate_version",
           "transaction_id",
-          "workload"
+          "workload",
+          "subject_id"
         ],
         "additionalProperties": false,
         "description": "Immutable charge explanation. Amount is the positive cost; the linked ledger usage transaction is negative. Rates are the actual historical agreed rates, never current estimates. Signal is one borrower/workspace/month across all monitored deals; included reassessments add no Insights charge.",
@@ -68710,7 +71112,8 @@
               "type": "string",
               "minLength": 1
             },
-            "uniqueItems": true
+            "uniqueItems": true,
+            "description": "Canonical biz_/person_ subject IDs assessed in this package, including related parties; not bor_ API resource IDs."
           },
           "consolidation": {
             "type": "string",
@@ -111356,7 +113759,8 @@
           },
           "subject_id": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Canonical biz_/person_ subject ID, matching Borrower.subject_id."
           },
           "product": {
             "type": "string",
@@ -111461,6 +113865,11 @@
                 "type": "null"
               }
             ]
+          },
+          "borrower_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Primary bor_ borrower resource. Use GET /v1/borrowers/{id}."
           }
         },
         "required": [
@@ -111483,7 +113892,8 @@
           "status",
           "blocking_dimensions",
           "analysis_scope",
-          "input_manifest_id"
+          "input_manifest_id",
+          "borrower_id"
         ],
         "additionalProperties": false
       },
@@ -111733,7 +114143,8 @@
           },
           "subject_id": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "description": "Canonical biz_/person_ subject ID, matching Borrower.subject_id."
           },
           "workflow_run_id": {
             "anyOf": [
@@ -111826,6 +114237,11 @@
           },
           "complexity_assessment": {
             "$ref": "#/components/schemas/BillingComplexityAssessment"
+          },
+          "borrower_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Primary bor_ borrower resource. Use GET /v1/borrowers/{id}."
           }
         },
         "required": [
@@ -111859,7 +114275,8 @@
           "billing_period_end",
           "rate_card_id",
           "ledger_entry_id",
-          "snapshot_id"
+          "snapshot_id",
+          "borrower_id"
         ],
         "additionalProperties": false,
         "allOf": [
@@ -113297,7 +115714,8 @@
                     "verification.signatures",
                     "verification.field_comparisons",
                     "verification.source_scores",
-                    "verification.duplicate_checks"
+                    "verification.duplicate_checks",
+                    "participants"
                   ]
                 },
                 "item_count": {
@@ -113314,7 +115732,7 @@
               "additionalProperties": false
             },
             "minItems": 48,
-            "maxItems": 48
+            "maxItems": 49
           },
           "export_request": {
             "$ref": "#/components/schemas/CreateExport"
@@ -117492,6 +119910,9 @@
           },
           {
             "$ref": "#/components/schemas/RiskSectionVerificationDuplicateChecks"
+          },
+          {
+            "$ref": "#/components/schemas/RiskSectionParticipants"
           }
         ],
         "discriminator": {
@@ -117859,6 +120280,30 @@
                 "requires_endpoint": {
                   "type": "boolean",
                   "description": "Requires endpoint for this Sandbox fixture."
+                },
+                "required_scopes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "inspection_scopes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "required_products": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "insights",
+                      "signal"
+                    ]
+                  }
                 }
               },
               "required": [
@@ -117868,7 +120313,10 @@
                 "description",
                 "expected",
                 "owner_only",
-                "requires_endpoint"
+                "requires_endpoint",
+                "required_scopes",
+                "inspection_scopes",
+                "required_products"
               ],
               "additionalProperties": false
             },
@@ -117904,6 +120352,8 @@
           "scenario_id": {
             "enum": [
               "sample_pack",
+              "underwriting_only",
+              "monitoring_only",
               "healthy",
               "outside_policy",
               "manual_review",
@@ -117948,7 +120398,7 @@
             "description": "Fictional business definition used to create this run."
           },
           "catalog_version": {
-            "const": "2026-11-09.1",
+            "const": "2026-11-11.1",
             "description": "Exact catalog version; reject mismatches rather than silently changing test behavior."
           },
           "endpoint_id": {
@@ -118153,6 +120603,381 @@
         ],
         "additionalProperties": false,
         "description": "Historical pricing used for this usage debit; absent on funding and on older records without pricing metadata."
+      },
+      "UpdateBorrower": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/CreateBorrower",
+            "description": "Full replacement identity profile. Type and stable client_reference cannot change. Omitted client_reference retains its current value."
+          },
+          "lifecycle_status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "archived"
+            ]
+          }
+        },
+        "required": [],
+        "additionalProperties": false,
+        "minProperties": 1
+      },
+      "ParticipantAuthority": {
+        "type": "object",
+        "properties": {
+          "basis": {
+            "const": "institution_attested",
+            "description": "The institution attests legal authority to submit this participant. This is not provider verification and does not replace source consent."
+          },
+          "attested_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When authority was attested; must not be in the future."
+          },
+          "purposes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "credit_assessment",
+                "continuous_monitoring"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "basis",
+          "attested_at",
+          "purposes"
+        ],
+        "additionalProperties": false
+      },
+      "ParticipantInput": {
+        "type": "object",
+        "properties": {
+          "borrower_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Separate related-party borrower ID; cannot be the primary borrower or repeated in the same participant list."
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "owner",
+                "controller",
+                "guarantor",
+                "related_party"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "ownership_share": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?:100(?:\\.0+)?|(?:0|[1-9][0-9]?)(?:\\.[0-9]+)?)$",
+                "description": "Declared ownership percentage from 0 to 100, not a verified fact; null when not supplied or not applicable."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authority": {
+            "$ref": "#/components/schemas/ParticipantAuthority"
+          },
+          "connection_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "description": "Sources owned by this participant; each must have active consent for this product purpose.",
+            "maxItems": 100
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "description": "Available borrower-context documents owned by this participant.",
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "borrower_id",
+          "roles",
+          "ownership_share",
+          "authority",
+          "connection_ids",
+          "document_ids"
+        ],
+        "additionalProperties": false
+      },
+      "ParticipantSnapshot": {
+        "type": "object",
+        "properties": {
+          "borrower_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Separate related-party borrower ID; cannot be the primary borrower or repeated in the same participant list."
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "owner",
+                "controller",
+                "guarantor",
+                "related_party"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "ownership_share": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?:100(?:\\.0+)?|(?:0|[1-9][0-9]?)(?:\\.[0-9]+)?)$",
+                "description": "Declared ownership percentage from 0 to 100, not a verified fact; null when not supplied or not applicable."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authority": {
+            "$ref": "#/components/schemas/ParticipantAuthority"
+          },
+          "connection_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "description": "Sources owned by this participant; each must have active consent for this product purpose.",
+            "maxItems": 100
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "description": "Available borrower-context documents owned by this participant.",
+            "maxItems": 100
+          },
+          "borrower_snapshot": {
+            "$ref": "#/components/schemas/Borrower",
+            "description": "Exact institution-supplied identity used at acceptance or evaluation, not an assertion of successful identity verification."
+          },
+          "borrower_profile_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "borrower_id",
+          "roles",
+          "ownership_share",
+          "authority",
+          "connection_ids",
+          "document_ids",
+          "borrower_snapshot",
+          "borrower_profile_version"
+        ],
+        "additionalProperties": false
+      },
+      "ParticipantAssessment": {
+        "type": "object",
+        "properties": {
+          "borrower_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Separate related-party borrower ID; cannot be the primary borrower or repeated in the same participant list."
+          },
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "owner",
+                "controller",
+                "guarantor",
+                "related_party"
+              ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "ownership_share": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^(?:100(?:\\.0+)?|(?:0|[1-9][0-9]?)(?:\\.[0-9]+)?)$",
+                "description": "Declared ownership percentage from 0 to 100, not a verified fact; null when not supplied or not applicable."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "authority": {
+            "$ref": "#/components/schemas/ParticipantAuthority"
+          },
+          "connection_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "description": "Sources owned by this participant; each must have active consent for this product purpose.",
+            "maxItems": 100
+          },
+          "document_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true,
+            "description": "Available borrower-context documents owned by this participant.",
+            "maxItems": 100
+          },
+          "borrower_snapshot": {
+            "$ref": "#/components/schemas/Borrower",
+            "description": "Exact institution-supplied identity used at acceptance or evaluation, not an assertion of successful identity verification."
+          },
+          "borrower_profile_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Canonical biz_/person_ subject ID for this participant."
+          },
+          "verification_status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "partial",
+              "unavailable"
+            ],
+            "description": "Coverage of completed verification observations supplied for this participant: available when all supplied verification observations are completed for this subject, partial when only some are, unavailable when none are. This is not completeness of all KYC/KYB, identity or relationship requirements."
+          },
+          "verification_outcome": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "review_required",
+              "not_performed"
+            ],
+            "description": "Aggregate outcome of the supplied completed verification observations for this subject. Passed never establishes complete KYC/KYB, verified identity, ownership or guarantee authority; inspect individual evidence, coverage and limitations. Not_performed means a passing or failing aggregate cannot be established from the supplied observations."
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "borrower_id",
+          "roles",
+          "ownership_share",
+          "authority",
+          "connection_ids",
+          "document_ids",
+          "borrower_snapshot",
+          "borrower_profile_version",
+          "subject_id",
+          "verification_status",
+          "verification_outcome",
+          "evidence_ids",
+          "limitations"
+        ],
+        "additionalProperties": false
+      },
+      "UpdateOrigination": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "const": "cancelled",
+            "description": "Cancel unfinished assessment work. Completed/failed results remain immutable. Cancelled unfinished work creates no product charge."
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "RiskSectionParticipants": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "const": "section"
+          },
+          "risk_package_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_version": {
+            "const": 1
+          },
+          "section": {
+            "const": "participants"
+          },
+          "section_metadata": {
+            "type": "null"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ParticipantAssessment"
+            },
+            "maxItems": 100
+          },
+          "total_items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Count for the complete section, not only this page."
+          }
+        },
+        "required": [
+          "view",
+          "risk_package_id",
+          "record_version",
+          "section",
+          "section_metadata",
+          "items",
+          "total_items"
+        ],
+        "additionalProperties": false
       }
     },
     "securitySchemes": {
@@ -118780,9 +121605,15 @@
         "$ref": "#/components/schemas/VerificationDuplicateCheck"
       },
       "metadata_schema": "VerificationDuplicateCheckSection"
+    },
+    "participants": {
+      "items": {
+        "$ref": "#/components/schemas/ParticipantAssessment"
+      },
+      "metadata_schema": null
     }
   },
-  "x-contract-revision": "2026-11-06.enterprise.1",
+  "x-contract-revision": "2026-11-11.lifecycle.1",
   "tags": [
     {
       "name": "Sandbox",
@@ -118819,7 +121650,7 @@
       "scope": "insights:read"
     },
     "origination.status_changed": {
-      "trigger": "Origination processing enters another nonterminal state, including waiting_for_credits.",
+      "trigger": "Origination processing enters an operational state, including waiting_for_credits or explicit cancellation.",
       "action": "Read current status and requirements. Follow the specific completion/failure events for terminal outcomes.",
       "resource_type": "origination",
       "read_operation_id": "getOrigination",

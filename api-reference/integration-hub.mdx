@@ -54,3 +54,11 @@ An underwriting-only connection cannot enroll in Signal. Create a new authorizat
 When an origination or monitor returns requires_action, use its typed requirements. Create a Hub session with that resource's origination_id or monitor_id and requirement_id. These IDs must match the borrower and an open connect/reauthorize requirement. On successful authorization, AMLOK atomically associates the connection, resolves that requirement, increments the resource version and schedules permitted continuation. The immutable submitted_request and historical results remain unchanged.
 
 For an independently connected source on an existing monitor, replace connection_ids using the monitor's If-Match configuration update. This change is prospective. Hub configuration stays in the console; the API does not expose provider job orchestration.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Prepare inputs without starting a product
+
+A registered profile can collect authorized intake before underwriting or portfolio enrollment. Hub completion starts bounded collection; it does not submit an Origination, enroll a Monitor or create product consumption. Recurring monitoring requires an active Signal enrollment and appropriate `continuous_monitoring` consent.
+
+Archiving the borrower cancels unfinished Hub sessions and stops pending ingestion. A restored profile needs a fresh session for further collection. Closing or archiving intake does not itself revoke existing consent. Use explicit revocation when authorization must be withdrawn. [Borrower lifecycle](/api-reference/borrower-lifecycle) separates these actions.
+{/* END BORROWER LIFECYCLE */}

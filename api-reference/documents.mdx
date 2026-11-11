@@ -35,8 +35,16 @@ For the initial request, upload files with borrower context and include returned
 
 For an open document requirement, upload a new file with borrower_id, origination_id and requirement_id. All three must refer to the same authorized context. Association and the upload receipt are atomic and idempotent; inspection still completes asynchronously. requirement_id cannot be supplied without origination_id. Later association is permitted only while the origination is collecting or requires_action; other states return 409. Completed assessments and files are never overwritten.
 
-The origination retains its immutable submitted_request and the accepted document associations. The completed risk package freezes document_ids and its evidence set. For changed application information after submission, create a new origination with a new command identity; do not modify the historical application. A document status notification identifies the file to retrieve without including file contents or a signed URL.
+The origination retains its immutable submitted_request and the accepted document associations. The completed risk package freezes document_ids and its evidence set. For changed application information, finish or cancel the existing attempt, then create a new Origination using the same application reference, `supersedes_origination_id` and a new command key; do not modify the historical application. A document status notification identifies the file to retrieve without including file contents or a signed URL.
 
 ## Validation and rejection
 
 Read allowed_document_mime_types, document_types, max_upload_bytes and max_document_pages from configuration.operational_profile. [Operating limits](/api-reference/operating-profile) defines 413/415 behavior, asynchronous rejection, encrypted-file handling and integrity checks. Rejected documents expose structured failure; available documents have failure null. Every document exposes record_version for event reconciliation.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Identity, participants and archived intake
+
+Upload initial borrower documents before submitting the assessment and associate returned IDs with the correct identity. Related-party files use that participant's own `borrower_id` and appear in its typed `participants[].document_ids`. The primary borrower's document list cannot borrow another person's files. Participant files must be available when submitted.
+
+An archived borrower rejects new uploads. Restoration permits new intake but does not alter previous files or assessment evidence. Archival is not file deletion; no automatic purge period is implied. Follow your agreement and support process for retained-data requests.
+{/* END BORROWER LIFECYCLE */}

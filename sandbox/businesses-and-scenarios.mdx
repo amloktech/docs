@@ -5,7 +5,7 @@ description: "Explore six fictional businesses, execute underwriting and monitor
 keywords: ["Sandbox scenarios", "fictional businesses", "webhook testing", "underwriting tests"]
 ---
 
-AMLOK Sandbox includes six fictional businesses and 30 executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
+AMLOK Sandbox includes six fictional businesses and 32 executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
 
 ## The six businesses
 
@@ -66,3 +66,11 @@ Monitoring scenarios let you create a deterioration event, restore the fixture a
 **Repeat with fresh records** creates a new run and new linked records. It preserves previous results, logs and immutable ledger entries. Keep run IDs in your tests, and use new idempotency keys for new executions. Reuse a key only to retry the same intended command.
 
 For request bodies, permissions and automated execution, use the [API scenario guide](/api-reference/sandbox-journeys), [runnable client](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-scenario.mjs) and **Data Lookup** in the console.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Verify independent product integration
+
+The `underwriting_only` scenario stops after its Insights assessment. The `monitoring_only` scenario uses a funded portfolio baseline and creates Signal results without an Origination. These cases verify the minimum product access your integration needs. The complete `sample_pack` still demonstrates both products and billing across all six fictional businesses.
+
+The catalog and Console show each scenario's required products, execution scopes and trace-inspection scopes. See [run reproducible Sandbox scenarios](/api-reference/sandbox-journeys).
+{/* END BORROWER LIFECYCLE */}

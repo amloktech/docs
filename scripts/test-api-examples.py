@@ -95,7 +95,7 @@ assert spec['servers'][0]['url']==variables['base_url']
 assert all(path.startswith('/v1/') for path in spec['paths'])
 pages=list((ROOT/'api-reference').glob('*.mdx'))
 index=json.loads((ROOT/'data/api-reference-index.json').read_text())
-assert len(index)==65
+assert len(index)==67
 assert all('\u2014' not in page.read_text() for page in pages)
 (ROOT/'artifacts/api-code-validation.json').write_text(json.dumps(counts,indent=2)+'\n')
 print(json.dumps(counts))

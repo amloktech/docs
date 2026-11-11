@@ -18,7 +18,7 @@ AMLOK accepts long-running product commands with 202. Persist the returned ID be
 | waiting_for_credits | Accepted work cannot publish an unfunded output | Funding posts through the console; AMLOK resumes automatically |
 | completed | Immutable package and any Insights debit published atomically | Terminal; retrieve package/evidence |
 | failed | Terminal failure, with structured failure | Reconcile failure; a fresh assessment is a deliberate new command |
-| cancelled | Workspace cancellation ended unfinished work | Terminal; no further processing or debit |
+| cancelled | An authorized cancellation ended unfinished work | Terminal; no further processing or debit |
 
 No public operation overwrites a completed application. To correct institution application data, submit a new origination. Idempotent retry never means a new underwriting. An internal stage retry does not add another charge.
 
@@ -37,11 +37,11 @@ Document requirements apply to originations. A monitor needing a different term 
 
 ## Signal monitor
 
-initializing captures the first snapshot and prepares a baseline. It becomes active, requires_action, waiting_for_credits or failed. active schedules configured evaluations. paused suspends new work by institution configuration. stopped is terminal and rejects future changes or lender snapshot submissions. Work already running when paused or stopped must not publish a new package after the state change; keep its skipped/cancelled explanation without a new usage charge.
+initializing captures the first snapshot and prepares a baseline. It becomes active, requires_action, waiting_for_credits or failed. active schedules configured evaluations. paused suspends new work by institution configuration. stopped halts scheduling. Explicitly set it active to re-enroll the same facility after validating current prerequisites. Work already running when paused or stopped must not publish a new package after the state change; keep its skipped/cancelled explanation without a new usage charge.
 
 A monitor exposes current connection_ids, requirements, failure, latest_deal_snapshot_id, latest_package_id and next_evaluation_at. failure is non-null exactly when failed. A source or purpose problem produces a typed requirement; insufficient credits produces waiting_for_credits, not a fabricated source error.
 
-Use PATCH with If-Match for future policy, cadence, connection set or active/paused/stopped state. Active is accepted only after server validation of consent, required inputs and funding; otherwise return 409 invalid_state with the unresolved reason and retain state. failed cannot be resumed: correct the cause and enroll a new monitor. Unchanged identical configuration does not increment version or emit an event.
+Use PATCH with If-Match for future policy, cadence, connections, participants or active/paused/stopped state. Activation validates current identity, consent and required inputs, then schedules an evaluation on the same Monitor. Invalid inputs, revoked authorization or unresolved requirements reject the change. Funding is checked before publication; insufficient credits leave evaluation waiting without an unfunded charge. A successful update returns the current resource version; use that version for later updates.
 
 Resolving a requirement resumes an eligible monitor automatically. Posting credits resumes only the current period; no missed-period backcharges or synthetic historical runs. Explicitly paused monitors stay paused when credits or consent change. An institution must explicitly set active to resume. Consent revocation during evaluation prevents publication of restricted results.
 
@@ -50,3 +50,13 @@ Resolving a requirement resumes an eligible monitor automatically. Posting credi
 A run freezes deal_snapshot_id, policy and authorized source/evidence versions when evaluation starts. processing becomes completed, partial, failed or skipped. Terminal runs do not change. Partial results describe coverage and limitations; failed/skipped runs have no newly published risk package. An alert is a derived risk condition, not a run error. Resolution requires new comparable evidence.
 
 An export moves queued to processing to completed or failed. completed means the file is ready and emits export.ready. Each read/download rechecks source permissions. The source snapshot is pinned at acceptance, so its later cursor expiry does not truncate an already accepted export. Export metadata includes availability expiry; download capability expiry is separate. Failed exports carry a structured failure. Export/replay commands never rerun underwriting.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Identity and assessment attempts
+
+The borrower profile, Origination attempt and Monitor are separate resources. Read [borrower lifecycle](/api-reference/borrower-lifecycle) for identity revisions and archive/restore behavior.
+
+An unfinished Origination can be withdrawn using its ETag and `PATCH /v1/originations/{id}` with `status: cancelled`. To reassess after the latest completed, failed or cancelled attempt, reuse the application reference and borrower, provide `supersedes_origination_id`, and send a new command key. The new attempt is independently priced on successful completion. Transport retries and open `requires_action` / `waiting_for_credits` states continue the existing attempt.
+
+A failed or blocked Monitor resumes through `PATCH` to `active` after the cause is resolved. A stopped Monitor can also be explicitly re-enrolled on the same ID and facility reference. Activation schedules recovery; its response is not itself a completed evaluation. Read the [Signal recovery sequence](/api-reference/monitoring-design#recover-and-re-enroll-the-same-facility).
+{/* END BORROWER LIFECYCLE */}

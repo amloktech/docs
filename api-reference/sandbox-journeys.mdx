@@ -28,7 +28,7 @@ curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \
   -H "Authorization: Bearer $AMLOK_API_KEY" \
   -H 'Content-Type: application/json' \
   -H 'Idempotency-Key: my-first-healthy-test-001' \
-  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-09.1"}'
+  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-11.1"}'
 ```
 
 The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
@@ -44,9 +44,9 @@ Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains 
 ## Permissions and isolation
 
 - Catalog, setup and history reads require `sandbox:read`; commands require `sandbox:write`.
-- Product journeys require `borrowers:read/write`, `configuration:read/write`, `connections:read/write`, `evidence:read/write`, `insights:read/write`, `signal:read/write`, `exports:read/write`, plus `data:read`, `results:read` and `events:read`.
+- Each catalog scenario declares `required_scopes`, `inspection_scopes` and `required_products`. Grant the scopes for the selected journey; a scenario does not require the other product unless it actually uses it.
 - Billing scenarios and the full sample pack require current Owner authority with `billing:read` alongside the applicable product and Sandbox scopes. Use the **Sandbox testing** profile for those API commands. Developers can run nonfinancial journeys with **All products**; Analysts cannot execute scenarios.
-- Detailed product traces require the product read scopes and enabled Insights and Signal. Billing-only traces require Owner billing authority. Revoking source authorization redacts saved trace payloads and assertions as well as the ordinary source-backed reads.
+- Detailed traces require the selected scenario's `inspection_scopes` and `required_products`. Underwriting-only traces do not require Signal; monitoring-only traces do not require Insights. Billing-only traces require Owner billing authority. Revoking source authorization redacts saved trace payloads and assertions as well as the ordinary source-backed reads.
 - Webhook scenarios also require `events:write`. The selected endpoint must belong to the same Sandbox and subscribe to `origination.status_changed` and `origination.completed`.
 - The initiating key must remain valid while a run executes. Revoking it stops subsequent scenario API steps. At most three runs can be queued or running in one workspace environment. Honor `Retry-After` on 429 responses.
 - Sandbox controls reject Live requests. Sandbox keys and resources cannot address another workspace or environment.
@@ -73,6 +73,8 @@ The selected business determines the fictional identity and source data. The sce
 | Scenario ID | Journey | Expected result |
 | --- | --- | --- |
 | `sample_pack` | Complete sample workspace | Six businesses and associated records are available in the API and console. |
+| `underwriting_only` | Underwriting only | completed / within_policy; no monitor or Signal charge |
+| `monitoring_only` | Monitor an existing funded business | active monitor with portfolio baseline; no origination or Insights charge |
 | `healthy` | Within-policy underwriting | completed / within_policy |
 | `outside_policy` | Outside-policy underwriting | completed / outside_policy |
 | `manual_review` | Manual review | completed / review_required |
@@ -126,3 +128,19 @@ Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an
 Run history lists the newest 25 runs by default, up to 100 with `limit`. Retrieve a known run directly to inspect older history. The list omits detailed steps and resources. Retain returned IDs in your test system.
 
 Use **Data Lookup** for typed requests, responses and field explanations. Copy a run's request sequence to build your own integration tests. Test additional failure conditions with the ordinary endpoints: invalid credentials and scopes, a second workspace's IDs, stale `If-Match`, invalid files, pagination checkpoints, timeouts and accepted-command recovery. Production throughput and real provider behavior require separate verification; these fixtures do not establish those properties.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Test each product independently
+
+Use **Origination integration** for `underwriting_only`: it creates the identity, authorized credit-assessment sources, documents, an Origination and result, without creating a Monitor. Use **Monitoring integration** for `monitoring_only`: it creates a funded-portfolio baseline, Signal Monitor and result, without creating an Origination. Each works with only its own product enabled.
+
+| Scenario | Required products | Expected result |
+| --- | --- | --- |
+| `sample_pack` | `insights`, `signal` | Six businesses and associated records are available in the API and console. |
+| `underwriting_only` | `insights` | completed / within_policy; no monitor or Signal charge |
+| `monitoring_only` | `signal` | active monitor with portfolio baseline; no origination or Insights charge |
+
+The complete `sample_pack` remains available with both products and Owner billing authority. It exercises six businesses plus simulated funding and consumption. Ordinary underwriting scenarios do not silently enroll Signal; monitoring scenarios use portfolio baselines. Export creation is exercised by the export scenarios and complete sample pack.
+
+Read the catalog's `required_scopes` before executing or repeating a scenario. A key limited to `inspection_scopes` can inspect that completed trace but cannot initiate the run. The Console displays the same product and scope requirements under the selected scenario. Source revocation continues to restrict trace content.
+{/* END BORROWER LIFECYCLE */}

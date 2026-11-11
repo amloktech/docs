@@ -58,3 +58,9 @@ A package does not imply a bureau report, collateral valuation, benchmark percen
 ## Bounded representations
 
 Use `view=summary` for a compact section index and `view=section` with section/cursor/limit for typed paged observations on the same endpoint. Complete packages remain available through full reads and exports. See [large results](/api-reference/large-results).
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Identity and related-party coverage
+
+Read `borrower_snapshot` and `borrower_profile_version` for the primary identity actually used by this assessment. Current profile corrections do not rewrite that snapshot. `participants` reports each included related party's roles, declared ownership, canonical subject ID, accepted authority, verification availability/outcome, evidence and limitations. Use `view=section&section=participants` for that bounded section. Missing or unavailable party evidence is explicit, never an implied successful check.
+{/* END BORROWER LIFECYCLE */}

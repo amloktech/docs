@@ -1,9 +1,9 @@
 ---
 title: "Create monitor"
-description: "Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments."
+description: "Enroll a funded deal in Signal with an existing risk package or an institution-supplied portfolio baseline. AMLOK schedules refreshes and change-driven reassessments."
 openapi: "/openapi/amlok.json POST /v1/monitors"
 ---
 
-Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write.
+Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write. Participants may be supplied at the top level or in baseline.portfolio.application; conflicting definitions are rejected. Existing package participants are inherited only when no explicit participant definition is supplied.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

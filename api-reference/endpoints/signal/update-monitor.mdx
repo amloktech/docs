@@ -1,9 +1,9 @@
 ---
 title: "Update monitor"
-description: "Change future monitoring configuration with the current ETag. Historical assessments, alerts, evidence and charges remain immutable. A stopped monitor cannot resume."
+description: "Pause, stop, resume or explicitly reactivate monitoring with the current ETag. Revalidation and durable scheduling apply on activation. Historical results and charges remain unchanged."
 openapi: "/openapi/amlok.json PATCH /v1/monitors/{id}"
 ---
 
-Change future monitoring configuration with the current ETag. Historical assessments, alerts, evidence and charges remain immutable. A stopped monitor cannot resume. All IDs and cursors must belong to the authorized workspace and environment. Required scope: signal:write.
+Change monitoring configuration with the current ETag. Set active to resume paused, stopped, failed or blocked monitoring after satisfying current product, identity, document and consent prerequisites; this durably schedules the next evaluation on the same facility. Historical assessments, evidence and charges remain immutable. Set paused or stopped to halt future processing. Required scope: signal:write.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

@@ -73,8 +73,8 @@ PURPOSE = {
     'getRiskPackage':'Retrieve an immutable Insights or Signal result with financial dimensions, policy evaluations, limitations and the frozen supporting evidence set. Recommendations do not replace the institution decision.',
     'listEvidence':'List frozen records and files belonging to an evidence set. Use resource_type to narrow the normalized resource family. Entitlement restrictions remain visible as metadata.',
     'getEvidence':'Read the exact normalized evidence version and its provenance, or the controlled document reference for a provider report. This never silently substitutes the latest source record.',
-    'createMonitor':'Enroll a funded deal in Signal with an existing risk package or approved portfolio baseline. AMLOK schedules refreshes and change-driven reassessments.',
-    'updateMonitor':'Change future monitoring configuration with the current ETag. Historical assessments, alerts, evidence and charges remain immutable. A stopped monitor cannot resume.',
+    'createMonitor':'Enroll a funded deal in Signal with an existing risk package or an institution-supplied portfolio baseline. AMLOK schedules refreshes and change-driven reassessments.',
+    'updateMonitor':'Pause, stop, resume or explicitly reactivate monitoring with the current ETag. Revalidation and durable scheduling apply on activation. Historical results and charges remain unchanged.',
     'listMonitoringRuns':'Inspect scheduled or change-driven monitoring evaluations, including per-integration freshness, coverage, failures and the resulting risk package.',
     'listAlerts':'Read system-derived risk conditions and their evidence. Missing or stale inputs are not a successful risk check. Institutions manage intervention in their own systems.',
     'createExport':'Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access.',
@@ -240,13 +240,16 @@ def build():
     webhook_contract(spec)
     from workspace_billing_contract import extend as workspace_billing_contract
     workspace_billing_contract(spec,f)
+    from lifecycle_contract import extend as lifecycle_contract
+    lifecycle_operations=lifecycle_contract(spec,f)
+    annotate_fields(spec)
     # Apply shared transport metadata after all generators have added their responses.
     for methods in spec['paths'].values():
         for entry in methods.values():
             for response in entry['responses'].values():
                 response.setdefault('headers',{})['X-Request-ID']={'schema':{'type':'string'},'description':'Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting.'}
     groups=OrderedDict(); index=[]; items=[]
-    for op in operations()+sandbox_operations:
+    for op in operations()+sandbox_operations+lifecycle_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
         entry=spec['paths'][op['path']][op['method'].lower()]
         entry['x-codeSamples']=code_samples(op,entry,f)
@@ -293,6 +296,9 @@ def build():
     webhook_guides(spec)
     from workspace_billing_contract import write_billing_guides
     write_billing_guides(ROOT)
+
+    from lifecycle_guides import write_guides as lifecycle_guides
+    lifecycle_guides(spec,f,index)
 
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re

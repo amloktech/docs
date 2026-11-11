@@ -18,3 +18,13 @@ Read summary movements through billing transactions and create a `billing` expor
 ## Follow one deduction
 
 List billing usage by product, borrower_id, origination_id, monitor_id or charged date window. Each result links transaction_id to the exact wallet deduction and provides the historical rate and workload behind it. `GET /v1/billing/usage/{id}` resolves the billing_usage_id on a risk package. Read payment history separately for top-ups; funding is not product consumption.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Correlate identity and assessment attempts
+
+Billing usage and workload expose both `borrower_id` (the product's `bor_…` profile) and canonical `subject_id` (`biz_…` or `person_…`). Join product activity through `borrower_id`; use `subject_id` for the underlying identity. Historical entries retain their original rates and charges.
+
+Each successfully completed Insights attempt is separate consumption, even when it supersedes an earlier attempt of the same institution application. Signal-only portfolio enrollment does not create an Insights charge. Signal retains its documented borrower/workspace/month billing rule; stopping and resuming a Monitor does not create a second charge for an already paid period. Related participants are included under the primary product borrower, not separately priced checks.
+
+Profile registration and identity edits do not create product charges. Keep duplicate resolution separate from billing reconciliation; neither an edit nor archival rewrites an existing ledger entry.
+{/* END BORROWER LIFECYCLE */}
