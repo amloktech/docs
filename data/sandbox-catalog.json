@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-11.1",
+  "version": "2026-11-11.2",
   "businesses": [
     {
       "id": "maple-retail",
@@ -103,7 +103,10 @@
         "billing:read",
         "exports:read"
       ],
-      "required_products": ["insights", "signal"]
+      "required_products": [
+        "insights",
+        "signal"
+      ]
     },
     {
       "id": "underwriting_only",
@@ -137,7 +140,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "monitoring_only",
@@ -171,7 +176,9 @@
         "signal:read",
         "results:read"
       ],
-      "required_products": ["signal"]
+      "required_products": [
+        "signal"
+      ]
     },
     {
       "id": "healthy",
@@ -205,7 +212,117 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "verification_expired",
+      "name": "Verification expired",
+      "category": "Underwriting",
+      "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+      "expected": "completed / review_required",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "verification_review",
+      "name": "Verification requires review",
+      "category": "Underwriting",
+      "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+      "expected": "completed / review_required",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "verification_failed",
+      "name": "Verification failed",
+      "category": "Underwriting",
+      "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+      "expected": "completed / review_required",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "outside_policy",
@@ -239,7 +356,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "manual_review",
@@ -273,7 +392,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "document_required",
@@ -307,7 +428,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "document_recovery",
@@ -341,7 +464,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "source_reauthorization",
@@ -375,7 +500,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "source_recovery",
@@ -409,7 +536,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "consent_cancelled",
@@ -468,7 +597,9 @@
         "results:read",
         "data:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "provider_failure",
@@ -502,7 +633,9 @@
         "insights:read",
         "results:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "insufficient_credits",
@@ -538,7 +671,9 @@
         "results:read",
         "billing:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "monitoring_alert",
@@ -572,7 +707,9 @@
         "signal:read",
         "results:read"
       ],
-      "required_products": ["signal"]
+      "required_products": [
+        "signal"
+      ]
     },
     {
       "id": "monitoring_recovery",
@@ -606,7 +743,9 @@
         "signal:read",
         "results:read"
       ],
-      "required_products": ["signal"]
+      "required_products": [
+        "signal"
+      ]
     },
     {
       "id": "monitoring_lifecycle",
@@ -640,7 +779,9 @@
         "signal:read",
         "results:read"
       ],
-      "required_products": ["signal"]
+      "required_products": [
+        "signal"
+      ]
     },
     {
       "id": "card_success",
@@ -650,8 +791,15 @@
       "expected": "succeeded / credits posted",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -662,8 +810,15 @@
       "expected": "failed / balance unchanged",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -674,8 +829,15 @@
       "expected": "pending / balance unchanged",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -686,8 +848,15 @@
       "expected": "pending \u2192 succeeded / credits posted",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -698,8 +867,15 @@
       "expected": "returned / net zero funding",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -710,8 +886,15 @@
       "expected": "refunded / net zero funding",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -722,8 +905,15 @@
       "expected": "automatic_top_up / succeeded",
       "owner_only": true,
       "requires_endpoint": false,
-      "required_scopes": ["sandbox:read", "sandbox:write", "billing:read"],
-      "inspection_scopes": ["sandbox:read", "billing:read"],
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "billing:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "billing:read"
+      ],
       "required_products": []
     },
     {
@@ -761,7 +951,9 @@
         "results:read",
         "exports:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "export_failure",
@@ -798,7 +990,9 @@
         "results:read",
         "exports:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "idempotency",
@@ -814,7 +1008,10 @@
         "borrowers:read",
         "borrowers:write"
       ],
-      "inspection_scopes": ["sandbox:read", "borrowers:read"],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read"
+      ],
       "required_products": []
     },
     {
@@ -831,7 +1028,10 @@
         "borrowers:read",
         "borrowers:write"
       ],
-      "inspection_scopes": ["sandbox:read", "borrowers:read"],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read"
+      ],
       "required_products": []
     },
     {
@@ -848,7 +1048,10 @@
         "borrowers:read",
         "borrowers:write"
       ],
-      "inspection_scopes": ["sandbox:read", "borrowers:read"],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read"
+      ],
       "required_products": []
     },
     {
@@ -886,7 +1089,9 @@
         "results:read",
         "events:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "webhook_duplicate",
@@ -923,7 +1128,9 @@
         "results:read",
         "events:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     },
     {
       "id": "webhook_out_of_order",
@@ -960,7 +1167,9 @@
         "results:read",
         "events:read"
       ],
-      "required_products": ["insights"]
+      "required_products": [
+        "insights"
+      ]
     }
   ]
 }

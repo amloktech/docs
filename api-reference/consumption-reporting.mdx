@@ -28,3 +28,13 @@ Each successfully completed Insights attempt is separate consumption, even when 
 
 Profile registration and identity edits do not create product charges. Keep duplicate resolution separate from billing reconciliation; neither an edit nor archival rewrites an existing ledger entry.
 {/* END BORROWER LIFECYCLE */}
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Distinguish charge-time and current workload
+
+`BillingUsage.workload` freezes the workload at `charged_at`. The workload report contains current accumulated operational counts as of its own `as_of`. These can differ after another included Signal evaluation. This does not create another borrower/month charge or change the agreed historical rate.
+
+Signal rate cards use `first_successful_evaluation_in_month`. Historical cards can retain an earlier timing label; the immutable transaction and `charged_at` identify when credits were actually deducted. Insights charges on successful output completion.
+
+Funding exports preserve `returned`, `partially_refunded` and `refunded` states. `ledger_entry_id` identifies the original credit, `transaction_ids` includes its subsequent movements, and `reversal_transaction_ids` identifies returns or refunds. Reconcile these linked entries instead of treating a return as a failed payment that never settled.
+{/* END RESPONSE SEMANTICS */}

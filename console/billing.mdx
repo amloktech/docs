@@ -96,6 +96,16 @@ Payment methods belong to the organization and environment and can be used by it
 
 Pending or failed funding is not available credit. A payment record and a posted wallet credit represent different stages, so do not add both as separate deposits. Compare currency, amount, status, period and related identifiers when reconciling a payment, ledger entry, consumption record and statement.
 
-Historical transactions and statement snapshots are records of what was posted. Corrections appear as linked activity or revised statements rather than silent edits. API request counts are not the billable unit for Insights or Signal.
+Historical transactions and statement snapshots are records of what was posted. Corrections appear as linked activity rather than silent edits. Statement exports marked `provisional` summarize a fixed ledger snapshot; they are not final settlement statements or proof of a real bank transfer. API request counts are not the billable unit for Insights or Signal.
+
+For cancellation, a disputed charge, refund or retention request, contact [support](/support/create-ticket). Console has no account-cancellation or refund action. Support confirms the commercial cutoff, reconciliation, payment reference and data-handling outcome separately.
 
 See [Reporting](/console/reporting), [credit reporting](/api-reference/credit-reporting) and [consumption reporting](/api-reference/consumption-reporting) for downstream reconciliation. Commercial cancellation and refund terms are covered in [contract terms](/pricing/contract-terms) and [refunds and payouts](/pricing/refunds-and-payouts).
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Try automatic funding in Sandbox
+
+Save a payment method and automatic-payment settings, then use the `autopay` scenario to test the actual saved configuration. A balance equal to the threshold does not trigger funding; it must be lower. Card funding settles in the simulator; ACH first appears pending and credits become available only after simulated settlement. Disabling future autopay preserves the outcome of an attempt already submitted.
+
+The sample pack and forced payment scenarios use fictional payments. They do not change your saved autopay settings or collect real money. Funding history distinguishes returns and refunds from failures before settlement.
+{/* END RESPONSE SEMANTICS */}

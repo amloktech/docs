@@ -14,7 +14,7 @@ Only settled funding adds spendable credits. Recording or changing agreement ter
 Your workspace shares one balance across AMLOK Insights and AMLOK Signal. Paid and promotional top-ups both become unused credits in that balance, with no consumption priority.
 
 - **Insights:** a completed full underwriting consumes credits at the assigned tier and agreed rate.
-- **Signal:** each active borrower or business is charged once per workspace per month at the start of the month, with a full charge immediately on first activation during a month. Monitoring and change-driven reassessment are included, without an additional Insights charge.
+- **Signal:** each borrower or business is charged once per workspace per UTC calendar month with its first successfully published evaluation. Creating or resuming a monitor does not itself create the charge. The full monthly rate applies without proration. Monitoring and change-driven reassessment are included, without an additional Insights charge.
 - **Unused credits:** remain available while your account is active.
 - **Used credits:** are non-refundable.
 
@@ -22,15 +22,15 @@ Available credits are the balance you can spend. Spent credits are the amount al
 
 ## Additional credits and automatic top-ups
 
-In the **client portal**, you can add or change a **card or bank account**, enable or disable automatic payments, and configure the top-up threshold and amount.
+In Console **Billing**, Sandbox lets you add simulated **card or ACH bank-account** methods and configure automatic top-ups. These settings exercise the funding flow without collecting money. Live funding requires activated payment facilities; contact [support@amlok.io](mailto:support@amlok.io) for the funding instructions available to your account. Do not enter real bank or card details into Sandbox.
 
 | Setting | Policy |
 | --- | --- |
 | Automatic top-up trigger | CAD 200.00 by default; you can select a higher threshold |
 | Minimum automatic top-up amount | CAD 500.00; the amount charged is the amount you selected |
 | Payment methods | Card or bank account |
-| When auto-pay is enabled | Available credits below your threshold trigger collection from your selected payment method |
-| When auto-pay is disabled | No automatic collection occurs; you can add credits through the portal |
+| When auto-pay is enabled | Available credits below your threshold trigger a payment attempt through the configured funding facility; Sandbox uses simulated settlement |
+| When auto-pay is disabled | No new automatic attempt is started; use the funding process available to your environment |
 
 **CAD 200.00 is a trigger, not a balance floor.** Requests can continue below it while available credits cover their cost. For example, a CAD 45.00 charge can reduce CAD 215.00 to CAD 170.00. With auto-pay enabled at the default threshold, that balance triggers your selected top-up.
 
@@ -52,13 +52,9 @@ Negotiated pricing uses Standard, Advanced, or Complex with an agreed rate and w
 
 ## Cancellation and unused credits
 
-When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled without another charge.
+Request cancellation through [support](/support/create-ticket) or your dedicated account manager. Console and the public API do not provide an account-cancellation or refund command. Support confirms the processing cutoff, reconciliation, closure schedule and refund instructions. Changing payment settings, pausing one monitor, disconnecting a source or revoking a key does not cancel the account.
 
-You can request cancellation at any time in the portal, without a notice period. Enterprise clients can also use their dedicated account manager. Full account closure takes place at the end of the request month.
-
-AMLOK issues an immediate refund of **the entire unused balance**, including promotional credits, at account closure. A saved bank account in the portal is required, even if you funded by card. Bank delivery can take **7-10 business days after issuance**.
-
-Workspace data is deleted after the request month closes and the necessary final information is generated. See [cancellation and refunds](/pricing/refunds-and-payouts) for the sequence.
+The commercial terms allow cancellation at any time without notice, with closure at the end of the request month and refund of the full unused balance, including promotional credits. Used credits are non-refundable. Refund issuance, bank receipt and data deletion are separate steps; keep the written confirmation of each. See [cancellation and refunds](/pricing/refunds-and-payouts).
 
 ## Processing and completion
 
@@ -68,4 +64,4 @@ Signal publishes its one borrower-month debit atomically with the first successf
 
 ## Reporting access
 
-Use [consumption reporting](/api-reference/consumption-reporting) and [credit reporting](/api-reference/credit-reporting) to reconcile usage, balances, and statements. Each API key belongs to one workspace. Payment settings, top-ups, and cancellation are managed in the portal, not through public API commands.
+Use [consumption reporting](/api-reference/consumption-reporting) and [credit reporting](/api-reference/credit-reporting) to reconcile usage, balances, and statements. Each API key belongs to one workspace and environment. Console manages the payment settings available to that environment; cancellation, refunds and payment disputes go through support. The public API exposes reporting and exports, not payment or account-closure commands. Statement exports marked `provisional` report posted activity at a snapshot; they are not a final settlement or proof of a bank transfer.

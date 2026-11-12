@@ -20,6 +20,7 @@ EVENT_RESOURCES = {
  'monitoring_run.completed': ('monitoring_run','getMonitoringRun','signal:read'),
  'monitoring_run.failed': ('monitoring_run','getMonitoringRun','signal:read'),
  'alert.created': ('alert','getAlert','signal:read'),
+ 'alert.updated': ('alert','getAlert','signal:read'),
  'alert.resolved': ('alert','getAlert','signal:read'),
  'export.ready': ('export','getExport','exports:read'),
  'export.failed': ('export','getExport','exports:read'),

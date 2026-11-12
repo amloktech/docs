@@ -65,3 +65,13 @@ For changed sources, replace `connection_ids` with the full desired future sourc
 
 Use `GET /v1/monitors?institution_reference=...` with the facility's `deal.institution_reference`. Filter monitoring runs using `borrower_id` or `monitor_id`; each run returns its primary `borrower_id`. The corresponding events carry that borrower reference, so `GET /v1/events?borrower_id=...` can correlate product activity. Keep pagination filters unchanged while following a cursor.
 {/* END BORROWER LIFECYCLE */}
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Evaluate changes without rewriting history
+
+Read `configuration.cadences[].interval_seconds` for the provisioned schedule. Cadence controls evaluation timing; it is not a claim that every upstream provider has refreshed. Sandbox evidence remains frozen until an explicit source-refresh or scenario action changes it. Repeated evaluations report the actual source window and collection time; sample observations older than 35 days are identified as stale.
+
+Lender-reported performance comes from the pinned `deal_snapshot_id`. Missing performance does not become zero delinquency or a perfect payment history. Provider loan balances and lender exposure are not summed as separate liabilities unless their relationship is reconciled.
+
+An ongoing condition keeps its alert ID and emits `alert.updated` with the latest values, risk package and evidence. A comparable passing evaluation resolves that policy condition. Replacing a policy closes its old alerts with an explicit superseded-policy explanation; that closure does not assert that the borrower recovered. Inspect the alert message and exact policy version.
+{/* END RESPONSE SEMANTICS */}

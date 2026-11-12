@@ -24780,7 +24780,42 @@
                           "kind": "risk_package",
                           "risk_package_id": "rp_synthetic",
                           "format": "json"
-                        }
+                        },
+                        "assessment": {
+                          "recommendation": "review_required",
+                          "is_institution_decision": false,
+                          "summary": "Repayment capacity requires review because the debt schedule is incomplete.",
+                          "reason_count": 1
+                        },
+                        "verification_summary": {
+                          "status": "partial",
+                          "outcome": "review_required",
+                          "summary": "Synthetic business has a selected registry record. Required related-party checks and ownership resolution remain incomplete; an active registration is not a verified pass."
+                        },
+                        "decision_context": {
+                          "borrower_type": "business",
+                          "subject_id": "biz_synthetic",
+                          "borrower_profile_version": 1,
+                          "market": "CA",
+                          "reporting_currency": "CAD",
+                          "window": {
+                            "start": "2025-11-01T00:00:00Z",
+                            "end": "2026-11-01T00:00:00Z"
+                          },
+                          "institution_reference": "LOS-2026-0042",
+                          "requested_amount": {
+                            "amount": "50000.00",
+                            "currency": "CAD"
+                          },
+                          "requested_term_months": 12,
+                          "lending_product_version_id": "lpv_synthetic",
+                          "risk_policy_version_id": "rpv_synthetic",
+                          "deal_snapshot_id": null,
+                          "account_count": 1,
+                          "entity_count": 1,
+                          "participant_count": 0
+                        },
+                        "omitted_fields": []
                       },
                       "meta": {
                         "request_id": "req_synthetic",
@@ -41825,7 +41860,7 @@
                           "effective_rate": "5.00",
                           "discount_percent": "0",
                           "pricing_basis": "published",
-                          "billing_timing": "month_start_or_first_activation",
+                          "billing_timing": "first_successful_evaluation_in_month",
                           "workload_limits": {
                             "bank_accounts": 8,
                             "business_integrations": 20,
@@ -41844,7 +41879,7 @@
                           "effective_rate": "8.00",
                           "discount_percent": "0",
                           "pricing_basis": "published",
-                          "billing_timing": "month_start_or_first_activation",
+                          "billing_timing": "first_successful_evaluation_in_month",
                           "workload_limits": {
                             "bank_accounts": 8,
                             "business_integrations": 20,
@@ -41863,7 +41898,7 @@
                           "effective_rate": "12.00",
                           "discount_percent": "0",
                           "pricing_basis": "published",
-                          "billing_timing": "month_start_or_first_activation",
+                          "billing_timing": "first_successful_evaluation_in_month",
                           "workload_limits": {
                             "bank_accounts": 8,
                             "business_integrations": 20,
@@ -42865,7 +42900,8 @@
                     "cadences": [
                       {
                         "id": "cadence_synthetic",
-                        "description": "Illustrative daily schedule; use your provisioned cadence."
+                        "description": "Illustrative daily schedule; use your provisioned cadence.",
+                        "interval_seconds": 86400
                       }
                     ],
                     "dimensions": [
@@ -53840,7 +53876,7 @@
                 },
                 "example": {
                   "data": {
-                    "version": "2026-11-11.1",
+                    "version": "2026-11-11.2",
                     "businesses": [
                       {
                         "id": "maple-retail",
@@ -54027,6 +54063,114 @@
                         "category": "Underwriting",
                         "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
                         "expected": "completed / within_policy",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "verification_expired",
+                        "name": "Verification expired",
+                        "category": "Underwriting",
+                        "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+                        "expected": "completed / review_required",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "verification_review",
+                        "name": "Verification requires review",
+                        "category": "Underwriting",
+                        "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+                        "expected": "completed / review_required",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "verification_failed",
+                        "name": "Verification failed",
+                        "category": "Underwriting",
+                        "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+                        "expected": "completed / review_required",
                         "owner_only": false,
                         "requires_endpoint": false,
                         "required_scopes": [
@@ -56516,7 +56660,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-11.1",
+                    "catalog_version": "2026-11-11.2",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -57000,7 +57144,7 @@
               "example": {
                 "scenario_id": "healthy",
                 "fixture_id": "maple-retail",
-                "catalog_version": "2026-11-11.1"
+                "catalog_version": "2026-11-11.2"
               }
             }
           }
@@ -57015,15 +57159,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createSandboxRun-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"scenario_id\":\"healthy\",\"fixture_id\":\"maple-retail\",\"catalog_version\":\"2026-11-11.1\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createSandboxRun-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"scenario_id\":\"healthy\",\"fixture_id\":\"maple-retail\",\"catalog_version\":\"2026-11-11.2\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createSandboxRun-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/sandbox/runs', headers=headers, json={'scenario_id': 'healthy', 'fixture_id': 'maple-retail', 'catalog_version': '2026-11-11.1'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createSandboxRun-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/sandbox/runs', headers=headers, json={'scenario_id': 'healthy', 'fixture_id': 'maple-retail', 'catalog_version': '2026-11-11.2'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createSandboxRun-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/sandbox/runs\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"scenario_id\": \"healthy\", \"fixture_id\": \"maple-retail\", \"catalog_version\": \"2026-11-11.1\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createSandboxRun-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/sandbox/runs\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"scenario_id\": \"healthy\", \"fixture_id\": \"maple-retail\", \"catalog_version\": \"2026-11-11.2\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -57079,7 +57223,7 @@
                       "id": "srun_example",
                       "scenario_id": "healthy",
                       "fixture_id": "maple-retail",
-                      "catalog_version": "2026-11-11.1",
+                      "catalog_version": "2026-11-11.2",
                       "status": "queued",
                       "created_at": "2026-11-07T12:00:00Z",
                       "updated_at": "2026-11-07T12:00:00Z",
@@ -57625,7 +57769,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-11.1",
+                    "catalog_version": "2026-11-11.2",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -58180,7 +58324,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-11.1",
+                    "catalog_version": "2026-11-11.2",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -67505,6 +67649,7 @@
               "monitoring_run.completed",
               "monitoring_run.failed",
               "alert.created",
+              "alert.updated",
               "alert.resolved",
               "export.ready",
               "export.failed",
@@ -68984,6 +69129,12 @@
                 "description": {
                   "type": "string",
                   "minLength": 1
+                },
+                "interval_seconds": {
+                  "type": "integer",
+                  "minimum": 60,
+                  "description": "Seconds between completed scheduled evaluations. Source freshness is reported independently.",
+                  "maximum": 31622400
                 }
               },
               "required": [
@@ -70181,7 +70332,7 @@
               "record_counting_basis"
             ],
             "additionalProperties": false,
-            "description": "Observed processing counts for operational visibility. These are not the billing quantity and do not select a complexity price."
+            "description": "Immutable workload observed at charged_at. Subsequent Signal evaluations may increase current-period workload; use the workload report and its as_of for current accumulated counts. Counts do not select a complexity tier."
           },
           "complexity_assessment": {
             "$ref": "#/components/schemas/BillingComplexityAssessment"
@@ -113548,8 +113699,10 @@
             "type": "string",
             "enum": [
               "month_start_or_first_activation",
-              "successful_output_completion"
-            ]
+              "successful_output_completion",
+              "first_successful_evaluation_in_month"
+            ],
+            "description": "Insights charges atomically on completed output. Signal charges once at the first successful evaluation in the UTC month. Historical rate cards may retain an earlier timing label; charged_at is the authoritative posting time."
           }
         },
         "required": [
@@ -113629,7 +113782,10 @@
             "then": {
               "properties": {
                 "billing_timing": {
-                  "const": "month_start_or_first_activation"
+                  "enum": [
+                    "month_start_or_first_activation",
+                    "first_successful_evaluation_in_month"
+                  ]
                 }
               }
             }
@@ -113805,7 +113961,8 @@
           },
           "as_of": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "Time the current-period operational counts were last updated; not the historical usage charge time."
           },
           "period_start": {
             "type": "string",
@@ -114813,7 +114970,10 @@
               "pending",
               "settled",
               "failed",
-              "cancelled"
+              "cancelled",
+              "returned",
+              "partially_refunded",
+              "refunded"
             ]
           },
           "initiated_at": {
@@ -114890,6 +115050,22 @@
             "type": "string",
             "minLength": 1,
             "description": "Immutable workspace billing snapshot used for this financial representation."
+          },
+          "transaction_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "All funding and subsequent return/refund ledger entries, in posting order."
+          },
+          "reversal_transaction_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Return or refund movements reversing the original funding. ledger_entry_id remains the original credit."
           }
         },
         "required": [
@@ -115736,6 +115912,199 @@
           },
           "export_request": {
             "$ref": "#/components/schemas/CreateExport"
+          },
+          "assessment": {
+            "type": "object",
+            "properties": {
+              "recommendation": {
+                "type": "string",
+                "enum": [
+                  "within_policy",
+                  "outside_policy",
+                  "review_required"
+                ]
+              },
+              "is_institution_decision": {
+                "const": false
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000,
+                "description": "First 2,000 characters of the assessment explanation. Read the full package or export for all reasons."
+              },
+              "reason_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "recommendation",
+              "is_institution_decision",
+              "summary",
+              "reason_count"
+            ],
+            "additionalProperties": false
+          },
+          "verification_summary": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "complete",
+                  "partial",
+                  "unavailable"
+                ],
+                "x-field-id": "VERIFY:VerificationAssessment.status",
+                "description": "State of this specific result; separate from entity legal status and lending decisions."
+              },
+              "outcome": {
+                "type": "string",
+                "enum": [
+                  "passed",
+                  "failed",
+                  "review_required",
+                  "inconclusive",
+                  "not_performed"
+                ],
+                "description": "Identity/compliance assessment outcome, not a lending decision.",
+                "x-field-id": "VERIFY:VerificationAssessment.outcome"
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Human-readable scope, findings and unresolved requirements.",
+                "x-field-id": "VERIFY:VerificationAssessment.summary",
+                "maxLength": 2000
+              }
+            },
+            "required": [
+              "status",
+              "outcome",
+              "summary"
+            ],
+            "additionalProperties": false
+          },
+          "decision_context": {
+            "type": "object",
+            "properties": {
+              "borrower_type": {
+                "type": "string",
+                "enum": [
+                  "business",
+                  "person"
+                ]
+              },
+              "subject_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "borrower_profile_version": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "market": {
+                "type": "string"
+              },
+              "reporting_currency": {
+                "type": "string"
+              },
+              "window": {
+                "$ref": "#/components/schemas/Window"
+              },
+              "institution_reference": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "requested_amount": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Money"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "requested_term_months": {
+                "anyOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "lending_product_version_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "risk_policy_version_id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "deal_snapshot_id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "account_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "entity_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "participant_count": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "borrower_type",
+              "subject_id",
+              "borrower_profile_version",
+              "market",
+              "reporting_currency",
+              "window",
+              "institution_reference",
+              "requested_amount",
+              "requested_term_months",
+              "lending_product_version_id",
+              "risk_policy_version_id",
+              "deal_snapshot_id",
+              "account_count",
+              "entity_count",
+              "participant_count"
+            ],
+            "additionalProperties": false
+          },
+          "omitted_fields": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "decision_context.institution_reference",
+                "decision_context.requested_amount"
+              ]
+            },
+            "uniqueItems": true,
+            "description": "Paths omitted only from the bounded summary because the original context value exceeds its display bound. Full and exported results retain the complete value."
           }
         },
         "required": [
@@ -115752,10 +116121,14 @@
           "view",
           "evidence_set_id",
           "sections",
-          "export_request"
+          "export_request",
+          "assessment",
+          "verification_summary",
+          "decision_context",
+          "omitted_fields"
         ],
         "additionalProperties": false,
-        "description": "Compact index of the immutable result. Inspect section status, limitations and required actions before making a decision. Summary never substitutes for an assessment or a complete package."
+        "description": "Bounded decision and accepted input context plus an index of the immutable result. Summaries are excerpts; use sections or export for full reasons and evidence. The recommendation is not an institution decision."
       },
       "RiskSectionDimensions": {
         "type": "object",
@@ -120382,7 +120755,10 @@
               "pagination",
               "webhook_delivery",
               "webhook_duplicate",
-              "webhook_out_of_order"
+              "webhook_out_of_order",
+              "verification_failed",
+              "verification_review",
+              "verification_expired"
             ],
             "description": "Stable scenario identifier from the versioned catalog."
           },
@@ -120398,7 +120774,7 @@
             "description": "Fictional business definition used to create this run."
           },
           "catalog_version": {
-            "const": "2026-11-11.1",
+            "const": "2026-11-11.2",
             "description": "Exact catalog version; reject mismatches rather than silently changing test behavior."
           },
           "endpoint_id": {
@@ -121124,6 +121500,11 @@
       "scope": "signal:read"
     },
     "alert.created": {
+      "resource_type": "alert",
+      "read_operation_id": "getAlert",
+      "scope": "signal:read"
+    },
+    "alert.updated": {
       "resource_type": "alert",
       "read_operation_id": "getAlert",
       "scope": "signal:read"

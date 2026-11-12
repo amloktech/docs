@@ -38308,6 +38308,2097 @@
         ],
         "additionalProperties": false
       }
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/risk-packages/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "x-response-views",
+        "summary",
+        "example",
+        "data",
+        "assessment"
+      ],
+      "value": {
+        "recommendation": "review_required",
+        "is_institution_decision": false,
+        "summary": "Repayment capacity requires review because the debt schedule is incomplete.",
+        "reason_count": 1
+      }
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/risk-packages/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "x-response-views",
+        "summary",
+        "example",
+        "data",
+        "verification_summary"
+      ],
+      "value": {
+        "status": "partial",
+        "outcome": "review_required",
+        "summary": "Synthetic business has a selected registry record. Required related-party checks and ownership resolution remain incomplete; an active registration is not a verified pass."
+      }
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/risk-packages/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "x-response-views",
+        "summary",
+        "example",
+        "data",
+        "decision_context"
+      ],
+      "value": {
+        "borrower_type": "business",
+        "subject_id": "biz_synthetic",
+        "borrower_profile_version": 1,
+        "market": "CA",
+        "reporting_currency": "CAD",
+        "window": {
+          "start": "2025-11-01T00:00:00Z",
+          "end": "2026-11-01T00:00:00Z"
+        },
+        "institution_reference": "LOS-2026-0042",
+        "requested_amount": {
+          "amount": "50000.00",
+          "currency": "CAD"
+        },
+        "requested_term_months": 12,
+        "lending_product_version_id": "lpv_synthetic",
+        "risk_policy_version_id": "rpv_synthetic",
+        "deal_snapshot_id": null,
+        "account_count": 1,
+        "entity_count": 1,
+        "participant_count": 0
+      }
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/billing/summary",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "pricing",
+        "rates"
+      ],
+      "value": [
+        {
+          "product": "insights",
+          "tier": "standard",
+          "unit": "completed_underwriting",
+          "base_rate": "8.00",
+          "effective_rate": "8.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "insights",
+          "tier": "advanced",
+          "unit": "completed_underwriting",
+          "base_rate": "25.00",
+          "effective_rate": "25.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "insights",
+          "tier": "complex",
+          "unit": "completed_underwriting",
+          "base_rate": "45.00",
+          "effective_rate": "45.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "standard",
+          "unit": "active_account_month",
+          "base_rate": "5.00",
+          "effective_rate": "5.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "first_successful_evaluation_in_month",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "advanced",
+          "unit": "active_account_month",
+          "base_rate": "8.00",
+          "effective_rate": "8.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "first_successful_evaluation_in_month",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "complex",
+          "unit": "active_account_month",
+          "base_rate": "12.00",
+          "effective_rate": "12.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "first_successful_evaluation_in_month",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        }
+      ]
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/configuration",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "cadences"
+      ],
+      "value": [
+        {
+          "id": "cadence_synthetic",
+          "description": "Illustrative daily schedule; use your provisioned cadence.",
+          "interval_seconds": 86400
+        }
+      ]
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/catalog",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/catalog",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "scenarios"
+      ],
+      "value": [
+        {
+          "id": "sample_pack",
+          "name": "Complete sample workspace",
+          "category": "Getting started",
+          "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+          "expected": "Six businesses and associated records are available in the API and console.",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "signal:read",
+            "signal:write",
+            "billing:read",
+            "exports:read",
+            "exports:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "signal:read",
+            "billing:read",
+            "exports:read"
+          ],
+          "required_products": [
+            "insights",
+            "signal"
+          ]
+        },
+        {
+          "id": "underwriting_only",
+          "name": "Underwriting only",
+          "category": "Underwriting",
+          "description": "Register a business, collect authorized evidence and complete Insights without creating a monitoring enrollment.",
+          "expected": "completed / within_policy; no monitor or Signal charge",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "monitoring_only",
+          "name": "Monitor an existing funded business",
+          "category": "Monitoring",
+          "description": "Import a funded deal using a portfolio baseline, collect monitoring-authorized evidence and activate Signal without an Insights underwriting request.",
+          "expected": "active monitor with portfolio baseline; no origination or Insights charge",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "healthy",
+          "name": "Within-policy underwriting",
+          "category": "Underwriting",
+          "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
+          "expected": "completed / within_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "verification_expired",
+          "name": "Verification expired",
+          "category": "Underwriting",
+          "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "verification_review",
+          "name": "Verification requires review",
+          "category": "Underwriting",
+          "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "verification_failed",
+          "name": "Verification failed",
+          "category": "Underwriting",
+          "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "outside_policy",
+          "name": "Outside-policy underwriting",
+          "category": "Underwriting",
+          "description": "Run the same test policy against a business with lower cash receipts.",
+          "expected": "completed / outside_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "manual_review",
+          "name": "Manual review",
+          "category": "Underwriting",
+          "description": "Test a policy metric whose required source input is unavailable.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "document_required",
+          "name": "Additional document required",
+          "category": "Underwriting",
+          "description": "Pause underwriting with an actionable document requirement.",
+          "expected": "requires_action / upload_document",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "document_recovery",
+          "name": "Upload the missing document",
+          "category": "Underwriting",
+          "description": "Run a missing-document flow and resume it with a real synthetic PDF upload.",
+          "expected": "requires_action \u2192 completed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "source_reauthorization",
+          "name": "Source authorization required",
+          "category": "Connections",
+          "description": "Pause a case until the borrower renews the requested source.",
+          "expected": "requires_action / reauthorize_source",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "source_recovery",
+          "name": "Renew source authorization",
+          "category": "Connections",
+          "description": "Complete the reauthorization Hub and resume underwriting.",
+          "expected": "requires_action \u2192 completed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "consent_cancelled",
+          "name": "Borrower cancels connection",
+          "category": "Connections",
+          "description": "Cancel a synthetic Hub session before consent.",
+          "expected": "cancelled / no connections",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "connections:read",
+            "connections:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "connections:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "consent_revoked",
+          "name": "Borrower withdraws consent",
+          "category": "Connections",
+          "description": "Revoke consent and confirm that normalized source content becomes restricted.",
+          "expected": "revoked / restricted source data",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "data:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "data:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "provider_failure",
+          "name": "Provider unavailable",
+          "category": "Underwriting",
+          "description": "Exercise terminal processing failure without fabricating a risk package.",
+          "expected": "failed / processing_failed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "insufficient_credits",
+          "name": "Insufficient credit handling",
+          "category": "Billing",
+          "description": "Pause an assessment and then resume it with simulated funding.",
+          "expected": "waiting_for_credits \u2192 completed",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "billing:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "monitoring_alert",
+          "name": "Cash-flow deterioration",
+          "category": "Monitoring",
+          "description": "Create a funded baseline, reduce synthetic receipts, and evaluate monitoring.",
+          "expected": "alert.created / outside_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "monitoring_recovery",
+          "name": "Risk recovery",
+          "category": "Monitoring",
+          "description": "Restore receipts after a deterioration and resolve the previous alert.",
+          "expected": "alert.resolved / within_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "monitoring_lifecycle",
+          "name": "Pause and resume monitoring",
+          "category": "Monitoring",
+          "description": "Exercise monitor state changes and a new evaluation after resumption.",
+          "expected": "active \u2192 paused \u2192 active",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "card_success",
+          "name": "Successful card top-up",
+          "category": "Billing",
+          "description": "Post a simulated card payment and matching funding transaction.",
+          "expected": "succeeded / credits posted",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "card_declined",
+          "name": "Declined card payment",
+          "category": "Billing",
+          "description": "Create a failed test payment with no credit posting.",
+          "expected": "failed / balance unchanged",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "ach_pending",
+          "name": "Pending ACH top-up",
+          "category": "Billing",
+          "description": "Record an ACH payment before settlement.",
+          "expected": "pending / balance unchanged",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "ach_settled",
+          "name": "ACH settlement",
+          "category": "Billing",
+          "description": "Move an ACH payment from pending to succeeded and post its credits once.",
+          "expected": "pending \u2192 succeeded / credits posted",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "ach_returned",
+          "name": "ACH returned",
+          "category": "Billing",
+          "description": "Settle then return an ACH payment with a linked reversing ledger entry.",
+          "expected": "returned / net zero funding",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "payment_refund",
+          "name": "Payment refund",
+          "category": "Billing",
+          "description": "Post a payment followed by a full refund and linked immutable transactions.",
+          "expected": "refunded / net zero funding",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "autopay",
+          "name": "Automatic top-up",
+          "category": "Billing",
+          "description": "Exercise a run-local low-balance trigger and an automatic simulated payment.",
+          "expected": "automatic_top_up / succeeded",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "export_success",
+          "name": "Download reports and evidence",
+          "category": "Exports",
+          "description": "Create JSON, PDF and CSV exports from the same risk package and evidence.",
+          "expected": "completed / downloadable files",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "exports:read",
+            "exports:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "exports:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "export_failure",
+          "name": "Failed export",
+          "category": "Exports",
+          "description": "Exercise the documented export failure state.",
+          "expected": "failed / export.failed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "exports:read",
+            "exports:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "exports:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "idempotency",
+          "name": "Safe retries and conflicts",
+          "category": "API behavior",
+          "description": "Repeat a create request with the same key, then change its payload.",
+          "expected": "same resource on retry / 409 on conflict",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "validation_error",
+          "name": "Invalid input",
+          "category": "API behavior",
+          "description": "Submit an invalid borrower request and inspect the structured error.",
+          "expected": "422 / validation_error",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "pagination",
+          "name": "Snapshot pagination",
+          "category": "API behavior",
+          "description": "Read a frozen page, create another borrower, and continue the original snapshot.",
+          "expected": "no duplicates / new record excluded from snapshot",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "webhook_delivery",
+          "name": "Signed webhook delivery",
+          "category": "Webhooks",
+          "description": "Create a real Sandbox event and enqueue delivery to the selected Sandbox endpoint.",
+          "expected": "signed HTTP request / persisted delivery attempt",
+          "owner_only": false,
+          "requires_endpoint": true,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "events:read",
+            "events:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "events:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "webhook_duplicate",
+          "name": "Duplicate webhook delivery",
+          "category": "Webhooks",
+          "description": "Replay the same persisted event twice to test deduplication by event ID.",
+          "expected": "same event ID / separate deliveries",
+          "owner_only": false,
+          "requires_endpoint": true,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "events:read",
+            "events:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "events:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "webhook_out_of_order",
+          "name": "Out-of-order events",
+          "category": "Webhooks",
+          "description": "Replay persisted resource versions in reverse order.",
+          "expected": "newer event replay queued before older event replay",
+          "owner_only": false,
+          "requires_endpoint": true,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "events:read",
+            "events:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "events:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        }
+      ]
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/runs",
+        "post",
+        "responses",
+        "202",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "catalog_version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/runs",
+        "post",
+        "requestBody",
+        "content",
+        "application/json",
+        "example",
+        "catalog_version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/runs",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data"
+      ],
+      "value": [
+        {
+          "id": "srun_example",
+          "scenario_id": "healthy",
+          "fixture_id": "maple-retail",
+          "catalog_version": "2026-11-11.2",
+          "status": "queued",
+          "created_at": "2026-11-07T12:00:00Z",
+          "updated_at": "2026-11-07T12:00:00Z",
+          "completed_at": null,
+          "error": null,
+          "assertions": [],
+          "resources": [],
+          "steps": []
+        }
+      ]
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/runs/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "catalog_version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/sandbox/runs/{id}/repeat",
+        "post",
+        "responses",
+        "202",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "catalog_version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "Event",
+        "properties",
+        "type",
+        "enum"
+      ],
+      "value": [
+        "embedding_session.completed",
+        "connection.action_required",
+        "connection.status_changed",
+        "origination.action_required",
+        "origination.status_changed",
+        "origination.completed",
+        "origination.failed",
+        "risk_package.created",
+        "monitor.status_changed",
+        "monitoring_run.completed",
+        "monitoring_run.failed",
+        "alert.created",
+        "alert.updated",
+        "alert.resolved",
+        "export.ready",
+        "export.failed",
+        "data.updated",
+        "document.status_changed",
+        "billing.payment_updated",
+        "billing.transaction_posted",
+        "deal_snapshot.created"
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "Configuration",
+        "properties",
+        "cadences",
+        "items",
+        "properties",
+        "interval_seconds"
+      ],
+      "value": {
+        "type": "integer",
+        "minimum": 60,
+        "description": "Seconds between completed scheduled evaluations. Source freshness is reported independently."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "BillingUsage",
+        "properties",
+        "workload",
+        "description"
+      ],
+      "value": "Immutable workload observed at charged_at. Subsequent Signal evaluations may increase current-period workload; use the workload report and its as_of for current accumulated counts. Counts do not select a complexity tier."
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "FinancialBillingRate",
+        "properties",
+        "billing_timing",
+        "enum"
+      ],
+      "value": [
+        "month_start_or_first_activation",
+        "successful_output_completion",
+        "first_successful_evaluation_in_month"
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "FinancialBillingRate",
+        "properties",
+        "billing_timing",
+        "description"
+      ],
+      "value": "Insights charges atomically on completed output. Signal charges once at the first successful evaluation in the UTC month. Historical rate cards may retain an earlier timing label; charged_at is the authoritative posting time."
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "FinancialBillingRate",
+        "allOf"
+      ],
+      "value": [
+        {
+          "if": {
+            "properties": {
+              "product": {
+                "const": "insights"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "completed_underwriting"
+              },
+              "workload_limits": {
+                "properties": {
+                  "record_counting_basis": {
+                    "const": "per_underwriting"
+                  },
+                  "minimum_banking_history_months": {
+                    "type": "integer",
+                    "minimum": 12
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "product": {
+                "const": "signal"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "unit": {
+                "const": "active_account_month"
+              },
+              "workload_limits": {
+                "properties": {
+                  "record_counting_basis": {
+                    "const": "new_records_per_month"
+                  },
+                  "minimum_banking_history_months": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "product": {
+                "const": "signal"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "billing_timing": {
+                "enum": [
+                  "month_start_or_first_activation",
+                  "first_successful_evaluation_in_month"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "product": {
+                "const": "insights"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "billing_timing": {
+                "const": "successful_output_completion"
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "FinancialWorkloadReport",
+        "properties",
+        "as_of",
+        "description"
+      ],
+      "value": "Time the current-period operational counts were last updated; not the historical usage charge time."
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "ReportBillingFunding",
+        "properties",
+        "status",
+        "enum"
+      ],
+      "value": [
+        "pending",
+        "settled",
+        "failed",
+        "cancelled",
+        "returned",
+        "partially_refunded",
+        "refunded"
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "ReportBillingFunding",
+        "properties",
+        "transaction_ids"
+      ],
+      "value": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "All funding and subsequent return/refund ledger entries, in posting order."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "ReportBillingFunding",
+        "properties",
+        "reversal_transaction_ids"
+      ],
+      "value": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": "Return or refund movements reversing the original funding. ledger_entry_id remains the original credit."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "properties",
+        "assessment"
+      ],
+      "value": {
+        "type": "object",
+        "properties": {
+          "recommendation": {
+            "type": "string",
+            "enum": [
+              "within_policy",
+              "outside_policy",
+              "review_required"
+            ]
+          },
+          "is_institution_decision": {
+            "const": false
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "description": "First 2,000 characters of the assessment explanation. Read the full package or export for all reasons."
+          },
+          "reason_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "recommendation",
+          "is_institution_decision",
+          "summary",
+          "reason_count"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "properties",
+        "verification_summary"
+      ],
+      "value": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "complete",
+              "partial",
+              "unavailable"
+            ],
+            "x-field-id": "VERIFY:VerificationAssessment.status",
+            "description": "State of this specific result; separate from entity legal status and lending decisions."
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "review_required",
+              "inconclusive",
+              "not_performed"
+            ],
+            "description": "Identity/compliance assessment outcome, not a lending decision.",
+            "x-field-id": "VERIFY:VerificationAssessment.outcome"
+          },
+          "summary": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Human-readable scope, findings and unresolved requirements.",
+            "x-field-id": "VERIFY:VerificationAssessment.summary",
+            "maxLength": 2000
+          }
+        },
+        "required": [
+          "status",
+          "outcome",
+          "summary"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "properties",
+        "decision_context"
+      ],
+      "value": {
+        "type": "object",
+        "properties": {
+          "borrower_type": {
+            "type": "string",
+            "enum": [
+              "business",
+              "person"
+            ]
+          },
+          "subject_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "borrower_profile_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "market": {
+            "type": "string"
+          },
+          "reporting_currency": {
+            "type": "string"
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          },
+          "institution_reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requested_amount": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Money"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "requested_term_months": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "lending_product_version_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "risk_policy_version_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "deal_snapshot_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "account_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "entity_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "participant_count": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": [
+          "borrower_type",
+          "subject_id",
+          "borrower_profile_version",
+          "market",
+          "reporting_currency",
+          "window",
+          "institution_reference",
+          "requested_amount",
+          "requested_term_months",
+          "lending_product_version_id",
+          "risk_policy_version_id",
+          "deal_snapshot_id",
+          "account_count",
+          "entity_count",
+          "participant_count"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "required"
+      ],
+      "value": [
+        "id",
+        "borrower_id",
+        "product",
+        "created_at",
+        "as_of",
+        "record_version",
+        "origination_id",
+        "monitoring_run_id",
+        "catalog_version",
+        "completeness",
+        "view",
+        "evidence_set_id",
+        "sections",
+        "export_request",
+        "assessment",
+        "verification_summary",
+        "decision_context"
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "description"
+      ],
+      "value": "Bounded decision and accepted input context plus an index of the immutable result. Summaries are excerpts; use sections or export for full reasons and evidence. The recommendation is not an institution decision."
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "CreateSandboxRunRequest",
+        "properties",
+        "scenario_id",
+        "enum"
+      ],
+      "value": [
+        "sample_pack",
+        "underwriting_only",
+        "monitoring_only",
+        "healthy",
+        "outside_policy",
+        "manual_review",
+        "document_required",
+        "document_recovery",
+        "source_reauthorization",
+        "source_recovery",
+        "consent_cancelled",
+        "consent_revoked",
+        "provider_failure",
+        "insufficient_credits",
+        "monitoring_alert",
+        "monitoring_recovery",
+        "monitoring_lifecycle",
+        "card_success",
+        "card_declined",
+        "ach_pending",
+        "ach_settled",
+        "ach_returned",
+        "payment_refund",
+        "autopay",
+        "export_success",
+        "export_failure",
+        "idempotency",
+        "validation_error",
+        "pagination",
+        "webhook_delivery",
+        "webhook_duplicate",
+        "webhook_out_of_order",
+        "verification_failed",
+        "verification_review",
+        "verification_expired"
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "CreateSandboxRunRequest",
+        "properties",
+        "catalog_version",
+        "const"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/risk-packages/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "x-response-views",
+        "summary",
+        "example",
+        "data",
+        "omitted_fields"
+      ],
+      "value": []
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "properties",
+        "omitted_fields"
+      ],
+      "value": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "decision_context.institution_reference",
+            "decision_context.requested_amount"
+          ]
+        },
+        "uniqueItems": true,
+        "description": "Paths omitted only from the bounded summary because the original context value exceeds its display bound. Full and exported results retain the complete value."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "RiskPackageSummary",
+        "required"
+      ],
+      "value": [
+        "id",
+        "borrower_id",
+        "product",
+        "created_at",
+        "as_of",
+        "record_version",
+        "origination_id",
+        "monitoring_run_id",
+        "catalog_version",
+        "completeness",
+        "view",
+        "evidence_set_id",
+        "sections",
+        "export_request",
+        "assessment",
+        "verification_summary",
+        "decision_context",
+        "omitted_fields"
+      ]
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "Configuration",
+        "properties",
+        "cadences",
+        "items",
+        "properties",
+        "interval_seconds",
+        "maximum"
+      ],
+      "value": 31622400
     }
   ],
   "fixtures": [
@@ -39627,6 +41718,1279 @@
         "resources": [],
         "steps": []
       }
+    },
+    {
+      "path": [
+        "BillingSummary",
+        "pricing",
+        "rates"
+      ],
+      "value": [
+        {
+          "product": "insights",
+          "tier": "standard",
+          "unit": "completed_underwriting",
+          "base_rate": "8.00",
+          "effective_rate": "8.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "insights",
+          "tier": "advanced",
+          "unit": "completed_underwriting",
+          "base_rate": "25.00",
+          "effective_rate": "25.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "insights",
+          "tier": "complex",
+          "unit": "completed_underwriting",
+          "base_rate": "45.00",
+          "effective_rate": "45.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "successful_output_completion",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "per_underwriting",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": 12,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "standard",
+          "unit": "active_account_month",
+          "base_rate": "5.00",
+          "effective_rate": "5.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "first_successful_evaluation_in_month",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "advanced",
+          "unit": "active_account_month",
+          "base_rate": "8.00",
+          "effective_rate": "8.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "first_successful_evaluation_in_month",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        },
+        {
+          "product": "signal",
+          "tier": "complex",
+          "unit": "active_account_month",
+          "base_rate": "12.00",
+          "effective_rate": "12.00",
+          "discount_percent": "0",
+          "pricing_basis": "published",
+          "billing_timing": "first_successful_evaluation_in_month",
+          "workload_limits": {
+            "bank_accounts": 8,
+            "business_integrations": 20,
+            "record_limit": 1000000,
+            "record_counting_basis": "new_records_per_month",
+            "record_counting_rule": "distinct_record_versions",
+            "minimum_banking_history_months": null,
+            "analysis_scope": "Operational capacity; complexity is assessed separately by Amlok."
+          }
+        }
+      ]
+    },
+    {
+      "path": [
+        "Configuration",
+        "cadences"
+      ],
+      "value": [
+        {
+          "id": "cadence_synthetic",
+          "description": "Illustrative daily schedule; use your provisioned cadence.",
+          "interval_seconds": 86400
+        }
+      ]
+    },
+    {
+      "path": [
+        "CreateSandboxRunRequest",
+        "catalog_version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "SandboxCatalog",
+        "version"
+      ],
+      "value": "2026-11-11.2"
+    },
+    {
+      "path": [
+        "SandboxCatalog",
+        "scenarios"
+      ],
+      "value": [
+        {
+          "id": "sample_pack",
+          "name": "Complete sample workspace",
+          "category": "Getting started",
+          "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+          "expected": "Six businesses and associated records are available in the API and console.",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "signal:read",
+            "signal:write",
+            "billing:read",
+            "exports:read",
+            "exports:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "signal:read",
+            "billing:read",
+            "exports:read"
+          ],
+          "required_products": [
+            "insights",
+            "signal"
+          ]
+        },
+        {
+          "id": "underwriting_only",
+          "name": "Underwriting only",
+          "category": "Underwriting",
+          "description": "Register a business, collect authorized evidence and complete Insights without creating a monitoring enrollment.",
+          "expected": "completed / within_policy; no monitor or Signal charge",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "monitoring_only",
+          "name": "Monitor an existing funded business",
+          "category": "Monitoring",
+          "description": "Import a funded deal using a portfolio baseline, collect monitoring-authorized evidence and activate Signal without an Insights underwriting request.",
+          "expected": "active monitor with portfolio baseline; no origination or Insights charge",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "healthy",
+          "name": "Within-policy underwriting",
+          "category": "Underwriting",
+          "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
+          "expected": "completed / within_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "verification_expired",
+          "name": "Verification expired",
+          "category": "Underwriting",
+          "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "verification_review",
+          "name": "Verification requires review",
+          "category": "Underwriting",
+          "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "verification_failed",
+          "name": "Verification failed",
+          "category": "Underwriting",
+          "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "outside_policy",
+          "name": "Outside-policy underwriting",
+          "category": "Underwriting",
+          "description": "Run the same test policy against a business with lower cash receipts.",
+          "expected": "completed / outside_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "manual_review",
+          "name": "Manual review",
+          "category": "Underwriting",
+          "description": "Test a policy metric whose required source input is unavailable.",
+          "expected": "completed / review_required",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "document_required",
+          "name": "Additional document required",
+          "category": "Underwriting",
+          "description": "Pause underwriting with an actionable document requirement.",
+          "expected": "requires_action / upload_document",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "document_recovery",
+          "name": "Upload the missing document",
+          "category": "Underwriting",
+          "description": "Run a missing-document flow and resume it with a real synthetic PDF upload.",
+          "expected": "requires_action \u2192 completed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "source_reauthorization",
+          "name": "Source authorization required",
+          "category": "Connections",
+          "description": "Pause a case until the borrower renews the requested source.",
+          "expected": "requires_action / reauthorize_source",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "source_recovery",
+          "name": "Renew source authorization",
+          "category": "Connections",
+          "description": "Complete the reauthorization Hub and resume underwriting.",
+          "expected": "requires_action \u2192 completed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "consent_cancelled",
+          "name": "Borrower cancels connection",
+          "category": "Connections",
+          "description": "Cancel a synthetic Hub session before consent.",
+          "expected": "cancelled / no connections",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "connections:read",
+            "connections:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "connections:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "consent_revoked",
+          "name": "Borrower withdraws consent",
+          "category": "Connections",
+          "description": "Revoke consent and confirm that normalized source content becomes restricted.",
+          "expected": "revoked / restricted source data",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "data:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "data:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "provider_failure",
+          "name": "Provider unavailable",
+          "category": "Underwriting",
+          "description": "Exercise terminal processing failure without fabricating a risk package.",
+          "expected": "failed / processing_failed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "insufficient_credits",
+          "name": "Insufficient credit handling",
+          "category": "Billing",
+          "description": "Pause an assessment and then resume it with simulated funding.",
+          "expected": "waiting_for_credits \u2192 completed",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "billing:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "monitoring_alert",
+          "name": "Cash-flow deterioration",
+          "category": "Monitoring",
+          "description": "Create a funded baseline, reduce synthetic receipts, and evaluate monitoring.",
+          "expected": "alert.created / outside_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "monitoring_recovery",
+          "name": "Risk recovery",
+          "category": "Monitoring",
+          "description": "Restore receipts after a deterioration and resolve the previous alert.",
+          "expected": "alert.resolved / within_policy",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "monitoring_lifecycle",
+          "name": "Pause and resume monitoring",
+          "category": "Monitoring",
+          "description": "Exercise monitor state changes and a new evaluation after resumption.",
+          "expected": "active \u2192 paused \u2192 active",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
+        },
+        {
+          "id": "card_success",
+          "name": "Successful card top-up",
+          "category": "Billing",
+          "description": "Post a simulated card payment and matching funding transaction.",
+          "expected": "succeeded / credits posted",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "card_declined",
+          "name": "Declined card payment",
+          "category": "Billing",
+          "description": "Create a failed test payment with no credit posting.",
+          "expected": "failed / balance unchanged",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "ach_pending",
+          "name": "Pending ACH top-up",
+          "category": "Billing",
+          "description": "Record an ACH payment before settlement.",
+          "expected": "pending / balance unchanged",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "ach_settled",
+          "name": "ACH settlement",
+          "category": "Billing",
+          "description": "Move an ACH payment from pending to succeeded and post its credits once.",
+          "expected": "pending \u2192 succeeded / credits posted",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "ach_returned",
+          "name": "ACH returned",
+          "category": "Billing",
+          "description": "Settle then return an ACH payment with a linked reversing ledger entry.",
+          "expected": "returned / net zero funding",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "payment_refund",
+          "name": "Payment refund",
+          "category": "Billing",
+          "description": "Post a payment followed by a full refund and linked immutable transactions.",
+          "expected": "refunded / net zero funding",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "autopay",
+          "name": "Automatic top-up",
+          "category": "Billing",
+          "description": "Exercise a run-local low-balance trigger and an automatic simulated payment.",
+          "expected": "automatic_top_up / succeeded",
+          "owner_only": true,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "billing:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "billing:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "export_success",
+          "name": "Download reports and evidence",
+          "category": "Exports",
+          "description": "Create JSON, PDF and CSV exports from the same risk package and evidence.",
+          "expected": "completed / downloadable files",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "exports:read",
+            "exports:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "exports:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "export_failure",
+          "name": "Failed export",
+          "category": "Exports",
+          "description": "Exercise the documented export failure state.",
+          "expected": "failed / export.failed",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "exports:read",
+            "exports:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "exports:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "idempotency",
+          "name": "Safe retries and conflicts",
+          "category": "API behavior",
+          "description": "Repeat a create request with the same key, then change its payload.",
+          "expected": "same resource on retry / 409 on conflict",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "validation_error",
+          "name": "Invalid input",
+          "category": "API behavior",
+          "description": "Submit an invalid borrower request and inspect the structured error.",
+          "expected": "422 / validation_error",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "pagination",
+          "name": "Snapshot pagination",
+          "category": "API behavior",
+          "description": "Read a frozen page, create another borrower, and continue the original snapshot.",
+          "expected": "no duplicates / new record excluded from snapshot",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read"
+          ],
+          "required_products": []
+        },
+        {
+          "id": "webhook_delivery",
+          "name": "Signed webhook delivery",
+          "category": "Webhooks",
+          "description": "Create a real Sandbox event and enqueue delivery to the selected Sandbox endpoint.",
+          "expected": "signed HTTP request / persisted delivery attempt",
+          "owner_only": false,
+          "requires_endpoint": true,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "events:read",
+            "events:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "events:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "webhook_duplicate",
+          "name": "Duplicate webhook delivery",
+          "category": "Webhooks",
+          "description": "Replay the same persisted event twice to test deduplication by event ID.",
+          "expected": "same event ID / separate deliveries",
+          "owner_only": false,
+          "requires_endpoint": true,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "events:read",
+            "events:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "events:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "webhook_out_of_order",
+          "name": "Out-of-order events",
+          "category": "Webhooks",
+          "description": "Replay persisted resource versions in reverse order.",
+          "expected": "newer event replay queued before older event replay",
+          "owner_only": false,
+          "requires_endpoint": true,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read",
+            "events:read",
+            "events:write"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read",
+            "events:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        }
+      ]
+    },
+    {
+      "path": [
+        "SandboxRun",
+        "catalog_version"
+      ],
+      "value": "2026-11-11.2"
     }
   ],
   "operations": [

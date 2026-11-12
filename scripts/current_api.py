@@ -299,6 +299,8 @@ def build():
 
     from lifecycle_guides import write_guides as lifecycle_guides
     lifecycle_guides(spec,f,index)
+    from response_semantics_guides import write_guides as response_semantics_guides
+    response_semantics_guides()
 
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re

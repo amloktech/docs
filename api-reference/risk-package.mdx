@@ -64,3 +64,13 @@ Use `view=summary` for a compact section index and `view=section` with section/c
 
 Read `borrower_snapshot` and `borrower_profile_version` for the primary identity actually used by this assessment. Current profile corrections do not rewrite that snapshot. `participants` reports each included related party's roles, declared ownership, canonical subject ID, accepted authority, verification availability/outcome, evidence and limitations. Use `view=section&section=participants` for that bounded section. Missing or unavailable party evidence is explicit, never an implied successful check.
 {/* END BORROWER LIFECYCLE */}
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Interpret recommendations and accepted inputs
+
+A failed rule with `on_fail: outside_policy` takes precedence over a review-only rule. Otherwise, a failed or unavailable rule requiring review, or an unresolved verification outcome, yields `review_required`. `within_policy` requires all applicable executable rules to pass. Verification outcomes and policy recommendations remain separate from your institution's lending decision.
+
+Application amounts and terms come from the accepted application and lending-product version. The evidence set includes those institution-supplied inputs. Signal uses the deal snapshot pinned when its evaluation is claimed; a newer snapshot does not change an in-progress or historical result.
+
+`view=summary` includes the recommendation, verification outcome, accepted identity revision, currency, period, product/policy IDs and section counts. Explanation excerpts are bounded to 2,000 characters. `omitted_fields` lists unusually large context fields omitted from this compact representation; retrieve the full package or export to obtain those values. Read all limitations and policy reasons before making an institution decision.
+{/* END RESPONSE SEMANTICS */}

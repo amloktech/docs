@@ -64,3 +64,17 @@ Use authorized financial evidence and purpose-appropriate identity checks. Prote
 Signal uses the same dimensions and definitions, linked to an exact monitoring run and lender deal snapshot. Each change identifies its baseline package, current value, previous value and comparability. The absolute delta is current minus previous. The relative delta uses a positive previous value; otherwise it is null. Incompatible units, currency, account scope, periods, calculation versions or source quality make numeric deltas null with an explanation.
 
 An unavailable sync is not evidence that an alert condition resolved. Only fresh comparable evidence can support a resolved condition. A re-evaluation appends a new package and evidence set; it never rewrites prior findings, policy results, loan snapshots or billing usage.
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Consistent Sandbox calculations
+
+Sandbox monetary calculations use only eligible observations in the reporting currency. Sandbox does not invent FX rates or relabel a CAD value as USD. Unsupported currency scope is reported as unavailable, with an explicit reason.
+
+The synthetic fixed-rate, monthly term-loan illustration uses the accepted principal, requested term, amortization period and annual rate. It repays equal principal, calculates each month's interest on opening principal, and reconciles rounded cents. If the requested term is shorter than amortization, the final installment includes the remaining balloon. The first illustrative payment is due on the first day of the following UTC month. Unsupported repayment frequencies, variable rates or fees without a payment date remain unavailable rather than receiving an invented schedule.
+
+Cash balances sum eligible accounts on each observed calendar day. History counts calendar days, not account-days. Missing account coverage is not filled with zero. Overdraft days account for an overdrawn individual account even if another account leaves consolidated cash positive.
+
+Reconciliation requires explicit transaction-to-invoice allocations over comparable periods. Equal totals alone do not prove a match. Bank match share is matched value divided by eligible bank receipts. Reconciled-value share is twice the matched value divided by combined eligible bank receipts and accounting revenue; unmatched value remains explicit.
+
+Observation periods are taken from frozen records. A later assessment does not move old transactions into a new year or imply a fresh upstream collection. Source freshness, financial period and assessment time are separate fields.
+{/* END RESPONSE SEMANTICS */}

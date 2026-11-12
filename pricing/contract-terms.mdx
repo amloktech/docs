@@ -18,14 +18,14 @@ There is no scheduled monthly payment. Product usage draws from your prepaid wor
 | Rates | Published or negotiated CAD rates, shown to two decimals |
 | Insights usage | One charge for a completed full underwriting |
 | Signal usage | One charge per active borrower/business per workspace per month, including change-driven reassessment |
-| Cancellation cutoff | Processing and usage deductions stop immediately when cancellation is submitted; previously consumed credits are non-refundable |
+| Cancellation cutoff | Immediate processing cutoff under the cancellation terms, confirmed through support; previously consumed credits are non-refundable |
 | Additional charges | Any separately agreed services are identified in your agreement |
 
 Custom pricing retains one of the three tiers and records the negotiated rate and workload limits.
 
 ## Payment methods and top-ups
 
-Manage card or bank-account payment methods in the client portal. Automatic top-ups trigger below **CAD 200.00** by default, or your selected higher threshold. The amount you select must be at least **CAD 500.00**.
+Console **Billing** exposes the payment methods and automatic-payment settings available to your environment. Sandbox uses simulated card or ACH methods and never transfers real funds. Live funding requires activated payment facilities; support confirms the available funding process. Automatic top-ups trigger below **CAD 200.00** by default, or your selected higher threshold. The amount you select must be at least **CAD 500.00**.
 
 With auto-pay off, requests continue below CAD 200.00 while available credits cover them. Insufficient credits cause the billable operation to be rejected without charging for unprocessed work. Pending payments do not count as available credits.
 
@@ -37,13 +37,13 @@ Unused credits do not expire monthly. They remain in the shared balance while yo
 
 ## Cancellation and refund
 
-You may cancel at any time, including before the next renewal, with **no notice period**. Request cancellation in the client portal, or through your dedicated account manager if you are an enterprise client.
+The commercial terms allow cancellation at any time, including before renewal, with **no notice period**. Submit your request through [support](/support/create-ticket) or your dedicated account manager. There is no self-service account-cancellation or refund action in Console or the public API.
 
-When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled without another charge.
+The agreed terms provide for immediate cessation of processing, usage deductions and new funding attempts, then full closure at the **end of the request month**. Support confirms the cutoff and closure schedule in writing and coordinates any in-flight work and funding. A support request acknowledgment, a paused monitor or a revoked API key is not evidence that every closure step has completed.
 
-Full account closure occurs at the **end of the month in which you request cancellation**. AMLOK reconciles pre-cancellation charges and funding already in flight and generates the necessary final information. No additional usage is deducted during closure processing. The entire unused balance is refunded immediately at closure to the bank account saved in your portal. Used credits are non-refundable. Remaining-term obligations or fees are not deducted from this refund.
+At closure, the terms provide for immediate issuance of the **full unused-credit refund**, including promotional credits, with no refund fee or remaining-term deduction. Used credits are non-refundable. Support confirms the reconciled amount and refund destination through the approved payment process. Never send bank credentials or full payment details by email. Bank receipt can take **7-10 business days after issuance**.
 
-Bank receipt can take **7-10 business days after issuance**. Workspace data is deleted after the request month closes and the necessary final information is generated. See [cancellation and refunds](/pricing/refunds-and-payouts).
+Export needed records before closure. Data deletion is a separate, confirmed process governed by the agreement, applicable retention obligations and any legal hold; it is not triggered automatically by a calendar date or by sending a support message. See [cancellation and refunds](/pricing/refunds-and-payouts) and [privacy and data handling](/security/privacy).
 
 ## Common questions
 
@@ -64,7 +64,7 @@ Bank receipt can take **7-10 business days after issuance**. Workspace data is d
     No. Paid and promotional top-ups share one balance with no consumption priority. The full unused balance is refundable at final cancellation.
   </Accordion>
   <Accordion title="Can I cancel before the annual renewal?">
-    Yes, at any time without notice. Full closure occurs at the end of the request month, with an immediate refund of unused credits at closure.
+    Yes, at any time without notice. Request cancellation through support. The agreed terms provide for month-end closure and refund issuance at closure; support confirms the cutoff, reconciliation and payment reference.
   </Accordion>
   <Accordion title="Do custom rates create another complexity tier?">
     No. Your quote uses Standard, Advanced, or Complex with negotiated rates and explicit workload limits.
@@ -76,4 +76,4 @@ Bank receipt can take **7-10 business days after issuance**. Workspace data is d
 
 ## Product charge timing
 
-Insights consumes credits once the full agreed underwriting output is completed and published. Signal publishes a full monthly charge with the first successful evaluation output in each UTC calendar month, including a first mid-month activation, without proration. An already paid borrower/business is not charged again for another monitor, pause/resume, check or reassessment in that month. Insufficient credits block the unfunded operation without a debt or negative balance. See [Signal pricing](/pricing/signal) and [credits and billing](/pricing/credits-and-billing).
+Insights consumes credits once the full agreed underwriting output is completed and published. Signal publishes a full monthly charge with the first successful evaluation output in each UTC calendar month, including a first evaluation published mid-month, without proration. An already paid borrower/business is not charged again for another monitor, pause/resume, check or reassessment in that month. Insufficient credits block the unfunded operation without a debt or negative balance. See [Signal pricing](/pricing/signal) and [credits and billing](/pricing/credits-and-billing).

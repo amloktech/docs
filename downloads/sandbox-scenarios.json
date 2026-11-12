@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-11.1",
+  "version": "2026-11-11.2",
   "businesses": [
     {
       "id": "maple-retail",
@@ -186,6 +186,114 @@
       "category": "Underwriting",
       "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
       "expected": "completed / within_policy",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "verification_expired",
+      "name": "Verification expired",
+      "category": "Underwriting",
+      "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+      "expected": "completed / review_required",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "verification_review",
+      "name": "Verification requires review",
+      "category": "Underwriting",
+      "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+      "expected": "completed / review_required",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "verification_failed",
+      "name": "Verification failed",
+      "category": "Underwriting",
+      "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+      "expected": "completed / review_required",
       "owner_only": false,
       "requires_endpoint": false,
       "required_scopes": [

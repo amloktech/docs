@@ -31,7 +31,7 @@ Start a root `underwrite` workflow with the application and ready input manifest
 
 Create monitoring from an approved baseline. All monitors for a borrower/business share one monthly monitoring-period record. Signal uses existing evidence and new records to reassess risk without launching a separately billed Insights underwriting.
 
-The full monthly rate is deducted at 00:00 UTC on the first day of each calendar month before monitoring proceeds. First activation during a month deducts the full monthly rate immediately, without proration. Repeated activation, pauses, resumes, checks and reassessments do not add another charge in an already paid period. See [Signal pricing](/pricing/signal).
+The full monthly rate is published atomically with the first successful evaluation output per borrower/business/workspace in each UTC calendar month. A first successful evaluation mid-month uses the full rate without proration. Creating or resuming a monitor does not itself charge. Repeated evaluations in an already paid month reuse the original charge; a month without successful publication is not charged. See [Signal pricing](/pricing/signal).
 
 ## Included processing stages
 
@@ -79,13 +79,13 @@ Processing can use credits below CAD 200.00 if the balance covers its cost. Read
 
 ## Portal and API responsibilities
 
-The client portal manages card/bank payment methods, top-ups, automatic-payment settings and cancellation. Enterprise clients can also request cancellation through their account manager. The public API provides reports and exports only. There are no wallet-management, payment, top-up, refund-request, transfer or cancellation commands.
+Console Billing manages the payment settings available to the selected environment. Sandbox card/ACH methods and top-ups are simulated. Live funding requires an activated payment facility. Cancellation, payment disputes, refunds and retention requests go through support or the account manager. The public API provides reports and exports only, with no payment, refund, transfer or account-cancellation commands.
 
 ## Cancellation
 
-Cancellation immediately stops processing, deductions, and upcoming top-ups. Unfinished work creates no charge. Full account closure occurs at the end of the request month. AMLOK immediately refunds all remaining available credits, including promotional top-ups, to the saved portal bank account. Correctly spent credits are non-refundable. Bank receipt can take 7-10 business days after issuance.
+Request cancellation through support. The commercial terms provide for an immediate processing cutoff, month-end closure and refund of all unused credits, including promotional credits. Support confirms the cutoff, reconciliation, authorized refund destination and issuance reference. Correctly spent credits are non-refundable. Bank receipt can take 7-10 business days after actual issuance. A request acknowledgment is not proof that all closure steps have completed.
 
-Data is deleted after that month closes and necessary final information is generated. Export needed evidence before deletion. Necessary final billing and refund records are retained separately, without borrower data or continuing workspace API access. See [cancellation and refunds](/pricing/refunds-and-payouts).
+Export required evidence before access ends. Support confirms deletion scope and completion, backup handling, legal holds and any separate financial-record retention. No customer retention-setting or deletion-request API exists. See [cancellation and refunds](/pricing/refunds-and-payouts).
 ''')
     write('consumption-reporting','Consumption reporting','Reconcile product charges, credit activity, historical rates and reproducible reports.', '''
 Use one immutable billing snapshot to answer what was consumed, what it cost, and how available credits changed. Each API key is bound to one workspace.
@@ -97,7 +97,7 @@ The table shows regular pay-as-you-go rates. Enterprise clients use the negotiat
 | Product | Unit | Standard | Advanced | Complex | Charge timing |
 | --- | --- | ---: | ---: | ---: | --- |
 | Insights | Completed underwriting | CAD 8.00 | CAD 25.00 | CAD 45.00 | Successful completion and publication of the agreed output |
-| Signal | Active borrower/business per month | CAD 5.00 | CAD 8.00 | CAD 12.00 | Beginning of the UTC calendar month, or full charge at first activation during the month |
+| Signal | Borrower/business with a successfully published evaluation in the month | CAD 5.00 | CAD 8.00 | CAD 12.00 | Atomic publication of the first successful evaluation in the UTC calendar month, without proration |
 
 Signal includes monitoring and reassessment. Multiple monitors, checks or facilities do not create more account-month charges. Included verification, searches, calculations and investigations do not add another AMLOK charge. The monthly consumption unit does not change the monthly minimum's annual payment schedule.
 
@@ -148,7 +148,7 @@ Create an asynchronous report for `usage`, `ledger`, `statement` or `funding`. U
 
 [Export formats](/api-reference/export-formats) defines JSON schemas, CSV columns, empty results, decimal handling and downloadable examples. Verify the file's SHA-256 and retain its snapshot ID. A repeated export of the same snapshot and filters reproduces the same financial data; job metadata and delivery URLs can differ.
 
-Final statement revisions are immutable. Later corrections create a new revision with `supersedes_id`. On cancellation, processing and deductions stop immediately; unused credits are refunded at month-end closure. No new product charge can post after the cancellation cutoff. Final documents and refund confirmations are supplied through the closure process. Workspace API access ends on deletion; minimal financial/refund records retained separately contain no borrower evidence. See [cancellation and refunds](/pricing/refunds-and-payouts).
+Statement exports marked `provisional` summarize posted entries at the selected snapshot; generating one does not finalize settlement or issue a refund. Corrections remain linked to original activity. Support supplies confirmed closure reconciliation and refund references through the [cancellation process](/pricing/refunds-and-payouts). Export needed evidence before access ends; support confirms any separate financial-record retention and data-deletion outcome.
 ''')
     write('processing-lifecycle','Processing lifecycle','Follow evidence collection, workload checks, credit deductions and terminal states.', '''
 AMLOK coordinates assessment processing. It does not execute borrower outreach, servicing actions or credit-limit changes.
@@ -187,7 +187,7 @@ Alerts use `open` and `resolved`. AMLOK resolves a signal only when fresh, compa
 
 ## Account cancellation
 
-All processing, deductions and upcoming top-ups stop immediately. Pending workflows, calculations, lien searches, verification and document extraction become `cancelled`, with `stop_reason: account_cancellation` (or `parent_cancelled` for a child). A late provider response does not resume the workflow or create a charge. Read access continues only until workspace deletion under the month-end closure policy.
+Account cancellation is a support-managed commercial process, not a monitor update or public API command. Support confirms the processing cutoff, outstanding work, funding and closure steps under the agreement. Do not infer account-wide cancellation from one stopped monitor, a revoked key or a ticket acknowledgment. Preserve required exports before access ends. See [cancellation and refunds](/pricing/refunds-and-payouts).
 ''')
     write('workload-reporting','Workload limits and reporting','Read measured workload and handle an agreed limit before additional processing.', '''
 The rate card defines allowed workload; a [workload report](/api-reference/endpoints/billing/list-workload-reports) shows actual counts, limits, remaining capacity and blocking dimensions. Workload records are not extra billable units.
@@ -241,7 +241,7 @@ To verify the manifest digest, concatenate all entries in `(resource_type, resou
 
 A Signal reassessment is linked to its paid monitoring period and creates no additional Insights debit. Included child stages do not have independent charge records. All references must belong to the key-bound workspace and appropriate subject; report access never grants broader evidence access.
 
-Export evidence before workspace deletion. Necessary financial records retained for final refunds do not retain borrower source data, documents or analysis outputs.
+Export required evidence before access ends. Support confirms deletion scope and any financial-record retention separately; a provisional billing export does not certify account closure or deletion.
 ''')
     write('synchronization','Reliable synchronization','Bootstrap a consistent snapshot and resume normalized-data changes without gaps.', '''
 Use a synchronization checkpoint for source-data replication. Billing snapshots serve a separate purpose: financial reconciliation.

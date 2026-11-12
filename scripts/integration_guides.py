@@ -186,7 +186,7 @@ Also download the [Postman product journeys](/downloads/amlok-journeys.postman_c
 | Scenario ID | Exercise | Expected result |
 | --- | --- | --- |
 | `insights_success` | Complete underwriting and reconcile its output. | One Standard Insights charge; completed snapshot, manifest and usage agree. |
-| `signal_success` | Activate monitoring; observe the scheduled synthetic change. | Full Signal charge on activation; reassessment and alert without another Insights charge. |
+| `signal_success` | Activate monitoring; observe the scheduled synthetic change. | Full Signal charge with the first successfully published evaluation in the month; reassessment and alert without another Insights charge. |
 | `insufficient_credits` | Submit work without enough test credits, fund through the sandbox portal and retry. | Initial `402` has no run or debit; funded retry uses the same intended key. |
 | `authorization_expired` | Renew the seeded connection and complete hosted authorization. | Same connection ID, restored authorization and explicit sync coverage. |
 | `rejected_evidence` | Read a rejected requirement and upload the supplied valid replacement. | Structured rejection reason; accepted replacement resumes the same run. |
@@ -195,7 +195,7 @@ Also download the [Postman product journeys](/downloads/amlok-journeys.postman_c
 | `owner_kyc` | Run person KYC using its active business association and unfinished parent. | Person result stays in the business product with no extra charge. |
 | `duplicate_delivery` | Receive duplicates and replay the same event. | One application-side effect; delivery attempts remain observable. |
 
-For cancellation and month-boundary tests, use the sandbox portal's scenario controls. Cancellation immediately stops processing, deductions and upcoming top-ups. Month advance tests the full Signal charge once per borrower/business/workspace/month. Simulated funds and time cannot affect production. Use the portal fixture pack's valid replacement document and hosted authorization flow; do not fabricate evidence or provider credentials.
+Use the documented [Sandbox scenarios](/sandbox/scenarios) for monitoring and payment outcomes. Creating or resuming a monitor alone does not charge; the first successfully published evaluation in the UTC month posts its full monthly charge. There is no account-cancellation or clock-advance customer control. Request account cancellation through support, separately from stopping an individual monitor. Sandbox funds are fictional and cannot fund Live processing. Use the sample pack's valid replacement document and hosted authorization flow; do not fabricate evidence or provider credentials.
 
 Scenario `expected_http_status`, `expected_state` and `instructions` describe each fixture's expected result. General endpoint saved responses show schema shapes and are not those full datasets. A successful local contract test is not evidence that a live sandbox run completed; retain actual run IDs and results from your provisioned environment for acceptance.
 ''')

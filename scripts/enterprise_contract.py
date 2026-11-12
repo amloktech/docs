@@ -128,7 +128,7 @@ def extend(g):
         for code in ['402', '422']:
             operation['responses'][code] = {'$ref': '#/components/responses/Error'+code}
 
-    signal_rule = 'Signal charges the full agreed monthly rate once per borrower/business/workspace at 00:00 UTC on the first day of the month, before monitoring proceeds. First activation during a month charges the full monthly rate immediately, without proration; the next charge is at the next month boundary. Repeated monitor creation, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits block monitoring without a debit or debt; funding resumes only the current period after its single successful charge, without charging missed inactive months. User-paused monitoring remains paused until the user resumes it. Account cancellation stops processing and all further deductions immediately.'
+    signal_rule = 'Signal publishes the full agreed monthly rate atomically with the first successful evaluation output per borrower/business/workspace in each UTC calendar month. A first successful evaluation mid-month uses the full rate without proration. Monitor creation or activation alone does not charge. Repeated monitors, pauses, resumes, checks and reassessments do not add charges in an already paid period. Insufficient credits delay publication without a debit or debt. After funding, only the current month is charged on successful publication; missed inactive months are not charged retroactively. User-paused monitoring remains paused until resumed. Account cancellation is requested through support; a monitor update is not an account-closure command.'
     for method in ['post', 'patch']:
         path = '/v1/monitors' if method == 'post' else '/v1/monitors/{id}'
         spec['paths'][path][method]['description'] += ' '+signal_rule
@@ -162,13 +162,13 @@ def extend(g):
         S[name]['properties'][key]={**S[name]['properties'][key],'description':description}
     for r in E['BillingRateCard']['rates']:
         if r['product'] == 'signal':
-            r['billing_timing'] = 'month_start_or_first_activation'
+            r['billing_timing'] = 'first_successful_evaluation_in_month'
         else:
             r['billing_timing'] = 'successful_output_completion'
-    S['BillingRate']['properties']['billing_timing'] = enum('month_start_or_first_activation', 'successful_output_completion')
+    S['BillingRate']['properties']['billing_timing'] = enum('first_successful_evaluation_in_month', 'successful_output_completion')
     S['BillingRate']['required'].append('billing_timing')
     S['BillingRate'].setdefault('allOf',[]).extend([
-        {'if':{'properties':{'product':{'const':'signal'}}},'then':{'properties':{'billing_timing':{'const':'month_start_or_first_activation'}}}},
+        {'if':{'properties':{'product':{'const':'signal'}}},'then':{'properties':{'billing_timing':{'const':'first_successful_evaluation_in_month'}}}},
         {'if':{'properties':{'product':{'const':'insights'}}},'then':{'properties':{'billing_timing':{'const':'successful_output_completion'}}}},
     ])
     S['BillingUsage']['allOf'] = [
@@ -215,7 +215,7 @@ def extend(g):
     period_filters = [g['parameter']('subject_id','query','id','Authorized borrower/business.',False,'biz_example'),
         g['parameter']('period_start','query','datetime','Inclusive UTC period-start boundary.'),
         g['parameter']('period_end','query','datetime','Exclusive UTC period-start boundary.')] + page_params()
-    add('EN003','GET','/v1/monitoring-periods','List monitoring periods','Risk','MonitoringPeriod',period,signal_rule+' Read one shared record per subject/month, including its charge and workload references. Periods are immutable in identity; current status and charged_at reflect activation. API reads never create a charge.', 'monitoring:read',params=period_filters,is_list=True)
+    add('EN003','GET','/v1/monitoring-periods','List monitoring periods','Risk','MonitoringPeriod',period,signal_rule+' Read one shared record per subject/month, including its charge and workload references. Periods are immutable in identity; current status and charged_at reflect the first successfully published evaluation. API reads never create a charge.', 'monitoring:read',params=period_filters,is_list=True)
     add('EN004','GET','/v1/monitoring-periods/{id}','Retrieve monitoring period','Risk','MonitoringPeriod',period,signal_rule,'monitoring:read')
 
     # Exact version references plus a specified digest allow an audit of frozen input sets.
