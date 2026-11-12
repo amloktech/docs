@@ -84,7 +84,7 @@ PURPOSE = {
     'listBillingTransactions':'Read immutable workspace funding, usage, adjustment and final-refund entries. Use typed billing exports for detailed statements, workload and historical rates.',
     'lookupRequestReceipt':'Recover the accepted resource using the original operation and idempotency key after a timeout or expired response cache. Do not submit accepted work as a new command.',
     'getConfiguration':'Discover the approved schemas, products, integration IDs, embedding versions and monitoring cadences available to this API key.',
-    'uploadDocument':'Upload borrower evidence or documents supporting a lending product or risk policy. Upload creates a new record; it cannot overwrite an existing document.',
+    'uploadDocument':'Upload borrower evidence or documents supporting a lending product or risk policy. Returns 202 with status processing; inspect GET /v1/documents/{id} until available or rejected. Wait for available before referencing initial document IDs in an origination. A borrower-only upload does not attach to an existing assessment. Each upload creates a new immutable file; it cannot overwrite a document or revise a completed result.',
     'downloadDocument':'Issue a short-lived download URL for an authorized available file. Recheck source entitlement and borrower access; possession of a document ID alone grants nothing.',
     'revokeConsent':'Record withdrawal of authorization and stop future collection covered by that consent. Revocation does not edit historical assessments or serve as a data-deletion command.',
 }

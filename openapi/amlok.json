@@ -5378,7 +5378,7 @@
             }
           }
         },
-        "description": "Upload borrower evidence or documents supporting a lending product or risk policy. Upload creates a new record; it cannot overwrite an existing document. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:write.",
+        "description": "Upload borrower evidence or documents supporting a lending product or risk policy. Returns 202 with status processing; inspect GET /v1/documents/{id} until available or rejected. Wait for available before referencing initial document IDs in an origination. A borrower-only upload does not attach to an existing assessment. Each upload creates a new immutable file; it cannot overwrite a document or revise a completed result. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:write.",
         "security": [
           {
             "BearerAuth": []
@@ -5467,7 +5467,7 @@
               "type": "string",
               "minLength": 1
             },
-            "description": "origination id"
+            "description": "Files associated with this origination through its primary or participant document IDs, or explicitly targeted at upload. Associations are fixed at the listing snapshot; current source authorization is rechecked. Excludes other borrower-only uploads. A missing origination or one outside this workspace/environment returns 404. Combined borrower_id, context, type and status filters narrow these results."
           },
           {
             "name": "context",
@@ -5884,7 +5884,7 @@
             }
           }
         },
-        "description": "Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read.",
+        "description": "Discover institution uploads, borrower uploads, integration files and generated documents. origination_id resolves primary-borrower and participant document associations plus files explicitly uploaded for that origination, including processing or rejected uploads. It does not include unrelated later borrower uploads or prove a file was used in a completed result. Other filters apply together, and current source authorization still applies. Follow next_cursor for the full snapshot; download available files through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read.",
         "security": [
           {
             "BearerAuth": []
@@ -60466,12 +60466,12 @@
           "origination_id": {
             "type": "string",
             "minLength": 1,
-            "description": "Opaque identifier, authorized within the API key workspace and environment."
+            "description": "Optional collecting/requires_action origination to associate with this upload. Omit for initial borrower files and reference their IDs after they become available. Later uploads to other states return 409."
           },
           "requirement_id": {
             "type": "string",
             "minLength": 1,
-            "description": "Opaque identifier, authorized within the API key workspace and environment."
+            "description": "Open document requirement this file satisfies. Requires origination_id and the required borrower, document type and accepted MIME type. Successful inspection resolves the requirement; 202 alone does not."
           }
         },
         "required": [
@@ -60529,7 +60529,7 @@
             }
           }
         ],
-        "description": "Upload once, then reference document ID in the origination. A later upload may include origination_id and an open requirement_id: borrower and requirement ownership are checked and association occurs atomically. Late attachment is accepted only while collecting/requires_action, otherwise 409. Never overwrite a file or change a completed assessment."
+        "description": "Create an immutable file record. 202 accepts the upload for asynchronous inspection and returns status processing; it does not confirm file readiness or use in an assessment. Poll GET /v1/documents/{id} until available before referencing an initial file. A later upload can name a collecting/requires_action origination and open requirement; accepted inspection adds its document association. Other origination states return 409. Borrower-only uploads never attach automatically or change completed assessments."
       },
       "Document": {
         "type": "object",
@@ -60626,7 +60626,7 @@
                 "type": "null"
               }
             ],
-            "description": "Origination id for Document. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Origination explicitly supplied when this file was uploaded; null for an initial borrower-only upload, even if the file is later referenced by one or more assessments. Use GET /v1/documents?origination_id=... to resolve assessment associations, including primary and participant documents."
           },
           "requirement_id": {
             "anyOf": [
@@ -60639,7 +60639,7 @@
                 "type": "null"
               }
             ],
-            "description": "Requirement id for Document. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Document requirement explicitly supplied at upload, or null. Its presence records the upload target; inspection must succeed before the requirement is resolved."
           },
           "origin": {
             "type": "string",
@@ -61180,7 +61180,7 @@
               "description": "Opaque identifier, authorized within the API key workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Document ids for CreateOrigination. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Available borrower-context documents owned by the primary borrower. Upload first, wait until each Document.status is available, then include its ID here. Processing or rejected files return 422; a borrower-only upload is not associated automatically. Related-party files belong in participants[].document_ids."
           },
           "supersedes_origination_id": {
             "type": "string",
@@ -61492,7 +61492,7 @@
               "description": "Opaque ID within the authorized workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Current authorized document associations. Includes submitted documents and later documents accepted against open requirements. A completed assessment freezes its own document and evidence references."
+            "description": "Accepted primary-borrower document associations, including initially submitted files and later files accepted while the origination is open. Related-party files appear separately in participants[].document_ids. A completed risk package freezes its own document and evidence references; later borrower-only uploads do not change them."
           },
           "connection_ids": {
             "type": "array",
@@ -66138,7 +66138,7 @@
               "description": "Opaque ID within the authorized workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Current authorized document associations. Includes submitted documents and later documents accepted against open requirements. A completed assessment freezes its own document and evidence references."
+            "description": "Primary-borrower document IDs frozen when this risk package was published. Related-party files are preserved in participants[].document_ids and the evidence set. Later uploads do not change this historical result; current authorization still governs access."
           },
           "record_version": {
             "type": "integer",

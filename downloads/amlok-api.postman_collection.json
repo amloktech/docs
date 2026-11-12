@@ -707,7 +707,7 @@
           ],
           "query": []
         },
-        "description": "Upload borrower evidence or documents supporting a lending product or risk policy. Upload creates a new record; it cannot overwrite an existing document. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:write.",
+        "description": "Upload borrower evidence or documents supporting a lending product or risk policy. Returns 202 with status processing; inspect GET /v1/documents/{id} until available or rejected. Wait for available before referencing initial document IDs in an origination. A borrower-only upload does not attach to an existing assessment. Each upload creates a new immutable file; it cannot overwrite a document or revise a completed result. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:write.",
         "body": {
           "mode": "formdata",
           "formdata": [
@@ -760,7 +760,7 @@
               ],
               "query": []
             },
-            "description": "Upload borrower evidence or documents supporting a lending product or risk policy. Upload creates a new record; it cannot overwrite an existing document. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:write.",
+            "description": "Upload borrower evidence or documents supporting a lending product or risk policy. Returns 202 with status processing; inspect GET /v1/documents/{id} until available or rejected. Wait for available before referencing initial document IDs in an origination. A borrower-only upload does not attach to an existing assessment. Each upload creates a new immutable file; it cannot overwrite a document or revise a completed result. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:write.",
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -3474,7 +3474,7 @@
           ],
           "query": []
         },
-        "description": "Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read."
+        "description": "Discover institution uploads, borrower uploads, integration files and generated documents. origination_id resolves primary-borrower and participant document associations plus files explicitly uploaded for that origination, including processing or rejected uploads. It does not include unrelated later borrower uploads or prove a file was used in a completed result. Other filters apply together, and current source authorization still applies. Follow next_cursor for the full snapshot; download available files through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read."
       },
       "response": [
         {
@@ -3498,7 +3498,7 @@
               ],
               "query": []
             },
-            "description": "Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read."
+            "description": "Discover institution uploads, borrower uploads, integration files and generated documents. origination_id resolves primary-borrower and participant document associations plus files explicitly uploaded for that origination, including processing or rejected uploads. It does not include unrelated later borrower uploads or prove a file was used in a completed result. Other filters apply together, and current source authorization still applies. Follow next_cursor for the full snapshot; download available files through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read."
           },
           "status": "OK",
           "code": 200,

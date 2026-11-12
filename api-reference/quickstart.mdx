@@ -78,7 +78,7 @@ After funding, [create a Signal monitor](/api-reference/monitoring-design) with 
 
 See [embedding the Hub](/api-reference/integration-hub) for the split between console configuration and secure borrower-specific sessions. Before or after underwriting, use [GET /v1/data/records](/api-reference/endpoints/data/list-data-records) with borrower_id to retrieve the authorized normalized and enriched data; no risk-package ID is required.
 
-Upload supporting files with POST /v1/documents and include their IDs in the origination request. If Amlok requests a later document, upload it with the origination_id and open requirement_id. `GET /v1/originations/{id}` retains submitted_request even before completion. GET /v1/documents?origination_id=... lists associated files. See [documents](/api-reference/documents) for attachment states and download controls.
+Upload supporting files with `POST /v1/documents`. Its `202` response means processing has started. Poll `GET /v1/documents/{id}` until `status` is `available`, then include the IDs in the origination request. Submitting a processing or rejected file returns `422`. If Amlok requests a later document, upload it with the `origination_id` and open `requirement_id`; inspection must succeed before the requirement is resolved. `GET /v1/originations/{id}` retains `submitted_request` even before completion. `GET /v1/documents?origination_id=...` lists primary and participant associations plus uploads targeted at that origination. Later borrower-only uploads do not attach automatically. See [documents](/api-reference/documents) for the full workflow.
 
 {/* BEGIN BORROWER LIFECYCLE */}
 ## Reuse identity and choose the next product

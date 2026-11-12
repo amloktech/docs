@@ -1,7 +1,7 @@
 ---
 title: "Follow a monitored deal"
 sidebarTitle: "Portfolio"
-description: "Understand every monitored-deal drawer tab: deal overview, monitoring runs, integrations, and notifications with their webhook delivery history."
+description: "Understand monitored-deal drawer tabs: deal overview, monitoring runs, associated documents, integrations and notifications with webhook delivery history."
 keywords: ["portfolio", "Signal", "monitoring", "flags", "alerts", "baseline"]
 ---
 
@@ -32,6 +32,7 @@ Selecting a row opens a drawer over the table. Its header identifies the deal, e
 | --- | --- |
 | [Overview](#overview) | What is being monitored, and what is the current context? |
 | [Monitoring runs](#monitoring-runs) | What evaluations ran, which sources were included, and what was the result? |
+| [Documents](#documents) | Which files are associated with this monitored deal, and which belong only to the borrower? |
 | [Integrations](#integrations) | Which connections support this monitoring record? |
 | [Notifications & flags](#notifications-and-flags) | What changes need attention, and were their notifications delivered? |
 
@@ -65,6 +66,14 @@ Use **Monitoring runs** to inspect evaluations associated with this monitored de
 When a value appears stale, check the most recent relevant sync, its source association and its status. The readable run details include source coverage, limitations and available failure explanations for Analysts as well as Owners and Developers. Missing data remains distinct from a zero value. Owners and Developers can inspect captured request or response payloads and download JSON where provided.
 
 **Monitoring runs** lists scheduled or change-driven evaluations, which can combine several sources. Inspect a run for its available source details. A successful evaluation describes that recorded activity; it does not establish the freshness of every source. An empty tab means no related evaluation is shown. Opening a row does not trigger a refresh or retry.
+
+## Documents
+
+Open **Documents** to inspect files associated with the monitored deal, its baseline and latest risk package. **Associated documents** includes those explicit links; it does not claim every file was used in every monitoring run. Inspect the individual published package's evidence references for that result.
+
+**Other borrower documents** lists additional files for the primary borrower, excluding the associated set. Each section has separate search, filters and pagination. Select a file for metadata and use **Download** when it is available and authorized. Processing, rejected and restricted files retain their status and cannot be downloaded.
+
+Uploading another borrower file does not change earlier monitoring results. Follow the [monitoring workflow](/api-reference/monitoring-design) for accepted inputs and use the result's own evidence references when reconciling a historical run. Additional files for a participant are available through that identity's [borrower profile](/console/borrowers).
 
 ## Integrations
 

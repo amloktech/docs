@@ -34302,7 +34302,7 @@
               "description": "Opaque identifier, authorized within the API key workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Document ids for CreateOrigination. Constraints, requiredness and allowed values are defined by this schema."
+            "description": "Available borrower-context documents owned by the primary borrower. Upload first, wait until each Document.status is available, then include its ID here. Processing or rejected files return 422; a borrower-only upload is not associated automatically. Related-party files belong in participants[].document_ids."
           },
           "supersedes_origination_id": {
             "type": "string",
@@ -34628,7 +34628,7 @@
               "description": "Opaque ID within the authorized workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Current authorized document associations. Includes submitted documents and later documents accepted against open requirements. A completed assessment freezes its own document and evidence references."
+            "description": "Accepted primary-borrower document associations, including initially submitted files and later files accepted while the origination is open. Related-party files appear separately in participants[].document_ids. A completed risk package freezes its own document and evidence references; later borrower-only uploads do not change them."
           },
           "connection_ids": {
             "type": "array",
@@ -35018,7 +35018,7 @@
               "description": "Opaque ID within the authorized workspace and environment."
             },
             "uniqueItems": true,
-            "description": "Current authorized document associations. Includes submitted documents and later documents accepted against open requirements. A completed assessment freezes its own document and evidence references."
+            "description": "Primary-borrower document IDs frozen when this risk package was published. Related-party files are preserved in participants[].document_ids and the evidence set. Later uploads do not change this historical result; current authorization still governs access."
           },
           "record_version": {
             "type": "integer",

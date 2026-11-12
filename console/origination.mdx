@@ -85,7 +85,14 @@ Copy or download the JSON to compare the fields with [Data Lookup](/console/data
 
 ## Documents
 
-Use this tab to find the files associated with this origination. The table includes **Document**, **Type**, **Status** and **Bytes**. Search for a file or identifier and select its row to inspect the available metadata.
+Use this tab to distinguish the assessment's file associations from other files uploaded for the primary borrower. Each table has its own search, filters and pages, with **Document**, **Type**, **Status** and **Bytes** columns. Select a row to inspect its metadata.
+
+| Section | What it contains |
+| --- | --- |
+| **Associated documents** | Primary-borrower and participant files referenced by this origination, plus uploads explicitly targeted at its document requirements. Processing and rejected uploads can appear here; their presence does not mean they were used in the result. |
+| **Other borrower documents** | Files for the primary borrower that are not associated with this origination, including later borrower-only uploads. These do not change the assessment or its evidence. |
+
+To inspect another participant's additional files, open that participant's profile in [Borrowers](/console/borrowers). Files from different people or businesses retain their own borrower association.
 
 <Frame caption="Documents lists the supporting file records for this origination. Open a row to inspect its metadata and download availability.">
   <img src="/images/console/origination-documents.jpg" alt="Documents tab for Evergreen Outdoor Supply listing a synthetic financial statement with its type, status and byte count." />
@@ -93,7 +100,11 @@ Use this tab to find the files associated with this origination. The table inclu
 
 Check the file's identity and status before relying on it. A dash means metadata is not supplied in that view. A file being listed does not mean every verification check passed or every required document is present.
 
-In the file details, **Download original file** is available when an authorized download is provided. **Download unavailable** means there is no usable download for that record at that time. This is a read-only evidence view; submit or associate additional documents through your integration. See [documents and evidence](/console/evidence) for the wider evidence workflow.
+**Download** is available for an authorized, available file. Processing, rejected or restricted files cannot be downloaded. Metadata exports contain record information, not the file bytes.
+
+An upload response of `202` means the file was accepted for processing. Wait until its status is **Available** before including it in a new underwriting request. A borrower-only upload made after this assessment appears in **Other borrower documents**; refreshing does not make it part of the completed result.
+
+To use that file in underwriting, submit a new assessment through your integration with the available file ID and the documented reassessment references. For a still-open document requirement, upload against that specific requirement instead. This drawer is read-only and does not attach files or rerun underwriting. See the [document workflow](/api-reference/documents) for both paths.
 
 ## Integrations
 
