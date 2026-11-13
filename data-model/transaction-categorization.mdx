@@ -1,0 +1,47 @@
+---
+title: "Transaction categorization"
+description: "Understand bank and card transaction purpose, payment context, classification evidence, uncertainty and the treatment of transfers and repayments."
+sidebarTitle: "Transaction categories"
+keywords: [transaction categories, banking, credit cards, financial taxonomy]
+---
+
+Transaction categorization identifies the supported economic purpose of bank and issuer-card activity. The versioned Amlok taxonomy contains 327 leaf categories with hierarchical groups. Payment method, merchant industry, business use and accounting effect remain separate observations.
+
+## Read the classification
+
+Read normalized `bank_transaction.classification` through [Data](/api-reference/data-access) or the frozen [Evidence](/api-reference/evidence-traceability) used by a risk package. The result retains its taxonomy version, category ID/path, method, evidence-strength label, cash-flow role, cash effect, balance-sheet effect and reason codes.
+
+`classified` means the supplied evidence supports that category. `unclassified` means no supported classification is available at that specificity. `conflicting` means relevant observations disagree. A broad category maps to an explicitly unspecified leaf; it does not become a guessed detailed purpose.
+
+Confidence labels describe evidence strength. They are not calibrated probabilities, approval signals or a guarantee that a transaction is legitimate. Original provider labels remain in `source_category`, optional `provider_category` and authorized source payloads. An unsupported provider taxonomy version remains unmapped.
+
+## Keep the classification dimensions separate
+
+| Dimension | Meaning |
+| --- | --- |
+| Economic purpose | Sales receipts, payroll, supplier purchases, software, rent, financing, taxes, fees, investments, refunds and other supported purposes |
+| Account context | Depository cash movement versus issuer-card or loan-ledger activity |
+| Direction | Normalized inflow or outflow from the account holder's perspective |
+| Payment rail/channel | ACH, EFT, wire, card, cash and the reported channel; a rail does not establish purpose |
+| Counterparty role | Customer, supplier, employee, creditor, owner, processor or another supported relationship |
+| Merchant category code | Reported merchant-industry classification; it does not establish what was bought or whether it was a business expense |
+| Economic role | Business, personal, mixed or unknown; mixed use requires supported allocation |
+| Card event | Purchase, repayment, refund, cash advance, fee, interest, reversal or other supported event |
+
+## Avoid counting the same economic activity twice
+
+- Bank loan proceeds and owner contributions are not operating sales receipts.
+- Transfers between included depository accounts do not create consolidated operating revenue.
+- A supported payment from the bank to the business's own credit card is a liability settlement. Own-account status alone does not make it an asset-to-asset transfer to eliminate.
+- Issuer-card purchases create card activity; the later bank settlement creates cash movement. Do not add them together as purchases.
+- Merchant processor payouts, underlying card sales and accounting revenue can describe the same economic activity. Reconcile them rather than summing them.
+- Refunds, reversals and chargebacks retain their own purposes and linkage. They are not automatically new sales or fraud.
+- Pending authorizations are not finalized posted activity.
+
+## Classification boundaries
+
+The library uses explicit supported purpose, normalized categories, structural transaction facts and versioned provider mappings. Merchant-name keywords or an MCC alone do not establish a verified financial purpose. Unknowns and conflicting labels remain visible. Category definitions do not establish tax treatment, legal ownership, a completed fraud investigation or a credit decision.
+
+Source availability depends on the provider, country, account, consent, modules and history. A category in the taxonomy does not imply that every integration supplies the evidence to assign it. See [provider coverage](/data-model/provider-coverage).
+
+Download the [complete versioned taxonomy](/downloads/transaction-taxonomy.json), including category definitions, applicability, hierarchy, independent axes and source references. Explore the same definitions in **Dev Tools → Data Lookup → Financial intelligence → Transaction categories**. Use the [financial attribute guide](/data-model/financial-attributes) to retrieve calculated observations by category and period.

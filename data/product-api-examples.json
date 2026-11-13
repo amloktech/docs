@@ -7275,6 +7275,60 @@
       "not_applicable_metric_count": 20,
       "coverage_statement": "All catalog entries are accounted for. Availability describes supplied evidence, not borrower credit quality."
     },
+    "financial_attributes": [
+      {
+        "key": "transactions.bank_cashflow.inflow.adjustment.balance_adjustment.rolling_30d.amount",
+        "value_type": "decimal",
+        "value": null,
+        "unit": "currency",
+        "currency": "CAD",
+        "status": "unavailable",
+        "window_start": "2026-10-02",
+        "window_end": "2026-11-01",
+        "as_of": "2026-11-06T12:00:00Z",
+        "calculation_version": "2026-11-13.1",
+        "definition_version": "2026-11-13.1",
+        "input_resource_ids": [],
+        "input_manifest_id": "fai_synthetic",
+        "coverage_ratio": null,
+        "missing_reason": "This abbreviated documentation example does not supply complete source history.",
+        "reason_code": "incomplete_coverage"
+      }
+    ],
+    "financial_attribute_inputs": [
+      {
+        "id": "fai_synthetic",
+        "basis": "bank_cashflow",
+        "window": {
+          "start": "2026-10-02T00:00:00Z",
+          "end": "2026-11-01T00:00:00Z"
+        },
+        "currency": "CAD",
+        "account_ids": [],
+        "resource_ids": [],
+        "evidence_ids": [],
+        "coverage": {
+          "expected_days": 30,
+          "expected_account_days": 0,
+          "covered_account_days": 0,
+          "transaction_count": 0,
+          "classified_transaction_count": 0
+        },
+        "as_of": "2026-11-06T12:00:00Z"
+      }
+    ],
+    "financial_attribute_summary": {
+      "catalog_version": "2026-11-13.1",
+      "taxonomy_version": "2026-11-13.1",
+      "definition_count": 12955,
+      "evaluated_count": 1,
+      "available_count": 0,
+      "unavailable_count": 1,
+      "input_manifest_count": 1,
+      "currency": "CAD",
+      "as_of": "2026-11-06T12:00:00Z",
+      "coverage_statement": "Abbreviated synthetic documentation example. Retrieve all evaluated attributes through paged sections; definitions do not imply available inputs."
+    },
     "borrower_snapshot": {
       "id": "bor_synthetic",
       "type": "business",
@@ -13079,6 +13133,30 @@
       "test_integration_id": "bank_synthetic"
     },
     "risk_catalog_version": "2026-11-12.1",
+    "financial_intelligence": {
+      "version": "2026-11-13.1",
+      "taxonomy_version": "2026-11-13.1",
+      "attribute_definition_count": 12955,
+      "transaction_category_count": 327,
+      "scalar_metric_count": 184,
+      "catalogs": [
+        {
+          "kind": "bank_card_attributes",
+          "version": "2026-11-13.1",
+          "url": "https://docs.amlok.io/downloads/financial-attribute-catalog.json"
+        },
+        {
+          "kind": "cross_system_attributes",
+          "version": "2026-11-13.1",
+          "url": "https://docs.amlok.io/downloads/cross-system-attribute-catalog.json"
+        },
+        {
+          "kind": "transaction_categories",
+          "version": "2026-11-13.1",
+          "url": "https://docs.amlok.io/downloads/transaction-taxonomy.json"
+        }
+      ]
+    },
     "contract": {
       "revision": "2026-11-06.enterprise.1",
       "schema_version": "1.0.0",

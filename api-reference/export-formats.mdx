@@ -68,3 +68,11 @@ In addition to `exports:write` to create an export, or `exports:read` to inspect
 
 Source authorization is checked when creating, preparing, retrieving and downloading the export. Losing a required permission, product entitlement or source authorization prevents subsequent access. A saved export ID or download link is not an access bypass. Risk-package access does not require `evidence:read` as a substitute for `results:read`.
 {/* END BORROWER LIFECYCLE */}
+
+{/* BEGIN FINANCIAL ATTRIBUTE EXPORTS */}
+## Detailed financial attribute exports
+
+Choose JSON for the complete immutable risk package, including every `financial_attributes` observation and `financial_attribute_inputs` manifest. PDF is a human-readable assessment report. It preserves the assessment, scalar metrics, evidence references and financial attribute summary, and explicitly identifies the two detailed collections available through JSON export or paged API sections. These large arrays are not printed in PDF; the report states their counts and retrieval paths.
+
+The formatted report still has a size limit. If its remaining assessment content exceeds that limit, the export fails with `export_too_large`; use JSON for lossless retrieval. No attribute values are silently removed from JSON.
+{/* END FINANCIAL ATTRIBUTE EXPORTS */}

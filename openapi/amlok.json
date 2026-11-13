@@ -12141,7 +12141,9 @@
                 "verification.field_comparisons",
                 "verification.source_scores",
                 "verification.duplicate_checks",
-                "participants"
+                "participants",
+                "financial_attributes",
+                "financial_attribute_inputs"
               ]
             },
             "description": "Required only with view=section. Names select the documented collection, not arbitrary JSON paths."
@@ -12167,6 +12169,39 @@
               "default": 25
             },
             "description": "Only with view=section. Server may return fewer items to respect max_response_bytes; use has_more, not item count."
+          },
+          {
+            "name": "attribute_key",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "description": "Exact detailed attribute key. Only with view=section and section=financial_attributes. Mutually exclusive with attribute_prefix."
+          },
+          {
+            "name": "attribute_prefix",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "description": "Literal attribute key prefix, not a regular expression. Only with view=section and section=financial_attributes; mutually exclusive with attribute_key."
+          },
+          {
+            "name": "input_manifest_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256
+            },
+            "description": "Exact input manifest ID referenced by an attribute. Only with view=section and section=financial_attribute_inputs."
           }
         ],
         "responses": {
@@ -19349,7 +19384,61 @@
                       "profile_version": 1
                     },
                     "borrower_profile_version": 1,
-                    "participants": []
+                    "participants": [],
+                    "financial_attributes": [
+                      {
+                        "key": "transactions.bank_cashflow.inflow.adjustment.balance_adjustment.rolling_30d.amount",
+                        "value_type": "decimal",
+                        "value": null,
+                        "unit": "currency",
+                        "currency": "CAD",
+                        "status": "unavailable",
+                        "window_start": "2026-10-02",
+                        "window_end": "2026-11-01",
+                        "as_of": "2026-11-06T12:00:00Z",
+                        "calculation_version": "2026-11-13.1",
+                        "definition_version": "2026-11-13.1",
+                        "input_resource_ids": [],
+                        "input_manifest_id": "fai_synthetic",
+                        "coverage_ratio": null,
+                        "missing_reason": "This abbreviated documentation example does not supply complete source history.",
+                        "reason_code": "incomplete_coverage"
+                      }
+                    ],
+                    "financial_attribute_inputs": [
+                      {
+                        "id": "fai_synthetic",
+                        "basis": "bank_cashflow",
+                        "window": {
+                          "start": "2026-10-02T00:00:00Z",
+                          "end": "2026-11-01T00:00:00Z"
+                        },
+                        "currency": "CAD",
+                        "account_ids": [],
+                        "resource_ids": [],
+                        "evidence_ids": [],
+                        "coverage": {
+                          "expected_days": 30,
+                          "expected_account_days": 0,
+                          "covered_account_days": 0,
+                          "transaction_count": 0,
+                          "classified_transaction_count": 0
+                        },
+                        "as_of": "2026-11-06T12:00:00Z"
+                      }
+                    ],
+                    "financial_attribute_summary": {
+                      "catalog_version": "2026-11-13.1",
+                      "taxonomy_version": "2026-11-13.1",
+                      "definition_count": 12955,
+                      "evaluated_count": 1,
+                      "available_count": 0,
+                      "unavailable_count": 1,
+                      "input_manifest_count": 1,
+                      "currency": "CAD",
+                      "as_of": "2026-11-06T12:00:00Z",
+                      "coverage_statement": "Abbreviated synthetic documentation example. Retrieve all evaluated attributes through paged sections; definitions do not imply available inputs."
+                    }
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -26495,7 +26584,61 @@
                           "profile_version": 1
                         },
                         "borrower_profile_version": 1,
-                        "participants": []
+                        "participants": [],
+                        "financial_attributes": [
+                          {
+                            "key": "transactions.bank_cashflow.inflow.adjustment.balance_adjustment.rolling_30d.amount",
+                            "value_type": "decimal",
+                            "value": null,
+                            "unit": "currency",
+                            "currency": "CAD",
+                            "status": "unavailable",
+                            "window_start": "2026-10-02",
+                            "window_end": "2026-11-01",
+                            "as_of": "2026-11-06T12:00:00Z",
+                            "calculation_version": "2026-11-13.1",
+                            "definition_version": "2026-11-13.1",
+                            "input_resource_ids": [],
+                            "input_manifest_id": "fai_synthetic",
+                            "coverage_ratio": null,
+                            "missing_reason": "This abbreviated documentation example does not supply complete source history.",
+                            "reason_code": "incomplete_coverage"
+                          }
+                        ],
+                        "financial_attribute_inputs": [
+                          {
+                            "id": "fai_synthetic",
+                            "basis": "bank_cashflow",
+                            "window": {
+                              "start": "2026-10-02T00:00:00Z",
+                              "end": "2026-11-01T00:00:00Z"
+                            },
+                            "currency": "CAD",
+                            "account_ids": [],
+                            "resource_ids": [],
+                            "evidence_ids": [],
+                            "coverage": {
+                              "expected_days": 30,
+                              "expected_account_days": 0,
+                              "covered_account_days": 0,
+                              "transaction_count": 0,
+                              "classified_transaction_count": 0
+                            },
+                            "as_of": "2026-11-06T12:00:00Z"
+                          }
+                        ],
+                        "financial_attribute_summary": {
+                          "catalog_version": "2026-11-13.1",
+                          "taxonomy_version": "2026-11-13.1",
+                          "definition_count": 12955,
+                          "evaluated_count": 1,
+                          "available_count": 0,
+                          "unavailable_count": 1,
+                          "input_manifest_count": 1,
+                          "currency": "CAD",
+                          "as_of": "2026-11-06T12:00:00Z",
+                          "coverage_statement": "Abbreviated synthetic documentation example. Retrieve all evaluated attributes through paged sections; definitions do not imply available inputs."
+                        }
                       },
                       "meta": {
                         "request_id": "req_synthetic",
@@ -26734,6 +26877,18 @@
                           {
                             "section": "verification.duplicate_checks",
                             "item_count": 0
+                          },
+                          {
+                            "section": "participants",
+                            "item_count": 0
+                          },
+                          {
+                            "section": "financial_attributes",
+                            "item_count": 1
+                          },
+                          {
+                            "section": "financial_attribute_inputs",
+                            "item_count": 1
                           }
                         ],
                         "export_request": {
@@ -26775,7 +26930,19 @@
                           "entity_count": 1,
                           "participant_count": 0
                         },
-                        "omitted_fields": []
+                        "omitted_fields": [],
+                        "financial_attribute_summary": {
+                          "catalog_version": "2026-11-13.1",
+                          "taxonomy_version": "2026-11-13.1",
+                          "definition_count": 12955,
+                          "evaluated_count": 1,
+                          "available_count": 0,
+                          "unavailable_count": 1,
+                          "input_manifest_count": 1,
+                          "currency": "CAD",
+                          "as_of": "2026-11-06T12:00:00Z",
+                          "coverage_statement": "Abbreviated synthetic documentation example. Retrieve all evaluated attributes through paged sections; definitions do not imply available inputs."
+                        }
                       },
                       "meta": {
                         "request_id": "req_synthetic",
@@ -34866,6 +35033,136 @@
                         "expires_at": "2026-11-06T13:00:00Z"
                       }
                     }
+                  },
+                  "financial_attributes": {
+                    "title": "financial_attributes (view=section)",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/RiskSectionFinancialAttributes"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        },
+                        "page": {
+                          "$ref": "#/components/schemas/Page"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta",
+                        "page"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "example": {
+                      "data": {
+                        "view": "section",
+                        "risk_package_id": "rp_synthetic",
+                        "record_version": 1,
+                        "section": "financial_attributes",
+                        "section_metadata": null,
+                        "items": [
+                          {
+                            "key": "transactions.bank_cashflow.inflow.adjustment.balance_adjustment.rolling_30d.amount",
+                            "value_type": "decimal",
+                            "value": null,
+                            "unit": "currency",
+                            "currency": "CAD",
+                            "status": "unavailable",
+                            "window_start": "2026-10-02",
+                            "window_end": "2026-11-01",
+                            "as_of": "2026-11-06T12:00:00Z",
+                            "calculation_version": "2026-11-13.1",
+                            "definition_version": "2026-11-13.1",
+                            "input_resource_ids": [],
+                            "input_manifest_id": "fai_synthetic",
+                            "coverage_ratio": null,
+                            "missing_reason": "This abbreviated documentation example does not supply complete source history.",
+                            "reason_code": "incomplete_coverage"
+                          }
+                        ],
+                        "total_items": 1
+                      },
+                      "meta": {
+                        "request_id": "req_synthetic",
+                        "schema_version": "1.0.0",
+                        "environment": "sandbox"
+                      },
+                      "page": {
+                        "next_cursor": null,
+                        "has_more": false,
+                        "snapshot_id": "risk_section_synthetic",
+                        "expires_at": "2026-11-06T13:00:00Z"
+                      }
+                    }
+                  },
+                  "financial_attribute_inputs": {
+                    "title": "financial_attribute_inputs (view=section)",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/RiskSectionFinancialAttributeInputs"
+                        },
+                        "meta": {
+                          "$ref": "#/components/schemas/Meta"
+                        },
+                        "page": {
+                          "$ref": "#/components/schemas/Page"
+                        }
+                      },
+                      "required": [
+                        "data",
+                        "meta",
+                        "page"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "example": {
+                      "data": {
+                        "view": "section",
+                        "risk_package_id": "rp_synthetic",
+                        "record_version": 1,
+                        "section": "financial_attribute_inputs",
+                        "section_metadata": null,
+                        "items": [
+                          {
+                            "id": "fai_synthetic",
+                            "basis": "bank_cashflow",
+                            "window": {
+                              "start": "2026-10-02T00:00:00Z",
+                              "end": "2026-11-01T00:00:00Z"
+                            },
+                            "currency": "CAD",
+                            "account_ids": [],
+                            "resource_ids": [],
+                            "evidence_ids": [],
+                            "coverage": {
+                              "expected_days": 30,
+                              "expected_account_days": 0,
+                              "covered_account_days": 0,
+                              "transaction_count": 0,
+                              "classified_transaction_count": 0
+                            },
+                            "as_of": "2026-11-06T12:00:00Z"
+                          }
+                        ],
+                        "total_items": 1
+                      },
+                      "meta": {
+                        "request_id": "req_synthetic",
+                        "schema_version": "1.0.0",
+                        "environment": "sandbox"
+                      },
+                      "page": {
+                        "next_cursor": null,
+                        "has_more": false,
+                        "snapshot_id": "risk_section_synthetic",
+                        "expires_at": "2026-11-06T13:00:00Z"
+                      }
+                    }
                   }
                 }
               }
@@ -35228,7 +35525,7 @@
             }
           }
         },
-        "description": "Retrieve an immutable Insights or Signal result with financial dimensions, policy evaluations, limitations and the frozen supporting evidence set. Recommendations do not replace the institution decision. All IDs and cursors must belong to the authorized workspace and environment. Required scope: results:read. Use view=summary for the section index, or view=section with section/cursor/limit for bounded detail. Invalid parameter combinations return 400 validation_error. Full or single-item responses above max_response_bytes return 413 response_too_large with an export source; no fields are silently omitted.",
+        "description": "Retrieve an immutable Insights or Signal result with financial dimensions, policy evaluations, limitations and the frozen supporting evidence set. Recommendations do not replace the institution decision. All IDs and cursors must belong to the authorized workspace and environment. Required scope: results:read. Use view=summary for the section index, or view=section with section/cursor/limit for bounded detail. Invalid parameter combinations return 400 validation_error. Full or single-item responses above max_response_bytes return 413 response_too_large with an export source; no fields are silently omitted. Detailed financial attributes and their input manifests are available as paged sections. Attribute filters bind the cursor and total_items counts matching records. Invalid filter/section combinations return 400 validation_error. Historical packages may predate these optional sections.",
         "security": [
           {
             "BearerAuth": []
@@ -41577,7 +41874,7 @@
             }
           }
         },
-        "description": "Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:write. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download.",
+        "description": "Prepare a risk package, evidence set or billing report for download. Each kind requires its own source permissions in addition to export access. All IDs and cursors must belong to the authorized workspace and environment. Required scope: exports:write. Data exports require data:read and source authorization; risk-package exports require results:read; billing exports require billing:read and Owner authority; evidence exports require evidence:read and source entitlements. Permissions are checked at creation, retrieval and download. Risk-package JSON exports include every detailed financial attribute and input manifest. PDF is a human-readable report: it includes the assessment and financial-attribute summary, with an explicit notice that the detailed attribute and input-manifest arrays are available through JSON export or paged API sections.",
         "security": [
           {
             "BearerAuth": []
@@ -49958,6 +50255,30 @@
                       "test_integration_id": "bank_synthetic"
                     },
                     "risk_catalog_version": "2026-11-12.1",
+                    "financial_intelligence": {
+                      "version": "2026-11-13.1",
+                      "taxonomy_version": "2026-11-13.1",
+                      "attribute_definition_count": 12955,
+                      "transaction_category_count": 327,
+                      "scalar_metric_count": 184,
+                      "catalogs": [
+                        {
+                          "kind": "bank_card_attributes",
+                          "version": "2026-11-13.1",
+                          "url": "https://docs.amlok.io/downloads/financial-attribute-catalog.json"
+                        },
+                        {
+                          "kind": "cross_system_attributes",
+                          "version": "2026-11-13.1",
+                          "url": "https://docs.amlok.io/downloads/cross-system-attribute-catalog.json"
+                        },
+                        {
+                          "kind": "transaction_categories",
+                          "version": "2026-11-13.1",
+                          "url": "https://docs.amlok.io/downloads/transaction-taxonomy.json"
+                        }
+                      ]
+                    },
                     "contract": {
                       "revision": "2026-11-06.enterprise.1",
                       "schema_version": "1.0.0",
@@ -69929,6 +70250,23 @@
               "$ref": "#/components/schemas/ParticipantAssessment"
             },
             "maxItems": 100
+          },
+          "financial_attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialAttribute"
+            },
+            "description": "Detailed calculated attributes. Use view=section&section=financial_attributes to page, or export the complete immutable package. Older saved packages may omit this collection."
+          },
+          "financial_attribute_inputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialAttributeInputManifest"
+            },
+            "description": "Deduplicated provenance sets referenced by detailed attributes. Follow evidence_ids through the frozen evidence endpoints."
+          },
+          "financial_attribute_summary": {
+            "$ref": "#/components/schemas/FinancialAttributeSummary"
           }
         },
         "required": [
@@ -74403,6 +74741,9 @@
           },
           "risk_catalog_version": {
             "const": "2026-11-12.1"
+          },
+          "financial_intelligence": {
+            "$ref": "#/components/schemas/FinancialIntelligenceCatalog"
           },
           "contract": {
             "$ref": "#/components/schemas/ContractPolicy"
@@ -98940,6 +99281,168 @@
             "x-classification": "Restricted",
             "x-availability": "Source, module, country, consent and contracted permissions determine population."
           },
+          "financial_category_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "description": "Supported Amlok transaction-purpose category, pinned to classification.taxonomy_version. May be absent when only a broad source classification exists."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "x-field-id": "API:bank_transaction.financial_category_id"
+          },
+          "classification": {
+            "$ref": "#/components/schemas/TransactionClassification",
+            "description": "Versioned economic-purpose classification, evidence strength and explicit uncertainty. Issuer card transactions represent card activity, not depository cash movement.",
+            "x-field-id": "API:bank_transaction.classification"
+          },
+          "provider_category": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "taxonomy_version": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "primary": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "detailed": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "confidence_level": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  },
+                  "raw_labels": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "required": [
+                  "provider",
+                  "taxonomy_version"
+                ],
+                "additionalProperties": false,
+                "description": "Original provider category identifiers and confidence labels, retained separately from Amlok classification. An unmapped version remains explicitly unclassified."
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "x-field-id": "API:bank_transaction.provider_category"
+          },
+          "card_event_type": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "purchase",
+                  "settlement",
+                  "cash_advance",
+                  "balance_transfer",
+                  "refund",
+                  "chargeback",
+                  "fee",
+                  "interest",
+                  "reward",
+                  "reversal",
+                  "authorization",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "x-field-id": "API:bank_transaction.card_event_type"
+          },
+          "card_last4": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "description": "Last four digits only; never a full PAN or security code.",
+                "pattern": "^[0-9]{4}$"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "x-field-id": "API:bank_transaction.card_last4"
+          },
+          "card_brand": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "x-field-id": "API:bank_transaction.card_brand"
+          },
+          "counterparty_role": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "customer",
+                  "supplier",
+                  "employee",
+                  "contractor",
+                  "creditor",
+                  "owner",
+                  "related_party",
+                  "tax_authority",
+                  "insurer",
+                  "processor",
+                  "financial_institution",
+                  "other",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "x-field-id": "API:bank_transaction.counterparty_role"
+          },
           "stream_id": {
             "anyOf": [
               {
@@ -119887,6 +120390,521 @@
         "title": "ReconciliationLinkRead",
         "description": "Evidence-based allocation connecting records without collapsing distinct economic events. Population depends on source and tenant entitlement. Read representation includes all authorized populated fields. Missing or restricted fields carry explicit availability information; this API does not support field projection."
       },
+      "FinancialIntelligenceCatalog": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Registry version for detailed financial attributes, independent of the scalar policy metric catalog."
+          },
+          "taxonomy_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "attribute_definition_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "transaction_category_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "scalar_metric_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "catalogs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "bank_card_attributes",
+                    "cross_system_attributes",
+                    "transaction_categories"
+                  ]
+                },
+                "version": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "url": {
+                  "type": "string",
+                  "minLength": 1,
+                  "format": "uri"
+                }
+              },
+              "required": [
+                "kind",
+                "version",
+                "url"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "version",
+          "taxonomy_version",
+          "attribute_definition_count",
+          "transaction_category_count",
+          "scalar_metric_count",
+          "catalogs"
+        ],
+        "additionalProperties": false
+      },
+      "FinancialAttribute": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable attribute key in the published catalog; includes the applicable context, period and statistic."
+          },
+          "value_type": {
+            "type": "string",
+            "enum": [
+              "decimal",
+              "integer"
+            ]
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "currency",
+              "count",
+              "ratio",
+              "days"
+            ]
+          },
+          "currency": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^[A-Z]{3}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable"
+            ]
+          },
+          "window_start": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date",
+            "description": "UTC calendar date containing the observation start. Consult the input manifest for the exact timestamp."
+          },
+          "window_end": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date",
+            "description": "UTC calendar date containing the exclusive observation end. Cross-system observations can end partway through this date; consult the manifest timestamp. Daily bank/card statistics use completed UTC days."
+          },
+          "as_of": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "calculation_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "definition_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "input_resource_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "input_manifest_id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "References financial_attribute_inputs[].id in this same immutable risk package. The manifest identifies the complete input scope; the catalog defines selection and formula. An empty inline ID array does not mean no evidence."
+          },
+          "coverage_ratio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "missing_reason": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "description": "Explicit reason a value is unavailable. Never interpret an unavailable value as zero."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reason_code": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "data_scope": {
+            "type": "string",
+            "enum": [
+              "observed_records",
+              "complete_account_history"
+            ]
+          },
+          "scope": {
+            "type": "object",
+            "description": "Explicit source population and observational limitations."
+          },
+          "coverage": {
+            "type": "object",
+            "description": "Observed record counts and field coverage; does not establish that every external account or system is known."
+          }
+        },
+        "required": [
+          "key",
+          "value_type",
+          "value",
+          "unit",
+          "currency",
+          "status",
+          "window_start",
+          "window_end",
+          "as_of",
+          "calculation_version",
+          "definition_version",
+          "input_resource_ids",
+          "input_manifest_id",
+          "coverage_ratio",
+          "missing_reason",
+          "reason_code"
+        ],
+        "additionalProperties": false,
+        "description": "An explainable calculated observation over a declared input scope. Manifest timestamps define the exact UTC [start, end) input window; date fields identify its calendar dates. Bank cash movement and issuer-card activity are distinct contexts. Existing scalar policy keys remain in dimensions; these detailed attributes do not silently become policy rules.",
+        "allOf": [
+          {
+            "if": {
+              "properties": {
+                "status": {
+                  "const": "available"
+                }
+              }
+            },
+            "then": {
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+                },
+                "missing_reason": {
+                  "type": "null"
+                },
+                "reason_code": {
+                  "type": "null"
+                }
+              }
+            },
+            "else": {
+              "properties": {
+                "value": {
+                  "type": "null"
+                },
+                "missing_reason": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        ]
+      },
+      "FinancialAttributeInputManifest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Hash-derived identity of this immutable input set."
+          },
+          "basis": {
+            "type": "string",
+            "minLength": 1,
+            "description": "bank_cashflow, card_activity or the cross-system input family. Never add cash movement and card activity without reconciliation."
+          },
+          "window": {
+            "$ref": "#/components/schemas/Window"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Z]{3}$"
+          },
+          "account_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "resource_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "evidence_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "coverage": {
+            "type": "object",
+            "description": "Input population, complete-account-day coverage or observed-record counts. Missing dates and incomplete collections are not treated as zero activity."
+          },
+          "as_of": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "data_scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scope": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "basis",
+          "window",
+          "currency",
+          "account_ids",
+          "resource_ids",
+          "evidence_ids",
+          "coverage",
+          "as_of"
+        ],
+        "additionalProperties": false
+      },
+      "FinancialAttributeSummary": {
+        "type": "object",
+        "properties": {
+          "catalog_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "taxonomy_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "definition_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "evaluated_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "available_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "unavailable_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "input_manifest_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^[A-Z]{3}$"
+          },
+          "as_of": {
+            "type": "string",
+            "minLength": 1,
+            "format": "date-time"
+          },
+          "coverage_statement": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Explains the difference between attribute definitions and available observations."
+          }
+        },
+        "required": [
+          "catalog_version",
+          "taxonomy_version",
+          "definition_count",
+          "evaluated_count",
+          "available_count",
+          "unavailable_count",
+          "input_manifest_count",
+          "currency",
+          "as_of",
+          "coverage_statement"
+        ],
+        "additionalProperties": false
+      },
+      "TransactionClassification": {
+        "type": "object",
+        "properties": {
+          "taxonomy_version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "classified",
+              "unclassified",
+              "conflicting"
+            ]
+          },
+          "category_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "description": "Stable leaf identifier in the versioned transaction taxonomy."
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "category_path": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "category_label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "legacy_category": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "method": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Evidence-based classification method; no claim of trained-model accuracy."
+          },
+          "confidence": {
+            "type": "string",
+            "enum": [
+              "high",
+              "medium",
+              "unknown"
+            ]
+          },
+          "cash_flow_role": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cash_effect": {
+            "type": "string",
+            "minLength": 1
+          },
+          "balance_sheet_effect": {
+            "type": "string",
+            "minLength": 1
+          },
+          "activity_basis": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reason_codes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "provider_category": {
+            "description": "Preserved provider classification observation. Provider version and semantics must be retained; a merchant industry code alone does not prove transaction purpose."
+          }
+        },
+        "required": [
+          "taxonomy_version",
+          "status",
+          "category_id",
+          "category_path",
+          "category_label",
+          "legacy_category",
+          "method",
+          "confidence",
+          "cash_flow_role",
+          "cash_effect",
+          "balance_sheet_effect",
+          "activity_basis",
+          "reason_codes",
+          "provider_category"
+        ],
+        "additionalProperties": false,
+        "description": "Conservative transaction-purpose classification. Confidence labels describe evidence strength, not calibrated probabilities. No category implies tax deductibility, fraud, creditworthiness or a verified counterparty."
+      },
       "FinancialBillingRateCard": {
         "type": "object",
         "properties": {
@@ -122241,7 +123259,9 @@
                     "verification.field_comparisons",
                     "verification.source_scores",
                     "verification.duplicate_checks",
-                    "participants"
+                    "participants",
+                    "financial_attributes",
+                    "financial_attribute_inputs"
                   ]
                 },
                 "item_count": {
@@ -122257,8 +123277,8 @@
               ],
               "additionalProperties": false
             },
-            "minItems": 48,
-            "maxItems": 49
+            "minItems": 51,
+            "maxItems": 51
           },
           "export_request": {
             "$ref": "#/components/schemas/CreateExport"
@@ -122455,6 +123475,9 @@
             },
             "uniqueItems": true,
             "description": "Paths omitted only from the bounded summary because the original context value exceeds its display bound. Full and exported results retain the complete value."
+          },
+          "financial_attribute_summary": {
+            "$ref": "#/components/schemas/FinancialAttributeSummary"
           }
         },
         "required": [
@@ -122802,6 +123825,94 @@
                 "requirement_ids"
               ],
               "additionalProperties": false
+            },
+            "maxItems": 100
+          },
+          "total_items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Count for the complete section, not only this page."
+          }
+        },
+        "required": [
+          "view",
+          "risk_package_id",
+          "record_version",
+          "section",
+          "section_metadata",
+          "items",
+          "total_items"
+        ],
+        "additionalProperties": false
+      },
+      "RiskSectionFinancialAttributes": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "const": "section"
+          },
+          "risk_package_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_version": {
+            "const": 1
+          },
+          "section": {
+            "const": "financial_attributes"
+          },
+          "section_metadata": {
+            "type": "null"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialAttribute"
+            },
+            "maxItems": 100
+          },
+          "total_items": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991,
+            "description": "Count for the complete section, not only this page."
+          }
+        },
+        "required": [
+          "view",
+          "risk_package_id",
+          "record_version",
+          "section",
+          "section_metadata",
+          "items",
+          "total_items"
+        ],
+        "additionalProperties": false
+      },
+      "RiskSectionFinancialAttributeInputs": {
+        "type": "object",
+        "properties": {
+          "view": {
+            "const": "section"
+          },
+          "risk_package_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "record_version": {
+            "const": 1
+          },
+          "section": {
+            "const": "financial_attribute_inputs"
+          },
+          "section_metadata": {
+            "type": "null"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FinancialAttributeInputManifest"
             },
             "maxItems": 100
           },
@@ -126636,6 +127747,12 @@
           },
           {
             "$ref": "#/components/schemas/RiskSectionParticipants"
+          },
+          {
+            "$ref": "#/components/schemas/RiskSectionFinancialAttributes"
+          },
+          {
+            "$ref": "#/components/schemas/RiskSectionFinancialAttributeInputs"
           }
         ],
         "discriminator": {
@@ -126688,7 +127805,9 @@
             "verification.signatures": "#/components/schemas/RiskSectionVerificationSignatures",
             "verification.field_comparisons": "#/components/schemas/RiskSectionVerificationFieldComparisons",
             "verification.source_scores": "#/components/schemas/RiskSectionVerificationSourceScores",
-            "verification.duplicate_checks": "#/components/schemas/RiskSectionVerificationDuplicateChecks"
+            "verification.duplicate_checks": "#/components/schemas/RiskSectionVerificationDuplicateChecks",
+            "financial_attributes": "#/components/schemas/RiskSectionFinancialAttributes",
+            "financial_attribute_inputs": "#/components/schemas/RiskSectionFinancialAttributeInputs"
           }
         }
       },
@@ -128342,9 +129461,21 @@
         "$ref": "#/components/schemas/ParticipantAssessment"
       },
       "metadata_schema": null
+    },
+    "financial_attributes": {
+      "items": {
+        "$ref": "#/components/schemas/FinancialAttribute"
+      },
+      "metadata_schema": null
+    },
+    "financial_attribute_inputs": {
+      "items": {
+        "$ref": "#/components/schemas/FinancialAttributeInputManifest"
+      },
+      "metadata_schema": null
     }
   },
-  "x-contract-revision": "2026-11-12.risk-data.1",
+  "x-contract-revision": "2026-11-13.financial-intelligence.1",
   "tags": [
     {
       "name": "Sandbox",

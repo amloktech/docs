@@ -225,6 +225,8 @@ def build():
     review()
     f=fixtures(); source=json.loads((ROOT/'data/normalized-schema-source.json').read_text())
     base_spec=build_spec(source)
+    from financial_intelligence import extend as financial_intelligence
+    financial_intelligence(base_spec,f)
     from verification_examples import examples as verification_examples
     f['RiskPackage']['verification']=verification_examples(base_spec['components']['schemas'])['business']
     f['RiskPackage']['evidence_set']['count']+=1
@@ -244,6 +246,8 @@ def build():
     lifecycle_operations=lifecycle_contract(spec,f)
     from risk_data_expansion import apply as risk_data_expansion
     risk_data_expansion(spec,f)
+    from financial_intelligence import finalize as financial_finalize
+    financial_finalize(spec,f)
     annotate_fields(spec)
     # Apply shared transport metadata after all generators have added their responses.
     for methods in spec['paths'].values():
@@ -305,6 +309,10 @@ def build():
     response_semantics_guides()
     from risk_data_expansion import write_guides as risk_data_guides
     risk_data_guides(ROOT)
+    from financial_intelligence import write_guides as financial_guides
+    financial_guides()
+    from financial_intelligence import write_export_note
+    write_export_note()
 
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re

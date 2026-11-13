@@ -1,6 +1,6 @@
 ---
 title: "Source field dictionary"
-description: "974 source-normalized definitions with API types, presence, nullability, provenance and coverage rules."
+description: "981 source-normalized definitions with API types, presence, nullability, provenance and coverage rules."
 keywords: ["AMLOK", "data model", "API contract"]
 ---
 
@@ -3023,7 +3023,7 @@ Source-supported restricted cash at as_of. A known zero is distinct from unknown
 
 </Accordion>
 
-<Accordion title="bank_transaction" id="bank-transaction" description="33 fields">
+<Accordion title="bank_transaction" id="bank-transaction" description="40 fields">
 
 #### `bank_transaction.account_id`
 
@@ -3390,6 +3390,69 @@ Cheque number where explicitly reported. Preserve original evidence; do not inve
 - **Source families:** BANK
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/check_number
+
+#### `bank_transaction.financial_category_id`
+
+**API:bank_transaction.financial_category_id** · `string` · Optional · Nullable: Yes
+
+Read-only financial category id from the normalized record.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/financial_category_id
+
+#### `bank_transaction.classification`
+
+**API:bank_transaction.classification** · `TransactionClassification` · Optional · Nullable: No
+
+Versioned economic-purpose classification, evidence strength and explicit uncertainty. Issuer card transactions represent card activity, not depository cash movement.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/classification
+
+#### `bank_transaction.provider_category`
+
+**API:bank_transaction.provider_category** · `object` · Optional · Nullable: Yes
+
+Read-only provider category from the normalized record.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/provider_category
+
+#### `bank_transaction.card_event_type`
+
+**API:bank_transaction.card_event_type** · `string` · Optional · Nullable: Yes
+
+Read-only card event type from the normalized record.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/card_event_type
+
+#### `bank_transaction.card_last4`
+
+**API:bank_transaction.card_last4** · `string` · Optional · Nullable: Yes
+
+Read-only card last4 from the normalized record.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/card_last4
+
+#### `bank_transaction.card_brand`
+
+**API:bank_transaction.card_brand** · `string` · Optional · Nullable: Yes
+
+Read-only card brand from the normalized record.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/card_brand
+
+#### `bank_transaction.counterparty_role`
+
+**API:bank_transaction.counterparty_role** · `string` · Optional · Nullable: Yes
+
+Read-only counterparty role from the normalized record.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/counterparty_role
 
 #### `bank_transaction.stream_id`
 

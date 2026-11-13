@@ -7225,7 +7225,61 @@
           "profile_version": 1
         },
         "borrower_profile_version": 1,
-        "participants": []
+        "participants": [],
+        "financial_attributes": [
+          {
+            "key": "transactions.bank_cashflow.inflow.adjustment.balance_adjustment.rolling_30d.amount",
+            "value_type": "decimal",
+            "value": null,
+            "unit": "currency",
+            "currency": "CAD",
+            "status": "unavailable",
+            "window_start": "2026-10-02",
+            "window_end": "2026-11-01",
+            "as_of": "2026-11-06T12:00:00Z",
+            "calculation_version": "2026-11-13.1",
+            "definition_version": "2026-11-13.1",
+            "input_resource_ids": [],
+            "input_manifest_id": "fai_synthetic",
+            "coverage_ratio": null,
+            "missing_reason": "This abbreviated documentation example does not supply complete source history.",
+            "reason_code": "incomplete_coverage"
+          }
+        ],
+        "financial_attribute_inputs": [
+          {
+            "id": "fai_synthetic",
+            "basis": "bank_cashflow",
+            "window": {
+              "start": "2026-10-02T00:00:00Z",
+              "end": "2026-11-01T00:00:00Z"
+            },
+            "currency": "CAD",
+            "account_ids": [],
+            "resource_ids": [],
+            "evidence_ids": [],
+            "coverage": {
+              "expected_days": 30,
+              "expected_account_days": 0,
+              "covered_account_days": 0,
+              "transaction_count": 0,
+              "classified_transaction_count": 0
+            },
+            "as_of": "2026-11-06T12:00:00Z"
+          }
+        ],
+        "financial_attribute_summary": {
+          "catalog_version": "2026-11-13.1",
+          "taxonomy_version": "2026-11-13.1",
+          "definition_count": 12955,
+          "evaluated_count": 1,
+          "available_count": 0,
+          "unavailable_count": 1,
+          "input_manifest_count": 1,
+          "currency": "CAD",
+          "as_of": "2026-11-06T12:00:00Z",
+          "coverage_statement": "Abbreviated synthetic documentation example. Retrieve all evaluated attributes through paged sections; definitions do not imply available inputs."
+        }
       },
       "meta": {
         "request_id": "req_synthetic",
@@ -7445,6 +7499,18 @@
           {
             "section": "verification.duplicate_checks",
             "item_count": 0
+          },
+          {
+            "section": "participants",
+            "item_count": 0
+          },
+          {
+            "section": "financial_attributes",
+            "item_count": 1
+          },
+          {
+            "section": "financial_attribute_inputs",
+            "item_count": 1
           }
         ],
         "export_request": {
@@ -7486,7 +7552,19 @@
           "entity_count": 1,
           "participant_count": 0
         },
-        "omitted_fields": []
+        "omitted_fields": [],
+        "financial_attribute_summary": {
+          "catalog_version": "2026-11-13.1",
+          "taxonomy_version": "2026-11-13.1",
+          "definition_count": 12955,
+          "evaluated_count": 1,
+          "available_count": 0,
+          "unavailable_count": 1,
+          "input_manifest_count": 1,
+          "currency": "CAD",
+          "as_of": "2026-11-06T12:00:00Z",
+          "coverage_statement": "Abbreviated synthetic documentation example. Retrieve all evaluated attributes through paged sections; definitions do not imply available inputs."
+        }
       },
       "meta": {
         "request_id": "req_synthetic",
@@ -14437,6 +14515,90 @@
         "section_metadata": null,
         "items": [],
         "total_items": 0
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "risk_section_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    },
+    "getRiskPackage:financial_attributes": {
+      "data": {
+        "view": "section",
+        "risk_package_id": "rp_synthetic",
+        "record_version": 1,
+        "section": "financial_attributes",
+        "section_metadata": null,
+        "items": [
+          {
+            "key": "transactions.bank_cashflow.inflow.adjustment.balance_adjustment.rolling_30d.amount",
+            "value_type": "decimal",
+            "value": null,
+            "unit": "currency",
+            "currency": "CAD",
+            "status": "unavailable",
+            "window_start": "2026-10-02",
+            "window_end": "2026-11-01",
+            "as_of": "2026-11-06T12:00:00Z",
+            "calculation_version": "2026-11-13.1",
+            "definition_version": "2026-11-13.1",
+            "input_resource_ids": [],
+            "input_manifest_id": "fai_synthetic",
+            "coverage_ratio": null,
+            "missing_reason": "This abbreviated documentation example does not supply complete source history.",
+            "reason_code": "incomplete_coverage"
+          }
+        ],
+        "total_items": 1
+      },
+      "meta": {
+        "request_id": "req_synthetic",
+        "schema_version": "1.0.0",
+        "environment": "sandbox"
+      },
+      "page": {
+        "next_cursor": null,
+        "has_more": false,
+        "snapshot_id": "risk_section_synthetic",
+        "expires_at": "2026-11-06T13:00:00Z"
+      }
+    },
+    "getRiskPackage:financial_attribute_inputs": {
+      "data": {
+        "view": "section",
+        "risk_package_id": "rp_synthetic",
+        "record_version": 1,
+        "section": "financial_attribute_inputs",
+        "section_metadata": null,
+        "items": [
+          {
+            "id": "fai_synthetic",
+            "basis": "bank_cashflow",
+            "window": {
+              "start": "2026-10-02T00:00:00Z",
+              "end": "2026-11-01T00:00:00Z"
+            },
+            "currency": "CAD",
+            "account_ids": [],
+            "resource_ids": [],
+            "evidence_ids": [],
+            "coverage": {
+              "expected_days": 30,
+              "expected_account_days": 0,
+              "covered_account_days": 0,
+              "transaction_count": 0,
+              "classified_transaction_count": 0
+            },
+            "as_of": "2026-11-06T12:00:00Z"
+          }
+        ],
+        "total_items": 1
       },
       "meta": {
         "request_id": "req_synthetic",
