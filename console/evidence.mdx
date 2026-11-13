@@ -41,9 +41,22 @@ Do not treat an unverified business name match as a completed business verificat
 
 ## Work with documents
 
-Your integration submits application documents through the [document workflow](/api-reference/documents). In the console, open the associated document record to inspect its available metadata and status. For an available document, select **Download file**, or use **Download** in the case drawer's Documents tab. The download returns the original file, not its metadata. Access and source consent are checked again for each download.
+Your integration submits application documents through the [document workflow](/api-reference/documents). In an Origination or Portfolio drawer, open **Documents**:
+
+- **Associated documents** shows files linked to the case. For Origination, this includes primary and participant document IDs and uploads targeted at its requirements. For Portfolio, it includes the monitored deal, baseline and latest package associations. An associated file is not necessarily evidence used in every published result.
+- **Other borrower documents** shows additional primary-borrower files outside those case associations. A file uploaded later is discoverable here without changing historical underwriting.
+
+Open the borrower's profile to inspect its **Related records**, including files uploaded before any underwriting or monitoring exists. Use the stable borrower ID to distinguish identities with the same name.
+
+An upload's `202` response means **Processing**. Read its status until **Available** or **Rejected**. Initial underwriting accepts only available files; inspect the failure and submit a corrected upload when rejected. **Restricted** means current authorization no longer allows access. For an available document, select **Download file**, or use **Download** in the case drawer's Documents tab. The download returns the original file, not its metadata. Access and source consent are checked again for each download.
 
 Document metadata is not the file itself. A file may still be processing, unavailable or outside your current access. The Console obtains fresh download authorization when you select Download. For API downloads, obtain a fresh link when the temporary URL expires; keep the document ID as the permanent reference.
+
+## Add information after a result
+
+A completed risk package preserves the documents and evidence used for that result. Uploading another file for the same borrower does not alter it. To assess the new information, wait for the file to become available, then submit a reassessment that explicitly includes it. Use the same application reference, `supersedes_origination_id` and a new command key as described in [documents](/api-reference/documents).
+
+If an origination is still accepting a document requirement, target that requirement with the correct borrower and origination IDs. Successful inspection accepts the file and resolves the requirement; a `202` upload receipt alone does not.
 
 ## Investigate incomplete or conflicting evidence
 

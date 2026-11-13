@@ -60,13 +60,24 @@ New embeddings use Amlok's colors and a **Powered by** footer with the Amlok sym
 
 Follow the [Style designer guide](/console/embedding-style-designer) for the controls, a screenshot and a short video walkthrough.
 
+## Authorize your application addresses
+
+1. Select **Authorized domains** in the builder toolbar.
+2. Under **Embedding origins**, enter each application origin on its own line, for example `https://app.yourcompany.com`. Do not include a path.
+3. Under **Return URLs**, enter the exact completion URLs your backend will send when creating a session, for example `https://app.yourcompany.com/connection-complete`.
+4. Select **Apply domains**, then **Save configuration**.
+
+These lists belong to this Hub in the selected workspace and environment. Each list accepts up to 50 distinct HTTPS addresses. Wildcards, credentials in URLs and fragments are rejected. An empty list authorizes no external addresses. Query strings in return URLs must match exactly.
+
+Use the new configuration version from `GET /v1/configuration` for new sessions. Existing sessions keep their pinned origin and return-URL policy, integrations and appearance. A configuration saved in Sandbox does not authorize an address for Live. Domain authorization does not replace borrower consent or your server's API authentication.
+
 ## Preview and save
 
 The preview provides one step for each category with selected integrations. Use the step controls to move through the flow and the device controls to inspect phone and desktop layouts. The borrower chooses one provider per category step using radio buttons. Choosing another provider replaces the previous choice for that step; choices in other categories remain selected. The preview follows the same behavior without connecting a real account.
 
 - Use **Undo** and **Redo** to move through integration and appearance edits in the current editing session.
 - Select **Reset appearance** and confirm to restore the default branding, styling and text. Your embedding name and selected integrations stay the same. You can undo a reset before leaving the editor.
-- Select **Save configuration** to persist the name, integrations and appearance together. Saving an edited configuration creates a new version.
+- Select **Save configuration** to persist the name, integrations, appearance and authorized addresses together. Saving an edited configuration creates a new version.
 - If you leave with unsaved changes, choose whether to keep editing or discard them. An unsaved preview does not change the customer experience.
 
 If another editor has changed the same record, reopen the current version before saving conflicting changes.
@@ -75,6 +86,6 @@ If another editor has changed the same record, reopen the current version before
 
 Saving creates a versioned configuration for the selected workspace and environment. The record drawer shows its configuration version identifier. Read `embedding_versions` from `GET /v1/configuration` and use that identifier when creating an embedding session. To use a saved design update, create new sessions with the new version identifier.
 
-Existing sessions keep the integrations, appearance and text from the version with which they were created. Saving a new version does not change a borrower flow already in progress. Your developer uses the [Integrations Hub API workflow](/api-reference/integration-hub) to create the appropriate borrower session and embed it in your application. Keep workspace API credentials on your server.
+Existing sessions keep the integrations, appearance, text and authorized addresses from the version with which they were created. Saving a new version does not change a borrower flow already in progress. Your developer uses the [Integrations Hub API workflow](/api-reference/integration-hub) to create the appropriate borrower session and embed it in your application. Keep workspace API credentials on your server.
 
 The resulting connections and evidence belong to the relevant borrower and environment. Inspect them from the [origination evidence](/console/evidence) or [monitoring](/console/portfolio) views. Test with [Sandbox scenarios](/console/sandbox) before arranging Live activation.

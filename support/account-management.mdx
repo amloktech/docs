@@ -1,36 +1,32 @@
 ---
 title: "Account management"
-description: "Manage payments and cancellation in the portal, with dedicated account-manager support for enterprise clients."
+description: "Manage workspace access and billing settings, and request funding assistance, cancellation or retention changes."
 ---
 
-Use the **client portal** to manage payment methods, automatic top-ups, and account cancellation. Enterprise clients can also work with their dedicated account manager on cancellation, agreements, rates, workload limits, and renewal.
+Use Console to manage authorized workspace access, API keys, integrations, webhook destinations and the payment settings available to your environment. Enterprise clients can also work with their dedicated account manager on agreements, rates, capacity and renewal.
 
-Your account manager provides client portal access information and environment details. Authorized administrators can create workspace-bound API keys in the portal and manage their scopes, expiry, rotation and revocation. The portal also provides registered integration return URLs and webhook destination settings. See [API authentication](/api-reference/authentication) and [integration configuration](/api-reference/configuration).
+For account assistance, [create a support request](/support/create-ticket) or email [support@amlok.io](mailto:support@amlok.io?subject=AMLOK%20account%20management) with your company, workspace reference and environment. Do not include passwords, API keys, bank credentials or full payment details.
 
-For assistance, email [support@amlok.io](mailto:support@amlok.io?subject=AMLOK%20account%20management) with your company and workspace reference. Do not include full bank or card credentials in email.
+## Access and settings
+
+Workspace Owners manage membership and billing. Developers can create API keys within their permissions; each key belongs to one workspace and environment. Use the Console controls to rotate or revoke keys and configure authorized integration return URLs and webhook destinations. See [API keys](/console/api-keys), [authentication](/api-reference/authentication) and [integration configuration](/api-reference/configuration).
 
 ## Payments and top-ups
 
-Add or change a **card or bank account** in the portal. Set your automatic top-up trigger at **CAD 200.00 or higher** and the amount at **CAD 500.00 or higher**. CAD 200.00 is an automatic top-up trigger, not a floor. With auto-pay off, processing continues below it while credits cover each operation. Insufficient-credit errors do not debit unprocessed work. Pending payments do not fund new processing; a higher threshold can provide more time for settlement.
+Sandbox **Billing** supports simulated card and ACH payment methods and automatic-payment settings. The minimum trigger is **CAD 200.00** and the minimum recharge is **CAD 500.00**. It does not collect or refund real funds. Live funding requires an activated payment facility; support confirms the funding options and secure payment instructions for your account.
 
-Save at least one bank account for refunds, including if you normally fund by card. Your workspace has one credit balance across all products, including promotional top-ups. See [credits and billing](/pricing/credits-and-billing).
+CAD 200.00 is a top-up trigger, not a balance floor. Processing can continue below it when available credits cover the operation. Pending funding is not spendable. Saving an agreement, a payment method or an autopay amount is not proof of settlement. See [credits and billing](/pricing/credits-and-billing).
 
-## Cancellation and refund
+## Cancellation, corrections and refunds
 
-When cancellation is submitted in the portal or set by your account manager, all product processing, usage deductions, and new or scheduled top-ups stop immediately. Pending processing is cancelled without another charge.
+An authorized Owner can request cancellation at any time without notice through support or the account manager. There is no account-cancellation or refund action in Console and no public API mutation for these actions.
 
-1. Export any records you need, confirm the saved refund bank account, and request cancellation in the portal. Enterprise clients may request it through their account manager.
-2. You may cancel at any time without notice. AMLOK schedules closure at the end of the request month and reconciles charges already posted and funding already in flight. No processing, usage deductions, or top-ups resume during the closure period.
-3. AMLOK confirms the unused balance and refund bank account and generates the final information. Workspace data is deleted after the request month closes and final information is generated.
-4. **AMLOK issues an immediate refund of the entire unused credit balance when the account closes.** This includes promotional credits. Used credits are non-refundable.
-5. Bank receipt can take **7-10 business days**, depending on the bank. Closure does not wait for delivery. Support or the enterprise account manager assists with a failed or returned refund.
+Support confirms the processing cutoff, in-flight funding, final reconciliation, month-end closure and refund instructions under the [commercial terms](/pricing/contract-terms). Keep the closure confirmation and actual payment reference. Use [cancellation and refunds](/pricing/refunds-and-payouts) to track each step. A provisional statement or Sandbox refund is not proof of a real refund.
 
-The client portal provides these account controls. The public API provides reporting only, with no payment-setting, cancellation, refund, payout, approval, or transfer commands. See [cancellation and refunds](/pricing/refunds-and-payouts).
+For a charge correction, include the usage, transaction or payment ID and the disputed amount. Support reconciles the original entry and any linked adjustment; historical charges are not silently rewritten. Disabling autopay does not reverse submitted payments, and stopping one monitor does not close the account.
 
-## Workspace retention and deletion
+## Retention and deletion
 
-Authorized users configure retention in the AMLOK platform according to applicable compliance requirements. Cancellation includes workspace deletion; **when deletion is complete, all associated workspace data is deleted**. Disconnecting an individual integration is not an account cancellation.
+Request retention requirements or workspace deletion through support; privacy requests can also be sent to [privacy@amlok.io](mailto:privacy@amlok.io). These are coordinated processes rather than customer-configurable Console retention settings or public API commands.
 
-See [privacy and data handling](/security/privacy) for retention and data scope.
-
-AMLOK retains only the necessary final billing, refund, and bank-return records separately from the deleted workspace to reconcile the refund and resolve delivery issues. These records do not retain borrower source data, documents, or analysis outputs and do not keep the workspace or its API access active.
+Export needed data before access ends. Support confirms the affected data, any financial-record retention or legal hold, backup handling and deletion completion. Disconnecting an integration does not itself delete previously collected data or the original records held by that provider. See [privacy and data handling](/security/privacy).

@@ -1,0 +1,9 @@
+---
+title: "Update borrower"
+description: "Update borrower."
+openapi: "/openapi/amlok.json PATCH /v1/borrowers/{id}"
+---
+
+Update current identity or archive/restore a borrower with its ETag. Archive requires every associated origination to be terminal and every associated monitor to be stopped. Historical results and evidence remain immutable; archival does not revoke consent or delete records. No automatic deletion/retention period is implied. New intake is rejected until restored. Required scope: borrowers:write. Archiving cancels outstanding Hub sessions and fences pending source ingestion; restoration requires a fresh Hub session and explicit product resumption. PATCH uses ETag concurrency, not a command-replay receipt.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

@@ -1,0 +1,9 @@
+---
+title: "Cancel origination"
+description: "Cancel origination."
+openapi: "/openapi/amlok.json PATCH /v1/originations/{id}"
+---
+
+Cancel an unfinished origination with its current ETag. Cancelling invalidates queued work; completed and failed results cannot be changed. A new assessment uses supersedes_origination_id and the same stable application reference. Historical results/charges are preserved; unfinished cancelled work creates no assessment charge. Required scope: insights:write.
+
+Examples use synthetic IDs. Replace them with values returned by your environment.

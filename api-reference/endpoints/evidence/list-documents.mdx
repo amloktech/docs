@@ -1,9 +1,9 @@
 ---
 title: "List documents"
-description: "Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint."
+description: "Discover institution uploads, borrower uploads, integration files and generated documents. origination_id resolves primary-borrower and participant document associations plus files explicitly uploaded for that origination, including processing or rejected uploads. It does not include unrelated later borrower uploads or prove a file was used in a completed result. Other filters apply together, and current source authorization still applies. Follow next_cursor for the full snapshot; download available files through the authorized document endpoint."
 openapi: "/openapi/amlok.json GET /v1/documents"
 ---
 
-Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read.
+Discover institution uploads, borrower uploads, integration files and generated documents. origination_id resolves primary-borrower and participant document associations plus files explicitly uploaded for that origination, including processing or rejected uploads. It does not include unrelated later borrower uploads or prove a file was used in a completed result. Other filters apply together, and current source authorization still applies. Follow next_cursor for the full snapshot; download available files through the authorized document endpoint. All IDs and cursors must belong to the authorized workspace and environment. Required scope: evidence:read.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

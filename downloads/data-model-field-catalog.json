@@ -1,5 +1,5 @@
 {
-  "contractSha256": "1d22df0cf8c80551b912b323ac6989dd0a377c54979b3133e52b07d4995219f7",
+  "contractSha256": "0e0f750aae8a94f8b8fddcd5ef0fcf3aaa8a675dd8badf03de0122b24838519e",
   "version": "1.0.0",
   "resources": {
     "common": {
@@ -4629,6 +4629,40 @@
       },
       "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-account"
     },
+    "API:bank_account.holder_addresses": {
+      "id": "API:bank_account.holder_addresses",
+      "path": "bank_account.holder_addresses",
+      "resource": "bank_account",
+      "schema": "NormalizedBankAccountRead",
+      "schemaPointer": "/properties/holder_addresses",
+      "type": "array<NormalizedAddress>",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Source-reported account-holder addresses. May differ from business registered or mailing address.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankAccountRead/properties/holder_addresses"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-account"
+    },
+    "API:bank_account.transaction_coverage": {
+      "id": "API:bank_account.transaction_coverage",
+      "path": "bank_account.transaction_coverage",
+      "resource": "bank_account",
+      "schema": "NormalizedBankAccountRead",
+      "schemaPointer": "/properties/transaction_coverage",
+      "type": "object",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Source-established coverage, start-inclusive/end-exclusive; complete means every posted transaction for this interval is represented, including zero-activity days. It does not prove all external accounts are connected.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankAccountRead/properties/transaction_coverage"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-account"
+    },
     "F0194": {
       "id": "F0194",
       "path": "account_balance.account_id",
@@ -4892,6 +4926,40 @@
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Allowed values": "source_observed, reconstructed, unknown",
         "Schema": "NormalizedAccountBalanceRead/properties/date_basis"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#account-balance"
+    },
+    "API:account_balance.daily_balances": {
+      "id": "API:account_balance.daily_balances",
+      "path": "account_balance.daily_balances",
+      "resource": "account_balance",
+      "schema": "NormalizedAccountBalanceRead",
+      "schemaPointer": "/properties/daily_balances",
+      "type": "array<object>",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Observed daily closing balances in current.currency. Missing dates are missing; never fill with zero or interpolate as observed.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedAccountBalanceRead/properties/daily_balances"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#account-balance"
+    },
+    "API:account_balance.restricted_amount": {
+      "id": "API:account_balance.restricted_amount",
+      "path": "account_balance.restricted_amount",
+      "resource": "account_balance",
+      "schema": "NormalizedAccountBalanceRead",
+      "schemaPointer": "/properties/restricted_amount",
+      "type": "object",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Source-supported restricted cash at as_of. A known zero is distinct from unknown. Not applicable to credit liabilities.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedAccountBalanceRead/properties/restricted_amount"
       },
       "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#account-balance"
     },
@@ -5466,6 +5534,244 @@
         "Source families": "BANK",
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/check_number"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.financial_category_id": {
+      "id": "API:bank_transaction.financial_category_id",
+      "path": "bank_transaction.financial_category_id",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/financial_category_id",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Read-only financial category id from the normalized record.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/financial_category_id"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.classification": {
+      "id": "API:bank_transaction.classification",
+      "path": "bank_transaction.classification",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/classification",
+      "type": "TransactionClassification",
+      "required": false,
+      "parentRequired": true,
+      "nullable": false,
+      "description": "Versioned economic-purpose classification, evidence strength and explicit uncertainty. Issuer card transactions represent card activity, not depository cash movement.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/classification"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.provider_category": {
+      "id": "API:bank_transaction.provider_category",
+      "path": "bank_transaction.provider_category",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/provider_category",
+      "type": "object",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Read-only provider category from the normalized record.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/provider_category"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.card_event_type": {
+      "id": "API:bank_transaction.card_event_type",
+      "path": "bank_transaction.card_event_type",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/card_event_type",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Read-only card event type from the normalized record.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/card_event_type"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.card_last4": {
+      "id": "API:bank_transaction.card_last4",
+      "path": "bank_transaction.card_last4",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/card_last4",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Read-only card last4 from the normalized record.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/card_last4"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.card_brand": {
+      "id": "API:bank_transaction.card_brand",
+      "path": "bank_transaction.card_brand",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/card_brand",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Read-only card brand from the normalized record.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/card_brand"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.counterparty_role": {
+      "id": "API:bank_transaction.counterparty_role",
+      "path": "bank_transaction.counterparty_role",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/counterparty_role",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Read-only counterparty role from the normalized record.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/counterparty_role"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.stream_id": {
+      "id": "API:bank_transaction.stream_id",
+      "path": "bank_transaction.stream_id",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/stream_id",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Stable provider-supported recurring event stream within this account. Null when recurrence has not been established; grouping is not a prediction.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/stream_id"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.payment_rail": {
+      "id": "API:bank_transaction.payment_rail",
+      "path": "bank_transaction.payment_rail",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/payment_rail",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Source-reported payment rail, such as ACH, wire or card. Distinct from sales channel.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/payment_rail"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.intermediary_counterparty_id": {
+      "id": "API:bank_transaction.intermediary_counterparty_id",
+      "path": "bank_transaction.intermediary_counterparty_id",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/intermediary_counterparty_id",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Resolved payment intermediary; does not replace the economic counterparty.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/intermediary_counterparty_id"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.economic_role": {
+      "id": "API:bank_transaction.economic_role",
+      "path": "bank_transaction.economic_role",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/economic_role",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Supported economic use of the transaction; not inferred from account ownership alone.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/economic_role"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.product_activity": {
+      "id": "API:bank_transaction.product_activity",
+      "path": "bank_transaction.product_activity",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/product_activity",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Evidence-supported financial product or economic activity. Unknown is distinct from none.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/product_activity"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.return_reason": {
+      "id": "API:bank_transaction.return_reason",
+      "path": "bank_transaction.return_reason",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/return_reason",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Normalized reported return cause. insufficient_funds identifies NSF; other returns must not be counted as NSF.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/return_reason"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
+    },
+    "API:bank_transaction.is_essential": {
+      "id": "API:bank_transaction.is_essential",
+      "path": "bank_transaction.is_essential",
+      "resource": "bank_transaction",
+      "schema": "NormalizedBankTransactionRead",
+      "schemaPointer": "/properties/is_essential",
+      "type": "boolean",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Whether source-supported analysis identifies an essential cash payment. Unknown must not be treated as false.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedBankTransactionRead/properties/is_essential"
       },
       "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#bank-transaction"
     },
@@ -11949,6 +12255,23 @@
       },
       "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#financial-statement"
     },
+    "API:financial_statement.supporting_schedule": {
+      "id": "API:financial_statement.supporting_schedule",
+      "path": "financial_statement.supporting_schedule",
+      "resource": "financial_statement",
+      "schema": "NormalizedFinancialStatementRead",
+      "schemaPointer": "/properties/supporting_schedule",
+      "type": "FinancialSupportingSchedule",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Supported accounting and obligation schedule for this statement period and currency. Refer to metric definitions for eligibility; not a model output.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedFinancialStatementRead/properties/supporting_schedule"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#financial-statement"
+    },
     "F0526": {
       "id": "F0526",
       "path": "statement_line.statement_id",
@@ -16266,6 +16589,23 @@
         "Source families": "LEND; client",
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedLoanRead/properties/autopay_enabled"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#loan"
+    },
+    "API:loan.creditor_counterparty_id": {
+      "id": "API:loan.creditor_counterparty_id",
+      "path": "loan.creditor_counterparty_id",
+      "resource": "loan",
+      "schema": "NormalizedLoanRead",
+      "schemaPointer": "/properties/creditor_counterparty_id",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Resolved creditor; retain facility identity separately to avoid double-counting repeated source observations.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedLoanRead/properties/creditor_counterparty_id"
       },
       "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#loan"
     },

@@ -102,18 +102,39 @@ Data Lookup imports these same schemas. Choose Amlok API to explore the full con
 
 See [embedding the Hub](/api-reference/integration-hub) for the split between console configuration and secure borrower-specific sessions. Before or after underwriting, use [GET /v1/data/records](/api-reference/endpoints/data/list-data-records) with borrower_id to retrieve the authorized normalized and enriched data; no risk-package ID is required.
 
-Upload supporting files with POST /v1/documents and include their IDs in the origination request. If Amlok requests a later document, upload it with the origination_id and open requirement_id. `GET /v1/originations/{id}` retains submitted_request even before completion. GET /v1/documents?origination_id=... lists associated files. See [documents](/api-reference/documents) for attachment states and download controls.
+Upload supporting files with `POST /v1/documents`. Its `202` response means processing has started. Poll `GET /v1/documents/{id}` until `status` is `available`, then include the IDs in the origination request. Submitting a processing or rejected file returns `422`. If Amlok requests a later document, upload it with the `origination_id` and open `requirement_id`; inspection must succeed before the requirement is resolved. `GET /v1/originations/{id}` retains `submitted_request` even before completion. `GET /v1/documents?origination_id=...` lists primary and participant associations plus uploads targeted at that origination. Later borrower-only uploads do not attach automatically. See [documents](/api-reference/documents) for the full workflow.
 ''')
     append('documents','''
 ## Discover and associate files
 
-[GET /v1/documents](/api-reference/endpoints/evidence/list-documents) lists files by borrower_id, origination_id, context, document_type and status. Origin distinguishes institution_upload, borrower_upload, integration and amlok_generated. Pagination covers all matching authorized files.
+[GET /v1/documents](/api-reference/endpoints/evidence/list-documents) lists files by `borrower_id`, `origination_id`, `context`, `document_type` and `status`. `origin` distinguishes `institution_upload`, `borrower_upload`, `integration` and `amlok_generated`. Follow `next_cursor` until `has_more` is false and preserve the same filters across pages.
 
-For the initial request, upload files with borrower context and include returned IDs in CreateOrigination.document_ids. The server validates borrower/workspace/environment ownership and file readiness. Processing files keep the origination collecting; rejected or inaccessible files produce an explicit requirement or error, never silently disappear.
+| Your goal | Query or reference |
+| --- | --- |
+| Find all files for one identity, including later uploads | `GET /v1/documents?borrower_id=...` |
+| Find an origination's primary and participant files, plus uploads targeted at it | `GET /v1/documents?origination_id=...` |
+| Identify the exact evidence published with a completed result | The risk package's frozen `document_ids`, `participants[].document_ids` and evidence references |
 
-For an open document requirement, upload a new file with borrower_id, origination_id and requirement_id. All three must refer to the same authorized context. Association and the upload receipt are atomic and idempotent; inspection still completes asynchronously. requirement_id cannot be supplied without origination_id. Later association is permitted only while the origination is collecting or requires_action; other states return 409. Completed assessments and files are never overwritten.
+The origination filter resolves associations from the origination, not just each document's upload metadata. `Document.origination_id` can remain `null` when an initially uploaded file is later included in one or more assessments. Other filters narrow the same result: adding `borrower_id` excludes files owned by different participants. A missing or foreign-workspace/environment origination returns `404`.
 
-The origination retains its immutable submitted_request and the accepted document associations. The completed risk package freezes document_ids and its evidence set. For changed application information after submission, create a new origination with a new command identity; do not modify the historical application. A document status notification identifies the file to retrieve without including file contents or a signed URL.
+Association membership is fixed at the listing snapshot. Start a new listing to see later accepted associations. Current source authorization is checked again, so access can become restricted even when a page belongs to an earlier snapshot. An associated upload can still be processing or rejected; listing it does not establish that underwriting used it.
+
+## Submit initial documents
+
+1. Upload each file with `context=borrower` and the correct `borrower_id`. Save the returned document ID.
+2. Read `GET /v1/documents/{id}` until `status` becomes `available` or `rejected`. `202` is an upload receipt, not a readiness confirmation. Inspect `failure` if rejected and upload a corrected file with a new command key.
+3. Include available primary-borrower IDs in `CreateOrigination.document_ids`. Put a related party's files in that participant's `document_ids`.
+4. Submit the origination. The server checks ownership, context and availability; processing or rejected files return `422` instead of creating a waiting origination.
+
+Uploading a file for a borrower after creating an origination does not attach it to that origination. In the Console, **Documents → Other borrower documents** makes those files discoverable without presenting them as evidence for the existing assessment.
+
+## Resolve an open requirement
+
+For an open document requirement, upload a new file with `borrower_id`, `origination_id` and `requirement_id`. Use the borrower named by the requirement, including a related party when applicable. The server checks context, document type and accepted MIME type. The receipt records the target immediately, so the file appears in the origination document listing while processing. Only successful inspection accepts the file into the primary or participant document IDs and resolves the requirement while the origination remains open. `requirement_id` cannot be supplied without `origination_id`. Later association is permitted only while the origination is `collecting` or `requires_action`; other states return `409`. Completed assessments and files are never overwritten.
+
+## Include a later file in a new assessment
+
+The origination retains its immutable `submitted_request` and accepted document associations. The completed risk package freezes `document_ids` and its evidence set. A later upload alone does not change either the result or its published evidence. Wait for the new file to become available and include it explicitly in the next request. For changed application information after submission, create a new origination with a new command identity; do not modify the historical application. A document status notification identifies the file to retrieve without including file contents or a signed URL.
 ''')
     append('evidence-traceability','''
 ## All collected data versus assessment evidence

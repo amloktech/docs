@@ -28,7 +28,7 @@ curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \
   -H "Authorization: Bearer $AMLOK_API_KEY" \
   -H 'Content-Type: application/json' \
   -H 'Idempotency-Key: my-first-healthy-test-001' \
-  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-09.1"}'
+  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-12.1"}'
 ```
 
 The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
@@ -44,9 +44,9 @@ Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains 
 ## Permissions and isolation
 
 - Catalog, setup and history reads require `sandbox:read`; commands require `sandbox:write`.
-- Product journeys require `borrowers:read/write`, `configuration:read/write`, `connections:read/write`, `evidence:read/write`, `insights:read/write`, `signal:read/write`, `exports:read/write`, plus `data:read`, `results:read` and `events:read`.
+- Each catalog scenario declares `required_scopes`, `inspection_scopes` and `required_products`. Grant the scopes for the selected journey; a scenario does not require the other product unless it actually uses it.
 - Billing scenarios and the full sample pack require current Owner authority with `billing:read` alongside the applicable product and Sandbox scopes. Use the **Sandbox testing** profile for those API commands. Developers can run nonfinancial journeys with **All products**; Analysts cannot execute scenarios.
-- Detailed product traces require the product read scopes and enabled Insights and Signal. Billing-only traces require Owner billing authority. Revoking source authorization redacts saved trace payloads and assertions as well as the ordinary source-backed reads.
+- Detailed traces require the selected scenario's `inspection_scopes` and `required_products`. Underwriting-only traces do not require Signal; monitoring-only traces do not require Insights. Billing-only traces require Owner billing authority. Revoking source authorization redacts saved trace payloads and assertions as well as the ordinary source-backed reads.
 - Webhook scenarios also require `events:write`. The selected endpoint must belong to the same Sandbox and subscribe to `origination.status_changed` and `origination.completed`.
 - The initiating key must remain valid while a run executes. Revoking it stops subsequent scenario API steps. At most three runs can be queued or running in one workspace environment. Honor `Retry-After` on 429 responses.
 - Sandbox controls reject Live requests. Sandbox keys and resources cannot address another workspace or environment.
@@ -64,7 +64,7 @@ Each business has bank, accounting, payment, commerce and verification fixtures;
 | `summit-hospitality` | Summit Table Hospitality LLC | US | Hospitality | `source_reauthorization` |
 | `atlas-wholesale` | Atlas Supply Wholesale Ltd. | CA | Wholesale | `provider_failure` |
 
-The pack includes card success and decline, pending and settled ACH, ACH return, refund and simulated automatic top-up records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. Fixture banking covers twelve complete calendar months, including daily closing balances; it is an illustrative dataset, not a production-volume test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
+The pack includes card success and decline, pending and settled ACH, ACH return, refund records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. Fixture banking covers twelve complete calendar months, including daily closing balances; it is an illustrative dataset, not a production-volume test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
 
 ## Scenario catalog
 
@@ -73,7 +73,12 @@ The selected business determines the fictional identity and source data. The sce
 | Scenario ID | Journey | Expected result |
 | --- | --- | --- |
 | `sample_pack` | Complete sample workspace | Six businesses and associated records are available in the API and console. |
+| `underwriting_only` | Underwriting only | completed / within_policy; no monitor or Signal charge |
+| `monitoring_only` | Monitor an existing funded business | active monitor with portfolio baseline; no origination or Insights charge |
 | `healthy` | Within-policy underwriting | completed / within_policy |
+| `verification_expired` | Verification expired | completed / review_required |
+| `verification_review` | Verification requires review | completed / review_required |
+| `verification_failed` | Verification failed | completed / review_required |
 | `outside_policy` | Outside-policy underwriting | completed / outside_policy |
 | `manual_review` | Manual review | completed / review_required |
 | `document_required` | Additional document required | requires_action / upload_document |
@@ -115,7 +120,7 @@ Webhook-specific scenarios suppress automatic delivery during setup, then queue 
 
 Funding actions require Owner billing authority and never contact a payment processor. Pending and declined payments do not credit the balance. Settled payments credit it; returns and refunds create linked reversals. Existing ledger entries are immutable.
 
-The `autopay` scenario evaluates a fixed synthetic balance of CAD 199 against a CAD 200 trigger and posts a CAD 1,000 automatic top-up. It also checks that a balance equal to the trigger does not trigger that fixture. It does not change saved auto-pay settings or drain your workspace balance. The fixture tests the resulting payment and ledger lifecycle; configure real account auto-pay separately in the billing console.
+The `autopay` scenario evaluates your saved enabled flag, threshold, recharge amount and active payment method against the current Sandbox balance. Disabled settings or a balance at or above the threshold produce no charge. A simulated card settles once; ACH remains pending before the background simulator settles it after at least one minute. No real money is collected, and loading the sample pack does not enable autopay or override saved settings.
 
 `insufficient_credits` exercises the blocked underwriting state, funds with simulated credits, clears the explicit test condition and resumes the same origination. It does not drain other developers' test credits. Reconcile `/v1/billing/summary`, `/v1/billing/transactions`, `/v1/billing/payments` and `/v1/billing/usage` after execution.
 
@@ -126,3 +131,31 @@ Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an
 Run history lists the newest 25 runs by default, up to 100 with `limit`. Retrieve a known run directly to inspect older history. The list omits detailed steps and resources. Retain returned IDs in your test system.
 
 Use **Data Lookup** for typed requests, responses and field explanations. Copy a run's request sequence to build your own integration tests. Test additional failure conditions with the ordinary endpoints: invalid credentials and scopes, a second workspace's IDs, stale `If-Match`, invalid files, pagination checkpoints, timeouts and accepted-command recovery. Production throughput and real provider behavior require separate verification; these fixtures do not establish those properties.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Test each product independently
+
+Use **Origination integration** for `underwriting_only`: it creates the identity, authorized credit-assessment sources, documents, an Origination and result, without creating a Monitor. Use **Monitoring integration** for `monitoring_only`: it creates a funded-portfolio baseline, Signal Monitor and result, without creating an Origination. Each works with only its own product enabled.
+
+| Scenario | Required products | Expected result |
+| --- | --- | --- |
+| `sample_pack` | `insights`, `signal` | Six businesses and associated records are available in the API and console. |
+| `underwriting_only` | `insights` | completed / within_policy; no monitor or Signal charge |
+| `monitoring_only` | `signal` | active monitor with portfolio baseline; no origination or Insights charge |
+
+The complete `sample_pack` remains available with both products and Owner billing authority. It exercises six businesses plus simulated funding and consumption. Ordinary underwriting scenarios do not silently enroll Signal; monitoring scenarios use portfolio baselines. Export creation is exercised by the export scenarios and complete sample pack.
+
+Read the catalog's `required_scopes` before executing or repeating a scenario. A key limited to `inspection_scopes` can inspect that completed trace but cannot initiate the run. The Console displays the same product and scope requirements under the selected scenario. Source revocation continues to restrict trace content.
+{/* END BORROWER LIFECYCLE */}
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Test saved automatic-payment settings
+
+The `autopay` scenario uses the selected workspace's saved enabled flag, threshold, recharge amount and payment method. When autopay is disabled or the balance is at or above the threshold, it records the expected no-charge result. An inactive or missing method does not create funds.
+
+Below the threshold, a saved card simulates settlement and posts the configured credit once. ACH remains pending without spendable credit, then the background simulator settles it after at least one minute. A pending attempt prevents duplicate automatic collection. Disabling future autopay does not undo an already submitted pending attempt. No real payment is collected.
+
+Use `card_declined`, `ach_returned` and `payment_refund` for forced payment-outcome fixtures. Those fixtures deliberately create their documented fictional outcome; they are separate from testing automatic funding settings. Loading the sample pack does not enable autopay or override your payment settings.
+
+Use `verification_failed`, `verification_review` and `verification_expired` to test completed underwriting that requires review because the normalized verification is failed, unresolved or expired. A completed response is not an approval, and the presence of a verification record is not a passed check.
+{/* END RESPONSE SEMANTICS */}

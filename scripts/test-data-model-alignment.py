@@ -107,5 +107,5 @@ for path in ['data-foundations','record-model','financial-analysis','business-un
     check('not new API response fields' in t,path+' research boundary')
 metrics=json.loads((ROOT/'downloads/underwriting-metric-catalog.json').read_text())
 check({m['key'] for m in metrics['metrics']}==set(schemas['Metric']['properties']['key']['enum']),'Metric catalog/contract mismatch')
-check('149' in (ROOT/'data-model/derived-attributes.mdx').read_text(),'Source/assessment distinction')
+check('184' in (ROOT/'data-model/derived-attributes.mdx').read_text(),'Source/assessment distinction')
 print(f'Data model alignment: {checks} checks; {len(fields)} source fields, {len(integrations)} providers, {association_count} resource associations and {mapping_count} mappings.')

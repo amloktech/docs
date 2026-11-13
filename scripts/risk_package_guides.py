@@ -82,7 +82,7 @@ A risk package is the immutable assessment returned by Insights or Signal. It co
 | --- | --- |
 | `scope` | Borrower type, market, currency, assessed period, entities, accounts, consolidation and excluded sources. |
 | `assessment` | Your policy outcome and review reasons. `is_institution_decision` is always `false`; your institution makes the lending decision. |
-| `dimensions` | 24 assessment families with 149 defined metrics. Every metric appears once with `available`, `unavailable` or `not_applicable` status. |
+| `dimensions` | 24 assessment families with 184 defined metrics. Every metric appears once with `available`, `unavailable` or `not_applicable` status. |
 | `completeness` | Counts of each availability state. Coverage measures evidence availability, not creditworthiness. |
 | `findings` | Explained observations, inconsistencies and risk signals with metric keys and exact evidence locations. |
 | `policy_results` | Each evaluated rule, actual value, threshold, calculation version, window and evidence. |
@@ -108,7 +108,7 @@ You do not configure provider jobs, enrichment pipelines or internal calculation
 
 An available metric has a decimal value, unit, currency when monetary, exact window, calculation version, input values and evidence. A ratio of `0.25` means 25%. A missing or inapplicable value is `null` with a reason; it is never substituted with zero.
 
-An individual source can support cash-flow metrics without supporting complete debt, profitability or collateral analysis. All 149 catalog entries are accounted for, but only applicable metrics with sufficient entitled evidence have values. The connected-source set does not prove that every external account or liability is known.
+An individual source can support cash-flow metrics without supporting complete debt, profitability or collateral analysis. All 184 catalog entries are accounted for, but only applicable metrics with sufficient entitled evidence have values. The connected-source set does not prove that every external account or liability is known.
 
 ## Examples
 
@@ -122,12 +122,12 @@ All examples use synthetic borrowers, sources, amounts, IDs and hashes. They dem
 
 A package does not imply a bureau report, collateral valuation, benchmark percentile or calibrated risk model exists for every borrower. Those analyses require applicable evidence and entitlement. Their sections explain why a result is unavailable instead of fabricating one.
 ''')
- body='''Every risk package accounts for the following 24 dimension families and 149 metric definitions. A value is available only when its applicability, evidence, history and denominator requirements are met. The [machine-readable catalog](/downloads/underwriting-metric-catalog.json) is generated from the same definitions used by the API and console Data Lookup.\n\n`GET /v1/configuration` returns the entitled scalar definitions in `dimensions`. These are the keys accepted by `PolicyRule.dimension_key`; a family such as `liquidity` is not itself a scalar policy field. An API key can have access to a subset of the public catalog.\n\nRatios are fractions; currency metrics use `scope.reporting_currency`. Counts and durations are nonnegative; the cash conversion cycle can be negative when suppliers are paid after cash is collected. Unsupported values are null with explicit reasons. [Calculation and interpretation rules](/api-reference/risk-package-methodology) apply to every entry.\n\n'''
+ body='''Every risk package accounts for the following 24 dimension families and 184 metric definitions. A value is available only when its applicability, evidence, history and denominator requirements are met. The [machine-readable catalog](/downloads/underwriting-metric-catalog.json) is generated from the same definitions used by the API and console Data Lookup.\n\n`GET /v1/configuration` returns the entitled scalar definitions in `dimensions`. These are the keys accepted by `PolicyRule.dimension_key`; a family such as `liquidity` is not itself a scalar policy field. An API key can have access to a subset of the public catalog.\n\nRatios are fractions; currency metrics use `scope.reporting_currency`. Counts and durations are nonnegative; the cash conversion cycle can be negative when suppliers are paid after cash is collected. Unsupported values are null with explicit reasons. [Calculation and interpretation rules](/api-reference/risk-package-methodology) apply to every entry.\n\n'''
  for d in c['dimensions']:
   body+='## '+d['label']+'\n\n'+d['eligibility']+'\n\nSources: '+', '.join(d['source_families'])+'.\n\n'
   for m in [m for m in c['metrics'] if m['dimension_key']==d['key']]:
    body+='### '+m['key']+'\n\n**'+m['label']+'** · `'+m['unit']+'` · '+', '.join(m['borrower_types'])+'\n\n'+m['formula']+'.\n\nRequired inputs and conditions: '+'; '.join(m['required_inputs'])+'.\n\nCalculation version: `'+m['calculation_version']+'`.\n\n'
- page('api-reference/underwriting-dimensions.mdx','Underwriting dimensions','Definitions, formulas, evidence requirements and applicability for 149 risk metrics.',body)
+ page('api-reference/underwriting-dimensions.mdx','Underwriting dimensions','Definitions, formulas, evidence requirements and applicability for 184 risk metrics.',body)
  page('api-reference/risk-package-methodology.mdx','Risk-package methodology','Interpret financial metrics, missing data, forecasts, policy results and source evidence.',METHODOLOGY)
  nav=json.loads((ROOT/'docs.json').read_text());tab=next(t for t in nav['navigation']['tabs'] if t['tab'].lower()=='api reference')
  for group in tab['groups']:
@@ -172,6 +172,38 @@ Retain original transactions and normalized records. Calculation populations use
 Reconciliations compare aligned populations, currencies and dates. The bridge is `adjusted_left_total = left_total + signed adjustments` and `residual = adjusted_left_total - right_total`. A matched result requires complete comparable populations and an absolute residual within the documented nonnegative tolerance. Timing, refunds, tax, fees and FX adjustments require evidence. A mismatch alone is not fraud.
 
 Statements preserve line hierarchy and sourced adjustments. Do not add both subtotal lines and their children. EBITDA addbacks are itemized and justified, not automatically approved because a borrower supplied them. Receivable/payable aging uses due dates and allocated settlements; net working capital and cash-conversion-cycle calculations use comparable statement periods. HHI uses squared fractional shares and identifies unallocated exposure; unknown counterparties cannot silently disappear.
+
+## Observed cash activity and liquidity
+
+`BankAccount.transaction_coverage` establishes whether the entire posted transaction population is represented for `[start, end)`. Transactions alone cannot prove complete history. Known zero activity is a measured zero only within complete source coverage. `BankTransaction.category`, `is_internal_transfer`, `product_activity` and `is_essential` carry distinct classifications; unknown classifications are not negative findings.
+
+- Gross inflows and outflows include transfers. Net external cash flow excludes both sides of an internal transfer. Operating receipts exclude debt proceeds and owner contributions; operating payments exclude debt-service debits, owner distributions, investments and transfers. The underlying normalized transactions remain accessible.
+- Operating receipt timing uses distinct UTC receipt dates, with at least three dates for interval variability. Monthly volatility needs at least six complete calendar months; 90-day changes need two complete 90-day windows. No receipts during an observed month does not prove zero accrual revenue.
+- Daily cash statistics require a closing balance for every included asset account on every day. The current balance, daily balances and restricted cash are separate observations. Cash-buffer days additionally require supported essential-payment classifications; missing restrictions do not imply unrestricted funds.
+- A cash-shock episode begins with a one-day decline of at least 20% from a positive prior balance and ends when that prior level is recovered. Further declines remain within that episode. If the latest episode has not recovered, recovery days are unavailable. This is a historical description, not a recovery forecast or a default probability.
+- Observed facility counts deduplicate `Loan.facility_id`. Conflicting observations produce unavailable counts. Recently funded facilities require known funding dates. The institution's deal snapshot is not counted again as another provider facility; observed facilities do not prove a complete external debt inventory.
+
+Use the [metric dictionary](/api-reference/underwriting-dimensions) for the precise numerator, denominator, time window and availability requirements of each metric. Use [normalized records](/api-reference/data-access) and the referenced evidence record to inspect the supporting inputs.
+
+## Working-capital inputs
+
+`FinancialStatement.supporting_schedule` exposes supported inputs in the statement's currency and period. Opening and closing balances refer to the same reporting period. Credit sales and credit purchases exclude cash transactions; do not substitute total revenue or COGS when those inputs are missing.
+
+| Metric | Calculation |
+| --- | --- |
+| Receivable days | Mean opening and closing trade receivables / credit sales × period days. |
+| Payable days | Mean opening and closing trade payables / credit purchases × period days. |
+| Inventory days | Mean opening and closing inventory / COGS × period days. |
+| Cash conversion cycle | Receivable days + inventory days − payable days; all three must be available. |
+| Quick ratio | Cash + short-term investments + eligible receivables, divided by current liabilities. |
+
+Positive denominators and supported period inputs are required. NSF counts use specifically identified insufficient-funds events; a generic returned-payment count does not establish NSF. Monetary values are decimal strings, ratios are fractions and missing inputs remain null or omitted.
+
+## Catalog revisions and saved assessments
+
+Configuration discovery returns the current catalog version and scalar definitions. Catalog `2026-11-12.1` contains 184 metrics across 24 families. Earlier saved assessments retain their original catalog and values; an assessment with catalog `2026-11-06.1` contains 149 metrics. These are immutable result revisions within the same API. Use the returned version and metric keys instead of assuming every saved result has the latest count.
+
+Create a new origination or monitoring evaluation to obtain a new assessment. Downloading an older package does not recalculate it. Existing source records may not establish the coverage or classifications required by newer metrics. Review each missing reason and obtain the necessary source observations; never fabricate historical coverage.
 
 ## Repayment and affordability
 

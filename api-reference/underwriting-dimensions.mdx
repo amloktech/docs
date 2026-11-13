@@ -1,9 +1,9 @@
 ---
 title: "Underwriting dimensions"
-description: "Definitions, formulas, evidence requirements and applicability for 149 risk metrics."
+description: "Definitions, formulas, evidence requirements and applicability for 184 risk metrics."
 ---
 
-Every risk package accounts for the following 24 dimension families and 149 metric definitions. A value is available only when its applicability, evidence, history and denominator requirements are met. The [machine-readable catalog](/downloads/underwriting-metric-catalog.json) is generated from the same definitions used by the API and console Data Lookup.
+Every risk package accounts for the following 24 dimension families and 184 metric definitions. A value is available only when its applicability, evidence, history and denominator requirements are met. The [machine-readable catalog](/downloads/underwriting-metric-catalog.json) is generated from the same definitions used by the API and console Data Lookup.
 
 `GET /v1/configuration` returns the entitled scalar definitions in `dimensions`. These are the keys accepted by `PolicyRule.dimension_key`; a family such as `liquidity` is not itself a scalar policy field. An API key can have access to a subset of the public catalog.
 
@@ -187,6 +187,136 @@ Required inputs and conditions: Two complete comparable 90-day windows; nonzero 
 
 Calculation version: `amlok-cashflow_change_90d-1`.
 
+### posted_transaction_count
+
+**Posted transaction count** · `count` · business
+
+Count eligible posted records, each current resource version once.
+
+Required inputs and conditions: Valid date, direction, currency and nonnegative amount.
+
+Calculation version: `amlok-posted_transaction_count-1`.
+
+### operating_receipt_count
+
+**Operating receipt count** · `count` · business
+
+Count posted external sales receipts.
+
+Required inputs and conditions: Explicit classification and transfer exclusion.
+
+Calculation version: `amlok-operating_receipt_count-1`.
+
+### owner_contribution_inflows
+
+**Owner capital contributions** · `currency` · business
+
+Sum external owner-contribution inflows.
+
+Required inputs and conditions: Explicit direction and category.
+
+Calculation version: `amlok-owner_contribution_inflows-1`.
+
+### owner_distribution_outflows
+
+**Owner distributions** · `currency` · business
+
+Sum external owner-distribution outflows.
+
+Required inputs and conditions: Explicit direction and category.
+
+Calculation version: `amlok-owner_distribution_outflows-1`.
+
+### debt_proceeds_inflows
+
+**Debt proceeds** · `currency` · business
+
+Sum external debt-proceeds inflows.
+
+Required inputs and conditions: Explicit direction and category.
+
+Calculation version: `amlok-debt_proceeds_inflows-1`.
+
+### observed_debt_service
+
+**Observed debt-service payments** · `currency` · business
+
+Sum external debt-service outflows, including principal and lender charges already included in the debit.
+
+Required inputs and conditions: Explicit debt-service classification; no assumption of complete contractual obligations.
+
+Calculation version: `amlok-observed_debt_service-1`.
+
+### bank_fee_outflows
+
+**Bank fees paid** · `currency` · business
+
+Sum external fee outflows.
+
+Required inputs and conditions: Explicit fee classification.
+
+Calculation version: `amlok-bank_fee_outflows-1`.
+
+### cash_withdrawal_outflows
+
+**Cash withdrawals** · `currency` · business
+
+Sum outflows explicitly identified as cash withdrawals.
+
+Required inputs and conditions: Known product_activity for every eligible external outflow.
+
+Calculation version: `amlok-cash_withdrawal_outflows-1`.
+
+### payroll_outflows
+
+**Payroll paid** · `currency` · business
+
+Sum external payroll outflows.
+
+Required inputs and conditions: Explicit payroll classification.
+
+Calculation version: `amlok-payroll_outflows-1`.
+
+### inventory_purchase_outflows
+
+**Inventory purchases paid** · `currency` · business
+
+Sum outflows explicitly identified as inventory purchases.
+
+Required inputs and conditions: Known product_activity for every eligible external outflow.
+
+Calculation version: `amlok-inventory_purchase_outflows-1`.
+
+### internal_transfer_outflows
+
+**Internal transfer outflows** · `currency` · business
+
+Sum outflows explicitly identified as internal transfers.
+
+Required inputs and conditions: Known transfer status for every posted transaction.
+
+Calculation version: `amlok-internal_transfer_outflows-1`.
+
+### spending_to_receipts_ratio
+
+**Operating spending to receipts** · `ratio` · business
+
+Operating cash payments divided by operating receipts.
+
+Required inputs and conditions: Positive operating receipts; complete classification.
+
+Calculation version: `amlok-spending_to_receipts_ratio-1`.
+
+### spending_to_receipts_change_90d
+
+**Change in spending to receipts** · `ratio` · business
+
+Current 90-day operating spending/receipts minus preceding 90-day operating spending/receipts.
+
+Required inputs and conditions: Two fully observed 90-day windows; positive receipts in both.
+
+Calculation version: `amlok-spending_to_receipts_change_90d-1`.
+
 ## Liquidity
 
 Separate available, restricted and observed balances. Reconstructed daily balances require reconciled opening/closing balances and complete transaction coverage.
@@ -272,6 +402,96 @@ Unrestricted cash and cash equivalents divided by current liabilities.
 Required inputs and conditions: Same-date balances; positive current liabilities.
 
 Calculation version: `amlok-cash_ratio-1`.
+
+### balance_stddev
+
+**Daily balance variability** · `currency` · business
+
+Population standard deviation of consolidated daily closing balances.
+
+Required inputs and conditions: At least 30 complete comparable calendar days across every included account.
+
+Calculation version: `amlok-balance_stddev-1`.
+
+### balance_coefficient_of_variation
+
+**Relative daily balance variability** · `ratio` · business
+
+Daily balance population standard deviation divided by absolute mean balance.
+
+Required inputs and conditions: At least 30 complete comparable days; nonzero mean; near-zero sensitivity.
+
+Calculation version: `amlok-balance_coefficient_of_variation-1`.
+
+### maximum_daily_balance
+
+**Maximum daily cash balance** · `currency` · business
+
+Maximum consolidated daily closing balance.
+
+Required inputs and conditions: Complete daily balances across every included account.
+
+Calculation version: `amlok-maximum_daily_balance-1`.
+
+### median_daily_balance
+
+**Median daily cash balance** · `currency` · business
+
+Median consolidated daily closing balance; mean of two central values when even.
+
+Required inputs and conditions: Complete daily balances across every included account.
+
+Calculation version: `amlok-median_daily_balance-1`.
+
+### low_balance_days
+
+**Days below the declared cash floor** · `days` · business
+
+Count covered days with consolidated closing cash below the explicit liquidity floor.
+
+Required inputs and conditions: Complete daily balances; evidenced reporting-currency liquidity floor.
+
+Calculation version: `amlok-low_balance_days-1`.
+
+### balance_change_90d
+
+**Cash balance change over 90 days** · `currency` · business
+
+Last covered closing balance minus closing balance exactly 90 calendar days earlier.
+
+Required inputs and conditions: Both dates observed; complete comparable daily balances.
+
+Calculation version: `amlok-balance_change_90d-1`.
+
+### cash_shock_count
+
+**Observed cash-shock episodes** · `count` · business
+
+Count nonoverlapping episodes beginning with a one-day decline of at least 20 percent from a positive previous closing balance.
+
+Required inputs and conditions: Complete daily balances; episode ends when balance recovers to its pre-shock level; no predictive interpretation.
+
+Calculation version: `amlok-cash_shock_count-1`.
+
+### balance_recovery_days
+
+**Most recent cash-shock recovery** · `days` · business
+
+Calendar days to regain the pre-shock closing balance for the most recent episode.
+
+Required inputs and conditions: A completed most-recent episode; unavailable when no episode or when recovery is not observed.
+
+Calculation version: `amlok-balance_recovery_days-1`.
+
+### unrecovered_cash_shock_count
+
+**Unrecovered cash-shock episodes** · `count` · business
+
+Count open episodes at the end of the observation window under the same nonoverlapping 20 percent shock rule.
+
+Required inputs and conditions: Complete daily balances; an unrecovered episode is right-censored, not a forecast.
+
+Calculation version: `amlok-unrecovered_cash_shock_count-1`.
 
 ## Revenue quality
 
@@ -378,6 +598,86 @@ Identified nonrecurring revenue divided by verified revenue.
 Required inputs and conditions: Versioned recurrence criteria and positive revenue.
 
 Calculation version: `amlok-nonrecurring_revenue_share-1`.
+
+### receipt_gap_mean_days
+
+**Mean interval between receipts** · `days` · business
+
+Mean UTC-day gap between distinct operating-receipt dates.
+
+Required inputs and conditions: At least three distinct receipt dates; whole-window bank coverage.
+
+Calculation version: `amlok-receipt_gap_mean_days-1`.
+
+### receipt_gap_stddev_days
+
+**Receipt interval variability** · `days` · business
+
+Population standard deviation of UTC-day gaps between distinct operating-receipt dates.
+
+Required inputs and conditions: At least three distinct receipt dates; whole-window bank coverage.
+
+Calculation version: `amlok-receipt_gap_stddev_days-1`.
+
+### receipt_day_of_month_stddev
+
+**Receipt calendar-day variability** · `days` · business
+
+Population standard deviation of day-of-month across distinct operating-receipt dates.
+
+Required inputs and conditions: At least three receipt dates; descriptive only, not a timing forecast.
+
+Calculation version: `amlok-receipt_day_of_month_stddev-1`.
+
+### zero_revenue_month_count
+
+**Months without recorded receipts** · `count` · business
+
+Count completely covered UTC calendar months with no operating receipts.
+
+Required inputs and conditions: Complete transaction coverage; exclude partial months; no receipts does not prove no accrual revenue.
+
+Calculation version: `amlok-zero_revenue_month_count-1`.
+
+### operating_receipts_volatility
+
+**Operating receipts volatility** · `ratio` · business
+
+Population standard deviation divided by mean of complete monthly operating receipts.
+
+Required inputs and conditions: At least six complete months; positive mean.
+
+Calculation version: `amlok-operating_receipts_volatility-1`.
+
+### operating_receipts_change_90d
+
+**Operating receipts change** · `ratio` · business
+
+Current 90-day receipts minus previous 90-day receipts divided by previous receipts.
+
+Required inputs and conditions: Two fully observed 90-day windows; positive previous receipts.
+
+Calculation version: `amlok-operating_receipts_change_90d-1`.
+
+### days_since_last_operating_receipt
+
+**Days since last observed receipt** · `days` · business
+
+Days from latest receipt date to the last included UTC date of the observation window.
+
+Required inputs and conditions: At least one classified receipt; no claim about time outside source coverage.
+
+Calculation version: `amlok-days_since_last_operating_receipt-1`.
+
+### unclassified_receipt_share
+
+**Unclassified external receipts** · `ratio` · business
+
+External inflow amount in unknown or other categories divided by external inflows.
+
+Required inputs and conditions: Known transfer status; positive external receipts; uncertainty is not fraud.
+
+Calculation version: `amlok-unclassified_receipt_share-1`.
 
 ## Profitability
 
@@ -667,6 +967,36 @@ Required inputs and conditions: Complete maturity schedule including balloon pay
 
 Calculation version: `amlok-debt_maturing_90d-1`.
 
+### concurrent_financing_count
+
+**Observed active financing facilities** · `count` · business
+
+Count distinct active provider facilities after facility-ID deduplication.
+
+Required inputs and conditions: Explicit facility identity and active status; observed-source inventory only; lender deal snapshot excluded.
+
+Calculation version: `amlok-concurrent_financing_count-1`.
+
+### new_financing_count_90d
+
+**Recently funded active facilities** · `count` · business
+
+Count observed active facilities funded in the 90 days ending at assessment time.
+
+Required inputs and conditions: Known funding date for every included active facility; observed-source inventory only.
+
+Calculation version: `amlok-new_financing_count_90d-1`.
+
+### debt_to_operating_receipts
+
+**Debt to annual operating receipts** · `ratio` · business
+
+Supported total debt divided by observed trailing-year operating receipts.
+
+Required inputs and conditions: Complete trailing 12 calendar months and debt inventory; positive receipts; same scope; no silent annualization.
+
+Calculation version: `amlok-debt_to_operating_receipts-1`.
+
 ## Repayment capacity
 
 Use complete existing and proposed debt schedules, eligible cash flow and consistent periods. Include balloon and variable-payment terms.
@@ -762,6 +1092,16 @@ Observed debt payments divided by operating cash receipts.
 Required inputs and conditions: Positive receipts; payments classified with evidence; not a substitute for DSCR.
 
 Calculation version: `amlok-debt_payment_to_receipts-1`.
+
+### debt_service_to_outflows
+
+**Debt-service share of outflows** · `ratio` · business
+
+Observed external debt-service payments divided by all external posted outflows.
+
+Required inputs and conditions: Positive external outflows; explicit transfer and category classification.
+
+Calculation version: `amlok-debt_service_to_outflows-1`.
 
 ## Concentration
 
@@ -1356,6 +1696,16 @@ Amount-weighted days paid after contractual due date for settled trade bills.
 Required inputs and conditions: Matched bill/payment allocations; positive paid amounts; early payments recorded as zero delay.
 
 Calculation version: `amlok-supplier_payment_delay_days-1`.
+
+### operating_outflows_change_90d
+
+**Operating payments change** · `ratio` · business
+
+Current 90-day operating payments minus preceding payments divided by preceding payments.
+
+Required inputs and conditions: Two fully observed 90-day windows; positive previous payments.
+
+Calculation version: `amlok-operating_outflows_change_90d-1`.
 
 ## Tax and statutory obligations
 

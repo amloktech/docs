@@ -108,9 +108,17 @@ Fetch severity, rule, evidence and package references. Start your own interventi
 
 Resource: `alert`. Read operation: `getAlert`. Additional scope: `signal:read`.
 
+## `alert.updated`
+
+An existing open alert receives a newer evaluation, value or evidence.
+
+Fetch the same alert ID and its current package; this is a continuing condition, not another intervention case.
+
+Resource: `alert`. Read operation: `getAlert`. Additional scope: `signal:read`.
+
 ## `alert.resolved`
 
-Fresh comparable evidence satisfies the policy condition for a previously open alert.
+Comparable evidence satisfies the old policy condition, or the old policy is superseded. Inspect the resolution explanation; policy replacement does not prove risk recovery.
 
 Fetch the resolved alert and package. A delivery retry or manual acknowledgment does not resolve risk.
 

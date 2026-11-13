@@ -5,7 +5,7 @@ description: "Explore six fictional businesses, execute underwriting and monitor
 keywords: ["Sandbox scenarios", "fictional businesses", "webhook testing", "underwriting tests"]
 ---
 
-AMLOK Sandbox includes six fictional businesses and 30 executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
+AMLOK Sandbox includes six fictional businesses and 32 executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
 
 ## The six businesses
 
@@ -66,3 +66,21 @@ Monitoring scenarios let you create a deterioration event, restore the fixture a
 **Repeat with fresh records** creates a new run and new linked records. It preserves previous results, logs and immutable ledger entries. Keep run IDs in your tests, and use new idempotency keys for new executions. Reuse a key only to retry the same intended command.
 
 For request bodies, permissions and automated execution, use the [API scenario guide](/api-reference/sandbox-journeys), [runnable client](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-scenario.mjs) and **Data Lookup** in the console.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Verify independent product integration
+
+The `underwriting_only` scenario stops after its Insights assessment. The `monitoring_only` scenario uses a funded portfolio baseline and creates Signal results without an Origination. These cases verify the minimum product access your integration needs. The complete `sample_pack` still demonstrates both products and billing across all six fictional businesses.
+
+The catalog and Console show each scenario's required products, execution scopes and trace-inspection scopes. See [run reproducible Sandbox scenarios](/api-reference/sandbox-journeys).
+{/* END BORROWER LIFECYCLE */}
+
+## Inspect financial evidence and missing inputs
+
+The sample package includes six fictional businesses with different financial profiles. Scenario traces request `view=summary` for risk packages so the complete six-business journey stays readable. Retrieve the linked package directly, follow its paged section views or use its export request for full detail. The trace preserves the actual request and response; it does not truncate a full package. Run a scenario, retrieve its risk package, and follow a metric's `inputs[].evidence[]` to the frozen record and `field_path`. Banking examples include explicit coverage, transaction classifications and daily balances; accounting examples include a typed supporting schedule. Document records retain controlled download links.
+
+Compare operating receipts with debt proceeds and owner contributions. Inspect cash-buffer days, receivable/payable/inventory days, receipt timing and observed cash-shock episodes. Read the metric's window, currency, version and missing reason before using its value. A review or missing-input scenario can legitimately return unavailable metrics.
+
+Use **Dev Tools → Data Lookup** to inspect the request, response and field definitions. Discover scalar policy keys through `GET /v1/configuration`; use the returned calculation version when creating a risk-policy version. A required unavailable metric produces review instead of passing silently.
+
+Existing saved results keep their original catalog. New runs use the current definitions, while missing source coverage remains explicit. Loading or resetting sample data is an explicit workspace action; a catalog update does not erase your existing Sandbox records. See [risk-package methodology](/api-reference/risk-package-methodology) for formulas and observation requirements. All sample businesses, funds and conclusions are synthetic.

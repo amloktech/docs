@@ -75,3 +75,9 @@ Choose **Rotate signing secret** in the endpoint actions. Copy the new secret on
 In **Deliveries & events**, a row marked **Recorded** is a business event, not proof of delivery. Attempt rows show the endpoint ID, HTTP result, duration, safe error code and scheduled next attempt when present. `exhausted` means no automatic retry remains. Historical/demo records may have fewer diagnostics. See the [complete error catalog](/api-reference/errors).
 
 Replay is an authenticated API action using `POST /v1/webhook-replays`, an existing event and enabled endpoint ID, and an idempotency key. Use Data Lookup for the request example. Repeating a replay with the same key returns the original receipt; a new key intentionally requests a new delivery. This does not charge for or rerun the original business action.
+
+## Read an event separately from a delivery attempt
+
+An event's **Overview** identifies a **Recorded event** and lists its related **Webhook delivery attempts**. Event creation records a resource change; it does not itself prove success or failure at any endpoint. Inspect each attempt for its destination, HTTP response, error and retry information. An attempt with no HTTP response is different from an endpoint returning an unsuccessful HTTP status.
+
+An empty attempts list means no matching attempts are shown. It does not label the recorded business event as failed or invent an attempt count. Use the event ID to correlate deliveries to multiple endpoints and replays.

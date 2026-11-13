@@ -42,15 +42,24 @@ def extend_schemas(s):
     s['Origination']['properties'].update({'submitted_request':ref('CreateOrigination'),
         'document_ids':ids})
     s['Origination']['required'] += ['submitted_request','document_ids']
-    s['Origination']['properties']['document_ids']['description']='Current authorized document associations. Includes submitted documents and later documents accepted against open requirements. A completed assessment freezes its own document and evidence references.'
-    s['RiskPackage']['properties']['document_ids']=ids
+    s['Origination']['properties']['document_ids']['description']='Accepted primary-borrower document associations, including initially submitted files and later files accepted while the origination is open. Related-party files appear separately in participants[].document_ids. A completed risk package freezes its own document and evidence references; later borrower-only uploads do not change them.'
+    s['CreateOrigination']['properties']['document_ids']=deepcopy(s['CreateOrigination']['properties']['document_ids'])
+    s['CreateOrigination']['properties']['document_ids']['description']='Available borrower-context documents owned by the primary borrower. Upload first, wait until each Document.status is available, then include its ID here. Processing or rejected files return 422; a borrower-only upload is not associated automatically. Related-party files belong in participants[].document_ids.'
+    s['RiskPackage']['properties']['document_ids']=deepcopy(ids)
+    s['RiskPackage']['properties']['document_ids']['description']='Primary-borrower document IDs frozen when this risk package was published. Related-party files are preserved in participants[].document_ids and the evidence set. Later uploads do not change this historical result; current authorization still governs access.'
     s['RiskPackage']['required'].append('document_ids')
     s['Document']['properties'].update({'created_at':stamp,'document_type':text(),
         'origination_id':nullable(ident),'requirement_id':nullable(ident),
         'origin':enum('institution_upload','borrower_upload','integration','amlok_generated')})
     s['Document']['required'] += ['created_at','document_type','origination_id','requirement_id','origin']
     s['UploadDocument']['allOf'].append({'if':{'required':['requirement_id']},'then':{'required':['origination_id']}})
-    s['UploadDocument']['description']='Upload once, then reference document ID in the origination. A later upload may include origination_id and an open requirement_id: borrower and requirement ownership are checked and association occurs atomically. Late attachment is accepted only while collecting/requires_action, otherwise 409. Never overwrite a file or change a completed assessment.'
+    s['Document']['properties']['origination_id']['description']='Origination explicitly supplied when this file was uploaded; null for an initial borrower-only upload, even if the file is later referenced by one or more assessments. Use GET /v1/documents?origination_id=... to resolve assessment associations, including primary and participant documents.'
+    s['Document']['properties']['requirement_id']['description']='Document requirement explicitly supplied at upload, or null. Its presence records the upload target; inspection must succeed before the requirement is resolved.'
+    s['UploadDocument']['properties']['origination_id']=deepcopy(s['UploadDocument']['properties']['origination_id'])
+    s['UploadDocument']['properties']['origination_id']['description']='Optional collecting/requires_action origination to associate with this upload. Omit for initial borrower files and reference their IDs after they become available. Later uploads to other states return 409.'
+    s['UploadDocument']['properties']['requirement_id']=deepcopy(s['UploadDocument']['properties']['requirement_id'])
+    s['UploadDocument']['properties']['requirement_id']['description']='Open document requirement this file satisfies. Requires origination_id and the required borrower, document type and accepted MIME type. Successful inspection resolves the requirement; 202 alone does not.'
+    s['UploadDocument']['description']='Create an immutable file record. 202 accepts the upload for asynchronous inspection and returns status processing; it does not confirm file readiness or use in an assessment. Poll GET /v1/documents/{id} until available before referencing an initial file. A later upload can name a collecting/requires_action origination and open requirement; accepted inspection adds its document association. Other origination states return 409. Borrower-only uploads never attach automatically or change completed assessments.'
     s['EvidenceSummary']['properties']['data_record_id']=nullable(ident)
     s['EvidenceSummary']['required'].append('data_record_id')
     s['EvidenceSummary']['properties']['data_record_id']['description']='Exact DataRecord version used, when this evidence originated in the data API. null for standalone files/reports. Evidence access never implicitly grants data:read.'
@@ -151,7 +160,7 @@ PURPOSE = {
     'listDataRecords':'Read all authorized collected and enriched records for a borrower, independently of an origination or risk package. The first page creates a stable snapshot and an atomic changes_cursor. No page truncation; follow next_cursor until has_more is false.',
     'getDataRecord':'Read an exact immutable data-record version with normalized fields, enrichment fields, provenance, authorized source payload and file references. Never silently replace this version with newer data.',
     'listDataChanges':'Resume from the changes_cursor returned by a completed data snapshot, then persist resume_cursor after applying each batch. Includes upserts, source removals and access changes; expired or mismatched cursors fail explicitly.',
-    'listDocuments':'Discover institution uploads, borrower uploads, integration files and generated documents by borrower, origination, context and type. Responses include file status, provenance and association; download through the authorized document endpoint.',
+    'listDocuments':'Discover institution uploads, borrower uploads, integration files and generated documents. origination_id resolves primary-borrower and participant document associations plus files explicitly uploaded for that origination, including processing or rejected uploads. It does not include unrelated later borrower uploads or prove a file was used in a completed result. Other filters apply together, and current source authorization still applies. Follow next_cursor for the full snapshot; download available files through the authorized document endpoint.',
     'getBillingTransaction':'Retrieve one immutable wallet movement, its historical balance and links to payment or product usage.',
     'listBillingPayments':'Read top-up and contract-funding payment attempts, including pending, failed, settled, returned and refunded states. Pending or failed payments are not spendable credits.',
     'getBillingPayment':'Retrieve one payment and the wallet entries created by its settlement, return or refund. Uses the requested billing snapshot when supplied.',
@@ -186,7 +195,9 @@ def extend_parameters(op, params, param):
         params.append(param(name,schema=schema,description=(name.replace('_',' ')+'. UTC ranges are inclusive from and exclusive to; reject to <= from.' if schema else name.replace('_',' '))))
     choices={'product':['insights','signal'],'kind':['funding','usage','adjustment','final_refund'],'context':['borrower','lending_product','risk_policy']}
     if oid=='listBillingPayments':choices.update(status=['pending','processing','succeeded','failed','cancelled','partially_refunded','refunded','returned'],purpose=['initial_funding','renewal','automatic_top_up','manual_top_up'])
-    if oid=='listDocuments':choices['status']=['processing','available','rejected','restricted']
+    if oid=='listDocuments':
+        choices['status']=['processing','available','rejected','restricted']
+        next(p for p in params if p['name']=='origination_id')['description']='Files associated with this origination through its primary or participant document IDs, or explicitly targeted at upload. Associations are fixed at the listing snapshot; current source authorization is rechecked. Excludes other borrower-only uploads. A missing origination or one outside this workspace/environment returns 404. Combined borrower_id, context, type and status filters narrow these results.'
     for p in params:
         if p['name'] in choices:p['schema']={'type':'string','enum':choices[p['name']]}
     if oid=='listBillingPayments':params[:] = [p for p in params if p['name']!='borrower_id']

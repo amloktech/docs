@@ -37,7 +37,7 @@ curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \\
   -H "Authorization: Bearer $AMLOK_API_KEY" \\
   -H 'Content-Type: application/json' \\
   -H 'Idempotency-Key: my-first-healthy-test-001' \\
-  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-09.1"}'
+  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"CATALOG_VERSION"}'
 ```
 
 The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
@@ -68,7 +68,7 @@ Each business has bank, accounting, payment, commerce and verification fixtures;
 | --- | --- | --- | --- | --- |
 '''+businesses+'''
 
-The pack includes card success and decline, pending and settled ACH, ACH return, refund and simulated automatic top-up records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. Fixture banking covers twelve complete calendar months, including daily closing balances; it is an illustrative dataset, not a production-volume test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
+The pack includes card success and decline, pending and settled ACH, ACH return, refund records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. Fixture banking covers twelve complete calendar months, including daily closing balances; it is an illustrative dataset, not a production-volume test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
 
 ## Scenario catalog
 
@@ -90,7 +90,7 @@ Webhook-specific scenarios suppress automatic delivery during setup, then queue 
 
 Funding actions require Owner billing authority and never contact a payment processor. Pending and declined payments do not credit the balance. Settled payments credit it; returns and refunds create linked reversals. Existing ledger entries are immutable.
 
-The `autopay` scenario evaluates a fixed synthetic balance of CAD 199 against a CAD 200 trigger and posts a CAD 1,000 automatic top-up. It also checks that a balance equal to the trigger does not trigger that fixture. It does not change saved auto-pay settings or drain your workspace balance. The fixture tests the resulting payment and ledger lifecycle; configure real account auto-pay separately in the billing console.
+The `autopay` scenario evaluates your saved enabled flag, threshold, recharge amount and active payment method against the current Sandbox balance. Disabled settings or a balance at or above the threshold produce no charge. A simulated card settles once; ACH remains pending before the background simulator settles it after at least one minute. No real money is collected, and loading the sample pack does not enable autopay or override saved settings.
 
 `insufficient_credits` exercises the blocked underwriting state, funds with simulated credits, clears the explicit test condition and resumes the same origination. It does not drain other developers' test credits. Reconcile `/v1/billing/summary`, `/v1/billing/transactions`, `/v1/billing/payments` and `/v1/billing/usage` after execution.
 
@@ -102,7 +102,7 @@ Run history lists the newest 25 runs by default, up to 100 with `limit`. Retriev
 
 Use **Data Lookup** for typed requests, responses and field explanations. Copy a run's request sequence to build your own integration tests. Test additional failure conditions with the ordinary endpoints: invalid credentials and scopes, a second workspace's IDs, stale `If-Match`, invalid files, pagination checkpoints, timeouts and accepted-command recovery. Production throughput and real provider behavior require separate verification; these fixtures do not establish those properties.
 '''
-    (ROOT/'api-reference/sandbox-journeys.mdx').write_text(body)
+    (ROOT/'api-reference/sandbox-journeys.mdx').write_text(body.replace('CATALOG_VERSION',catalog['version']))
     (ROOT/'downloads/sandbox-scenarios.json').write_text(json.dumps(catalog,indent=2)+'\n')
     # Maintain compatibility with existing guide links without a duplicate public contract.
     for path in ['api-reference/environments.mdx','api-reference/downloads.mdx']:

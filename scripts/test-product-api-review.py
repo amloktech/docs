@@ -15,10 +15,10 @@ assert all(path.startswith('/v1/') for path in spec['paths'])
 assert not (ROOT/'legacy').exists()
 assert {p.name for p in (ROOT/'openapi').glob('*.json')}=={'amlok.json'}
 target_ops=[op for methods in spec['paths'].values() for op in methods.values()]
-assert len(target_ops)==len({o['operationId'] for o in target_ops})==65
+assert len(target_ops)==len({o['operationId'] for o in target_ops})==67
 for path,methods in spec['paths'].items():
     assert not {'put','delete'} & methods.keys(), path
-    if 'patch' in methods: assert path=='/v1/monitors/{id}'
+    if 'patch' in methods: assert path in {'/v1/monitors/{id}','/v1/borrowers/{id}','/v1/originations/{id}'}
     for method,op in methods.items():
         assert op['x-availability']=='published_contract'
         if method=='post': assert any(p['name']=='Idempotency-Key' and p['required'] for p in op['parameters'])
@@ -72,8 +72,8 @@ monitor['baseline']['risk_package_id']='rp_synthetic'
 assert valid('CreateMonitor',monitor)
 collection=json.loads((ROOT/'downloads/amlok-api.postman_collection.json').read_text())
 assert '/v2/' not in json.dumps(collection)
-assert len(collection['item'])==65
-print(json.dumps({'primary_operations':65,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
+assert len(collection['item'])==67
+print(json.dumps({'primary_operations':67,'positive_examples':len(fixtures)+2,'negative_examples':len(negative)+1,'backend_executed':False}))
 
 # Institution completeness invariants: direct data access, documents and billing.
 paths=spec['paths'];schemas=spec['components']['schemas']
@@ -133,3 +133,22 @@ for invalid in ['3000',3000.00,'-3000.00']:
 assert 'do not apply the discount a second time' in schemas['FinancialBillingRate']['properties']['discount_percent']['description']
 assert 'does not reduce' in schemas['BillingCommitment']['properties']['prepayment_discount_percent']['description'].lower()
 print(json.dumps({'negotiated_prepayment_discount':'passed','historical_snapshots':'compatible','backend_executed':False}))
+
+
+# Shared identity maintenance must remain narrow and party checks purpose-bound.
+assert spec['paths']['/v1/borrowers/{id}']['patch']['x-required-scopes']==['borrowers:write']
+assert spec['paths']['/v1/originations/{id}']['patch']['x-required-scopes']==['insights:write']
+reject('UpdateBorrower',lambda value:value.clear())
+reject('UpdateBorrower',lambda value:value.update(subject_id='biz_replacement'))
+reject('UpdateOrigination',lambda value:value.update(status='completed'))
+party={'borrower_id':'bor_owner_synthetic','roles':['guarantor'],'ownership_share':None,
+ 'authority':{'basis':'institution_attested','attested_at':'2026-10-01T00:00:00Z','purposes':['credit_assessment']},
+ 'connection_ids':[],'document_ids':[]}
+assert not valid('ParticipantInput',party)
+assert valid('ParticipantInput',{**party,'ownership_share':'101'})
+assert valid('ParticipantInput',{**party,'roles':['unrecognized_role']})
+assert valid('ParticipantInput',{**party,'authority':{**party['authority'],'purposes':[]}})
+assert valid('ParticipantInput',{**party,'connection_ids':['con_'+str(i) for i in range(101)]})
+assert 'participants' in spec['x-risk-package-sections']
+assert len(schemas['RiskPackageSummary']['properties']['sections']['items']['properties']['section']['enum'])==51
+print(json.dumps({'borrower_lifecycle_and_participants':'passed'}))

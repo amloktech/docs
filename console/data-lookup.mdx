@@ -36,6 +36,8 @@ This 56-second walkthrough covers the Data dictionary and Field lookup. It was r
   </Step>
 </Steps>
 
+For `GET /v1/risk-packages/{id}`, use **Response view** to choose the complete package, summary, or a section. Both the request query and response example update together; **Copy request example** includes the matching `view` and, for a section, its `section` value. Section examples start on the first page without a cursor. When executing requests in your integration, use a returned cursor only for that same package and section; start without a cursor when switching sections. Full and summary requests omit section pagination. These selectors display examples and do not execute requests.
+
 <Frame caption="The dictionary adds field information to example payloads instead of presenting an unexplained JSON block.">
   <img src="/images/console/data-dictionary.jpg" alt="Data dictionary showing an origination request beside its 202 response with documented field types." />
 </Frame>
@@ -61,3 +63,7 @@ The left side explains the field and its available type, meaning and example inf
 Use the normalized AMLOK field when implementing the AMLOK API. A provider's source field can have different units, availability or meaning; it does not automatically become a top-level field in AMLOK's response. Check [data-model correspondence](/data-model/start-here) and [integration coverage](/integrations/status) when reconciling sources.
 
 Then open [Sandbox scenarios](/console/sandbox) to execute a controlled case and [request logs](/console/request-logs) to inspect its actual response. The [API Reference](/api-reference/overview) remains the source for authentication, operation contracts, pagination and recovery behavior.
+
+## Detailed financial intelligence
+
+Use the [financial attribute library](/data-model/financial-attributes) for detailed calculated observations and [transaction categorization](/data-model/transaction-categorization) for versioned bank/card purpose classifications. The detailed collections extend the same risk package and its paged views; they do not replace the scalar policy metric catalog. In Console, open **Dev Tools → Data Lookup → Financial intelligence** to search the definitions, formulas and input requirements.

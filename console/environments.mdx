@@ -54,6 +54,12 @@ The demo shows the Live activation prompt without enabling Live.
   <img src="/images/console/workspace-menu.jpg" alt="Workspace profile menu showing Demo Organization, two demo workspaces, Sandbox and Live switches, and settings shortcuts." />
 </Frame>
 
+## Keep the selected context in links
+
+Console links include the organization, workspace and environment. Switching the environment updates the URL; ordinary navigation, refresh and shared record links retain that selection. Switching workspaces starts in Sandbox. A link to an unactivated Live environment opens the activation prompt rather than granting access.
+
+When you change environments, analytics waits for that environment's response before showing values or enabling export. A previous environment's chart is not a result for the newly selected environment.
+
 ## Console and API addresses
 
 Use [console.amlok.io](https://console.amlok.io) for your customer workspace. Both Sandbox and Live API keys call `https://api.amlok.io`; the key selects the environment. Switching this menu does not change credentials already used by your backend. Amlok staging and demo deployments are separate from your workspace Sandbox. See [URLs and environments](/api-reference/environments).

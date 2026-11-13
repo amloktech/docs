@@ -62,3 +62,21 @@ Use `resource_type=verification_assessment` to retrieve authorized KYC/KYB resul
 ## Large-record recovery
 
 Collections are bounded by both items and bytes. An oversized indivisible record returns a typed export source; it is never skipped. Bootstrap errors preserve an atomic data checkpoint. See [large results](/api-reference/large-results).
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Shared identity and ongoing access
+
+Use the primary or participant's `bor_…` ID when a query requires `borrower_id`; `subject_id` and normalized source resource IDs are different namespaces. Data access does not require a completed Origination or a Monitor, but it still requires currently authorized sources, purposes and entitlements.
+
+An archived profile has no ongoing intake collection. Archival does not erase retained records or grant continued source access after consent withdrawal. Use [borrower lifecycle](/api-reference/borrower-lifecycle) for restore, revocation and retention boundaries.
+{/* END BORROWER LIFECYCLE */}
+
+{/* BEGIN RESPONSE SEMANTICS */}
+## Preserve exact observations through change
+
+Each newly ingested observation has a unique `DataRecord.id`; its logical `resource_id` can remain the same across versions. Keep the ID and version referenced by evidence or a change event. Historical observations whose physical storage previously shared an ID are exposed through distinct opaque observation IDs, without changing their normalized content. Do not parse or construct an observation ID yourself.
+
+The server checks that normalized object type, logical ID and version match their DataRecord envelope. Document `status` filters describe currently accessible status: consent withdrawal can make a previously available document `restricted` before filtering and pagination.
+
+A cursor can become unusable when unread history falls outside retention, even if its original expiry time is in the future. Both event and data-change feeds return `410 cursor_expired` for a detected gap. Reconcile from a new snapshot and retain your deduplication state; never assume that advancing a cursor proves a missing interval was empty.
+{/* END RESPONSE SEMANTICS */}

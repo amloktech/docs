@@ -10,7 +10,7 @@ AMLOK Insights performs a full underwriting. AMLOK Signal monitors changes and i
 
 ## Product API boundary
 
-The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. AMLOK has one public API with 65 operations under `/v1`, generated from `openapi/amlok.json`. The API reference, downloads, integration guidance and console Data Lookup must follow that same structure. The customer explicitly rejected parallel legacy APIs and migration references.
+The November 2026 customer direction is a borrower-connection journey feeding Insights underwriting and Signal monitoring. Institutions supply application data, their lending-product catalog and risk policies. AMLOK returns an immutable risk package with financial dimensions and authorized underlying data and files. Collection, normalization, verification and orchestration belong behind that boundary. AMLOK has one public API with 67 operations under `/v1`, generated from `openapi/amlok.json`. The API reference, downloads, integration guidance and console Data Lookup must follow that same structure. The customer explicitly rejected parallel legacy APIs and migration references.
 
 ## Research evidence boundary
 
@@ -34,7 +34,7 @@ The user requested a complete implementation specification before building the b
 
 ## Enterprise operating contract
 
-The November 6 follow-up authorizes closing enterprise-volume documentation gaps. Preserve one API and its 65 operations. Define capacity discovery, bounded result representations, resumable complete exports, coordinated schema evolution and a unified data-model entry point. Keep environment-specific targets distinct from measured results and from the approved availability SLA. Runtime acceptance requires actual environment evidence recorded internally.
+The November 6 follow-up authorizes closing enterprise-volume documentation gaps. Preserve one API and its 67 operations. Define capacity discovery, bounded result representations, resumable complete exports, coordinated schema evolution and a unified data-model entry point. Keep environment-specific targets distinct from measured results and from the approved availability SLA. Runtime acceptance requires actual environment evidence recorded internally.
 
 ## Model correspondence
 
@@ -53,3 +53,4 @@ The Console tab provides task-based onboarding and operations guides for workspa
 Cover first-use sample/empty setup, organization/workspace/environment boundaries, read-only borrower review, connection and document evidence, draft Integrations Hub configuration, developer tools, workspace-specific invitations, security, and billing reconciliation. Ground controls and labels in the current console source and browser behavior. Distinguish completed processing from institution approval, events from delivery attempts, API traffic from billable consumption, and simulated funds from real payments. Do not invent Publish, retry, replay, funding or editing buttons that the interface does not expose. Preserve API-based execution instructions where the console is a reference or inspection view.
 
 Organization Owners have broader access than workspace Dev/Analyst invitees. New invitations are workspace-specific; existing organization memberships retain their scope. Product records are read-only in the Console. Live access requires workspace activation. Public guides exclude the internal admin app and hosting or deployment administration.
+

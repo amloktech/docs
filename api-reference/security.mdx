@@ -12,3 +12,9 @@ Provider consent and source entitlements apply independently from API scope. Res
 Owners manage organization identity, team permissions and billing. Devs manage authorized integration configuration; Analysts read permitted reporting and product data. All roles are prevented from editing or deleting historical product records. Monitor configuration and new catalog/policy versions affect future processing only.
 
 Verify raw webhook bytes, deduplicate events durably and retain exact command identity during retries. Keep credentials and financial payloads out of logs. Follow the institution's retention and cancellation rules for evidence and final financial records.
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Versioned maintenance versus historical results
+
+Authorized `borrowers:write` keys can correct or archive current identity with ETag protection. `insights:write` can cancel unfinished underwriting, and `signal:write` can change future monitoring configuration or resume eligible monitoring. These actions do not edit published packages, evidence or ledger history. Related-party authority is checked independently from the primary borrower; see [related parties](/api-reference/related-person-verification).
+{/* END BORROWER LIFECYCLE */}

@@ -18,6 +18,10 @@ This 48-second walkthrough covers the five origination drawer tabs. It was recor
 
 [Download the video](/videos/console/origination-review.mp4) · [Download captions (WebVTT)](https://raw.githubusercontent.com/amloktech/docs/main/videos/console/origination-review.vtt)
 
+<Note>
+  Creating a borrower does not submit an underwriting request. Open [Borrowers](/console/borrowers) to find a business or person registered through `POST /v1/borrowers`. It appears in Origination after you submit an origination for it.
+</Note>
+
 ## Find and open an origination
 
 Open **Origination** in the left navigation. Use the status views, filters and search to locate the borrower or request. Check the selected workspace and environment before searching for an identifier from your application.
@@ -55,6 +59,12 @@ Start here for a readable review of the result. The summary identifies the borro
 
 For example, review Evergreen Outdoor Supply's requested amount alongside its policy result, then compare the declared application information with the evidence used. A missing risk package means there is no published result to review here; it is not a decline. An absent metric is not zero.
 
+## Retrieve detailed financial attributes
+
+The readable risk package retains the assessment, core metrics and financial attribute coverage. To keep the drawer responsive, detailed `financial_attributes` and `financial_attribute_inputs` collections are retrieved separately. The drawer identifies these omitted collections and shows the corresponding paged API paths and complete JSON export request. A Console reading view is not a complete package export.
+
+Use [Financial intelligence in Data Lookup](/console/data-lookup#detailed-financial-intelligence) to understand the definitions. Use the [financial attributes guide](/data-model/financial-attributes) to retrieve actual values and their frozen input manifests. Unavailable values remain distinct from zero.
+
 ## API request
 
 Use this tab when investigating unexpected results or checking what your integration submitted. Inspect the captured payload for the borrower, application facts, document and connection identifiers, and lending-product and risk-policy version references.
@@ -81,7 +91,14 @@ Copy or download the JSON to compare the fields with [Data Lookup](/console/data
 
 ## Documents
 
-Use this tab to find the files associated with this origination. The table includes **Document**, **Type**, **Status** and **Bytes**. Search for a file or identifier and select its row to inspect the available metadata.
+Use this tab to distinguish the assessment's file associations from other files uploaded for the primary borrower. Each table has its own search, filters and pages, with **Document**, **Type**, **Status** and **Bytes** columns. Select a row to inspect its metadata.
+
+| Section | What it contains |
+| --- | --- |
+| **Associated documents** | Primary-borrower and participant files referenced by this origination, plus uploads explicitly targeted at its document requirements. Processing and rejected uploads can appear here; their presence does not mean they were used in the result. |
+| **Other borrower documents** | Files for the primary borrower that are not associated with this origination, including later borrower-only uploads. These do not change the assessment or its evidence. |
+
+To inspect another participant's additional files, open that participant's profile in [Borrowers](/console/borrowers). Files from different people or businesses retain their own borrower association.
 
 <Frame caption="Documents lists the supporting file records for this origination. Open a row to inspect its metadata and download availability.">
   <img src="/images/console/origination-documents.jpg" alt="Documents tab for Evergreen Outdoor Supply listing a synthetic financial statement with its type, status and byte count." />
@@ -89,7 +106,11 @@ Use this tab to find the files associated with this origination. The table inclu
 
 Check the file's identity and status before relying on it. A dash means metadata is not supplied in that view. A file being listed does not mean every verification check passed or every required document is present.
 
-In the file details, **Download original file** is available when an authorized download is provided. **Download unavailable** means there is no usable download for that record at that time. This is a read-only evidence view; submit or associate additional documents through your integration. See [documents and evidence](/console/evidence) for the wider evidence workflow.
+**Download** is available for an authorized, available file. Processing, rejected or restricted files cannot be downloaded. Metadata exports contain record information, not the file bytes.
+
+An upload response of `202` means the file was accepted for processing. Wait until its status is **Available** before including it in a new underwriting request. A borrower-only upload made after this assessment appears in **Other borrower documents**; refreshing does not make it part of the completed result.
+
+To use that file in underwriting, submit a new assessment through your integration with the available file ID and the documented reassessment references. For a still-open document requirement, upload against that specific requirement instead. This drawer is read-only and does not attach files or rerun underwriting. See the [document workflow](/api-reference/documents) for both paths.
 
 ## Integrations
 
@@ -117,3 +138,17 @@ Check connection status and the available sync timestamps when a result has inco
 The risk package is decision support. Your institution owns the final lending decision. To investigate a case, compare Overview with the captured inputs, then check its documents, connections and request logs. Opening the drawer does not edit the application or rerun underwriting; submit corrections through the documented API workflow.
 
 Continue with [underwriting dimensions](/api-reference/underwriting-dimensions) or follow an enrolled deal in [Portfolio](/console/portfolio).
+
+{/* BEGIN BORROWER LIFECYCLE */}
+## Open the shared identity profile
+
+Select **View shared borrower profiles** to open [Borrowers](/console/borrowers) for the same workspace and environment. Registered profiles appear there before an application or monitored facility exists. The profile drawer separates current identity and lifecycle from underwriting requests and monitored deals. Owners and Developers can correct, archive or restore the profile without changing historical results.
+{/* END BORROWER LIFECYCLE */}
+
+## Distinguish progress, recommendations and identity
+
+**Needs attention** includes completed assessments whose recommendation is **Review required**, as well as workflows with actionable processing states. **Within policy**, **Outside policy** and **Review required** describe the package's actual recommendation; they do not replace your institution's lending decision.
+
+A processing, failed or cancelled origination without a published result shows **No risk package available** and its workflow status. Submitted input and the API's origination response are not presented as an assessment result.
+
+**Current borrower profile** shows the latest identity. **Identity at assessment** shows the profile and revision accepted for the immutable result. Compare these if a business name, registration or person profile was corrected after the assessment. A correction does not rewrite the earlier package.

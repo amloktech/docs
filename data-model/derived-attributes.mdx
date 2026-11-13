@@ -4,7 +4,7 @@ description: "56 attributes with inputs, calculations, units, and availability r
 ---
 
 {/* BEGIN API MODEL ALIGNMENT */}
-The 56 definitions below describe source-derived attributes and analytical building blocks. They are not the selectable `Metric.key` catalog for risk packages. Use the **149 [underwriting metrics](/api-reference/underwriting-dimensions)** across 24 dimensions for `RiskPackage.dimensions[].metrics[]` and configuration. Similar names are not interchangeable: match formula, unit, window, population and calculation version. For example, observed `debt_service_cash_paid` does not establish the complete contractual denominator for `dscr`.
+The 56 definitions below describe source-derived attributes and analytical building blocks. They are not the selectable `Metric.key` catalog for risk packages. Use the **184 [underwriting metrics](/api-reference/underwriting-dimensions)** across 24 dimensions for `RiskPackage.dimensions[].metrics[]` and configuration. Similar names are not interchangeable: match formula, unit, window, population and calculation version. For example, observed `debt_service_cash_paid` does not establish the complete contractual denominator for `dscr`.
 {/* END API MODEL ALIGNMENT */}
 
 <Note>The API exposes these retained normalized evidence definitions through [evidence retrieval](/api-reference/evidence-traceability). Calculation and record revisions identify the exact evidence used; internal processing identifiers are read-only provenance. For current request envelopes and product resources, use the [OpenAPI contract](/openapi/amlok.json).</Note>
@@ -1134,3 +1134,7 @@ Policy-defined change against the original assessment.
 ## Underwriting assessment metrics
 
 For the complete risk-package metric definitions, formulas and availability rules, use the [underwriting dictionary](/api-reference/underwriting-dimensions). The fields on this page describe normalized data attributes; they are not the complete assessment catalog.
+
+## Detailed financial intelligence
+
+Use the [financial attribute library](/data-model/financial-attributes) for detailed calculated observations and [transaction categorization](/data-model/transaction-categorization) for versioned bank/card purpose classifications. The detailed collections extend the same risk package and its paged views; they do not replace the scalar policy metric catalog. In Console, open **Dev Tools → Data Lookup → Financial intelligence** to search the definitions, formulas and input requirements.

@@ -1,12 +1,62 @@
 ---
-title: "Related people and borrower verification"
-sidebarTitle: "Related people and borrower verification"
-description: "Related people and borrower verification for the AMLOK product API."
-keywords: ["AMLOK", "API", "Insights", "Signal"]
+title: "Submit related parties and authorized evidence"
+sidebarTitle: "Related parties"
+description: "Include owners, controllers and guarantors in a business assessment with declared roles, permitted purposes and separately authorized supporting evidence."
+keywords: ["borrowers", "lifecycle", "Insights", "Signal", "identity"]
 ---
 
-A business Origination can reference related people using `application.related_borrower_ids`. Create the authorized person profiles through the borrower endpoint and include those IDs in the application context.
+Use typed participants to include a related business or person in the primary borrower's assessment. Register each identity through the borrower endpoint, collect its own authorized sources and documents, then associate it with the parent request. A related profile is not a separate paid underwriting.
 
-AMLOK validates the relationship and permitted purpose before running included KYC/KYB checks. Registration alone does not establish verified identity or authority. Required authorization and supporting evidence must be present, and failures surface as requirements or limitations.
+## Submit a participant
 
-Verification results, provenance and authorized reports appear in the risk package and evidence set. The parent business remains the product billing/workload subject. Do not start a separate verification job or assign a standalone verification charge.
+For Insights, include `application.participants`. For Signal, prefer top-level `participants`. When onboarding a portfolio, omitted top-level participants uses `baseline.portfolio.application.participants` if supplied. If both lists are supplied, their participant definitions must agree; conflicting lists are rejected rather than silently selecting one. The portfolio application's nonempty `related_borrower_ids` must match the admitted participant IDs. Every participant supplies:
+
+| Field | Meaning |
+| --- | --- |
+| `borrower_id` | Its distinct active profile in the same workspace and environment |
+| `roles` | One or more of `owner`, `controller`, `guarantor`, `related_party` |
+| `ownership_share` | Declared decimal-string percentage from 0 to 100, or null; not a verified ownership conclusion |
+| `authority` | `basis: institution_attested`, a nonfuture `attested_at`, and the permitted `purposes` |
+| `connection_ids` | This participant's sources with active consent for the product purpose |
+| `document_ids` | Available borrower-context documents owned by this participant |
+
+Insights requires `credit_assessment`; Signal requires `continuous_monitoring`. Institution attestation does not replace provider consent and does not prove the declared relationship. Cross-borrower sources, inaccessible documents, duplicate participants and the primary borrower repeated as a participant are rejected.
+
+The optional `application.related_borrower_ids` is a correlation list. If nonempty, it must exactly match the typed participant IDs. An ID by itself cannot request verification or establish authority. Put participant sources and files inside that participant, not the primary borrower's `connection_ids` or `document_ids`.
+
+### Example participant list
+
+Use this array as `application.participants` for Insights or top-level `participants` for Signal. All identifiers are synthetic: replace them with the registered guarantor's borrower ID and that same person's authorized connection and available document IDs. Supply your actual attestation time and only the purposes for which you hold authority. This example includes both purposes to illustrate reuse across products; each source still needs active consent for the product being requested.
+
+```json
+[
+  {
+    "borrower_id": "bor_guarantor_synthetic",
+    "roles": ["guarantor"],
+    "ownership_share": null,
+    "authority": {
+      "basis": "institution_attested",
+      "attested_at": "2026-10-15T12:00:00Z",
+      "purposes": ["credit_assessment", "continuous_monitoring"]
+    },
+    "connection_ids": ["con_guarantor_synthetic"],
+    "document_ids": ["doc_guarantor_synthetic"]
+  }
+]
+```
+
+Use an empty `connection_ids` or `document_ids` array when you are supplying no sources or files of that kind. Empty evidence does not imply successful verification; inspect the returned coverage, outcome and limitations. `institution_attested` records your institution's assertion of authority, not proof of the relationship or a provider-verified identity.
+
+## Inspect the outcome
+
+The accepted product resource pins each participant's `borrower_snapshot` and `borrower_profile_version`. The risk package's `participants` array carries roles, declared ownership, authority, `subject_id`, `verification_status`, `verification_outcome`, `evidence_ids` and limitations. Retrieve the bounded `participants` risk-package section when you need that part alone.
+
+Read coverage and outcome separately. Missing evidence can yield `unavailable` and `not_performed`; incomplete evidence must not be presented as successful identity verification. Source observations and provenance support the finding. A declared percentage remains a declaration unless supported by authorized evidence.
+
+The parent business remains the product's billing borrower and subject. Related-party checks are included in that assessment, with no standalone participant-verification charge.
+
+## Continue into monitoring
+
+When creating a Monitor from a baseline risk package, omitted `participants` reuses the baseline participants but validates continuous-monitoring authority and source consent again. Use `[]` to explicitly select no participants, or supply a complete participant list authorized for monitoring. Prior credit-assessment consent alone is insufficient.
+
+A Monitor PATCH can replace the future participant list with ETag protection. New evaluations pin their current authorized identity and evidence; previous packages remain unchanged. See [borrower lifecycle](/api-reference/borrower-lifecycle) and [Signal monitoring](/api-reference/monitoring-design).

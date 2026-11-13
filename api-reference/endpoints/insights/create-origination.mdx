@@ -4,6 +4,6 @@ description: "Submit the borrower application with exact product and policy vers
 openapi: "/openapi/amlok.json POST /v1/originations"
 ---
 
-Submit the borrower application with exact product and policy versions, connections and documents. AMLOK collects and normalizes data, runs included checks and publishes the risk package. All IDs and cursors must belong to the authorized workspace and environment. Required scope: insights:write.
+Submit an underwriting assessment for an active borrower. The first attempt reserves application.institution_reference. Later attempts reuse that reference and borrower only with supersedes_origination_id identifying the latest completed, failed or cancelled attempt. A new attempt is a new assessment; transport retries use the same Idempotency-Key. Each completed new Insights attempt is priced independently. Required scope: insights:write.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.

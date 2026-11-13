@@ -1,0 +1,85 @@
+---
+title: "Financial attributes"
+description: "Use detailed bank, card, accounting and commerce attributes with explicit periods, source coverage, calculation definitions and frozen evidence."
+sidebarTitle: "Financial attributes"
+keywords: [financial attributes, cash flow, accounting, card transactions]
+---
+
+Financial attributes explain observed financial activity in detail. You receive category totals, timing and distribution measures, plus accounting, commerce, inventory and obligation observations in the existing Insights or Signal risk package.
+
+## Understand what is counted
+
+The current registry contains **12,955 attribute definitions**. Definitions include distinct account contexts, categories, periods and applicable statistics. They are not 12,955 independent facts about every borrower. The separate [184 scalar underwriting metrics](/api-reference/underwriting-dimensions) remain the approved keys for risk-policy rules.
+
+Bank cash movement and issuer-card activity are separate. An issuer-card purchase creates a liability; paying the card bill moves bank cash and reduces that liability. Do not add both as operating spending. Merchant card-processing payments are a third perspective, representing sales collection and settlement, not the merchant's own credit-card spending.
+
+## Retrieve the results
+
+Start with the summary so large collections do not block your integration:
+
+```bash
+curl --fail-with-body "$AMLOK_API_BASE_URL/v1/risk-packages/$RISK_PACKAGE_ID?view=summary" \
+  --header "Authorization: Bearer $AMLOK_API_KEY"
+```
+
+Read `financial_attribute_summary` for catalog versions, evaluated and available counts. Retrieve a page of observations:
+
+```bash
+curl --fail-with-body "$AMLOK_API_BASE_URL/v1/risk-packages/$RISK_PACKAGE_ID?view=section&section=financial_attributes&limit=25" \
+  --header "Authorization: Bearer $AMLOK_API_KEY"
+```
+
+Use `attribute_key` for an exact key or `attribute_prefix` for a literal prefix, such as `cross_system.ar.`. These filters are mutually exclusive and only apply to the `financial_attributes` section. Follow `page.next_cursor` with the same package, section and filters until `has_more` is false. `total_items` counts matching observations, including unavailable values. A missing key in an older package does not imply a zero value.
+
+Daily bank/card attributes use completed UTC days; current-day activity does not establish a full day of coverage. Cross-system observations may end partway through a day. Use the input manifest timestamps for the exact start-inclusive, end-exclusive interval; attribute date fields identify those calendar dates.
+
+Each observation references `input_manifest_id`. Retrieve that input set with `view=section&section=financial_attribute_inputs&input_manifest_id=<id>`. Its resource IDs, evidence IDs, observation window and coverage identify the frozen inputs. Follow evidence IDs through [Evidence](/api-reference/evidence-traceability). A manifest is shared by attributes with the same input population; the definition determines which records and fields enter each calculation.
+
+Console record drawers also use a reading view that preserves the assessment and coverage. An explicit notice identifies the detailed collections retrieved separately and provides their paged API paths and complete JSON export request.
+
+PDF reports retain the assessment and an attribute coverage summary. Their report notice explicitly identifies the detailed attributes and input manifests available through JSON or the paged API; those two large collections are not printed in the PDF.
+
+For bulk processing, request the package's JSON [export](/api-reference/export-formats). Full responses above the configured response limit return an explicit recovery response; they are not silently truncated. Historical packages retain their saved definitions and may predate the detailed attribute collections.
+
+## Interpret the value
+
+| Field | Meaning |
+| --- | --- |
+| `key` | Stable key for the calculation and its applicable context/period. |
+| `value` / `unit` | Exact decimal-string result and unit. Ratios use fractional units, not percentages. |
+| `status` | `available` or `unavailable`; unavailable values are null. |
+| `window_start` / `window_end` | UTC dates for the half-open observation interval. |
+| `as_of` | Knowledge cutoff for the assessment. Later source versions do not alter it. |
+| `definition_version` / `calculation_version` | Pinned meaning and calculation implementation. |
+| `coverage_ratio` | Stated coverage measure, not confidence in creditworthiness. |
+| `missing_reason` / `reason_code` | Why the input scope cannot support the calculation. |
+| `input_manifest_id` | Exact input population in this same immutable package. |
+
+Transaction periods are anchored to the stated source observation window, which may be older than collection time. Read source freshness separately. Rolling periods that extend beyond proven account coverage are unavailable. Missing days are not zero-activity days. Category-specific zero values require enough classification detail to rule out matching activity; a broad operating-expense label cannot prove there were no software purchases.
+
+Cross-system results use `data_scope: observed_records`. They describe the supplied invoices, bills, orders, inventory or other records. They do not assert complete business-wide coverage. A missing collection is unavailable. Differences in currency, date basis, source versions or required fields remain explicit.
+
+## Attribute families
+
+| Family | Examples | Input requirements |
+| --- | --- | --- |
+| Banking | Directional/category totals, counts, shares, amount distribution, active days and recency | Posted records, account context, complete period coverage and supported categories |
+| Issuer cards | Purchases, refunds, repayments, fees and category distributions | Credit-account context and normalized event direction |
+| Receivables and payables | Aging buckets, overdue amounts and observed collection/payment timing | Dated invoices/bills, due balances, payment dates and currency |
+| Payments and payouts | Observed capture/refund amounts, fees, failure shares and settlement delays | Captured amounts, supported status and actual timestamps |
+| Commerce and subscriptions | Order cancellation/refund measures, fulfillment observations and recurring obligations | Order amounts/status, subscription terms and observation dates |
+| Inventory | Owned/consigned value and expiry exposure | Carrying values, ownership and explicit expiry dates |
+| Loans and installments | Maturity exposure, scheduled amounts and observed overdue installments | Loan balances, currencies, due dates and remaining amounts |
+| Accounting and reconciliation | Journal/credit observations and matched-record coverage | Explicit ledger entries and reconciliation relationships |
+
+A current subscription snapshot does not establish historical churn. Current inventory does not establish stock aging or liquidation value. Transaction descriptions and merchant codes do not independently verify business purpose. Default probabilities, expected loss and credit limits require their applicable validated models; this attribute library does not imply those outputs.
+
+## Download and explore definitions
+
+- [Bank and card attribute catalog](/downloads/financial-attribute-catalog.json)
+- [Cross-system attribute catalog](/downloads/cross-system-attribute-catalog.json)
+- [Transaction categorization](/data-model/transaction-categorization)
+
+The bank/card download uses `financial-attribute-references-v1` encoding to avoid repeating definitions. Resolve `selector` in `selectors`, `period` in `periods`, `statistic` in `statistics` and `context` in `contexts`. Statistics supply formula, unit and value type; selectors supply required inputs; contexts explain accounting interpretation. `calculation_version` applies to every entry. This preserves all definitions while reducing download size.
+
+In Console, open **Dev Tools → Data Lookup → Financial intelligence**. Search by key, category, period or source, then inspect the formula, required inputs and interpretation. This reference explains calculations; use Sandbox scenarios to execute them with fictional records.
