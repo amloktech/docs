@@ -242,6 +242,8 @@ def build():
     workspace_billing_contract(spec,f)
     from lifecycle_contract import extend as lifecycle_contract
     lifecycle_operations=lifecycle_contract(spec,f)
+    from risk_data_expansion import apply as risk_data_expansion
+    risk_data_expansion(spec,f)
     annotate_fields(spec)
     # Apply shared transport metadata after all generators have added their responses.
     for methods in spec['paths'].values():
@@ -301,6 +303,8 @@ def build():
     lifecycle_guides(spec,f,index)
     from response_semantics_guides import write_guides as response_semantics_guides
     response_semantics_guides()
+    from risk_data_expansion import write_guides as risk_data_guides
+    risk_data_guides(ROOT)
 
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re

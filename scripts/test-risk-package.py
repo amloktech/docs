@@ -24,14 +24,14 @@ partial=json.loads((ROOT/'downloads/risk-package-example.json').read_text())
 examples={name:json.loads((ROOT/('downloads/risk-package-'+name+'-example.json')).read_text()) for name in ['business','consumer','signal']}
 for p in [partial,*examples.values()]:check(p)
 b=examples['business'];person=examples['consumer']
-assert len(c['metrics'])==149 and len(c['dimensions'])==24
+assert len(c['metrics'])==184 and len(c['dimensions'])==24
 assert metric(b,'dscr')['value']=='2.00'
 assert metric(person,'debt_to_income')['value']=='0.25'
 assert metric(partial,'dscr')['value'] is None
 reject(b,lambda p:p['dimensions'].append(deepcopy(p['dimensions'][0])))
 reject(b,lambda p:p['dimensions'][0]['metrics'].append(deepcopy(p['dimensions'][0]['metrics'][0])))
 reject(b,lambda p:p['dimensions'][0]['metrics'].pop())
-reject(b,lambda p:p['completeness'].update(available_metric_count=149))
+reject(b,lambda p:p['completeness'].update(available_metric_count=184))
 reject(b,lambda p:metric(p,'dscr').update(value=None))
 reject(partial,lambda p:metric(p,'dscr').update(value='0'))
 reject(b,lambda p:metric(p,'dscr').update(unit='currency',currency='CAD'))
@@ -66,5 +66,5 @@ assert f['Configuration']['dimensions']==c['metrics']
 assert json.loads((ROOT/'downloads/underwriting-metric-catalog.json').read_text())==c
 page=(ROOT/'api-reference/underwriting-dimensions.mdx').read_text()
 assert all('### '+m['key']+'\n' in page and m['calculation_version'] in page for m in c['metrics'])
-summary={'dimensions':24,'metrics':149,'risk_contract_checks':checks,'backend_execution':'not_run','predictive_performance_validation':'not_run'}
+summary={'dimensions':24,'metrics':184,'risk_contract_checks':checks,'backend_execution':'not_run','predictive_performance_validation':'not_run'}
 (ROOT/'artifacts/risk-package-validation.json').write_text(json.dumps(summary,indent=2)+'\n');print(json.dumps(summary))

@@ -1,6 +1,6 @@
 ---
 title: "Source field dictionary"
-description: "961 source-normalized definitions with API types, presence, nullability, provenance and coverage rules."
+description: "974 source-normalized definitions with API types, presence, nullability, provenance and coverage rules."
 keywords: ["AMLOK", "data model", "API contract"]
 ---
 
@@ -2542,7 +2542,7 @@ Why unfinished processing stopped: account cancellation, parent cancellation, or
 
 <AccordionGroup>
 
-<Accordion title="bank_account" id="bank-account" description="19 fields">
+<Accordion title="bank_account" id="bank-account" description="21 fields">
 
 #### `bank_account.connection_id`
 
@@ -2811,9 +2811,27 @@ Vault reference for the full account number. Raw account numbers require a separ
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankAccountRead/properties/account_number_token
 
+#### `bank_account.holder_addresses`
+
+**API:bank_account.holder_addresses** · `array<NormalizedAddress>` · Optional · Nullable: Yes
+
+Source-reported account-holder addresses. May differ from business registered or mailing address.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankAccountRead/properties/holder_addresses
+
+#### `bank_account.transaction_coverage`
+
+**API:bank_account.transaction_coverage** · `object` · Optional · Nullable: Yes
+
+Source-established coverage, start-inclusive/end-exclusive; complete means every posted transaction for this interval is represented, including zero-activity days. It does not prove all external accounts are connected.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankAccountRead/properties/transaction_coverage
+
 </Accordion>
 
-<Accordion title="account_balance" id="account-balance" description="12 fields">
+<Accordion title="account_balance" id="account-balance" description="14 fields">
 
 #### `account_balance.account_id`
 
@@ -2985,9 +3003,27 @@ How balance timing was established. Preserve original evidence; do not invent mi
 - **Allowed values:** source_observed, reconstructed, unknown
 - **Schema:** NormalizedAccountBalanceRead/properties/date_basis
 
+#### `account_balance.daily_balances`
+
+**API:account_balance.daily_balances** · `array<object>` · Optional · Nullable: Yes
+
+Observed daily closing balances in current.currency. Missing dates are missing; never fill with zero or interpolate as observed.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedAccountBalanceRead/properties/daily_balances
+
+#### `account_balance.restricted_amount`
+
+**API:account_balance.restricted_amount** · `object` · Optional · Nullable: Yes
+
+Source-supported restricted cash at as_of. A known zero is distinct from unknown. Not applicable to credit liabilities.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedAccountBalanceRead/properties/restricted_amount
+
 </Accordion>
 
-<Accordion title="bank_transaction" id="bank-transaction" description="26 fields">
+<Accordion title="bank_transaction" id="bank-transaction" description="33 fields">
 
 #### `bank_transaction.account_id`
 
@@ -3354,6 +3390,69 @@ Cheque number where explicitly reported. Preserve original evidence; do not inve
 - **Source families:** BANK
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/check_number
+
+#### `bank_transaction.stream_id`
+
+**API:bank_transaction.stream_id** · `string` · Optional · Nullable: Yes
+
+Stable provider-supported recurring event stream within this account. Null when recurrence has not been established; grouping is not a prediction.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/stream_id
+
+#### `bank_transaction.payment_rail`
+
+**API:bank_transaction.payment_rail** · `string` · Optional · Nullable: Yes
+
+Source-reported payment rail, such as ACH, wire or card. Distinct from sales channel.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/payment_rail
+
+#### `bank_transaction.intermediary_counterparty_id`
+
+**API:bank_transaction.intermediary_counterparty_id** · `string` · Optional · Nullable: Yes
+
+Resolved payment intermediary; does not replace the economic counterparty.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/intermediary_counterparty_id
+
+#### `bank_transaction.economic_role`
+
+**API:bank_transaction.economic_role** · `string` · Optional · Nullable: Yes
+
+Supported economic use of the transaction; not inferred from account ownership alone.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/economic_role
+
+#### `bank_transaction.product_activity`
+
+**API:bank_transaction.product_activity** · `string` · Optional · Nullable: Yes
+
+Evidence-supported financial product or economic activity. Unknown is distinct from none.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/product_activity
+
+#### `bank_transaction.return_reason`
+
+**API:bank_transaction.return_reason** · `string` · Optional · Nullable: Yes
+
+Normalized reported return cause. insufficient_funds identifies NSF; other returns must not be counted as NSF.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/return_reason
+
+#### `bank_transaction.is_essential`
+
+**API:bank_transaction.is_essential** · `boolean` · Optional · Nullable: Yes
+
+Whether source-supported analysis identifies an essential cash payment. Unknown must not be treated as false.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedBankTransactionRead/properties/is_essential
 
 </Accordion>
 
@@ -7423,7 +7522,7 @@ State of matching ledger payment to bank movement. Preserve original evidence; d
 
 </Accordion>
 
-<Accordion title="financial_statement" id="financial-statement" description="11 fields">
+<Accordion title="financial_statement" id="financial-statement" description="12 fields">
 
 #### `financial_statement.statement_type`
 
@@ -7580,6 +7679,15 @@ Standardized report lines. Preserve original evidence; do not invent missing val
 - **Source families:** ACC; INV financial modules; client documents
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedFinancialStatementRead/properties/line_ids
+
+#### `financial_statement.supporting_schedule`
+
+**API:financial_statement.supporting_schedule** · `FinancialSupportingSchedule` · Optional · Nullable: Yes
+
+Supported accounting and obligation schedule for this statement period and currency. Refer to metric definitions for eligibility; not a model output.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedFinancialStatementRead/properties/supporting_schedule
 
 </Accordion>
 
@@ -9917,7 +10025,7 @@ Contractual monitoring covenants. Preserve original evidence; do not invent miss
 
 </Accordion>
 
-<Accordion title="loan" id="loan" description="34 fields">
+<Accordion title="loan" id="loan" description="35 fields">
 
 #### `loan.borrower_entity_id`
 
@@ -10396,6 +10504,15 @@ Source-reported authorized automatic repayment setting. Preserve original eviden
 - **Source families:** LEND; client
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedLoanRead/properties/autopay_enabled
+
+#### `loan.creditor_counterparty_id`
+
+**API:loan.creditor_counterparty_id** · `string` · Optional · Nullable: Yes
+
+Resolved creditor; retain facility identity separately to avoid double-counting repeated source observations.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedLoanRead/properties/creditor_counterparty_id
 
 </Accordion>
 

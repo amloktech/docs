@@ -35,6 +35,38 @@ Reconciliations compare aligned populations, currencies and dates. The bridge is
 
 Statements preserve line hierarchy and sourced adjustments. Do not add both subtotal lines and their children. EBITDA addbacks are itemized and justified, not automatically approved because a borrower supplied them. Receivable/payable aging uses due dates and allocated settlements; net working capital and cash-conversion-cycle calculations use comparable statement periods. HHI uses squared fractional shares and identifies unallocated exposure; unknown counterparties cannot silently disappear.
 
+## Observed cash activity and liquidity
+
+`BankAccount.transaction_coverage` establishes whether the entire posted transaction population is represented for `[start, end)`. Transactions alone cannot prove complete history. Known zero activity is a measured zero only within complete source coverage. `BankTransaction.category`, `is_internal_transfer`, `product_activity` and `is_essential` carry distinct classifications; unknown classifications are not negative findings.
+
+- Gross inflows and outflows include transfers. Net external cash flow excludes both sides of an internal transfer. Operating receipts exclude debt proceeds and owner contributions; operating payments exclude debt-service debits, owner distributions, investments and transfers. The underlying normalized transactions remain accessible.
+- Operating receipt timing uses distinct UTC receipt dates, with at least three dates for interval variability. Monthly volatility needs at least six complete calendar months; 90-day changes need two complete 90-day windows. No receipts during an observed month does not prove zero accrual revenue.
+- Daily cash statistics require a closing balance for every included asset account on every day. The current balance, daily balances and restricted cash are separate observations. Cash-buffer days additionally require supported essential-payment classifications; missing restrictions do not imply unrestricted funds.
+- A cash-shock episode begins with a one-day decline of at least 20% from a positive prior balance and ends when that prior level is recovered. Further declines remain within that episode. If the latest episode has not recovered, recovery days are unavailable. This is a historical description, not a recovery forecast or a default probability.
+- Observed facility counts deduplicate `Loan.facility_id`. Conflicting observations produce unavailable counts. Recently funded facilities require known funding dates. The institution's deal snapshot is not counted again as another provider facility; observed facilities do not prove a complete external debt inventory.
+
+Use the [metric dictionary](/api-reference/underwriting-dimensions) for the precise numerator, denominator, time window and availability requirements of each metric. Use [normalized records](/api-reference/data-access) and the referenced evidence record to inspect the supporting inputs.
+
+## Working-capital inputs
+
+`FinancialStatement.supporting_schedule` exposes supported inputs in the statement's currency and period. Opening and closing balances refer to the same reporting period. Credit sales and credit purchases exclude cash transactions; do not substitute total revenue or COGS when those inputs are missing.
+
+| Metric | Calculation |
+| --- | --- |
+| Receivable days | Mean opening and closing trade receivables / credit sales × period days. |
+| Payable days | Mean opening and closing trade payables / credit purchases × period days. |
+| Inventory days | Mean opening and closing inventory / COGS × period days. |
+| Cash conversion cycle | Receivable days + inventory days − payable days; all three must be available. |
+| Quick ratio | Cash + short-term investments + eligible receivables, divided by current liabilities. |
+
+Positive denominators and supported period inputs are required. NSF counts use specifically identified insufficient-funds events; a generic returned-payment count does not establish NSF. Monetary values are decimal strings, ratios are fractions and missing inputs remain null or omitted.
+
+## Catalog revisions and saved assessments
+
+Configuration discovery returns the current catalog version and scalar definitions. Catalog `2026-11-12.1` contains 184 metrics across 24 families. Earlier saved assessments retain their original catalog and values; an assessment with catalog `2026-11-06.1` contains 149 metrics. These are immutable result revisions within the same API. Use the returned version and metric keys instead of assuming every saved result has the latest count.
+
+Create a new origination or monitoring evaluation to obtain a new assessment. Downloading an older package does not recalculate it. Existing source records may not establish the coverage or classifications required by newer metrics. Review each missing reason and obtain the necessary source observations; never fabricate historical coverage.
+
 ## Repayment and affordability
 
 DSCR uses eligible cash flow and complete existing plus proposed required debt service over comparable periods. Include principal, interest, fees, balloon obligations and variable-payment assumptions. Do not substitute arbitrary bank debits for a complete debt schedule. Recurring payments can suggest an obligation while principal, rate or maturity remain unknown. Distinguish observed, declared and inferred obligations.

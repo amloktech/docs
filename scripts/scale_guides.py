@@ -137,7 +137,7 @@ MODEL='''The API exposes one model through three related representations: curren
 | --- | --- | --- |
 | Collected integration records | `DataRecord.normalized`, selected by `resource_type` and `normalized.object` | [Source field dictionary](/data-model/field-dictionary): 957 field definitions |
 | Detailed KYC/KYB assessment | `RiskPackage.verification` or `normalized.assessment` for `verification_assessment` | [Verification field dictionary](/api-reference/verification-fields): 860 field definitions across 25 observation sections |
-| Financial assessment | `RiskPackage.dimensions`, `analyses`, policies, findings and required actions | [Underwriting dimensions](/api-reference/underwriting-dimensions): 24 families and 149 metrics |
+| Financial assessment | `RiskPackage.dimensions`, `analyses`, policies, findings and required actions | [Underwriting dimensions](/api-reference/underwriting-dimensions): 24 families and 184 metrics |
 | Frozen assessment input | `Evidence.normalized` and exact data-record/document references | [Evidence traceability](/api-reference/evidence-traceability) |
 | Shared transport and monetary types | Envelopes, errors, cursor pages, amounts and exports | [Shared types](/data-model/shared-types) |
 

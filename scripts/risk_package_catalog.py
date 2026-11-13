@@ -2,7 +2,7 @@
 from pathlib import Path
 import json
 ROOT=Path(__file__).resolve().parent.parent
-VERSION='2026-11-06.1'
+VERSION='2026-11-12.1'
 # key, audience, source families, label, scope/eligibility rule
 DIMENSIONS=[
 ('identity','both','identity registry banking documents','Identity and verification','Identity and account-ownership checks identify inconsistencies; they do not substitute for financial capacity.'),
@@ -197,7 +197,8 @@ def catalog():
   if metric['key'] in business_only: metric['borrower_types']=['business']
   if metric['key'] in person_only: metric['borrower_types']=['person']
  assert len({m['key'] for m in metrics})==len(metrics)
- return {'version':VERSION,'dimensions':dimensions,'metrics':metrics}
+ from risk_data_expansion import extend_catalog
+ return extend_catalog({'version':VERSION,'dimensions':dimensions,'metrics':metrics})
 
 if __name__=='__main__':
  c=catalog();print(json.dumps({'dimensions':len(c['dimensions']),'metrics':len(c['metrics'])}))

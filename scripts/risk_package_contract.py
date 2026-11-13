@@ -65,6 +65,8 @@ def extend_schemas(s):
  for key,item in items:section(item+'Section',item,'Coverage and results for '+key.replace('_',' ')+'. Empty unavailable/not_applicable sections carry an explicit reason. Partial results must identify their limitation; an empty list alone never means a clean assessment.')
  add('RiskPackage',{'scope':ref('AssessmentScope'),'catalog_version':{'const':VERSION},'completeness':obj({'expected_metric_count':{'const':len(c['metrics'])},'available_metric_count':integer,'unavailable_metric_count':integer,'not_applicable_metric_count':integer,'coverage_statement':text()}),'findings':array(ref('RiskFinding')),'analyses':obj({key:ref(item+'Section') for key,item in items}),'required_actions':array(obj({'code':text(),'description':text(),'metric_keys':array(text()),'requirement_ids':ids}))})
  s['RiskPackage']['description']+=' Includes every defined metric with an explicit availability state, source-linked analyses and exact catalog/calculation versions. Completeness is evidence coverage, not creditworthiness. Cross-field invariants are specified in the risk-package methodology.'
+ from risk_data_expansion import extend_normalized
+ extend_normalized(s)
  return s
 
 
