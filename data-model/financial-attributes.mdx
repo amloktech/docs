@@ -35,6 +35,8 @@ Daily bank/card attributes use completed UTC days; current-day activity does not
 
 Each observation references `input_manifest_id`. Retrieve that input set with `view=section&section=financial_attribute_inputs&input_manifest_id=<id>`. Its resource IDs, evidence IDs, observation window and coverage identify the frozen inputs. Follow evidence IDs through [Evidence](/api-reference/evidence-traceability). A manifest is shared by attributes with the same input population; the definition determines which records and fields enter each calculation.
 
+Console record drawers also use a reading view that preserves the assessment and coverage. An explicit notice identifies the detailed collections retrieved separately and provides their paged API paths and complete JSON export request.
+
 PDF reports retain the assessment and an attribute coverage summary. Their report notice explicitly identifies the detailed attributes and input manifests available through JSON or the paged API; those two large collections are not printed in the PDF.
 
 For bulk processing, request the package's JSON [export](/api-reference/export-formats). Full responses above the configured response limit return an explicit recovery response; they are not silently truncated. Historical packages retain their saved definitions and may predate the detailed attribute collections.
