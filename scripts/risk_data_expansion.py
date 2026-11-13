@@ -146,3 +146,24 @@ Use **Dev Tools → Data Lookup** to inspect the request, response and field def
 
 Existing saved results keep their original catalog. New runs use the current definitions, while missing source coverage remains explicit. Loading or resetting sample data is an explicit workspace action; a catalog update does not erase your existing Sandbox records. See [risk-package methodology](/api-reference/risk-package-methodology) for formulas and observation requirements. All sample businesses, funds and conclusions are synthetic.
 """)
+
+ path=root/'data-model/field-dictionary.mdx'
+ if path.exists():
+  import json
+  props=json.loads((root/'openapi/amlok.json').read_text())['components']['schemas']['FinancialSupportingSchedule']['properties']
+  special={
+   'opening_receivables':'Trade receivables at the start of the statement period.',
+   'receivables':'Trade receivables at the end of the statement period.',
+   'opening_trade_payables':'Trade payables at the start of the statement period.',
+   'trade_payables':'Trade payables at the end of the statement period.',
+   'opening_inventory':'Inventory at the start of the statement period.',
+   'inventory':'Inventory at the end of the statement period.',
+   'credit_sales':'Sales on credit during this period; excludes cash sales. Required for receivable days.',
+   'credit_purchases':'Purchases on credit during this period; excludes cash purchases. Required for payable days.',
+   'nsf_event_count':'Specifically identified insufficient-funds events; other payment returns do not count.',
+   'short_term_investments':'Supported short-term investment amount used in the quick ratio.',
+   'liquidity_floor':'Explicit cash threshold in the statement currency; not an Amlok credit decision.',
+  }
+  content='\n## Financial supporting schedule fields\n\n`financial_statement.supporting_schedule` contains the following optional nullable decimal-string inputs. Amounts use the parent statement currency and reporting period. Missing fields are unknown, not zero. Opening balances mean the start of that period; closing balances mean its end. Exact formulas and eligibility are in [risk-package methodology](/api-reference/risk-package-methodology). The same nested fields are searchable in Console Data Lookup.\n\n| Field | Meaning |\n| --- | --- |\n'
+  for key,value in props.items():content+='| `supporting_schedule.'+key+'` | '+special.get(key,value['description'])+' |\n'
+  path.write_text(path.read_text().split('\n## Financial supporting schedule fields')[0]+content)
