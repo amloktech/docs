@@ -3,7 +3,7 @@ const bdcSlides = [
   ["The opportunity", "Capacity-based lending"],
   ["The challenge", "A fragmented picture. A moving risk."],
   ["The unified process", "Unified data. A stronger underwriting process."],
-  ["The borrower experience", "Make the path to financing clear."],
+  ["Research", "Research for financial risk intelligence."],
   ["The permission", "Connect what matters, with clear permission."],
   ["After funding", "Keep the funded decision in view."],
   ["The full proposal", "From business evidence to responsible financing."],
@@ -39,14 +39,69 @@ const BdcHeading = ({ index, intro }) => <header className="bdc-heading"><p clas
 const BdcNote = ({ children }) => <p className="bdc-note">{children}</p>;
 const BdcSteps = ({ items, className = "" }) => <div className={`bdc-steps ${className}`}>{items.map(([title, body, detail], i) => <div key={title}><span className="bdc-index">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{body}</p>{detail && <small>{detail}</small>}</div>)}</div>;
 
-const BdcOffers = () => {
-  const [selected, setSelected] = useState(0);
-  const offers = [
-    ["Current evidence", "Indicative option", "175,000", "14.50%", "document", "Based on the information already reviewed.", "Confirm eligibility, complete credit review, and satisfy the lender's final conditions."],
-    ["Connected evidence", "Conditional alternative", "250,000", "12.50%", "link", "Connect relevant payment or accounting records.", "Authorize an eligible source. The evidence must resolve the identified policy condition and support the alternative terms."],
-    ["Ongoing visibility", "Conditional alternative", "250,000", "11.50%", "flow", "Add separately authorized ongoing monitoring.", "Meet the connected-evidence conditions and the lender's approved monitoring terms. Monitoring alone does not qualify a borrower for better terms."]
-  ];
-  return <div className="bdc-demo"><div className="bdc-demo-bar"><span><BdcIcon name="bank" size={18} />Your business financing</span><span className="bdc-tag">Illustrative interface</span></div><div className="bdc-offers" role="group" aria-label="Illustrative financing options">{offers.map(([name, label, amount, rate, icon, detail], i) => <button type="button" key={name} aria-pressed={selected === i} className={`bdc-offer ${selected === i ? "bdc-selected" : ""}`} onClick={() => setSelected(i)}><span className="bdc-offer-name"><BdcIcon name={icon} size={19} />{name}<span className="bdc-radio" /></span><span className="bdc-offer-status">{label}</span><span className="bdc-amount"><small>Up to CAD</small>{amount}</span><span className="bdc-offer-terms"><strong>{rate}</strong> fixed annual rate<span>36-month term</span></span><span className="bdc-offer-detail">{detail}</span></button>)}</div><div className="bdc-conditions" aria-live="polite"><span className="bdc-eyebrow">What must be true</span><p>{offers[selected][6]}</p></div></div>;
+// Headline figures supplied by AMLOK for this presentation. The comparison remains proposed.
+const bdcResearchComparison = [
+  ["Cash-flow category coverage", 70, 88, "%"],
+  ["Revenue settlement reconciliation", 75, 90, "%"],
+  ["AML false-positive manual-review burden index", 100, 65, ""],
+  ["Named counterparty coverage", 65, 86, "%"],
+  ["Customer concentration coverage", 60, 84, "%"],
+  ["Vendor concentration coverage", 60, 88, "%"],
+  ["Debt-repayment miss rate", 4.4, 3.96, "%"],
+  ["Debt-service coverage assessability", 70, 85, "%"],
+  ["Working-capital cycle visibility", 65, 79, "%"],
+  ["Graph relationship precision", 80, 95, "%"],
+  ["60-day cash-flow forecast error", 20, 18.5, "%"],
+  ["Transaction classification error", 2.8, 2.66, "%"]
+];
+const bdcResearchApproach = [
+  ["Disciplines", "Evaluation, financial language, temporal reasoning, entity relationships and model governance.", [
+    ["Evaluation and calibration", "Measure extraction, reconciliation, forecasting and risk signals on task-specific cohorts, with uncertainty and matched baselines."],
+    ["Financial language", "Interpret descriptors and document fields in their financial context, including counterparty roles, transaction purpose and bilingual evidence."],
+    ["Temporal reasoning", "Represent cash movements and obligations over time, preserving the evidence available at each decision date."],
+    ["Entity and event relationships", "Resolve businesses, counterparties and related records without counting one economic event several times."],
+    ["Model governance", "Track data provenance, model versions, limitations and the human review required for consequential decisions."]
+  ]],
+  ["Capabilities", "Document extraction, transaction interpretation, reconciliation, capacity analysis and change detection.", [
+    ["Documents and transactions", "Extract structured evidence and interpret financial activity while retaining source references and unresolved fields."],
+    ["Connected financial evidence", "Reconcile orders, invoices, payments, settlements and bank entries across authorized systems."],
+    ["Relationships and obligations", "Map supported entity links, existing financing, counterparties and customer or supplier concentrations."],
+    ["Risk and repayment capacity", "Calculate cash flow, working capital and debt-service measures using versioned formulas and reconciled inputs."],
+    ["Post-funding intelligence", "Compare new evidence with the funded baseline and identify changes that warrant institution-led review."]
+  ]],
+  ["Models", "Specialist language models, temporal event encoders, entity graphs and financial calculation layers.", [
+    ["Transaction-language models", "Represent descriptor meaning, purpose and counterparty candidates with supporting evidence spans."],
+    ["Temporal event encoders", "Combine amounts, categories, timestamps, source coverage and missingness to study financial behavior."],
+    ["Evidence-backed entity graphs", "Represent typed, time-scoped relationships between businesses, facilities, counterparties and economic events."],
+    ["Task-specific models and calculations", "Use separate risk, forecasting and change-detection tasks, alongside deterministic financial calculations and grounded explanations."]
+  ]],
+  ["Philosophy", "Measure the financial task. Validate changes. Keep evidence and institutional judgment connected.", [
+    ["Evaluate the decision task", "Judge quality through financial evidence, cohort definitions and operational tradeoffs, rather than a general-purpose benchmark alone."],
+    ["Learn through controlled review", "Use authorized analyst feedback to identify improvements; validate changes with historical replay and held-out evaluation before release."],
+    ["Keep the institution in control", "Make assumptions, evidence and uncertainty reviewable. The institution owns policy, final approval and intervention."]
+  ]]
+];
+const BdcResearch = () => {
+  const [view, setView] = useState("comparison");
+  const dialogRef = useRef(null), openerRef = useRef(null);
+  const openDetails = (next, event) => { openerRef.current = event.currentTarget; setView(next); dialogRef.current?.showModal(); };
+  const closeDetails = () => dialogRef.current?.close();
+  return <div className="bdc-research-content">
+    <div className="bdc-research-corpus"><p className="bdc-eyebrow">AMLOK-reported research</p><dl>{[["275,019", "Closed deals studied"], ["6,322,690", "Metadata records"], ["1,300", "Average data points per business"]].map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div>
+    <div className="bdc-research-findings" aria-label="AMLOK-reported research findings">{[["40% → 82%", "Assessable information"], ["60-85%", "Unreadable transaction value resolved"], ["25-45%", "Signal-bearing defaults flagged"], ["6-8 weeks", "Earlier distress detection"]].map(([value, label]) => <div key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
+    <div className="bdc-research-pillars">{bdcResearchApproach.map(([title, summary]) => <div key={title}><h3>{title}</h3><p>{summary}</p></div>)}</div>
+    <div className="bdc-research-actions"><p>Source: AMLOK-supplied research summary.<br />The detailed connected-data comparison is proposed.</p><div><button type="button" onClick={e => openDetails("approach", e)}>Research approach<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
+    <dialog className="bdc-research-dialog" ref={dialogRef} aria-labelledby="bdc-research-details-title" onClose={() => openerRef.current?.focus()} onClick={e => { if (e.target === e.currentTarget) closeDetails(); }}>
+      <div className="bdc-research-dialog-header"><div><p className="bdc-eyebrow">AMLOK / Research</p><h2 id="bdc-research-details-title">Research details</h2></div><button type="button" onClick={closeDetails} aria-label="Close research details"><BdcIcon name="close" /></button></div>
+      <div className="bdc-research-switch" role="group" aria-label="Research detail view"><button type="button" aria-pressed={view === "comparison"} onClick={() => setView("comparison")}>Proposed comparison</button><button type="button" aria-pressed={view === "approach"} onClick={() => setView("approach")}>Research approach</button></div>
+      <div hidden={view !== "comparison"} className="bdc-research-comparison">
+        <h3>Connected-data validation</h3><p>Proposed comparison from the AMLOK research summary. Values are approximate; relative change is calculated as (AMLOK - baseline) / baseline.</p>
+        <div className="bdc-research-table-scroll" role="region" aria-label="Scrollable proposed comparison" tabIndex={0}><table><caption className="bdc-sr-only">Proposed connected-data comparison across 12 measurement dimensions</caption><thead><tr><th scope="col">Measurement dimension</th><th scope="col">Baseline</th><th scope="col">AMLOK (proposed)</th><th scope="col">Relative change</th></tr></thead><tbody>{bdcResearchComparison.map(([label, baseline, amlok, unit]) => { const delta = (amlok - baseline) / baseline * 100; return <tr key={label}><th scope="row">{label}</th><td>{baseline.toFixed(2)}{unit}</td><td>≈{amlok.toFixed(2)}{unit}</td><td>≈{delta > 0 ? "+" : ""}{delta.toFixed(2)}%</td></tr>; })}</tbody></table></div>
+        <p className="bdc-research-detail-note">The AML measure is a normalized manual-review burden index (baseline = 100), not verification accuracy, review time or cost. Percentage change is distinct from a percentage-point difference.</p>
+      </div>
+      <div hidden={view !== "approach"} className="bdc-research-approach"><p>Research focuses on financial understanding for full underwriting and ongoing monitoring. Each task has its own evidence, evaluation population and intended use.</p><div>{bdcResearchApproach.map(([title, summary, details]) => <section key={title}><h3>{title === "Models" ? "Model architecture" : title}</h3><dl>{details.map(([label, detail]) => <div key={label}><dt>{label}</dt><dd>{detail}</dd></div>)}</dl></section>)}</div><p className="bdc-research-detail-note">The headline figures are supplied AMLOK research results. The public research documentation describes separate structured-loan and financial-document baseline studies.</p><a href="/research" target="_blank" rel="noopener noreferrer">Explore the research documentation<BdcIcon name="arrow" size={16} /></a></div>
+    </dialog>
+  </div>;
 };
 
 const BdcPermission = () => {
@@ -82,7 +137,7 @@ export const BdcPresentation = () => {
   }, []);
   useEffect(() => {
     const onKey = e => {
-      if (e.altKey || e.ctrlKey || e.metaKey || overviewRef.current?.open || e.target?.closest("input,select,textarea,[contenteditable=true],.bdc-offers,.bdc-provider-switch")) return;
+      if (e.altKey || e.ctrlKey || e.metaKey || overviewRef.current?.open || e.target?.closest("input,select,textarea,[contenteditable=true],.bdc-provider-switch,.bdc-research-dialog")) return;
       if (["ArrowRight", "PageDown", "ArrowLeft", "PageUp", "Home", "End"].includes(e.key)) e.preventDefault();
       if (e.key === "ArrowRight" || e.key === "PageDown") goTo(current + 1);
       if (e.key === "ArrowLeft" || e.key === "PageUp") goTo(current - 1);
@@ -160,7 +215,7 @@ export const BdcPresentation = () => {
         <BdcNote>Business-system access is borrower-permissioned. Your institution retains final credit authority.</BdcNote>
       </section>
 
-      <section className="bdc-slide" hidden={current !== 3} aria-labelledby="bdc-title-3"><BdcHeading index={3} intro="Show what current evidence supports and what must be true for an alternative." /><BdcOffers /><BdcNote>Illustrative CAD amounts and terms, not BDC offers or approved pricing. Conditional options require verified evidence, lender policy eligibility and final approval.</BdcNote></section>
+      <section className="bdc-slide bdc-research" hidden={current !== 3} aria-labelledby="bdc-title-3"><BdcHeading index={3} /><BdcResearch /></section>
 
       <section className="bdc-slide" hidden={current !== 4} aria-labelledby="bdc-title-4"><BdcHeading index={4} /><div className="bdc-permission-layout"><div className="bdc-consent-story"><p className="bdc-eyebrow">Borrower-controlled access</p><h3>A specific purpose.<br />A clear scope.<br />A separate choice.</h3><ul>{["Explain the underwriting question.", "Show which records will be accessed.", "Separate assessment from ongoing monitoring.", "Explain disconnection and its implications."].map(t => <li key={t}><BdcIcon name="check" size={17} />{t}</li>)}</ul><p>Refresh depends on the source, permissions and agreed synchronization schedule. A disconnected source is a coverage issue, not proof of financial distress.</p></div><BdcPermission /></div><BdcNote>Interactive preview only. These controls do not connect accounts or record actual borrower consent.</BdcNote></section>
 
