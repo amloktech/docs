@@ -66,6 +66,30 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
 #demobdc-deck .bdc-snapshot-track { flex:1; min-width:0; padding-left:35px; border-left:1px solid var(--line); }
 #demobdc-deck .bdc-snapshot-track svg { width:100%; height:90px; }
 #demobdc-deck .bdc-timeline-labels { display:flex; justify-content:space-between; font-size:10px; color:var(--muted); }
+#demobdc-deck .bdc-challenge-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:22px 30px; }
+#demobdc-deck .bdc-challenge-grid > div { border-top:1px solid var(--line); padding-top:14px; }
+#demobdc-deck .bdc-challenge-card-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; color:var(--blue); }
+#demobdc-deck .bdc-challenge-card-top span { font-family:'JetBrains Mono Variable',monospace; font-size:10px; color:#7b8dae; }
+#demobdc-deck .bdc-challenge-grid h3 { font-size:17px; }
+#demobdc-deck .bdc-challenge-grid p { font-size:12px; line-height:1.55; color:var(--muted); margin-top:8px; }
+#demobdc-deck .bdc-challenge-impact { display:flex; align-items:center; gap:24px; background:var(--soft); border-left:3px solid var(--blue); padding:14px 20px; }
+#demobdc-deck .bdc-challenge-impact strong { flex-shrink:0; font-size:12px; color:var(--blue); }
+#demobdc-deck .bdc-challenge-impact p { font-size:12px; color:var(--muted); line-height:1.55; }
+#demobdc-deck .bdc-capacity-challenge { display:grid; grid-template-columns:.95fr 1.2fr; gap:40px; align-items:stretch; }
+#demobdc-deck .bdc-record-chain { padding:23px 27px; background:var(--soft); border:1px solid var(--line); border-radius:8px; }
+#demobdc-deck .bdc-record-chain h3 { font-size:25px; margin-top:9px; }
+#demobdc-deck .bdc-record-chain ol { margin:18px 0; padding:0; list-style:none; }
+#demobdc-deck .bdc-record-chain li { position:relative; display:flex; align-items:flex-start; gap:13px; padding:0 0 18px; }
+#demobdc-deck .bdc-record-chain li:last-child { padding-bottom:0; }
+#demobdc-deck .bdc-record-chain li:not(:last-child)::after { position:absolute; content:''; left:10px; width:1px; top:26px; bottom:4px; background:#b9c8e9; }
+#demobdc-deck .bdc-record-chain li svg { color:var(--blue); flex-shrink:0; }
+#demobdc-deck .bdc-record-chain li strong { display:block; font-size:12px; }
+#demobdc-deck .bdc-record-chain li small { display:block; font-size:10px; color:var(--muted); margin-top:3px; }
+#demobdc-deck .bdc-chain-note { border-top:1px solid var(--line); padding-top:12px; font-size:11px; color:var(--muted); }
+#demobdc-deck .bdc-capacity-questions { display:grid; grid-template-columns:1fr 1fr; gap:26px; align-content:center; }
+#demobdc-deck .bdc-capacity-questions > div { border-top:2px solid var(--blue); padding-top:14px; }
+#demobdc-deck .bdc-capacity-questions h3 { font-size:18px; }
+#demobdc-deck .bdc-capacity-questions p { font-size:12px; line-height:1.65; margin-top:10px; color:var(--muted); }
 #demobdc-deck .bdc-evidence-map { display:grid; grid-template-columns:1fr 70px 1fr; align-items:center; }
 #demobdc-deck .bdc-source-list { display:flex; flex-direction:column; gap:10px; }
 #demobdc-deck .bdc-source-list > div { display:flex; align-items:center; gap:18px; padding:13px 18px; border:1px solid var(--line); border-radius:6px; }
@@ -235,6 +259,10 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
   #demobdc-deck .bdc-conditions { min-height:60px; padding:10px 20px; }
 }
 @media (max-width:900px) {
+  #demobdc-deck .bdc-challenge-grid { grid-template-columns:1fr 1fr; gap:20px; }
+  #demobdc-deck .bdc-capacity-challenge { gap:24px; }
+  #demobdc-deck .bdc-capacity-questions { gap:20px; }
+  #demobdc-deck .bdc-challenge-impact { gap:16px; }
   #demobdc-deck .bdc-slide { padding:30px; gap:24px; }
   #demobdc-deck .bdc-heading h2 { font-size:32px; }
   #demobdc-deck .bdc-lifecycle-art { height:310px; }
@@ -259,6 +287,10 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
   #demobdc-deck .bdc-offer-name svg { display:none; }
 }
 @media (max-width:620px) {
+  #demobdc-deck .bdc-challenge-grid,#demobdc-deck .bdc-capacity-challenge { grid-template-columns:1fr; }
+  #demobdc-deck .bdc-challenge-impact { flex-direction:column; align-items:flex-start; gap:8px; }
+  #demobdc-deck .bdc-record-chain { padding:22px; }
+  #demobdc-deck .bdc-capacity-questions { grid-template-columns:1fr; }
   #demobdc-deck { min-height:360px; }
   #demobdc-deck .bdc-topbar { height:62px; padding:0 18px; gap:14px; }
   #demobdc-deck .bdc-topbar img { width:103px; height:auto; }
