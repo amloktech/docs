@@ -4,7 +4,7 @@ const bdcSlides = [
   ["The challenge: evidence", "More data. Still an incomplete credit picture."],
   ["The challenge: capacity", "Repayment capacity depends on the business model."],
   ["The challenge: continuity", "Risk changes between credit reviews."],
-  ["The unified process", "One unified process. Three practical outcomes."],
+  ["The unified process", "Unified data. A stronger underwriting process."],
   ["The assessment", "Turn risk and capacity into financing options."],
   ["The next question", "Ask for evidence that can change the decision."],
   ["The borrower experience", "Make the path to financing clear."],
@@ -149,23 +149,37 @@ export const BdcPresentation = () => {
       </section>
 
       <section className="bdc-slide bdc-unified" hidden={current !== 4} aria-labelledby="bdc-title-4">
-        <BdcHeading index={4} intro="Bring institution data, banking, borrower-permissioned business records and public context into one underwriting workflow." />
-        <ol className="bdc-unified-process" aria-label="Unified underwriting process">
-          {[
-            ["layers", "Gather evidence"],
-            ["link", "Reconcile and resolve entities"],
-            ["shield", "Apply lender policy"],
-            ["document", "Preserve decision context"]
-          ].map(([icon, title], i) => <li key={title}><span className="bdc-process-step"><BdcIcon name={icon} size={20} /><span>{title}</span></span>{i < 3 && <BdcIcon name="arrow" size={18} />}</li>)}
-        </ol>
+        <BdcHeading index={4} />
+        <div className="bdc-unification-map">
+          <div className="bdc-unification-sources" aria-label="Connected data sources">
+            {[
+              ["bank", "Financial institution", "Applications, facilities, repayments"],
+              ["flow", "Banking", "Transactions, balances, obligations"],
+              ["card", "Payments and commerce", "Orders, payouts, returns, refunds"],
+              ["book", "Accounting and operations", "Financials, invoices, payables, inventory"],
+              ["globe", "Public context", "Entity and business records"]
+            ].map(([icon, title, detail]) => <div key={title}><BdcIcon name={icon} size={19} /><span><strong>{title}</strong><small>{detail}</small></span></div>)}
+          </div>
+          <div className="bdc-unification-arrow"><BdcIcon name="arrow" size={30} /></div>
+          <div className="bdc-unification-engine">
+            <p className="bdc-eyebrow">AMLOK Insights / One unified process</p>
+            <h3>A verified business picture</h3>
+            <div>{[
+              ["link", "Resolve entities and map relationships"],
+              ["layers", "Normalize and reconcile activity across sources"],
+              ["search", "Identify duplicates, inconsistencies and missing evidence"],
+              ["document", "Link findings to source records and lender policy"]
+            ].map(([icon, title]) => <span key={title}><BdcIcon name={icon} size={17} />{title}</span>)}</div>
+          </div>
+        </div>
         <div className="bdc-unified-outcomes">
           {[
-            ["Faster", "Automate repetitive underwriting work", "Reduce manual data gathering, document extraction, reconciliation and repeat checks so analysts can focus on exceptions."],
-            ["Consistent", "Policy-aligned assessments", "Apply the same lending criteria across applications, channels and reviewers, with explicit exceptions for human judgment."],
-            ["Traceable", "Full decision lineage", "Connect each recommendation to source records, policy rules, assumptions and recorded human review."]
+            ["Faster", "Automate manual underwriting work", "Reduce document review, data gathering, reconciliation and repetitive application checks."],
+            ["Consistent", "Policy-aligned decisions", "Apply the same lending criteria across applications, channels and reviewers, with human review of exceptions."],
+            ["Traceable", "Full decision lineage", "Connect each recommendation to its source data, policy rules, supporting evidence and recorded human actions."]
           ].map(([title, subtitle, body]) => <div key={title}><h3>{title}</h3><strong>{subtitle}</strong><p>{body}</p></div>)}
         </div>
-        <BdcNote>A shared evidence record supports the assessment and the monitoring baseline. Your institution retains final credit authority.</BdcNote>
+        <BdcNote>Business-system access is borrower-permissioned. Your institution retains final credit authority.</BdcNote>
       </section>
 
       <section className="bdc-slide" hidden={current !== 5} aria-labelledby="bdc-title-5"><BdcHeading index={5} intro="Assess the business and test financing structures against its repayment capacity and the institution's lending policy." /><div className="bdc-capacity-grid"><div className="bdc-capacity-core"><p className="bdc-eyebrow">Repayment capacity</p><h3>Cash available<br />to service debt.</h3><div className="bdc-equation"><span>Recurring operating inflows</span><span>Less operating outflows and commitments</span><strong>Assess headroom for proposed debt</strong></div><p>Use base and downside cases to assess supported debt service, then test eligible financing structures against lender policy.</p></div><div className="bdc-capacity-signals">{[["Cash generation", "Recurring receipts, margins, cash conversion"], ["Debt service", "Existing obligations and coverage"], ["Resilience", "Seasonality, volatility, downside scenarios"], ["Dependencies", "Customer, channel and supplier concentration"]].map(([title, body]) => <div key={title}><h3>{title}</h3><p>{body}</p></div>)}</div></div><div className="bdc-policy-strip"><BdcIcon name="shield" /><strong>Lender-controlled options</strong>{["Amount", "Rate", "Term", "Repayment schedule", "Security and conditions"].map(s => <span key={s}>{s}</span>)}</div><BdcNote>Capacity informs the decision alongside the lender's risk appetite, collateral requirements and approval authority.</BdcNote></section>
