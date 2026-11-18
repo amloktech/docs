@@ -82,3 +82,10 @@ Owners manage organization/workspace settings and billing; Owners and Devs manag
 ## Runtime discovery
 
 embedding_versions exposes each published Hub's allowed origins, return URLs, integrations and consent purposes. operational_profile supplies required limits and lifetimes. sandbox is null in Live; in Sandbox it exposes deterministic scenario IDs and the synthetic integration ID. Read the [operating profile guide](/api-reference/operating-profile) before implementing uploads, polling or recovery.
+## Reuse product and policy versions across borrowers
+
+A lending-product version describes your offering, not one borrower. Reuse its `id` as `lending_product_version_id` in multiple Origination requests or `baseline.portfolio` inputs. Reuse a compatible `risk_policy_version_id` in the same way. The borrower type, market, amount, currency and term must satisfy the referenced definitions.
+
+For example, two Canadian business borrowers requesting CAD working capital can reference the same product version when both requests fit its limits. Their `borrower_id`, application, documents and authorized connections remain specific to each borrower. Use a different idempotency key for each intended origination.
+
+Find a version using `GET /v1/lending-product-versions?external_id=working-capital&version=1`. Create a new version only when its definition changes. The sample pack deliberately creates separate named versions for its fictional businesses so each scenario can be inspected independently; that is not a requirement for your integration.

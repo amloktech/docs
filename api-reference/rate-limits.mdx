@@ -16,3 +16,10 @@ Read configuration.operational_profile.rate_limits for effective shared workspac
 ## Admission pressure
 
 Every 429 includes Retry-After. `capacity_exceeded` and `queue_full` include typed capacity details. All keys share the allocation. See [capacity and queue behavior](/api-reference/enterprise-operation).
+## Test bounded bursts in Sandbox
+
+Use an isolated Sandbox workspace and key. Start with a small request count and concurrency, and inspect `operational_profile` from `GET /v1/configuration` before increasing either. Basic compute capacity is not an unlimited load-test target.
+
+In Postman or your test client, keep the method, URL, request body, response status, `X-Request-ID` and `Retry-After` for each attempt. Never record the Authorization header. Test reads first, then POSTs with synthetic data. For each retry of one intended POST, reuse the exact same body and `Idempotency-Key`; use a new key only for a different intended operation.
+
+On `429`, honor `Retry-After`, reduce concurrency and add jitter before retrying. Check the error code: rate limits and a full workload queue are different conditions. Verify that retries do not duplicate records or simulated usage charges. If an accepted response was lost, use [request recovery](/api-reference/request-recovery). Seeing no 429 in a small run is not a failure; the run may remain below the current limit.

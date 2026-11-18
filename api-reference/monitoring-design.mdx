@@ -75,3 +75,18 @@ Lender-reported performance comes from the pinned `deal_snapshot_id`. Missing pe
 
 An ongoing condition keeps its alert ID and emits `alert.updated` with the latest values, risk package and evidence. A comparable passing evaluation resolves that policy condition. Replacing a policy closes its old alerts with an explicit superseded-policy explanation; that closure does not assert that the borrower recovered. Inspect the alert message and exact policy version.
 {/* END RESPONSE SEMANTICS */}
+## Recover a failed evaluation without duplicating the facility
+
+A failed evaluation does not require a new borrower or Monitor. Keep the Monitor ID and deal reference. Inspect its `failure`, source consent, documents and policy first. Obtain a fresh ETag with `GET /v1/monitors/{id}`, then request a new evaluation:
+
+```bash
+curl --request PATCH --fail-with-body "$AMLOK_API_BASE_URL/v1/monitors/$MONITOR_ID" \
+  --header "Authorization: Bearer $AMLOK_API_KEY" \
+  --header "If-Match: $MONITOR_ETAG" \
+  --header 'Content-Type: application/json' \
+  --data '{"status":"active"}'
+```
+
+`MONITOR_ETAG` is the exact ETag response header, including its quotes. The response confirms scheduling, not a completed evaluation. Poll the Monitor and read `GET /v1/monitoring-runs?monitor_id=...` for the new result. A stale version returns `412`; resolve it by reading again. Invalid or revoked sources must be corrected before activation.
+
+The previous failed run remains in history. Institution-supplied application and deal inputs remain evidence, but are not counted as collected provider records or uploaded documents in the monitoring workload allowance. Resuming does not replay old periods or erase billing records. Do not repeatedly create new Monitors to work around a failure. If the same failure returns, send support the Monitor ID, environment and `failure.request_id`, without your API key.
