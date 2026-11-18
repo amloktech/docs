@@ -94,6 +94,87 @@ const bdcResearchLogos = [
   ["Romspen", "https://www.romspen.com/wp-content/themes/romspen/dist/assets/img/romspen-logo-color.svg"],
   ["Lendefied", "https://www.lendefied.com/wp-content/uploads/2024/01/Lendefied.gif"]
 ];
+// Qualitative product-scope comparison. Do not convert these descriptions into benchmark scores.
+const bdcAIProviders = [
+  {
+    name: "AMLOK", product: "Insights + Signal", kind: "Connected risk platform",
+    cells: [
+      ["Connected business evidence", "Banking, payments, commerce, accounting and public records."],
+      ["Risk and repayment capacity", "Reconciled evidence, entity relationships and underwriting findings."],
+      ["Baseline + reassessment", "Signal follows new evidence and reassesses the funded business."],
+      ["Workspace API", "Agreed workflows; the lender retains credit authority."]
+    ],
+    note: "AMLOK's documented product scope. Data coverage and processing depend on the agreed workflow and authorized sources.",
+    sources: [["Insights", "/pricing/insights"], ["Signal", "/pricing/signal"], ["Entity graph", "/research/entity-graph"]]
+  },
+  {
+    name: "OpenAI", product: "GPT family", kind: "General-purpose models",
+    cells: [
+      ["Documents + tool data", "PDF text and images, files and developer-connected systems."],
+      ["Interpretation + reasoning", "Document analysis and application-defined tool outputs."],
+      ["Application-defined", "A developer can connect models to a monitoring workflow.*"],
+      ["Model API + tools", "The application executes its custom functions and actions."]
+    ],
+    note: "This column describes model/API building blocks, not every OpenAI product. File inputs and function calling support custom applications; they do not establish a shared lending-performance score.",
+    sources: [["File inputs", "https://developers.openai.com/api/docs/guides/file-inputs"], ["Function calling", "https://developers.openai.com/api/docs/guides/function-calling"]]
+  },
+  {
+    name: "Anthropic", product: "Claude family", kind: "General-purpose models",
+    cells: [
+      ["Documents + tool data", "PDFs, connected sources and financial-data integrations."],
+      ["Financial-analysis workflows", "Document interpretation, modeling and research workflows."],
+      ["Application-defined", "A developer can connect models to a monitoring workflow.*"],
+      ["Model API + tools", "Tool integrations and financial-services workflows."]
+    ],
+    note: "Claude combines general-purpose document understanding and tools with financial-services workflows. This is a scope comparison, not a judgment of its underwriting accuracy.",
+    sources: [["PDF support", "https://platform.claude.com/docs/en/build-with-claude/pdf-support"], ["Tool use", "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview"], ["Financial services", "https://www.anthropic.com/news/advancing-claude-for-financial-services"]]
+  },
+  {
+    name: "RBC Borealis", product: "ATOM", kind: "Transaction foundation model",
+    cells: [
+      ["Financial-event sequences", "RBC transaction data and other financial events."],
+      ["Behavior + credit capacity", "Temporal representations, predictions and personalization."],
+      ["Forecasting + alerts", "NOMI cash-flow forecasts and payment-error warnings."],
+      ["RBC applications", "Institution-specific deployment described by RBC."]
+    ],
+    note: "ATOM is a financial foundation model for asynchronous event sequences. Its documented RBC applications are not equivalent to a third-party lender API or a common AMLOK benchmark.",
+    sources: [["ATOM research and applications", "https://rbcborealis.com/applications/atom/"]]
+  },
+  {
+    name: "Prism Data", product: "CashScore + Insights + Pulse", kind: "Cash-flow analytics platform",
+    cells: [
+      ["Structured bank activity", "Transactions and balances; statement data must be structured first."],
+      ["Scores + cash-flow attributes", "CashScore and consumer/SMB income, debt and capacity signals."],
+      ["Continuous cash-flow signals", "Pulse tracks changing financial conditions and obligations."],
+      ["Analytics APIs", "Attributes and scores feed lender models, rules and workflows."]
+    ],
+    note: "Prism documents both consumer and SMB cash-flow analysis and continuous monitoring. SMB bank-statement data must be extracted into a supported format before processing.",
+    sources: [["SMB Intelligence", "https://www.prismdata.com/smb-intelligence/"], ["CashScore", "https://www.prismdata.com/cashscore/"], ["Pulse", "https://www.prismdata.com/pulse/"]]
+  },
+  {
+    name: "Trust Science", product: "T°Score + CashFlow+", kind: "Credit decisioning platform",
+    cells: [
+      ["Bureau + alternative data", "Credit signals, borrower information and bank activity."],
+      ["Credit + income assessment", "Explainable scores, reason codes and cash-flow insights."],
+      ["Portfolio re-underwriting", "Portfolio credit-quality analysis is described; cadence is not specified."],
+      ["Lender decisioning platform", "Credit Bureau+, scoring and bank-data intelligence."]
+    ],
+    note: "Trust Science describes consumer credit scoring, cash-flow analysis and portfolio re-underwriting. The reviewed source does not specify a continuous monitoring cadence; this does not establish absence of that capability.",
+    sources: [["Platform and portfolio services", "https://trustscience.com/"], ["T°Score", "https://trustscience.com/t-score"], ["CashFlow+", "https://trustscience.com/cashflow"]]
+  }
+];
+const BdcAIComparison = () => <div className="bdc-ai-comparison">
+  <div className="bdc-ai-intro"><h3>Different foundations. Different operating models.</h3><p>Compare the scope of general-purpose AI, financial transaction models and lending platforms.</p></div>
+  <div className="bdc-ai-matrix-scroll" role="region" aria-label="AI approaches comparison matrix" tabIndex={0}>
+    <table className="bdc-ai-matrix"><caption className="bdc-sr-only">Published capabilities of AMLOK, OpenAI, Anthropic, RBC ATOM, Prism Data and Trust Science. This is not a performance ranking.</caption>
+      <thead><tr><th scope="col">Comparison<br />dimension</th>{bdcAIProviders.map((provider, i) => <th scope="col" key={provider.name} className={i === 0 ? "bdc-ai-amlok" : undefined}><strong>{provider.name}</strong><span>{provider.product}</span><small>{provider.kind}</small></th>)}</tr></thead>
+      <tbody>{[["layers", "Data inputs"], ["search", "Financial outputs"], ["flow", "Ongoing intelligence"], ["link", "Integration model"]].map(([icon, label], index) => <tr key={label}><th scope="row"><BdcIcon name={icon} size={19} /><span>{label}</span></th>{bdcAIProviders.map((provider, i) => <td key={provider.name} className={i === 0 ? "bdc-ai-amlok" : undefined}><strong>{provider.cells[index][0]}</strong><span>{provider.cells[index][1]}</span></td>)}</tr>)}</tbody>
+    </table>
+  </div>
+  <p className="bdc-ai-scope">Published capabilities, reviewed November 17, 2026. These are different product categories, not scores from a shared performance benchmark. AMLOK reflects its documented scope. *Application-defined monitoring is an architectural inference from tool support, not a claim of a packaged lending monitor.</p>
+  <details className="bdc-ai-sources"><summary>Sources and comparison scope</summary><div>{bdcAIProviders.map(provider => <section key={provider.name}><h4>{provider.name}</h4><p>{provider.note}</p><ul>{provider.sources.map(([label, href]) => <li key={href}><a href={href} target="_blank" rel="noopener noreferrer">{label}<BdcIcon name="arrow" size={12} /></a></li>)}</ul></section>)}</div></details>
+  <a className="bdc-ai-protocol" href="/research/frontier-benchmark" target="_blank" rel="noopener noreferrer">How a measured performance comparison is evaluated<BdcIcon name="arrow" size={14} /></a>
+</div>;
 const BdcResearch = () => {
   const [view, setView] = useState("comparison");
   const dialogRef = useRef(null), openerRef = useRef(null);
@@ -110,10 +191,11 @@ const BdcResearch = () => {
     </div>
     <div className="bdc-research-findings" aria-label="AMLOK-reported research findings">{[["40% → 82%", "Assessable information"], ["60-85%", "Unreadable transaction value resolved"], ["25-45%", "Signal-bearing defaults flagged"], ["6-8 weeks", "Earlier distress detection"]].map(([value, label]) => <div key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
     <dl className="bdc-research-functions">{bdcResearchApproach.find(([title]) => title === "Capabilities")[2].map(([title, description]) => <div key={title}><dt>{title}</dt><dd>{description}</dd></div>)}</dl>
-    <div className="bdc-research-actions"><div><button type="button" onClick={e => openDetails("approach", e)}>Research approach<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
-    <dialog className="bdc-research-dialog" ref={dialogRef} aria-labelledby="bdc-research-details-title" onClose={() => openerRef.current?.focus()} onClick={e => { if (e.target === e.currentTarget) closeDetails(); }}>
-      <div className="bdc-research-dialog-header"><div><p className="bdc-eyebrow">AMLOK / Research</p><h2 id="bdc-research-details-title">Research details</h2></div><button type="button" onClick={closeDetails} aria-label="Close research details"><BdcIcon name="close" /></button></div>
-      <div className="bdc-research-switch" role="group" aria-label="Research detail view"><button type="button" aria-pressed={view === "comparison"} onClick={() => setView("comparison")}>Proposed comparison</button><button type="button" aria-pressed={view === "approach"} onClick={() => setView("approach")}>Research approach</button></div>
+    <div className="bdc-research-actions"><div><button type="button" onClick={e => openDetails("landscape", e)}>AI comparison<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
+    <dialog className="bdc-research-dialog" data-view={view} ref={dialogRef} aria-labelledby="bdc-research-details-title" onClose={() => openerRef.current?.focus()} onClick={e => { if (e.target === e.currentTarget) closeDetails(); }}>
+      <div className="bdc-research-dialog-header"><div><p className="bdc-eyebrow">AMLOK / Research</p><h2 id="bdc-research-details-title">{view === "landscape" ? "Financial AI comparison" : "Research details"}</h2></div><button type="button" onClick={closeDetails} aria-label="Close research details"><BdcIcon name="close" /></button></div>
+      <div className="bdc-research-switch" role="group" aria-label="Research detail view"><button type="button" aria-pressed={view === "landscape"} onClick={() => setView("landscape")}>AI comparison</button><button type="button" aria-pressed={view === "comparison"} onClick={() => setView("comparison")}>Proposed comparison</button><button type="button" aria-pressed={view === "approach"} onClick={() => setView("approach")}>Research approach</button></div>
+      <div hidden={view !== "landscape"}><BdcAIComparison /></div>
       <div hidden={view !== "comparison"} className="bdc-research-comparison">
         <h3>Connected-data validation</h3><p>Proposed comparison from the AMLOK research summary. Values are approximate; relative change is calculated as (AMLOK - baseline) / baseline.</p>
         <div className="bdc-research-table-scroll" role="region" aria-label="Scrollable proposed comparison" tabIndex={0}><table><caption className="bdc-sr-only">Proposed connected-data comparison across 12 measurement dimensions</caption><thead><tr><th scope="col">Measurement dimension</th><th scope="col">Baseline</th><th scope="col">AMLOK (proposed)</th><th scope="col">Relative change</th></tr></thead><tbody>{bdcResearchComparison.map(([label, baseline, amlok, unit]) => { const delta = (amlok - baseline) / baseline * 100; return <tr key={label}><th scope="row">{label}</th><td>{baseline.toFixed(2)}{unit}</td><td>≈{amlok.toFixed(2)}{unit}</td><td>≈{delta > 0 ? "+" : ""}{delta.toFixed(2)}%</td></tr>; })}</tbody></table></div>
