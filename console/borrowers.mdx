@@ -70,3 +70,20 @@ If another teammate changes the record first, refresh and review the latest prof
 
 Use **View shared borrower profiles** from Origination or Portfolio to open this same directory in your selected workspace and environment. A monitoring-only borrower belongs here even when it has never had an underwriting request.
 {/* END BORROWER LIFECYCLE */}
+
+
+## Connection activity
+
+The **Connection activity** panel summarizes Hub sessions created in the last **7**, **30** or **90 days** in the selected workspace and environment. It queries the server independently of the table filters; it does not count only the currently loaded page.
+
+| Value | Meaning |
+| --- | --- |
+| Registered borrowers | All registered identities in this environment, including archived profiles, across all time. |
+| With Hub sessions | Distinct borrowers with at least one session created during the selected period. Creating a session does not confirm delivery of its link. |
+| Opened Hub | Distinct borrowers whose visible Hub page reported an opening for a session in that period. |
+| Completed Hub | Distinct borrowers with a completed session in that period. Completion covers source consent and connection, not underwriting completion or data readiness. |
+| Expired Hub | Distinct borrowers with a session that expired without completing. This does not establish that the borrower abandoned the flow. |
+
+A borrower may complete one session and let another expire, so these counts overlap and are not a strict conversion funnel. Older sessions and blocked browser reports may have no opening record; the panel shows completed sessions missing that evidence rather than inventing opening timestamps.
+
+The **Latest Hub session** table column shows the most recently created session's current status. This may differ from the period summary and does not replace the status of an existing integration connection. Use Get embedding session to inspect the session's recorded opening and completion timestamps. Use **Refresh activity** to reload the summary and **Refresh records** to reload the table.
