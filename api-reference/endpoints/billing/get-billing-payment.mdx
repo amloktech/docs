@@ -7,3 +7,9 @@ openapi: "/openapi/amlok.json GET /v1/billing/payments/{id}"
 Retrieve one payment and the wallet entries created by its settlement, return or refund. Uses the requested billing snapshot when supplied. All IDs and cursors must belong to the authorized workspace and environment. Required scope: billing:read. Owner authority is required. Related reads can pin snapshot_id from billing summary to reconcile the same as-of state; expired snapshots return 410, never a silent refresh.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.
+
+## Operation name
+
+`getBillingPayment`
+
+The `X-Amlok-Operation-Id` response header identifies this endpoint. Request receipts apply to accepted POST commands.

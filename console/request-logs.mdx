@@ -53,3 +53,11 @@ Record the AMLOK request identifier, your caller request identifier when supplie
 Opening a request does not retry it. Outbound webhook attempts appear separately in [Deliveries & events](/console/webhooks), because a successful API request and a successful event delivery are different operations.
 
 See [request recovery](/api-reference/request-recovery), [errors](/api-reference/errors) and [rate limits](/api-reference/rate-limits) for exact retry behavior.
+
+## Recover a request after a lost response
+
+Open a request's **Overview > Request recovery**. Copy its **Operation name**. For new POST logs with a recorded Idempotency-Key, copy the generated receipt-lookup example and supply your API key in your own environment. The example uses the API origin configured for your Console deployment. The key must belong to the same workspace and Sandbox or Live environment and have `reliability:read` permission. Copying the example does not execute it.
+
+Older logs may show **Not recorded** or lack a recovery example. Use the operation name in [Data Lookup](/console/data-lookup) and the key saved by your integration. Logs omit credentials and full request bodies. Do not put secrets or personal data in idempotency keys.
+
+The operation name identifies an endpoint; the request ID identifies an HTTP attempt; the idempotency key identifies your intended command. Follow [request recovery](/api-reference/request-recovery) for exact examples and error handling. A receipt proves acceptance, not completion.

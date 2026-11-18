@@ -254,6 +254,8 @@ def build():
         for entry in methods.values():
             for response in entry['responses'].values():
                 response.setdefault('headers',{})['X-Request-ID']={'schema':{'type':'string'},'description':'Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting.'}
+    from request_recovery import extend as request_recovery_contract
+    request_recovery_contract(spec)
     groups=OrderedDict(); index=[]; items=[]
     for op in operations()+sandbox_operations+lifecycle_operations:
         if op['id']=='downloadExport':op={**op,'request':'ExportDownloadPurpose','response':'ExportDownloadLink'}
@@ -313,6 +315,9 @@ def build():
     financial_guides()
     from financial_intelligence import write_export_note
     write_export_note()
+
+    from request_recovery import write_guides as request_recovery_guides
+    request_recovery_guides(spec,index)
 
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re
