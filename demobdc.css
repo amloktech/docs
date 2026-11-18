@@ -96,11 +96,12 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
 #demobdc-deck .bdc-unification-sources strong { font-size:12px; line-height:1.4; font-weight:600; }
 #demobdc-deck .bdc-unification-sources small { font-size:11px; line-height:1.4; color:var(--muted); }
 #demobdc-deck .bdc-unification-arrow { display:flex; justify-content:center; color:var(--blue); }
-#demobdc-deck .bdc-unification-engine { background:var(--soft); border:1px solid #c9d6f9; border-radius:7px; padding:20px 24px; }
+#demobdc-deck .bdc-unification-engine { background:var(--blue); color:#fff; border:1px solid var(--blue); border-radius:7px; padding:20px 24px; }
+#demobdc-deck .bdc-unification-engine .bdc-eyebrow { color:#d7e3ff; }
 #demobdc-deck .bdc-unification-engine h3 { font-size:25px; margin:8px 0 16px; }
 #demobdc-deck .bdc-unification-engine > div { display:flex; flex-direction:column; gap:11px; }
 #demobdc-deck .bdc-unification-engine span { display:flex; align-items:center; gap:10px; font-size:12px; line-height:1.5; }
-#demobdc-deck .bdc-unification-engine svg { flex-shrink:0; color:var(--blue); }
+#demobdc-deck .bdc-unification-engine svg { flex-shrink:0; color:#fff; }
 #demobdc-deck .bdc-unified-outcomes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:36px; }
 #demobdc-deck .bdc-unified-outcomes > div { border-top:2px solid var(--blue); padding-top:12px; }
 #demobdc-deck .bdc-unified-outcomes h3 { font-size:30px; font-weight:500; letter-spacing:-.04em; margin-bottom:10px; }
@@ -366,6 +367,30 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
 #demobdc-deck .bdc-sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 #demobdc-deck .bdc-notice { background:#edf2ff; padding:10px 24px; display:flex; justify-content:space-between; align-items:center; font-size:12px; }
 #demobdc-deck .bdc-notice button { background:transparent; }
+@media screen and (min-width:901px) {
+  #demobdc-deck .bdc-unified { gap:clamp(20px,3.2vh,38px); }
+  #demobdc-deck .bdc-unified .bdc-heading h2 { max-width:none; font-size:clamp(35px,3.5vw,54px); }
+  #demobdc-deck .bdc-unified .bdc-eyebrow { font-size:clamp(10px,1.2vh,12px); }
+  #demobdc-deck .bdc-unification-map { align-items:stretch; grid-template-columns:1fr 68px 1.1fr; }
+  #demobdc-deck .bdc-unification-sources { gap:clamp(8px,1.1vh,12px); }
+  #demobdc-deck .bdc-unification-sources > div { padding:clamp(10px,1.4vh,18px) 18px; gap:14px; }
+  #demobdc-deck .bdc-unification-sources span { grid-template-columns:minmax(145px,.95fr) minmax(0,1.3fr); gap:14px; }
+  #demobdc-deck .bdc-unification-sources strong { font-size:clamp(13px,1.6vh,17px); }
+  #demobdc-deck .bdc-unification-sources small { font-size:clamp(12px,1.45vh,16px); }
+  #demobdc-deck .bdc-unification-sources svg { width:23px; height:23px; }
+  #demobdc-deck .bdc-unification-arrow { align-items:center; }
+  #demobdc-deck .bdc-unification-arrow svg { width:34px; height:34px; }
+  #demobdc-deck .bdc-unification-engine { display:flex; flex-direction:column; justify-content:center; padding:clamp(20px,3vh,36px) clamp(22px,2.6vw,40px); }
+  #demobdc-deck .bdc-unification-engine h3 { font-size:clamp(27px,3.2vh,36px); margin:10px 0 20px; }
+  #demobdc-deck .bdc-unification-engine > div { gap:clamp(12px,1.8vh,20px); }
+  #demobdc-deck .bdc-unification-engine span { font-size:clamp(13px,1.7vh,18px); gap:12px; }
+  #demobdc-deck .bdc-unification-engine svg { width:21px; height:21px; }
+  #demobdc-deck .bdc-unified-outcomes > div { padding-top:clamp(14px,2vh,22px); }
+  #demobdc-deck .bdc-unified-outcomes h3 { font-size:clamp(32px,4vh,44px); margin-bottom:13px; }
+  #demobdc-deck .bdc-unified-outcomes strong { font-size:clamp(14px,1.85vh,18px); }
+  #demobdc-deck .bdc-unified-outcomes p { font-size:clamp(12px,1.65vh,16px); margin-top:9px; }
+  #demobdc-deck .bdc-unified .bdc-note { font-size:clamp(11px,1.3vh,13px); padding-top:14px; }
+}
 @media (min-width:1000px) and (max-height:900px) {
   #demobdc-deck .bdc-research { gap:14px; padding-top:20px; padding-bottom:18px; }
   #demobdc-deck .bdc-research-content { gap:12px; }
@@ -395,6 +420,10 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
   #demobdc-deck .bdc-amount { margin:12px 0 10px; font-size:35px; }
   #demobdc-deck .bdc-offer-detail { padding-top:9px; margin-top:12px; }
   #demobdc-deck .bdc-conditions { min-height:60px; padding:10px 20px; }
+}
+@media screen and (min-width:901px) and (max-height:850px) {
+  #demobdc-deck .bdc-unified { gap:18px; padding-top:16px; padding-bottom:16px; }
+  #demobdc-deck .bdc-unified .bdc-heading h2 { font-size:clamp(35px,3.5vw,48px); }
 }
 @media (max-width:900px) {
   #demobdc-deck .bdc-research-metrics > div { padding-inline:18px; }
