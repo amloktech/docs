@@ -202,7 +202,7 @@ const BdcAIComparison = () => {
     })}
   </g> : null);
   return <div className="bdc-ai-comparison">
-    <div className="bdc-ai-projection-heading"><div><span className="bdc-ai-projection-tag">Projected comparison</span><h3>Financial intelligence across six dimensions.</h3><p>Projected workflow fit - 0 to 5 planning scale.</p></div><div className="bdc-ai-view-switch" role="group" aria-label="Comparison chart view"><button type="button" aria-pressed={chartView === "radar"} onClick={() => setChartView("radar")}>Radar</button><button type="button" aria-pressed={chartView === "dimensions"} onClick={() => setChartView("dimensions")}>By dimension</button></div></div>
+    <div className="bdc-ai-projection-heading"><h3>Financial intelligence across six dimensions.</h3><div className="bdc-ai-view-switch" role="group" aria-label="Comparison chart view"><button type="button" aria-pressed={chartView === "radar"} onClick={() => setChartView("radar")}>Radar</button><button type="button" aria-pressed={chartView === "dimensions"} onClick={() => setChartView("dimensions")}>By dimension</button></div></div>
     <div className="bdc-ai-projection-layout">
       <div className={`bdc-ai-projection-plot ${chartView === "dimensions" ? "bdc-ai-projection-wide" : ""}`} role="region" aria-label="Projected comparison graphic" tabIndex={0}>
         <svg viewBox={chartView === "radar" ? "0 0 820 475" : "0 0 1010 390"} role="img" aria-labelledby="bdc-ai-chart-title bdc-ai-chart-description">
