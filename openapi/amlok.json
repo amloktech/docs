@@ -5000,7 +5000,8 @@
                     "captured_at": "2026-11-06T12:00:00Z",
                     "expires_at": null,
                     "revoked_at": "2026-11-06T12:00:00Z",
-                    "record_version": 1
+                    "record_version": 1,
+                    "revocation_reason": "Borrower withdrew authorization."
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -53929,7 +53930,7 @@
               "minLength": 1,
               "example": "createOrigination"
             },
-            "description": "Exact, case-sensitive OpenAPI operationId of the original POST endpoint, for example createOrigination for POST /v1/originations. Find it on the endpoint reference page or in Console Data Lookup under Operation name. It is also returned in X-Amlok-Operation-Id. Save it before sending the original request; it is not a request ID or resource ID.",
+            "description": "Exact, case-sensitive OpenAPI operationId of the original POST endpoint, for example createOrigination for POST /v1/originations. See [Find the operation name](/api-reference/request-recovery#find-the-operation-name), the endpoint reference page, or Console Data Lookup under Operation name. It is also returned in X-Amlok-Operation-Id. Save it before sending the original request; it is not a request ID or resource ID.",
             "example": "createOrigination"
           },
           {
@@ -68521,6 +68522,13 @@
             ],
             "description": "Revoked at for Consent. Constraints, requiredness and allowed values are defined by this schema."
           },
+          "revocation_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Reason supplied on first revocation. Omitted on older records and active consents. Repeated revocation preserves the first reason and timestamp."
+          },
           "record_version": {
             "type": "integer",
             "minimum": 1,
@@ -79710,7 +79718,7 @@
           "operation_id": {
             "type": "string",
             "minLength": 1,
-            "description": "Exact, case-sensitive OpenAPI operationId of the original POST endpoint, for example createOrigination for POST /v1/originations. Find it on the endpoint reference page or in Console Data Lookup under Operation name. It is also returned in X-Amlok-Operation-Id. Save it before sending the original request; it is not a request ID or resource ID."
+            "description": "Exact, case-sensitive OpenAPI operationId of the original POST endpoint, for example createOrigination for POST /v1/originations. See [Find the operation name](/api-reference/request-recovery#find-the-operation-name), the endpoint reference page, or Console Data Lookup under Operation name. It is also returned in X-Amlok-Operation-Id. Save it before sending the original request; it is not a request ID or resource ID."
           },
           "resource_id": {
             "type": "string",

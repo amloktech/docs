@@ -81,3 +81,8 @@ Replay is an authenticated API action using `POST /v1/webhook-replays`, an exist
 An event's **Overview** identifies a **Recorded event** and lists its related **Webhook delivery attempts**. Event creation records a resource change; it does not itself prove success or failure at any endpoint. Inspect each attempt for its destination, HTTP response, error and retry information. An attempt with no HTTP response is different from an endpoint returning an unsuccessful HTTP status.
 
 An empty attempts list means no matching attempts are shown. It does not label the recorded business event as failed or invent an attempt count. Use the event ID to correlate deliveries to multiple endpoints and replays.
+## Understand a receiver error
+
+In **Dev Tools > Deliveries & events**, **Latest receiver response** is the status returned by your webhook destination. It is separate from the response to your API request. A successful embedding-session request can generate an event whose delivery later fails.
+
+For `405 Method Not Allowed`, check that the configured destination accepts **POST** at the exact path. Use your backend receiver URL, not a Console page or a GET-only route. Verify authentication, signature handling and the response your proxy returns. After correcting the receiver, replay the event and inspect the next attempt. A replay keeps the same event ID, so your receiver must deduplicate it. It does not repeat the original underwriting or source connection.

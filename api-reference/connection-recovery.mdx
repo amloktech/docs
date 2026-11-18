@@ -35,3 +35,12 @@ If the source is failed or needs renewed authorization, complete a fresh borrowe
 
 For a failed, paused, blocked or stopped Monitor, resolve the source issue and then explicitly PATCH the Monitor to `active` using its current ETag. Updating the connection alone must not be interpreted as a completed monitoring evaluation.
 {/* END BORROWER LIFECYCLE */}
+## What consent revocation changes
+
+Send `POST /v1/consents/{id}/revoke` with a `reason`. The returned Consent records that value in `revocation_reason`, together with `revoked_at`. Repeating revocation preserves the original reason and timestamp; it does not replace the audit record. Older records can omit `revocation_reason`.
+
+Revocation marks the affected connections `revoked` and immediately moves unfinished originations and running monitors that depend on them to `requires_action`. Inspect `requirements` for the source and required consent purpose. This includes sources belonging to related parties. Paused, stopped and failed monitors keep their current state. Source collection and publication cannot continue under the withdrawn consent.
+
+Historical assessments, evidence references, runs and charges remain recorded. Retention does not grant access: source data and documents can become `restricted`, and a risk package containing unauthorized sources cannot be retrieved. Revocation is not a data-deletion request. See [data access](/api-reference/data-access).
+
+Obtain a new affirmative borrower authorization through a reauthorization Hub session. Review the resulting connection and workflow state. Explicitly paused or stopped monitors need an explicit resume; consent renewal does not turn them on.

@@ -13,7 +13,7 @@ def extend(spec):
                     'description': 'Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response.'}
     lookup = spec['paths']['/v1/request-receipts/lookup']['get']
     descriptions = {
-        'operation_id': 'Exact, case-sensitive OpenAPI operationId of the original POST endpoint, for example createOrigination for POST /v1/originations. Find it on the endpoint reference page or in Console Data Lookup under Operation name. It is also returned in X-Amlok-Operation-Id. Save it before sending the original request; it is not a request ID or resource ID.',
+        'operation_id': 'Exact, case-sensitive OpenAPI operationId of the original POST endpoint, for example createOrigination for POST /v1/originations. See [Find the operation name](/api-reference/request-recovery#find-the-operation-name), the endpoint reference page, or Console Data Lookup under Operation name. It is also returned in X-Amlok-Operation-Id. Save it before sending the original request; it is not a request ID or resource ID.',
         'idempotency_key': 'Exact Idempotency-Key header value sent with the original POST request. Use the same workspace and environment with reliability:read permission. Do not generate a new key for lookup. Keys contain 1 to 256 characters and must not be blank.'}
     for p in lookup['parameters']:
         p['description'] = descriptions[p['name']]

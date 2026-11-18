@@ -152,3 +152,8 @@ Select **View shared borrower profiles** to open [Borrowers](/console/borrowers)
 A processing, failed or cancelled origination without a published result shows **No risk package available** and its workflow status. Submitted input and the API's origination response are not presented as an assessment result.
 
 **Current borrower profile** shows the latest identity. **Identity at assessment** shows the profile and revision accepted for the immutable result. Compare these if a business name, registration or person profile was corrected after the assessment. A correction does not rewrite the earlier package.
+## Find policy results
+
+Open **Origination** in the left navigation, select the case, then open **Overview > Risk package > Policy results**. Each result identifies a rule, its comparison, outcome and supporting evidence. Missing evidence can route the result to review; a completed request does not mean every rule passed.
+
+Developers retrieve the same results using `GET /v1/risk-packages/{id}` and inspect `data.policy_results`. The Origination provides `risk_package_id`; its API response is the workflow record, not the entire risk package. For Signal, use the risk-package ID on the latest monitoring run. See [risk packages](/api-reference/risk-package) for the complete contract.

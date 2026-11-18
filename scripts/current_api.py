@@ -160,7 +160,7 @@ def enrich(spec, f):
         if op['id']=='createOrigination':data.update(status='accepted',risk_package_id=None)
         if op['id']=='createMonitor':data.update(status='initializing',latest_package_id=None,next_evaluation_at=None,deal=f['CreateMonitor']['deal'],latest_deal_snapshot_id='ds_initial')
         if op['id']=='updateMonitor':data.update(status='paused',record_version=2,next_evaluation_at=None)
-        if op['id']=='revokeConsent':data.update(status='revoked',revoked_at='2026-11-06T12:00:00Z')
+        if op['id']=='revokeConsent':data.update(status='revoked',revoked_at='2026-11-06T12:00:00Z',revocation_reason=f['RevokeConsent']['reason'])
         if op['id']=='uploadDocument':data.update(status='processing')
         if op['id']=='downloadExport':data.update(mime_type='application/json')
         result={'data':[data] if op['many'] else data,'meta':{'request_id':'req_synthetic','schema_version':VERSION,'environment':'sandbox'}}
@@ -318,6 +318,8 @@ def build():
 
     from request_recovery import write_guides as request_recovery_guides
     request_recovery_guides(spec,index)
+    from engineering_feedback import write_guides as feedback_guides
+    feedback_guides()
 
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re
