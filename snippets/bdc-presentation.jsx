@@ -81,14 +81,37 @@ const bdcResearchApproach = [
     ["Keep the institution in control", "Make assumptions, evidence and uncertainty reviewable. The institution owns policy, final approval and intervention."]
   ]]
 ];
+const bdcResearchLogos = [
+  ["CIBC", "https://us.cibc.com/content/dam/global-assets/logos/cibc-logos/no-tagline/cibc-logo-colour-142x36.svg"],
+  ["Vancity", "https://amlok.io/vancity-logo.svg"],
+  ["ATB", "https://amlok.io/atb-logo.svg"],
+  ["Laurentian Bank", "https://amlok.io/laurentian-bank-white.svg"],
+  ["Trez Capital", "https://www.trezcapital.com/wp-content/themes/trezcapital/img/trez-logo.svg"],
+  ["Desjardins", "https://www.desjardins.com/content/dam/images/logos/commun/logo-desjardins-en.svg"],
+  ["Canada Drives", "https://www.canadadrives.ca/img/logo/cd-logo-black2x.png"],
+  ["goeasy", "https://images.ctfassets.net/fh625txf4dd5/tKuZ2ppr4fF5b5MT2YWfZ/a2cb4fc1d68cf44a1f6553b9b2ad9dc6/goeasy-logo.svg"],
+  ["Clearco", "https://cdn.prod.website-files.com/65fde10e62e6a7603e9221cc/660190120ed591c2ca6658f4_clearco-logo-black.webp"],
+  ["Romspen", "https://www.romspen.com/wp-content/themes/romspen/dist/assets/img/romspen-logo-color.svg"],
+  ["Lendefied", "https://www.lendefied.com/wp-content/uploads/2024/01/Lendefied.gif"]
+];
 const BdcResearch = () => {
   const [view, setView] = useState("comparison");
   const dialogRef = useRef(null), openerRef = useRef(null);
   const openDetails = (next, event) => { openerRef.current = event.currentTarget; setView(next); dialogRef.current?.showModal(); };
   const closeDetails = () => dialogRef.current?.close();
   return <div className="bdc-research-content">
-    <div className="bdc-research-corpus"><p className="bdc-eyebrow">AMLOK-reported research</p><dl>{[["275,019", "Closed deals studied"], ["6,322,690", "Metadata records"], ["1,300", "Average data points per business"]].map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div>
+    <div className="bdc-research-corpus">
+      <div className="bdc-research-corpus-heading"><p className="bdc-eyebrow">AMLOK-reported research</p><p><span><strong>6,322,690</strong> metadata records</span><span><strong>1,300</strong> average data points per business</span></p></div>
+      <div className="bdc-research-corpus-body">
+        <dl className="bdc-research-deals"><div><dt>Closed deals studied</dt><dd>275,019</dd></div></dl>
+        <div className="bdc-research-logos" role="group" aria-label="Financial institutions represented in the research">
+          <span className="bdc-research-td" role="img" aria-label="TD Bank"><img src="https://www.td.com/content/dam/tdb/images/navigation-header-and-footer/td-logo-desktop.png" alt="" aria-hidden="true" /><span aria-hidden="true">Bank</span></span>
+          {bdcResearchLogos.map(([name, src]) => <img key={name} src={src} alt={name} />)}
+        </div>
+      </div>
+    </div>
     <div className="bdc-research-findings" aria-label="AMLOK-reported research findings">{[["40% → 82%", "Assessable information"], ["60-85%", "Unreadable transaction value resolved"], ["25-45%", "Signal-bearing defaults flagged"], ["6-8 weeks", "Earlier distress detection"]].map(([value, label]) => <div key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
+    <dl className="bdc-research-functions">{bdcResearchApproach.find(([title]) => title === "Capabilities")[2].map(([title, description]) => <div key={title}><dt>{title}</dt><dd>{description}</dd></div>)}</dl>
     <div className="bdc-research-actions"><div><button type="button" onClick={e => openDetails("approach", e)}>Research approach<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
     <dialog className="bdc-research-dialog" ref={dialogRef} aria-labelledby="bdc-research-details-title" onClose={() => openerRef.current?.focus()} onClick={e => { if (e.target === e.currentTarget) closeDetails(); }}>
       <div className="bdc-research-dialog-header"><div><p className="bdc-eyebrow">AMLOK / Research</p><h2 id="bdc-research-details-title">Research details</h2></div><button type="button" onClick={closeDetails} aria-label="Close research details"><BdcIcon name="close" /></button></div>
