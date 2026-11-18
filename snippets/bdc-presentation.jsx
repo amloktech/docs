@@ -3,7 +3,7 @@ const bdcSlides = [
   ["The opportunity", "Capacity-based lending"],
   ["The challenge", "A fragmented picture. A moving risk."],
   ["The unified process", "Unified data. A stronger underwriting process."],
-  ["Research", "Research for financial risk intelligence."],
+  ["Research", "AI research for better decisions."],
   ["The permission", "Connect what matters, with clear permission."],
   ["After funding", "Keep the funded decision in view."],
   ["The full proposal", "From business evidence to responsible financing."],
@@ -89,8 +89,8 @@ const BdcResearch = () => {
   return <div className="bdc-research-content">
     <div className="bdc-research-corpus"><p className="bdc-eyebrow">AMLOK-reported research</p><dl>{[["275,019", "Closed deals studied"], ["6,322,690", "Metadata records"], ["1,300", "Average data points per business"]].map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></div>
     <div className="bdc-research-findings" aria-label="AMLOK-reported research findings">{[["40% → 82%", "Assessable information"], ["60-85%", "Unreadable transaction value resolved"], ["25-45%", "Signal-bearing defaults flagged"], ["6-8 weeks", "Earlier distress detection"]].map(([value, label]) => <div key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
-    <div className="bdc-research-pillars">{bdcResearchApproach.map(([title, summary]) => <div key={title}><h3>{title}</h3><p>{summary}</p></div>)}</div>
-    <div className="bdc-research-actions"><p>Source: AMLOK-supplied research summary.<br />The detailed connected-data comparison is proposed.</p><div><button type="button" onClick={e => openDetails("approach", e)}>Research approach<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
+    <p className="bdc-research-statement">Our Research Lab develops proprietary models, benchmarks and continuous-learning systems for high-risk banking workflows — where general-purpose AI still falls short.</p>
+    <div className="bdc-research-actions"><div><button type="button" onClick={e => openDetails("approach", e)}>Research approach<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
     <dialog className="bdc-research-dialog" ref={dialogRef} aria-labelledby="bdc-research-details-title" onClose={() => openerRef.current?.focus()} onClick={e => { if (e.target === e.currentTarget) closeDetails(); }}>
       <div className="bdc-research-dialog-header"><div><p className="bdc-eyebrow">AMLOK / Research</p><h2 id="bdc-research-details-title">Research details</h2></div><button type="button" onClick={closeDetails} aria-label="Close research details"><BdcIcon name="close" /></button></div>
       <div className="bdc-research-switch" role="group" aria-label="Research detail view"><button type="button" aria-pressed={view === "comparison"} onClick={() => setView("comparison")}>Proposed comparison</button><button type="button" aria-pressed={view === "approach"} onClick={() => setView("approach")}>Research approach</button></div>
