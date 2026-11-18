@@ -2425,7 +2425,11 @@
                     ],
                     "embed_origin": "https://institution.example.com",
                     "return_url": "https://institution.example.com/connected",
-                    "failure": null
+                    "failure": null,
+                    "created_at": "2026-11-18T12:00:00Z",
+                    "first_opened_at": null,
+                    "completed_at": null,
+                    "cancelled_at": null
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -3091,7 +3095,11 @@
                     ],
                     "embed_origin": "https://institution.example.com",
                     "return_url": "https://institution.example.com/connected",
-                    "failure": null
+                    "failure": null,
+                    "created_at": "2026-11-18T12:00:00Z",
+                    "first_opened_at": null,
+                    "completed_at": null,
+                    "cancelled_at": null
                   },
                   "meta": {
                     "request_id": "req_synthetic",
@@ -68316,6 +68324,35 @@
             "type": "integer",
             "minimum": 1,
             "description": "Monotonic version for this resource; compare with event.resource_version."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC time the Hub session was created. Older sessions may omit this field until their next recorded activity."
+          },
+          "first_opened_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "First UTC time the visible Hub page reported opening. Null or absent means no opening was recorded, including older sessions. This is client-reported activity, not verified human presence or consent. Fetching the launch URL or polling this API does not record an opening."
+          },
+          "completed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "UTC time this Hub session completed consent and source connection. Null or absent when not recorded. This does not mean underwriting or source-data processing has completed."
+          },
+          "cancelled_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "UTC time this Hub session was cancelled. Null or absent when not recorded."
           }
         },
         "required": [

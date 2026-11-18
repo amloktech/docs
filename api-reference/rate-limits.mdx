@@ -23,3 +23,19 @@ Use an isolated Sandbox workspace and key. Start with a small request count and 
 In Postman or your test client, keep the method, URL, request body, response status, `X-Request-ID` and `Retry-After` for each attempt. Never record the Authorization header. Test reads first, then POSTs with synthetic data. For each retry of one intended POST, reuse the exact same body and `Idempotency-Key`; use a new key only for a different intended operation.
 
 On `429`, honor `Retry-After`, reduce concurrency and add jitter before retrying. Check the error code: rate limits and a full workload queue are different conditions. Verify that retries do not duplicate records or simulated usage charges. If an accepted response was lost, use [request recovery](/api-reference/request-recovery). Seeing no 429 in a small run is not a failure; the run may remain below the current limit.
+
+
+## Run a bounded client check
+
+Download the [Sandbox client check](/downloads/sandbox-client-check.mjs). It verifies authentication, concurrent idempotent creation, changed-payload rejection and request-receipt recovery with a small bounded request count. It creates **one synthetic borrower** in your selected Sandbox; it does not reset data, send invitations or initiate provider connections. Use a dedicated testing workspace and a key with `borrowers:read` and `borrowers:write`.
+
+```bash
+# Keep your API key in your terminal environment; do not commit it.
+export AMLOK_API_BASE_URL=https://api.amlok.io
+# Set AMLOK_API_KEY securely, then run with Node.js 22 or newer:
+node sandbox-client-check.mjs
+```
+
+The script uses at most two simultaneous requests, honors `Retry-After`, and stops after bounded retries. This verifies client behavior; it is not a throughput benchmark and does not attempt to exhaust a shared environment. Its output includes a synthetic borrower ID and command reference, never the API key. If a network request fails after sending, recover the operation before creating a replacement.
+
+The [Postman reference collection](/downloads/amlok-api.postman_collection.json) includes success-status and request-ID assertions for each request. Supply your actual resource IDs, ETags and data before running individual requests. **Choose empty or sample Sandbox** is `POST /v1/sandbox/setup`; `GET /v1/sandbox/setup` only reads the current choice. An unexpected 429 fails the success assertion so it cannot be mistaken for a passed test.
