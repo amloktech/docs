@@ -163,82 +163,65 @@ const bdcAIProviders = [
     sources: [["Platform and portfolio services", "https://trustscience.com/"], ["T°Score", "https://trustscience.com/t-score"], ["CashFlow+", "https://trustscience.com/cashflow"]]
   }
 ];
-// Nominal delivery categories, not numeric scores. Missing evidence breaks the line.
+// Internal scenario estimates requested for planning, not observed benchmark scores.
+// Missing values must stay null; never connect a line across an unassessed dimension.
 const bdcAIDimensions = [
-  ["Document", "extraction"], ["Transaction", "analysis"], ["Cross-system", "reconciliation"], ["Risk and", "capacity"], ["Ongoing", "signals"]
+  ["Document", "understanding"], ["Transaction", "semantics"], ["Cross-source", "reconciliation"],
+  ["Entity and", "obligation graph"], ["Risk and", "repayment capacity"], ["Continuous", "reassessment"]
 ];
-const bdcAIProfiles = [
-  { name: "AMLOK", color: "#052698", states: ["documented", "documented", "documented", "documented", "documented"], notes: [
-    "Document fields and source references are part of the documented underwriting workflow.",
-    "Transaction interpretation supports financial evidence and cash-flow analysis.",
-    "Orders, invoices, payments, settlements and bank entries are reconciled across authorized systems.",
-    "Insights produces underwriting findings and repayment-capacity analysis.",
-    "Signal compares new evidence with the funded baseline and performs change-driven reassessment."
-  ] },
-  { name: "OpenAI", color: "#b45309", states: ["documented", "custom", "custom", "custom", "custom"], notes: [
-    "PDF input supports text and page-image understanding; extraction quality is not scored here.",
-    "A lender-specific transaction-analysis pipeline can be built around the model API.*",
-    "Connecting and reconciling business systems requires application logic and tools.*",
-    "Lending calculations, policy and decision workflows require application implementation.*",
-    "Monitoring schedules, state and actions are implemented by the surrounding application.*"
-  ] },
-  { name: "Anthropic", color: "#8b4b9e", states: ["documented", "custom", "custom", "custom", "custom"], notes: [
-    "Claude supports PDF analysis and financial-document workflows.",
-    "A lender-specific transaction pipeline can use Claude and connected tools.*",
-    "Cross-system lending reconciliation requires a configured workflow and source integrations.*",
-    "Financial-analysis tools are published; a lender-specific capacity workflow still needs implementation.*",
-    "Connectors can supply changing financial data; the lender's monitoring workflow must be configured.*"
-  ] },
-  { name: "RBC ATOM", color: "#087e8b", states: [null, "documented", null, "documented", "documented"], notes: [
-    "Document extraction is not established by the reviewed ATOM source.",
-    "ATOM represents asynchronous financial-event and transaction sequences.",
-    "Reconciliation across banking, commerce and accounting systems is not established by the reviewed source.",
-    "RBC describes credit-capacity research and applications; this is not a claim of an externally available underwriting product.",
-    "NOMI uses forecasts and payment-error warnings. This is a different use case from lender portfolio reassessment."
-  ] },
-  { name: "Prism Data", color: "#b43259", states: ["external", "documented", null, "documented", "documented"], notes: [
-    "SMB bank-statement inputs must first be extracted into a supported structured format.",
-    "Prism publishes consumer and SMB transaction categorization and cash-flow attributes.",
-    "Multi-account banking analysis is documented; cross-system order-to-invoice-to-settlement reconciliation is not established.",
-    "CashScore and SMB attributes support credit-risk and repayment-capacity assessment.",
-    "Pulse provides continuous cash-flow monitoring and evolving financial signals."
-  ] },
-  { name: "Trust Science", color: "#48623a", states: [null, "documented", null, "documented", "documented"], notes: [
-    "Document extraction is not established by the reviewed product sources.",
-    "CashFlow+ uses bank activity to assess income patterns and cash-flow behavior.",
-    "Multi-source credit signals are documented; cross-system business reconciliation is not established.",
-    "T°Score and CashFlow+ provide credit-risk, income and cash-flow assessments.",
-    "Portfolio re-underwriting is described. A continuous monitoring cadence is not specified."
-  ] }
+const bdcAIProjections = [
+  { name: "AMLOK", product: "Target profile", color: "#052698", dash: undefined, scores: [4, 5, 5, 5, 5, 5], assumption: "Target fit for the proposed complete workflow: source-linked extraction, banking and business-system evidence, entity relationships and Signal reassessment. These are planning targets, not observed scores." },
+  { name: "OpenAI", product: "GPT family", color: "#d17823", dash: "10 5", scores: [5, 4, 3, 3, 4, 2], assumption: "General-purpose document and reasoning strengths, with lender-specific orchestration assumed for reconciliation, graph persistence and continuous reassessment. This is an internal scenario estimate." },
+  { name: "Anthropic", product: "Claude family", color: "#8758b8", dash: "2 5", scores: [5, 4, 3, 3, 4, 2], assumption: "The same planning profile as OpenAI: strong document/reasoning fit, with configured financial workflows and tools. The available evidence does not justify a numerical distinction between these families." },
+  { name: "RBC ATOM", product: "Transaction model", color: "#008b9a", dash: "12 4 2 4", scores: [null, 5, null, null, 4, 4], assumption: "Transaction-centered projection from ATOM's published credit-capacity, forecasting and alert use cases. Document extraction, cross-system reconciliation and entity-graph fit remain unassessed." },
+  { name: "Prism Data", product: "CashScore / Insights / Pulse", color: "#c34370", dash: "6 4", scores: [2, 5, 2, null, 5, 5], assumption: "Bank cash-flow analysis and monitoring drive the projection. External document conversion and banking-only consolidation limit the assumed fit to the broader cross-system workflow. Entity-graph fit remains unassessed." },
+  { name: "Trust Science", product: "T°Score / CashFlow+", color: "#557644", dash: "14 6", scores: [null, 4, null, null, 5, 4], assumption: "Credit scoring, income analysis and portfolio re-underwriting drive the projection. The monitoring cadence is unspecified. Document, cross-system reconciliation and entity-graph fit remain unassessed." }
 ];
-const bdcAIStateLabels = { documented: "Published capability", custom: "Custom workflow", external: "External preparation" };
 const BdcAIComparison = () => {
-  const [peerIndex, setPeerIndex] = useState(1);
-  const peer = bdcAIProfiles[peerIndex];
-  const rowY = { documented: 70, custom: 135, external: 200 };
-  const pointX = index => 215 + index * 210;
-  const chartDescription = bdcAIDimensions.map((dimension, index) => `${dimension.join(" ")}: AMLOK, published capability; ${peer.name}, ${bdcAIStateLabels[peer.states[index]] || "not established in reviewed sources"}.`).join(" ");
+  const [chartView, setChartView] = useState("radar");
+  const [visible, setVisible] = useState([true, true, true, true, true, true]);
+  const [focused, setFocused] = useState(null);
+  const radarPoint = (index, score, radius = 172) => {
+    const angle = -Math.PI / 2 + index * Math.PI / 3;
+    return [410 + Math.cos(angle) * radius * score / 5, 236 + Math.sin(angle) * radius * score / 5];
+  };
+  const linePoint = (index, score) => [110 + index * 157, 300 - score * 48];
+  const position = chartView === "radar" ? radarPoint : linePoint;
+  const series = bdcAIProjections.map((profile, seriesIndex) => visible[seriesIndex] ? <g key={profile.name} className="bdc-ai-series" opacity={focused === null || focused === seriesIndex ? 1 : .15}>
+    {seriesIndex === 0 && chartView === "radar" && <polygon points={profile.scores.map((score, index) => radarPoint(index, score).join(",")).join(" ")} fill={profile.color} fillOpacity=".055" />}
+    {profile.scores.map((score, index) => {
+      const next = index + 1 < profile.scores.length ? index + 1 : chartView === "radar" ? 0 : null;
+      if (next === null || score === null || profile.scores[next] === null) return null;
+      const from = position(index, score), to = position(next, profile.scores[next]);
+      return <line key={`line-${index}`} x1={from[0]} y1={from[1]} x2={to[0]} y2={to[1]} stroke={profile.color} strokeWidth={seriesIndex === 0 ? 3.5 : seriesIndex === 1 ? 3 : 2.5} strokeDasharray={profile.dash} strokeLinecap="round" />;
+    })}
+    {profile.scores.map((score, index) => {
+      if (score === null) return null;
+      const point = position(index, score);
+      return <circle key={`point-${index}`} cx={point[0]} cy={point[1]} r={seriesIndex === 0 ? 5 : 3.5} fill={seriesIndex === 0 ? profile.color : "#fff"} stroke={profile.color} strokeWidth="2"><title>{profile.name}: {bdcAIDimensions[index].join(" ")} - projected fit {score}/5</title></circle>;
+    })}
+  </g> : null);
   return <div className="bdc-ai-comparison">
-  <div className="bdc-ai-intro"><h3>The dimensions that matter for financial risk.</h3><p>Compare how each approach delivers the work, from financial documents to ongoing signals.</p></div>
-  <div className="bdc-ai-peer-picker" role="group" aria-label="Compare AMLOK with"><span>Compare with</span>{bdcAIProfiles.slice(1).map((profile, index) => <button type="button" key={profile.name} aria-pressed={peerIndex === index + 1} onClick={() => setPeerIndex(index + 1)}>{profile.name}</button>)}</div>
-  <div className="bdc-ai-chart-card">
-    <div className="bdc-ai-chart-legend"><span><i style={{ borderColor: "#052698" }} />AMLOK</span><span><i style={{ borderColor: peer.color, borderTopStyle: "dashed" }} />{peer.name}</span><small>Delivery categories - not performance scores</small></div>
-    <div className="bdc-ai-chart-scroll" role="region" aria-label="Scrollable capability line chart" tabIndex={0}>
-      <svg className="bdc-ai-chart" viewBox="0 0 1120 290" role="img" aria-labelledby="bdc-ai-chart-title bdc-ai-chart-description">
-        <title id="bdc-ai-chart-title">AMLOK and {peer.name}: capability delivery across five financial-risk dimensions</title><desc id="bdc-ai-chart-description">{chartDescription} Categories are nominal, not a quality scale. Unknowns are displayed separately and are not connected.</desc>
-        {bdcAIDimensions.map((dimension, index) => <g key={dimension[0]}><text x={pointX(index)} y="21" textAnchor="middle" className="bdc-ai-axis-title"><tspan x={pointX(index)}>{dimension[0]}</tspan><tspan x={pointX(index)} dy="17">{dimension[1]}</tspan></text><line x1={pointX(index)} y1="56" x2={pointX(index)} y2="225" className="bdc-ai-grid-vertical" /></g>)}
-        {Object.entries(rowY).map(([state, y]) => <g key={state}><rect x="180" y={y - 22} width="900" height="44" rx="7" className="bdc-ai-band" /><line x1="180" y1={y} x2="1080" y2={y} className="bdc-ai-grid-horizontal" /><text x="158" y={y + 4} textAnchor="end" className="bdc-ai-axis-label">{bdcAIStateLabels[state]}</text></g>)}
-        <line x1="180" y1="239" x2="1080" y2="239" className="bdc-ai-grid-horizontal" /><text x="158" y="270" textAnchor="end" className="bdc-ai-axis-label">Not established</text>
-        {[bdcAIProfiles[0], peer].map((profile, seriesIndex) => <g key={profile.name}>
-          {profile.states.slice(1).map((state, index) => state && profile.states[index] ? <line key={index} x1={pointX(index)} y1={rowY[profile.states[index]]} x2={pointX(index + 1)} y2={rowY[state]} stroke={profile.color} strokeWidth={seriesIndex === 0 ? 5 : 3} strokeDasharray={seriesIndex === 0 ? undefined : "8 6"} strokeLinecap="round" opacity={seriesIndex === 0 ? .55 : 1} /> : null)}
-          {profile.states.map((state, index) => <g key={index}><title>{profile.name} - {bdcAIDimensions[index].join(" ")}: {bdcAIStateLabels[state] || "Not established"}. {profile.notes[index]}</title>{state ? <circle cx={pointX(index)} cy={rowY[state]} r={seriesIndex === 0 ? 8 : 4} fill={seriesIndex === 0 ? "white" : profile.color} stroke={profile.color} strokeWidth={seriesIndex === 0 ? 3 : 1.5} /> : <g><circle cx={pointX(index)} cy="266" r="10" fill="white" stroke={profile.color} strokeWidth="1.5" /><text x={pointX(index)} y="270" textAnchor="middle" fill={profile.color} fontSize="12">?</text></g>}</g>)}
-        </g>)}
-      </svg>
+    <div className="bdc-ai-projection-heading"><div><span className="bdc-ai-projection-tag">Projected comparison</span><h3>Financial intelligence across six dimensions.</h3><p>Projected workflow fit - 0 to 5 planning scale.</p></div><div className="bdc-ai-view-switch" role="group" aria-label="Comparison chart view"><button type="button" aria-pressed={chartView === "radar"} onClick={() => setChartView("radar")}>Radar</button><button type="button" aria-pressed={chartView === "dimensions"} onClick={() => setChartView("dimensions")}>By dimension</button></div></div>
+    <div className="bdc-ai-projection-layout">
+      <div className={`bdc-ai-projection-plot ${chartView === "dimensions" ? "bdc-ai-projection-wide" : ""}`} role="region" aria-label="Projected comparison graphic" tabIndex={0}>
+        <svg viewBox={chartView === "radar" ? "0 0 820 475" : "0 0 1010 390"} role="img" aria-labelledby="bdc-ai-chart-title bdc-ai-chart-description">
+          <title id="bdc-ai-chart-title">Projected workflow fit for AMLOK, OpenAI, Anthropic, RBC ATOM, Prism Data and Trust Science</title>
+          <desc id="bdc-ai-chart-description">Internal planning estimates, not measured model performance. All series use a 0 to 5 fit rubric. Missing values are unassessed and remain gaps. The score table and assumptions are available below the chart.</desc>
+          {chartView === "radar" ? <g>
+            {[1, 2, 3, 4, 5].map(level => <g key={level}><polygon points={bdcAIDimensions.map((_, index) => radarPoint(index, level).join(",")).join(" ")} className="bdc-ai-radar-ring" /><text x="418" y={236 - level * 172 / 5 + 4} className="bdc-ai-scale-label">{level}</text></g>)}
+            {bdcAIDimensions.map((label, index) => { const edge = radarPoint(index, 5), text = radarPoint(index, 5, 210); const align = index === 0 || index === 3 ? "middle" : index < 3 ? "start" : "end"; return <g key={label[0]}><line x1="410" y1="236" x2={edge[0]} y2={edge[1]} className="bdc-ai-radar-spoke" /><text x={text[0]} y={text[1] - 6} textAnchor={align} className="bdc-ai-axis-title"><tspan x={text[0]}>{label[0]}</tspan><tspan x={text[0]} dy="18">{label[1]}</tspan></text></g>; })}
+          </g> : <g>
+            {[0, 1, 2, 3, 4, 5].map(level => <g key={level}><line x1="85" y1={linePoint(0, level)[1]} x2="920" y2={linePoint(0, level)[1]} className="bdc-ai-radar-spoke" /><text x="68" y={linePoint(0, level)[1] + 4} textAnchor="end" className="bdc-ai-scale-label">{level}</text></g>)}
+            {bdcAIDimensions.map((label, index) => <text key={label[0]} x={linePoint(index, 0)[0]} y="335" textAnchor="middle" className="bdc-ai-axis-title"><tspan x={linePoint(index, 0)[0]}>{label[0]}</tspan><tspan x={linePoint(index, 0)[0]} dy="18">{label[1]}</tspan></text>)}
+          </g>}
+          {series}
+        </svg>
+      </div>
+      <aside className="bdc-ai-projection-legend"><p>Compared approaches</p><div role="group" aria-label="Visible comparison series">{bdcAIProjections.map((profile, index) => <button type="button" key={profile.name} aria-pressed={visible[index]} onClick={() => setVisible(current => current.map((item, i) => i === index ? !item : item))} onMouseEnter={() => setFocused(index)} onMouseLeave={() => setFocused(null)} onFocus={() => setFocused(index)} onBlur={() => setFocused(null)}><svg width="32" height="12" viewBox="0 0 32 12" aria-hidden="true"><line x1="1" y1="6" x2="31" y2="6" stroke={profile.color} strokeWidth="2.5" strokeDasharray={profile.dash} /><circle cx="16" cy="6" r="3" fill="#fff" stroke={profile.color} strokeWidth="1.5" /></svg><span><strong>{profile.name}</strong><small>{profile.product}</small></span></button>)}</div><button type="button" className="bdc-ai-show-all" onClick={() => { setVisible([true, true, true, true, true, true]); setFocused(null); }}>Show all</button><small className="bdc-ai-legend-help">Select to show or hide. Hover to highlight.<br />Gaps = unassessed, not zero.</small></aside>
     </div>
-    <p className="bdc-ai-chart-key">Lines connect categories across tasks. Shared points mean the same delivery category, not equal quality. Gaps mean the reviewed sources do not establish that capability.</p>
-  </div>
-  <p className="bdc-ai-scope">Source-based interpretation, reviewed November 17, 2026. This chart compares documented scope, not measured accuracy or a common benchmark. *Custom-workflow positions are architectural inferences from model and tool support. AMLOK reflects its own documentation.</p>
-  <details className="bdc-ai-dimension-notes"><summary>Read the dimension notes for AMLOK and {peer.name}</summary><div>{bdcAIDimensions.map((dimension, index) => <section key={dimension[0]}><h4>{dimension.join(" ")}</h4><p><strong>AMLOK</strong> {bdcAIProfiles[0].notes[index]}</p><p><strong>{peer.name}</strong> {peer.notes[index]}</p></section>)}</div></details>
+    <p className="bdc-ai-projection-caption">Internal planning estimates, not measured model performance. AMLOK is a target profile; the other profiles are scenario assumptions. Equal scores can overlap.</p>
+    <details className="bdc-ai-projection-method"><summary>Planning scores and assumptions</summary><p>This is a subjective fit rubric for the defined workflow, not accuracy, probability or a normalized benchmark. 5 = target end-to-end fit; 4 = strong fit with configuration; 3 = partial fit requiring substantial integration; 2 = limited direct fit; 1 = minimal direct fit; 0 = no fit in the scenario. A blank value is unassessed. There is no aggregate score or estimated confidence interval.</p><div className="bdc-ai-matrix-scroll"><table className="bdc-ai-score-table"><caption className="bdc-sr-only">Projected workflow-fit scores, not measured benchmark results</caption><thead><tr><th scope="col">Approach</th>{bdcAIDimensions.map(label => <th scope="col" key={label[0]}>{label.join(" ")}</th>)}</tr></thead><tbody>{bdcAIProjections.map(profile => <tr key={profile.name}><th scope="row">{profile.name}</th>{profile.scores.map((score, index) => <td key={index}>{score === null ? <abbr title="Unassessed">-</abbr> : score}</td>)}</tr>)}</tbody></table></div><div className="bdc-ai-assumptions">{bdcAIProjections.map(profile => <section key={profile.name}><h4>{profile.name}</h4><p>{profile.assumption}</p></section>)}</div></details>
   <details className="bdc-ai-table-details"><summary>Read the full provider comparison</summary><div className="bdc-ai-matrix-scroll" role="region" aria-label="AI approaches comparison matrix" tabIndex={0}>
     <table className="bdc-ai-matrix"><caption className="bdc-sr-only">Published capabilities of AMLOK, OpenAI, Anthropic, RBC ATOM, Prism Data and Trust Science. This is not a performance ranking.</caption>
       <thead><tr><th scope="col">Comparison<br />dimension</th>{bdcAIProviders.map((provider, i) => <th scope="col" key={provider.name} className={i === 0 ? "bdc-ai-amlok" : undefined}><strong>{provider.name}</strong><span>{provider.product}</span><small>{provider.kind}</small></th>)}</tr></thead>
