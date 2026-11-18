@@ -159,9 +159,36 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
 #demobdc-deck .bdc-research-dialog { width:calc(100% - 48px); max-width:1100px; max-height:90dvh; overflow:auto; margin:auto; padding:28px; border:1px solid var(--line); border-radius:12px; color:var(--ink); background:#fff; }
 #demobdc-deck .bdc-research-dialog::backdrop { background:#101c3a99; backdrop-filter:blur(5px); }
 #demobdc-deck .bdc-research-dialog[data-view="landscape"] { max-width:1360px; }
+#demobdc-deck .bdc-research-dialog[data-view="landscape"] .bdc-research-dialog-header { margin-bottom:12px; }
+#demobdc-deck .bdc-research-dialog[data-view="landscape"] .bdc-research-switch { margin-bottom:16px; }
 #demobdc-deck .bdc-ai-intro { margin-bottom:18px; }
 #demobdc-deck .bdc-ai-intro h3 { font-size:20px; }
 #demobdc-deck .bdc-ai-intro p { margin-top:6px; font-size:12px; color:var(--muted); }
+#demobdc-deck .bdc-ai-comparison .bdc-ai-intro { margin-bottom:12px; }
+#demobdc-deck .bdc-ai-peer-picker { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-bottom:15px; }
+#demobdc-deck .bdc-ai-peer-picker > span { color:var(--muted); font-size:11px; margin-right:7px; }
+#demobdc-deck .bdc-ai-peer-picker button { border:1px solid var(--line); border-radius:5px; background:#fff; padding:7px 11px; font-size:11px; }
+#demobdc-deck .bdc-ai-peer-picker button[aria-pressed="true"] { background:var(--blue); border-color:var(--blue); color:#fff; }
+#demobdc-deck .bdc-ai-chart-card { border:1px solid var(--line); border-radius:9px; padding:16px 16px 12px; }
+#demobdc-deck .bdc-ai-chart-legend { display:flex; flex-wrap:wrap; align-items:center; gap:20px; font-size:12px; }
+#demobdc-deck .bdc-ai-chart-legend > span { display:inline-flex; align-items:center; gap:9px; font-weight:600; }
+#demobdc-deck .bdc-ai-chart-legend i { display:inline-block; width:25px; border-top:3px solid; }
+#demobdc-deck .bdc-ai-chart-legend small { margin-left:auto; font-size:10px; color:var(--muted); }
+#demobdc-deck .bdc-ai-chart-scroll { overflow-x:auto; margin-top:12px; }
+#demobdc-deck .bdc-ai-chart { display:block; width:100%; min-width:900px; height:auto; }
+#demobdc-deck .bdc-ai-axis-title { fill:var(--ink); font-size:13px; font-weight:600; }
+#demobdc-deck .bdc-ai-axis-label { fill:var(--muted); font-size:12px; }
+#demobdc-deck .bdc-ai-grid-vertical { stroke:#dce3f0; stroke-width:1; stroke-dasharray:3 5; }
+#demobdc-deck .bdc-ai-grid-horizontal { stroke:#dce3f0; stroke-width:1; }
+#demobdc-deck .bdc-ai-band { fill:#f5f7fc; }
+#demobdc-deck .bdc-ai-chart-key { font-size:10px; line-height:1.5; color:var(--muted); padding:0 8px; }
+#demobdc-deck :is(.bdc-ai-dimension-notes,.bdc-ai-table-details) { margin-top:15px; border-top:1px solid var(--line); padding-top:14px; }
+#demobdc-deck :is(.bdc-ai-dimension-notes,.bdc-ai-table-details) > summary { font-size:12px; color:var(--blue); font-weight:600; cursor:pointer; }
+#demobdc-deck .bdc-ai-dimension-notes > div { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:22px; margin-top:18px; }
+#demobdc-deck .bdc-ai-dimension-notes h4 { font-size:12px; margin:0 0 10px; }
+#demobdc-deck .bdc-ai-dimension-notes p { font-size:11px; color:var(--muted); margin-top:10px; }
+#demobdc-deck .bdc-ai-dimension-notes strong { color:var(--ink); display:block; margin-bottom:3px; }
+#demobdc-deck .bdc-ai-table-details .bdc-ai-matrix-scroll { margin-top:18px; }
 #demobdc-deck .bdc-ai-matrix-scroll { overflow-x:auto; border:1px solid var(--line); border-radius:8px; }
 #demobdc-deck .bdc-ai-matrix { width:100%; min-width:1080px; border-collapse:collapse; table-layout:fixed; }
 #demobdc-deck .bdc-ai-matrix :is(th,td) { text-align:left; vertical-align:top; padding:16px 13px; border-right:1px solid var(--line); border-bottom:1px solid var(--line); }
@@ -416,6 +443,10 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
   #demobdc-deck .bdc-research-actions > div { flex-direction:column; width:100%; }
   #demobdc-deck .bdc-research-dialog { width:calc(100% - 24px); padding:20px; }
   #demobdc-deck .bdc-ai-sources > div { grid-template-columns:1fr; }
+  #demobdc-deck .bdc-ai-dimension-notes > div { grid-template-columns:1fr; }
+  #demobdc-deck .bdc-ai-chart-card { padding:12px 8px; }
+  #demobdc-deck .bdc-ai-chart-legend { gap:10px 18px; padding:0 4px; }
+  #demobdc-deck .bdc-ai-chart-legend small { margin-left:0; flex-basis:100%; }
   #demobdc-deck .bdc-research-dialog-header h2 { font-size:25px; }
   #demobdc-deck .bdc-research-approach > div { grid-template-columns:1fr; }
   #demobdc-deck .bdc-challenge-columns { grid-template-columns:1fr; gap:20px; }
