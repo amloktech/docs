@@ -17,3 +17,56 @@ curl --request GET --fail-with-body --max-time 30 \
 A receipt identifies the accepted resource even after the 24-hour full-response cache expires. Retrieve that resource and continue following its state. Do not generate a new idempotency key to recover the same accepted action.
 
 If lookup does not find acceptance, reconcile with your own request log before retrying the original command. A `404` is not permission to create duplicate work under a new key. Webhook replay and source reauthorization are separate actions with their own keys.
+
+## Find the operation name
+
+`operation_id` is the original POST endpoint's stable, case-sensitive OpenAPI `operationId`. For `POST /v1/originations`, use `createOrigination`. Find it under **Operation name** on the endpoint reference page or in **Console > Dev Tools > Data Lookup**. Use the copy button in Data Lookup. `X-Amlok-Operation-Id` also returns it on responses handled by a documented route. Save the name before sending your request so recovery works when no response arrives.
+
+| Identifier | Meaning |
+| --- | --- |
+| `operation_id` | Fixed endpoint name, such as `createOrigination`. |
+| `idempotency_key` | Exact key you generated and sent for this intended POST command. |
+| `X-Request-ID` | Identifier for one HTTP attempt, useful for support and logs. |
+| `meta.request_id` | Request ID in the response body; an idempotent replay retains the original value. |
+| `resource_id` | Identifier of the accepted resource returned by a receipt. |
+
+## Recover an accepted command
+
+1. Keep the original operation name, Idempotency-Key and exact request in your integration. Use opaque keys without passwords, personal information or other secrets.
+2. Use an API key for the same workspace and environment, with `reliability:read`. Set `AMLOK_API_BASE_URL=https://api.amlok.io` for the customer API or `https://staging-api.amlok.io` when testing on staging with staging credentials.
+3. Look up the receipt with your original values:
+
+```bash
+curl --get --fail-with-body "$AMLOK_API_BASE_URL/v1/request-receipts/lookup" \
+  --header "Authorization: Bearer $AMLOK_API_KEY" \
+  --data-urlencode 'operation_id=createOrigination' \
+  --data-urlencode 'idempotency_key=origination-synthetic-0042'
+```
+
+The synthetic key above only works if you previously sent and Amlok accepted that operation with that key. A successful receipt contains `resource_id`, `accepted_at` and `response_replay_available`. Retrieve the resource through its documented GET endpoint; a receipt confirms acceptance, not successful completion. The lookup itself never resubmits the original command.
+
+Unknown operation names and read-operation names return `400 validation_error` with `error.field=operation_id`. A valid operation with no matching accepted receipt returns `404 not_found`. A missing receipt may mean the original request is still in flight. Retry the original request with the same key and payload within the 24-hour replay window. After that window, escalate an unresolved acceptance state to support instead of inventing a new key.
+
+In **Console > Dev Tools > Request logs**, open the request's **Overview > Request recovery** to copy its operation name and, for new POST logs with a recorded key, a complete lookup example. Supply your API key locally; Console never includes it in the example. Older logs may lack these fields, so keep your integration's own trace.
+
+## POST operation names
+
+| Endpoint | `operation_id` for receipt lookup |
+| --- | --- |
+| `POST /v1/borrowers` | `createBorrower` |
+| `POST /v1/embedding-sessions` | `createEmbeddingSession` |
+| `POST /v1/consents/{id}/revoke` | `revokeConsent` |
+| `POST /v1/documents` | `uploadDocument` |
+| `POST /v1/documents/{id}/download-links` | `downloadDocument` |
+| `POST /v1/lending-product-versions` | `createLendingProductVersion` |
+| `POST /v1/risk-policy-versions` | `createRiskPolicyVersion` |
+| `POST /v1/originations` | `createOrigination` |
+| `POST /v1/monitors` | `createMonitor` |
+| `POST /v1/exports` | `createExport` |
+| `POST /v1/exports/{id}/download-links` | `downloadExport` |
+| `POST /v1/webhook-replays` | `replayEvent` |
+| `POST /v1/monitors/{id}/deal-snapshots` | `createDealSnapshot` |
+| `POST /v1/sandbox/setup` | `configureSandbox` |
+| `POST /v1/sandbox/runs` | `createSandboxRun` |
+| `POST /v1/sandbox/runs/{id}/repeat` | `repeatSandboxRun` |
+| `POST /v1/sandbox/runs/{id}/actions` | `simulateSandboxAction` |

@@ -7,3 +7,9 @@ openapi: "/openapi/amlok.json GET /v1/data/changes"
 Resume from the changes_cursor returned by a completed data snapshot, then persist resume_cursor after applying each batch. Includes upserts, source removals and access changes; expired or mismatched cursors fail explicitly. All IDs and cursors must belong to the authorized workspace and environment. Required scope: data:read.
 
 Examples use synthetic IDs. Replace them with values returned by your environment.
+
+## Operation name
+
+`listDataChanges`
+
+The `X-Amlok-Operation-Id` response header identifies this endpoint. Request receipts apply to accepted POST commands.
