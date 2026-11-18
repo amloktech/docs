@@ -101,13 +101,11 @@ const BdcResearch = () => {
   const closeDetails = () => dialogRef.current?.close();
   return <div className="bdc-research-content">
     <div className="bdc-research-corpus">
-      <div className="bdc-research-corpus-heading"><p className="bdc-eyebrow">AMLOK-reported research</p><p><span><strong>6,322,690</strong> metadata records</span><span><strong>1,300</strong> average data points per business</span></p></div>
-      <div className="bdc-research-corpus-body">
-        <dl className="bdc-research-deals"><div><dt>Closed deals studied</dt><dd>275,019</dd></div></dl>
-        <div className="bdc-research-logos" role="group" aria-label="Financial institutions represented in the research">
-          <span className="bdc-research-td" role="img" aria-label="TD Bank"><img src="https://www.td.com/content/dam/tdb/images/navigation-header-and-footer/td-logo-desktop.png" alt="" aria-hidden="true" /><span aria-hidden="true">Bank</span></span>
-          {bdcResearchLogos.map(([name, src]) => <img key={name} src={src} alt={name} />)}
-        </div>
+      <p className="bdc-eyebrow">AMLOK-reported research</p>
+      <dl className="bdc-research-metrics">{[["275,019", "Closed deals studied"], ["6,322,690", "Metadata records"], ["1,300", "Average data points per business"]].map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      <div className="bdc-research-logos" role="group" aria-label="Financial institutions represented in the research">
+        <span className="bdc-research-td" role="img" aria-label="TD Bank"><img src="https://www.td.com/content/dam/tdb/images/navigation-header-and-footer/td-logo-desktop.png" alt="" aria-hidden="true" /><span aria-hidden="true">Bank</span></span>
+        {bdcResearchLogos.map(([name, src]) => <img key={name} src={src} alt={name} />)}
       </div>
     </div>
     <div className="bdc-research-findings" aria-label="AMLOK-reported research findings">{[["40% → 82%", "Assessable information"], ["60-85%", "Unreadable transaction value resolved"], ["25-45%", "Signal-bearing defaults flagged"], ["6-8 weeks", "Earlier distress detection"]].map(([value, label]) => <div key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
