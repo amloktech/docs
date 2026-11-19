@@ -11,11 +11,11 @@ Load **Explore sample businesses** during first-use setup, or choose **Dev Tools
 | Area | Included data | Where to inspect it |
 | --- | --- | --- |
 | Business and owner | Fictional registered business, industry, address, registration number, sole owner and director, and ownership relationship. | Borrower profile, verification source records and the risk package's `verification`. |
-| Banking | Operating account, twelve months of categorized receipts and payments, monthly balances and daily closing balances. | Connection data, bank statement and cash-flow dimensions. |
-| Accounting | Four customers, 48 paid invoices, financial statement and supporting schedules, two existing credit facilities, and a tax obligation. | Normalized records, financial dimensions and `analyses.financial_statements`. |
-| Payments and commerce | 48 settled payments and 48 orders with matched invoice references, refunds, channels and customer references. | Source records, revenue metrics, concentrations and reconciliation. |
+| Banking | Operating account and business card, sixty months of categorized activity, monthly statements and daily operating-account closing balances. | Connection data, bank statement and cash-flow dimensions. |
+| Accounting | Five annual income statements, invoices, credit notes, paid and outstanding bills, balanced monthly cash-cost postings, current supporting schedules, two credit facilities and tax records. | Normalized records, financial dimensions and `analyses.financial_statements`. |
+| Payments and commerce | Five years of individual orders and payments, customers, products, discounts, cancellations, declined payments, partial/full refunds, disputes, weekly payouts and explicit settlement links. | Source records, revenue metrics, concentrations and reconciliation. |
 | KYB and owner verification | Simulated company registration, owner identity, liveness, ownership, screening and account-holder checks. | `verification`, its provenance and the associated reports. |
-| Documents | Six readable PDFs: financial statement, bank statement, business registration, identity verification report, tax filing and lending terms. | Origination documents and the document endpoints. |
+| Documents | Six readable PDFs: financial statement with five-year comparisons, sixty-month bank history, business registration, identity verification report, tax filing and lending terms. | Origination documents and the document endpoints. |
 | Underwriting | Submitted application, versioned lending product and risk policy, assessment, dimensions, source evidence and analysis sections. | Origination drawer and immutable risk package. |
 | Monitoring | Funded deal, baseline, evaluations, events and scenario-specific alerts. | Portfolio drawer and monitoring endpoints. |
 | System records | API requests, scenario steps and assertions, exports, usage, complexity assessments, test funding, credit movements and statements. | Dev Tools, Billing and the corresponding API endpoints. |
@@ -24,11 +24,52 @@ Completed assessments create risk packages and monitoring records. An Originatio
 
 ## Understand the figures
 
-The reporting period covers the **twelve complete calendar months before the run's current month**, with an exclusive end date. For example, a run in November covers November 1 of the preceding year through November 1 of the current year. Each month has receipts on day 5 and payments on day 20, with daily closing balances between them.
+The source history covers **sixty complete calendar months before the run's creation month**. A run created in November 2026 contains business activity from November 1, 2021 through October 31, 2026. The history is fixed for that run, including later recovery or refresh actions. Leap days are included.
 
-Canadian businesses report in **CAD**; US businesses report in **USD**. The workspace's simulated wallet and API consumption remain **CAD**. Business revenue and financing currency do not change the currency of your AMLOK invoice.
+Balances and settlement statuses describe the snapshot at the history cutoff. A payout scheduled after that cutoff remains pending in this frozen example, even if you load or inspect it later. `extensions.sandbox.history_window` identifies that boundary; collection timestamps record when AMLOK generated and ingested the sample.
 
-For a normal healthy run, bank receipts, paid invoice totals and net commerce sales reconcile. Financial statements include supporting schedules used by the metrics. Amounts are decimal strings; ratios such as `"0.20"` mean 20%. Evidence references identify the collected record and field used in a calculation. Do not assume all 184 metric keys must be available: consumer-only metrics are not applicable, and unsupported bureau information and calibrated model outputs remain explicitly unavailable.
+The underwriting observation window remains the **latest twelve complete months**. Five years of transactions are not added together and labeled annual revenue. Prior-year comparisons, current balances and pending processor settlements remain distinct. Retrieve the full historical collection through the data endpoints; the risk package freezes the observations used in its assessment.
+
+Canadian businesses report in **CAD**; US businesses report in **USD**. Your simulated AMLOK wallet and API consumption remain **CAD**. Business revenue and financing currency do not change the currency of your AMLOK invoice.
+
+### Follow the money
+
+1. An order contains its items, discount, sales tax and total. Cancelled or declined orders have no captured funds.
+2. A payment records the capture, processing fee and any refund. Refunds and lost disputes have their own dated records and linked accounting credit notes.
+3. Processor balance entries group charges and later deductions into weekly payouts after a business-day availability delay. Each paid payout links to its bank transaction; pending payouts remain a processor receivable.
+4. Supplier payments, payroll, rent, software, insurance, debt service, capital expenditure and simulated tax remittances affect the operating bank. Business-card repayments link both sides of the transfer.
+5. Daily bank balances roll forward from posted activity. Annual statements use business revenue excluding sales tax, with expenses and processor fees accounted for separately.
+
+**Bank receipts are not gross sales.** Taxes, fees, refunds, disputes and settlement timing explain the difference. Inspect `extensions.sandbox.balance_entries` on payouts for the signed allocations. The risk package’s reconciliation analysis compares explicit paid payouts with their bank postings. Its cash-flow statement uses actual operating-bank receipts and payments; a gross invoice total is not treated as net cash. Missing source connections leave links absent; a deterioration scenario intentionally changes bank collections and can produce unmatched reconciliation.
+
+Amounts are decimal strings; ratios such as `"0.20"` mean 20%. Evidence references identify the collected record and field used in a calculation. Not every metric is applicable or available: unsupported bureau information, unobserved churn and calibrated predictive outputs remain unavailable.
+
+### Realistic fictional profiles
+
+| Business | Operating model | Historical pattern |
+| --- | --- | --- |
+| Maple & Pine Retail | Homewares and small furniture; online/direct orders | Growth, holiday seasonality and frequent customer returns. |
+| Harbor Route Logistics | Regional freight bookings | Declining sales and rising operating costs. |
+| Cedar Cloud Software | Usage-based business software subscriptions | Growing customer base and variable monthly charges. |
+| Prairie Precision Manufacturing | Small-batch components | Larger business orders and production seasonality. |
+| Summit Table Hospitality | Catering and event bookings | Seasonal events, advance payments and adjustments. |
+| Atlas Supply Wholesale | Business supplies in case quantities | Repeat business purchases and moderate growth. |
+
+A November 2026 run contains approximately **135,600 normalized source records**, including more than **21,800 orders** across the six businesses. Record counts depend on the run date and scenario. See the [example coverage manifest](/downloads/sandbox-history-example.json) for counts by record type and annual figures.
+
+The profiles use fictional ticket sizes, growth and expense assumptions. Payment examples follow Stripe-style gross/fee/net and availability concepts; orders follow Shopify-style order, refund and customer relationships. These are synthetic normalized records, not records fetched from either provider. Shopify Payments is not assumed to be accessible through a separate Stripe account.
+
+The illustrative card tariff is 2.9% + 0.30, with original fees retained after refunds. Tax rates and monthly remittance dates are fixed simulation assumptions, not tax calculations for a real jurisdiction. Weekends are excluded from settlement delays; public holidays are not modeled. Accounting journals are a balanced cash-cost subset, not a complete general ledger.
+
+[Stripe pricing](https://stripe.com/en-ca/pricing), [Stripe balance transactions](https://docs.stripe.com/api/balance_transactions/object), [Statistics Canada retail sales](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601) and [NRF returns research](https://nrf.com/media-center/press-releases/consumers-expected-to-return-nearly-850-billion-in-merchandise-in-2025) inform the examples. These broad references are not predictions for an individual business.
+
+### Business history versus workspace activity
+
+The businesses have five years of records. The workspace, API requests, invitations, verification checks, scenario actions and AMLOK billing records keep their **actual execution dates**. Loading samples does not fabricate five years of customer access or AMLOK charges. Scheduled future installments are explicitly marked as scheduled.
+
+New sample runs use this history automatically. Existing runs retain their original data; use [Sandbox data setup](/console/sandbox) to replace a workspace's samples when you choose to. A reset clears Sandbox data and requires confirmation; loading the new catalog never resets a workspace silently.
+
+Live history depends on the provider and consented permissions. For example, [Shopify requires additional access for orders older than sixty days](https://shopify.dev/docs/api/admin-graphql/latest/objects/Order). Sandbox history is not a promise that every live connection supplies five years.
 
 <Note>
 The data, people, verification results and files are fictional. Identity files are **verification reports**, not genuine identity documents. A simulated passing check does not establish that any real person, business or document was verified.

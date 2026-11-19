@@ -68,7 +68,7 @@ Each business has bank, accounting, payment, commerce and verification fixtures;
 | --- | --- | --- | --- | --- |
 '''+businesses+'''
 
-The pack includes card success and decline, pending and settled ACH, ACH return, refund records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. Fixture banking covers twelve complete calendar months, including daily closing balances; it is an illustrative dataset, not a production-volume test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
+The pack includes card success and decline, pending and settled ACH, ACH return, refund records, with linked immutable credit movements. Underwriting and monitoring use synthetic rates and generate usage/workload records. Billing amounts are CAD. Business financial data uses CAD for Canadian businesses and USD for US businesses. The six businesses contain sixty complete months of synthetic operating history, including daily bank balances, Shopify-style orders, Stripe-style payments, fees, refunds and payouts. Annual underwriting uses the latest twelve complete months. This is a functional dataset, not a measured production-capacity test. See [sample data and documents](/sandbox/sample-package) for the full package, intentionally unavailable fields and an executable document-download example.
 
 ## Scenario catalog
 
