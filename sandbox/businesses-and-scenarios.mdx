@@ -5,7 +5,7 @@ description: "Explore six fictional businesses, execute underwriting and monitor
 keywords: ["Sandbox scenarios", "fictional businesses", "webhook testing", "underwriting tests"]
 ---
 
-AMLOK Sandbox includes six fictional businesses and 32 executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
+AMLOK Sandbox includes six fictional business profiles and a versioned catalog of executable scenarios. The businesses supply recognizable test identities and source information. Scenarios control the condition you want to test and the illustrative policy used for that run.
 
 ## The six businesses
 
@@ -21,6 +21,32 @@ AMLOK Sandbox includes six fictional businesses and 32 executable scenarios. The
 Each business includes synthetic bank, accounting, payments, commerce and verification information; normalized source records and provenance; six downloadable PDF reports and documents; consent and connections; lending-product and policy versions; and an Origination. Completed assessments include results, evidence, exports and funded monitoring. Cases that need action retain the requirement or error to help you build recovery flows.
 
 The sample history covers 36 complete calendar months, with categorized banking, order and payment activity and daily closing balances. Underwriting evaluates the latest twelve months. Labeled opening balances and a small number of earlier settlement references keep the first payouts reconciled; those references are excluded from the 36-month activity window. Canadian business figures use CAD and US business figures use USD; workspace billing examples remain CAD. See [sample data and documents](/sandbox/sample-package) for the full contents, financial relationships and working document-download example. These fixtures are illustrative, not a production-volume dataset.
+
+
+## Exercise every underwriting metric
+
+Use the following scenarios in **Dev Tools > Sandbox scenarios**, or submit their IDs to `POST /v1/sandbox/runs`. Each run adds separate fictional records; it does not replace your existing businesses or historical assessments.
+
+| Scenario | Fixture | What it demonstrates |
+| --- | --- | --- |
+| `full_metric_coverage` | `maple-retail` | Business underwriting with explicit receivables, repayment and fixed-charge inputs, supplier history, reconciliation, simulated credit-report and fraud/consistency observations. |
+| `full_metric_coverage` | `cedar-software` | Subscription cohort and retention examples. Select this scenario explicitly; Cedar's starter `manual_review` case intentionally lacks a repayment schedule. |
+| `personal_income` | `maple-retail` | Alex Example, an individual borrower, with two fictional payroll streams, matching deposits, rent, essential expenses, obligations and proposed financing. The selected fixture supplies the market/currency; this scenario creates a person rather than the business. |
+| `monitoring_metric_coverage` | `maple-retail` | A funded portfolio with an explicitly reconciled debt inventory, a first monitoring baseline and a comparable second evaluation. |
+
+Together these cases demonstrate all **184 scalar underwriting metrics across 24 dimensions**. A single borrower does not have 184 applicable values: consumer affordability belongs to individuals, subscription retention requires a recurring cohort, inventory ratios require inventory, and baseline comparisons require a prior monitoring assessment. A zero denominator remains unavailable instead of becoming a fabricated zero.
+
+This coverage count refers to the scalar metrics in `dimensions[].metrics`, which can be used by risk-policy rules. The separate [financial attribute registry](/data-model/financial-attributes) contains **12,955 definitions** across contexts, categories, periods and statistics. It is not a promise that every attribute is applicable or available for every borrower.
+
+Download the [metric coverage manifest](/downloads/sandbox-metric-coverage.json) to find each metric's scenario, fixture, example value, unit, observation window and supporting-evidence count. It contains fictional examples evaluated at the stated `fixture_observation_at`, not customer records. A later run uses its own frozen observation dates; do not assert exact future values from this snapshot. The manifest includes all six comprehensive business fixtures, the individual case and both monitoring evaluations; the four runs in the table above are sufficient to demonstrate every metric.
+
+The monitoring comparison uses the same frozen observations twice, so zero change is the correct initial example. Inspect the previous-package reference, supporting evidence and calculation basis. The deterioration and recovery scenarios separately demonstrate changes in source activity and alert behavior. Pre-funding and post-funding DSCR are not silently treated as comparable.
+
+The comprehensive business case contains additional fictional source reports, not live credit-bureau results. Provider/model scores and benchmark percentiles are not invented to fill optional sections. Every available metric includes its time window, numeric inputs and evidence references. Missing-source and manual-review scenarios remain available to test null values and explicit missing reasons.
+
+Discover the current `catalog_version` from `GET /v1/sandbox/catalog`; pass it with `scenario_id` and `fixture_id` when creating a run. Poll the returned run ID until completion. Retrieve the resulting package with `GET /v1/risk-packages/{id}?view=summary`, then use `view=section&section=dimensions` to read the metrics and `section=financial_attributes` for the detailed attributes. Follow each page's cursor until exhausted.
+
+The full example history remains 36 complete months; current underwriting metrics use their stated observation periods, usually the latest twelve months. Individual payroll evidence keeps gross income separate from net bank deposits. Its stressed residual income is conditional on the disclosed 20% income reduction, not a default probability.
 
 ## Run and inspect a scenario
 

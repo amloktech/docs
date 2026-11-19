@@ -28,7 +28,7 @@ curl --fail-with-body -X POST "$AMLOK_API_BASE_URL/v1/sandbox/runs" \
   -H "Authorization: Bearer $AMLOK_API_KEY" \
   -H 'Content-Type: application/json' \
   -H 'Idempotency-Key: my-first-healthy-test-001' \
-  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-19.2"}'
+  -d '{"scenario_id":"healthy","fixture_id":"maple-retail","catalog_version":"2026-11-19.3"}'
 ```
 
 The command returns **202** with a queued run ID. Poll `GET /v1/sandbox/runs/{id}` until `status` is `completed` or `failed`. Inspect `assertions`, `steps`, and `resources`. An expected failed underwriting or declined payment can produce a **completed scenario** because the observed product outcome matched the expectation. A failed scenario means a step or assertion did not complete as expected; completed records remain retrievable.
@@ -40,6 +40,32 @@ AMLOK_SANDBOX_SCENARIO=healthy node run-sandbox-scenario.mjs healthy-run.json
 ```
 
 Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains the catalog version, saves the intended command and idempotency key to a private state file, submits it and polls its result. If the connection drops or polling times out, rerun with the **same file and key** to resume the original run. A new filename starts a new run; changing environment variables does not replace a command already saved in a state file. Keep the file private; it contains request and resource IDs but no API key. For webhook scenarios, set `AMLOK_SANDBOX_ENDPOINT_ID` to your enabled Sandbox endpoint before the first run; this explicitly enables delivery.
+
+
+## Exercise every underwriting metric
+
+Use the following scenarios in **Dev Tools > Sandbox scenarios**, or submit their IDs to `POST /v1/sandbox/runs`. Each run adds separate fictional records; it does not replace your existing businesses or historical assessments.
+
+| Scenario | Fixture | What it demonstrates |
+| --- | --- | --- |
+| `full_metric_coverage` | `maple-retail` | Business underwriting with explicit receivables, repayment and fixed-charge inputs, supplier history, reconciliation, simulated credit-report and fraud/consistency observations. |
+| `full_metric_coverage` | `cedar-software` | Subscription cohort and retention examples. Select this scenario explicitly; Cedar's starter `manual_review` case intentionally lacks a repayment schedule. |
+| `personal_income` | `maple-retail` | Alex Example, an individual borrower, with two fictional payroll streams, matching deposits, rent, essential expenses, obligations and proposed financing. The selected fixture supplies the market/currency; this scenario creates a person rather than the business. |
+| `monitoring_metric_coverage` | `maple-retail` | A funded portfolio with an explicitly reconciled debt inventory, a first monitoring baseline and a comparable second evaluation. |
+
+Together these cases demonstrate all **184 scalar underwriting metrics across 24 dimensions**. A single borrower does not have 184 applicable values: consumer affordability belongs to individuals, subscription retention requires a recurring cohort, inventory ratios require inventory, and baseline comparisons require a prior monitoring assessment. A zero denominator remains unavailable instead of becoming a fabricated zero.
+
+This coverage count refers to the scalar metrics in `dimensions[].metrics`, which can be used by risk-policy rules. The separate [financial attribute registry](/data-model/financial-attributes) contains **12,955 definitions** across contexts, categories, periods and statistics. It is not a promise that every attribute is applicable or available for every borrower.
+
+Download the [metric coverage manifest](/downloads/sandbox-metric-coverage.json) to find each metric's scenario, fixture, example value, unit, observation window and supporting-evidence count. It contains fictional examples evaluated at the stated `fixture_observation_at`, not customer records. A later run uses its own frozen observation dates; do not assert exact future values from this snapshot. The manifest includes all six comprehensive business fixtures, the individual case and both monitoring evaluations; the four runs in the table above are sufficient to demonstrate every metric.
+
+The monitoring comparison uses the same frozen observations twice, so zero change is the correct initial example. Inspect the previous-package reference, supporting evidence and calculation basis. The deterioration and recovery scenarios separately demonstrate changes in source activity and alert behavior. Pre-funding and post-funding DSCR are not silently treated as comparable.
+
+The comprehensive business case contains additional fictional source reports, not live credit-bureau results. Provider/model scores and benchmark percentiles are not invented to fill optional sections. Every available metric includes its time window, numeric inputs and evidence references. Missing-source and manual-review scenarios remain available to test null values and explicit missing reasons.
+
+Discover the current `catalog_version` from `GET /v1/sandbox/catalog`; pass it with `scenario_id` and `fixture_id` when creating a run. Poll the returned run ID until completion. Retrieve the resulting package with `GET /v1/risk-packages/{id}?view=summary`, then use `view=section&section=dimensions` to read the metrics and `section=financial_attributes` for the detailed attributes. Follow each page's cursor until exhausted.
+
+The full example history remains 36 complete months; current underwriting metrics use their stated observation periods, usually the latest twelve months. Individual payroll evidence keeps gross income separate from net bank deposits. Its stressed residual income is conditional on the disclosed 20% income reduction, not a default probability.
 
 ## Permissions and isolation
 
@@ -107,6 +133,9 @@ The selected business determines the fictional identity and source data. The sce
 | `webhook_delivery` | Signed webhook delivery | signed HTTP request / persisted delivery attempt |
 | `webhook_duplicate` | Duplicate webhook delivery | same event ID / separate deliveries |
 | `webhook_out_of_order` | Out-of-order events | newer event replay queued before older event replay |
+| `full_metric_coverage` | Comprehensive business metrics | Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable. |
+| `personal_income` | Personal income and affordability | All sixteen person-only metrics have supported examples, including a conditional income-stress result. |
+| `monitoring_metric_coverage` | Monitoring baseline comparisons | Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change. |
 
 ## Webhooks and monitoring
 

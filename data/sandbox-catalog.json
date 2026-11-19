@@ -1,5 +1,5 @@
 {
-  "version": "2026-11-19.2",
+  "version": "2026-11-19.3",
   "businesses": [
     {
       "id": "maple-retail",
@@ -1169,6 +1169,114 @@
       ],
       "required_products": [
         "insights"
+      ]
+    },
+    {
+      "id": "full_metric_coverage",
+      "name": "Comprehensive business metrics",
+      "category": "Underwriting",
+      "description": "Adds explicit credit-sales, receivables, cohort, reconciliation, fictional credit-report and review evidence. Run with Maple and Cedar to exercise business financial metrics.",
+      "expected": "Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable.",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "personal_income",
+      "name": "Personal income and affordability",
+      "category": "Underwriting",
+      "description": "Creates Alex Example as an individual borrower, with 36 months of two fictional payroll streams, matching bank deposits, expenses, documents and exact proposed repayment terms.",
+      "expected": "All sixteen person-only metrics have supported examples, including a conditional income-stress result.",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "insights:read",
+        "insights:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "insights:read",
+        "results:read"
+      ],
+      "required_products": [
+        "insights"
+      ]
+    },
+    {
+      "id": "monitoring_metric_coverage",
+      "name": "Monitoring baseline comparisons",
+      "category": "Monitoring",
+      "description": "Creates a reconciled funded-portfolio baseline and a second evaluation of the same observations. Inspect all four baseline comparison metrics and their frozen evidence.",
+      "expected": "Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change.",
+      "owner_only": false,
+      "requires_endpoint": false,
+      "required_scopes": [
+        "sandbox:read",
+        "sandbox:write",
+        "borrowers:read",
+        "borrowers:write",
+        "configuration:read",
+        "configuration:write",
+        "connections:read",
+        "connections:write",
+        "evidence:read",
+        "evidence:write",
+        "signal:read",
+        "signal:write",
+        "results:read"
+      ],
+      "inspection_scopes": [
+        "sandbox:read",
+        "borrowers:read",
+        "configuration:read",
+        "connections:read",
+        "evidence:read",
+        "signal:read",
+        "results:read"
+      ],
+      "required_products": [
+        "signal"
       ]
     }
   ]

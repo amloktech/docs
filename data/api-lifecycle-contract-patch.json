@@ -30214,7 +30214,7 @@
                 },
                 "example": {
                   "data": {
-                    "version": "2026-11-11.1",
+                    "version": "2026-11-19.3",
                     "businesses": [
                       {
                         "id": "maple-retail",
@@ -30282,7 +30282,7 @@
                         "id": "sample_pack",
                         "name": "Complete sample workspace",
                         "category": "Getting started",
-                        "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+                        "description": "Six fictional businesses with 36 complete months of reconciled banking, payment, commerce and accounting activity, plus documents, underwriting, monitoring, exports, payment attempts and ledger entries. Labeled opening-settlement references preserve carried balances.",
                         "expected": "Six businesses and associated records are available in the API and console.",
                         "owner_only": true,
                         "requires_endpoint": false,
@@ -30401,6 +30401,114 @@
                         "category": "Underwriting",
                         "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
                         "expected": "completed / within_policy",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "verification_expired",
+                        "name": "Verification expired",
+                        "category": "Underwriting",
+                        "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+                        "expected": "completed / review_required",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "verification_review",
+                        "name": "Verification requires review",
+                        "category": "Underwriting",
+                        "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+                        "expected": "completed / review_required",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "verification_failed",
+                        "name": "Verification failed",
+                        "category": "Underwriting",
+                        "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+                        "expected": "completed / review_required",
                         "owner_only": false,
                         "requires_endpoint": false,
                         "required_scopes": [
@@ -31277,6 +31385,114 @@
                         "required_products": [
                           "insights"
                         ]
+                      },
+                      {
+                        "id": "full_metric_coverage",
+                        "name": "Comprehensive business metrics",
+                        "category": "Underwriting",
+                        "description": "Adds explicit credit-sales, receivables, cohort, reconciliation, fictional credit-report and review evidence. Run with Maple and Cedar to exercise business financial metrics.",
+                        "expected": "Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable.",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "personal_income",
+                        "name": "Personal income and affordability",
+                        "category": "Underwriting",
+                        "description": "Creates Alex Example as an individual borrower, with 36 months of two fictional payroll streams, matching bank deposits, expenses, documents and exact proposed repayment terms.",
+                        "expected": "All sixteen person-only metrics have supported examples, including a conditional income-stress result.",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
+                        ]
+                      },
+                      {
+                        "id": "monitoring_metric_coverage",
+                        "name": "Monitoring baseline comparisons",
+                        "category": "Monitoring",
+                        "description": "Creates a reconciled funded-portfolio baseline and a second evaluation of the same observations. Inspect all four baseline comparison metrics and their frozen evidence.",
+                        "expected": "Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change.",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "signal:read",
+                          "signal:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "signal:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "signal"
+                        ]
                       }
                     ]
                   },
@@ -31294,6 +31510,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31330,6 +31553,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31366,6 +31596,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31402,6 +31639,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31438,6 +31682,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31474,6 +31725,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31510,6 +31768,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31553,6 +31818,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31596,6 +31868,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31632,6 +31911,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31668,6 +31954,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31704,6 +31997,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           },
@@ -31740,6 +32040,13 @@
                   "type": "string"
                 },
                 "description": "Request ID for the current HTTP attempt. On an idempotent replay, meta.request_id in the cached response body remains the original accepted request ID and can differ from this header. Preserve both IDs for troubleshooting."
+              },
+              "X-Amlok-Operation-Id": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "getSandboxCatalog",
+                "description": "Stable OpenAPI operation name for this endpoint. For receipt lookup use the original POST operation name, not the lookup operation, request ID or resource ID. Available on responses handled by a documented route; transport failures may have no response."
               }
             }
           }
@@ -37821,6 +38128,9 @@
               "underwriting_only",
               "monitoring_only",
               "healthy",
+              "verification_expired",
+              "verification_review",
+              "verification_failed",
               "outside_policy",
               "manual_review",
               "document_required",
@@ -37848,7 +38158,10 @@
               "pagination",
               "webhook_delivery",
               "webhook_duplicate",
-              "webhook_out_of_order"
+              "webhook_out_of_order",
+              "full_metric_coverage",
+              "personal_income",
+              "monitoring_metric_coverage"
             ],
             "description": "Stable scenario identifier from the versioned catalog."
           },
@@ -37864,7 +38177,7 @@
             "description": "Fictional business definition used to create this run."
           },
           "catalog_version": {
-            "const": "2026-11-11.1",
+            "const": "2026-11-19.3",
             "description": "Exact catalog version; reject mismatches rather than silently changing test behavior."
           },
           "endpoint_id": {
@@ -38556,7 +38869,7 @@
         "data",
         "version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -38576,7 +38889,7 @@
           "id": "sample_pack",
           "name": "Complete sample workspace",
           "category": "Getting started",
-          "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+          "description": "Six fictional businesses with 36 complete months of reconciled banking, payment, commerce and accounting activity, plus documents, underwriting, monitoring, exports, payment attempts and ledger entries. Labeled opening-settlement references preserve carried balances.",
           "expected": "Six businesses and associated records are available in the API and console.",
           "owner_only": true,
           "requires_endpoint": false,
@@ -39679,6 +39992,114 @@
           "required_products": [
             "insights"
           ]
+        },
+        {
+          "id": "full_metric_coverage",
+          "name": "Comprehensive business metrics",
+          "category": "Underwriting",
+          "description": "Adds explicit credit-sales, receivables, cohort, reconciliation, fictional credit-report and review evidence. Run with Maple and Cedar to exercise business financial metrics.",
+          "expected": "Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable.",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "personal_income",
+          "name": "Personal income and affordability",
+          "category": "Underwriting",
+          "description": "Creates Alex Example as an individual borrower, with 36 months of two fictional payroll streams, matching bank deposits, expenses, documents and exact proposed repayment terms.",
+          "expected": "All sixteen person-only metrics have supported examples, including a conditional income-stress result.",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "monitoring_metric_coverage",
+          "name": "Monitoring baseline comparisons",
+          "category": "Monitoring",
+          "description": "Creates a reconciled funded-portfolio baseline and a second evaluation of the same observations. Inspect all four baseline comparison metrics and their frozen evidence.",
+          "expected": "Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change.",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
         }
       ]
     },
@@ -39695,7 +40116,7 @@
         "data",
         "catalog_version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -39708,7 +40129,7 @@
         "example",
         "catalog_version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -39727,7 +40148,7 @@
           "id": "srun_example",
           "scenario_id": "healthy",
           "fixture_id": "maple-retail",
-          "catalog_version": "2026-11-19.2",
+          "catalog_version": "2026-11-19.3",
           "status": "queued",
           "created_at": "2026-11-07T12:00:00Z",
           "updated_at": "2026-11-07T12:00:00Z",
@@ -39752,7 +40173,7 @@
         "data",
         "catalog_version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -39767,7 +40188,7 @@
         "data",
         "catalog_version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -40276,6 +40697,9 @@
         "underwriting_only",
         "monitoring_only",
         "healthy",
+        "verification_expired",
+        "verification_review",
+        "verification_failed",
         "outside_policy",
         "manual_review",
         "document_required",
@@ -40304,9 +40728,9 @@
         "webhook_delivery",
         "webhook_duplicate",
         "webhook_out_of_order",
-        "verification_failed",
-        "verification_review",
-        "verification_expired"
+        "full_metric_coverage",
+        "personal_income",
+        "monitoring_metric_coverage"
       ]
     },
     {
@@ -40318,7 +40742,7 @@
         "catalog_version",
         "const"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -40399,6 +40823,191 @@
         "maximum"
       ],
       "value": 31622400
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "EmbeddingSession",
+        "properties",
+        "created_at"
+      ],
+      "value": {
+        "type": "string",
+        "format": "date-time",
+        "description": "UTC time the Hub session was created. Older sessions may omit this field until their next recorded activity."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "EmbeddingSession",
+        "properties",
+        "first_opened_at"
+      ],
+      "value": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date-time",
+        "description": "First UTC time the visible Hub page reported opening. Null or absent means no opening was recorded, including older sessions. This is client-reported activity, not verified human presence or consent. Fetching the launch URL or polling this API does not record an opening."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "EmbeddingSession",
+        "properties",
+        "completed_at"
+      ],
+      "value": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date-time",
+        "description": "UTC time this Hub session completed consent and source connection. Null or absent when not recorded. This does not mean underwriting or source-data processing has completed."
+      }
+    },
+    {
+      "path": [
+        "components",
+        "schemas",
+        "EmbeddingSession",
+        "properties",
+        "cancelled_at"
+      ],
+      "value": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "format": "date-time",
+        "description": "UTC time this Hub session was cancelled. Null or absent when not recorded."
+      }
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions",
+        "post",
+        "responses",
+        "201",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "created_at"
+      ],
+      "value": "2026-11-18T12:00:00Z"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions",
+        "post",
+        "responses",
+        "201",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "first_opened_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions",
+        "post",
+        "responses",
+        "201",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "completed_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions",
+        "post",
+        "responses",
+        "201",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "cancelled_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "created_at"
+      ],
+      "value": "2026-11-18T12:00:00Z"
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "first_opened_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "completed_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "paths",
+        "/v1/embedding-sessions/{id}",
+        "get",
+        "responses",
+        "200",
+        "content",
+        "application/json",
+        "example",
+        "data",
+        "cancelled_at"
+      ],
+      "value": null
     }
   ],
   "fixtures": [
@@ -40623,7 +41232,7 @@
         "SandboxCatalog"
       ],
       "value": {
-        "version": "2026-11-11.1",
+        "version": "2026-11-19.3",
         "businesses": [
           {
             "id": "maple-retail",
@@ -40691,7 +41300,7 @@
             "id": "sample_pack",
             "name": "Complete sample workspace",
             "category": "Getting started",
-            "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+            "description": "Six fictional businesses with 36 complete months of reconciled banking, payment, commerce and accounting activity, plus documents, underwriting, monitoring, exports, payment attempts and ledger entries. Labeled opening-settlement references preserve carried balances.",
             "expected": "Six businesses and associated records are available in the API and console.",
             "owner_only": true,
             "requires_endpoint": false,
@@ -40810,6 +41419,114 @@
             "category": "Underwriting",
             "description": "Complete the borrower-to-risk-package journey with healthy synthetic cash flow.",
             "expected": "completed / within_policy",
+            "owner_only": false,
+            "requires_endpoint": false,
+            "required_scopes": [
+              "sandbox:read",
+              "sandbox:write",
+              "borrowers:read",
+              "borrowers:write",
+              "configuration:read",
+              "configuration:write",
+              "connections:read",
+              "connections:write",
+              "evidence:read",
+              "evidence:write",
+              "insights:read",
+              "insights:write",
+              "results:read"
+            ],
+            "inspection_scopes": [
+              "sandbox:read",
+              "borrowers:read",
+              "configuration:read",
+              "connections:read",
+              "evidence:read",
+              "insights:read",
+              "results:read"
+            ],
+            "required_products": [
+              "insights"
+            ]
+          },
+          {
+            "id": "verification_expired",
+            "name": "Verification expired",
+            "category": "Underwriting",
+            "description": "Complete underwriting with an expired synthetic verification report; old passing checks cannot establish current verification.",
+            "expected": "completed / review_required",
+            "owner_only": false,
+            "requires_endpoint": false,
+            "required_scopes": [
+              "sandbox:read",
+              "sandbox:write",
+              "borrowers:read",
+              "borrowers:write",
+              "configuration:read",
+              "configuration:write",
+              "connections:read",
+              "connections:write",
+              "evidence:read",
+              "evidence:write",
+              "insights:read",
+              "insights:write",
+              "results:read"
+            ],
+            "inspection_scopes": [
+              "sandbox:read",
+              "borrowers:read",
+              "configuration:read",
+              "connections:read",
+              "evidence:read",
+              "insights:read",
+              "results:read"
+            ],
+            "required_products": [
+              "insights"
+            ]
+          },
+          {
+            "id": "verification_review",
+            "name": "Verification requires review",
+            "category": "Underwriting",
+            "description": "Complete underwriting with a synthetic screening candidate requiring human review; no confirmed match is inferred.",
+            "expected": "completed / review_required",
+            "owner_only": false,
+            "requires_endpoint": false,
+            "required_scopes": [
+              "sandbox:read",
+              "sandbox:write",
+              "borrowers:read",
+              "borrowers:write",
+              "configuration:read",
+              "configuration:write",
+              "connections:read",
+              "connections:write",
+              "evidence:read",
+              "evidence:write",
+              "insights:read",
+              "insights:write",
+              "results:read"
+            ],
+            "inspection_scopes": [
+              "sandbox:read",
+              "borrowers:read",
+              "configuration:read",
+              "connections:read",
+              "evidence:read",
+              "insights:read",
+              "results:read"
+            ],
+            "required_products": [
+              "insights"
+            ]
+          },
+          {
+            "id": "verification_failed",
+            "name": "Verification failed",
+            "category": "Underwriting",
+            "description": "Complete underwriting with failed synthetic KYB and identity checks; inspect failed verification and a review-required assessment.",
+            "expected": "completed / review_required",
             "owner_only": false,
             "requires_endpoint": false,
             "required_scopes": [
@@ -41686,6 +42403,114 @@
             "required_products": [
               "insights"
             ]
+          },
+          {
+            "id": "full_metric_coverage",
+            "name": "Comprehensive business metrics",
+            "category": "Underwriting",
+            "description": "Adds explicit credit-sales, receivables, cohort, reconciliation, fictional credit-report and review evidence. Run with Maple and Cedar to exercise business financial metrics.",
+            "expected": "Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable.",
+            "owner_only": false,
+            "requires_endpoint": false,
+            "required_scopes": [
+              "sandbox:read",
+              "sandbox:write",
+              "borrowers:read",
+              "borrowers:write",
+              "configuration:read",
+              "configuration:write",
+              "connections:read",
+              "connections:write",
+              "evidence:read",
+              "evidence:write",
+              "insights:read",
+              "insights:write",
+              "results:read"
+            ],
+            "inspection_scopes": [
+              "sandbox:read",
+              "borrowers:read",
+              "configuration:read",
+              "connections:read",
+              "evidence:read",
+              "insights:read",
+              "results:read"
+            ],
+            "required_products": [
+              "insights"
+            ]
+          },
+          {
+            "id": "personal_income",
+            "name": "Personal income and affordability",
+            "category": "Underwriting",
+            "description": "Creates Alex Example as an individual borrower, with 36 months of two fictional payroll streams, matching bank deposits, expenses, documents and exact proposed repayment terms.",
+            "expected": "All sixteen person-only metrics have supported examples, including a conditional income-stress result.",
+            "owner_only": false,
+            "requires_endpoint": false,
+            "required_scopes": [
+              "sandbox:read",
+              "sandbox:write",
+              "borrowers:read",
+              "borrowers:write",
+              "configuration:read",
+              "configuration:write",
+              "connections:read",
+              "connections:write",
+              "evidence:read",
+              "evidence:write",
+              "insights:read",
+              "insights:write",
+              "results:read"
+            ],
+            "inspection_scopes": [
+              "sandbox:read",
+              "borrowers:read",
+              "configuration:read",
+              "connections:read",
+              "evidence:read",
+              "insights:read",
+              "results:read"
+            ],
+            "required_products": [
+              "insights"
+            ]
+          },
+          {
+            "id": "monitoring_metric_coverage",
+            "name": "Monitoring baseline comparisons",
+            "category": "Monitoring",
+            "description": "Creates a reconciled funded-portfolio baseline and a second evaluation of the same observations. Inspect all four baseline comparison metrics and their frozen evidence.",
+            "expected": "Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change.",
+            "owner_only": false,
+            "requires_endpoint": false,
+            "required_scopes": [
+              "sandbox:read",
+              "sandbox:write",
+              "borrowers:read",
+              "borrowers:write",
+              "configuration:read",
+              "configuration:write",
+              "connections:read",
+              "connections:write",
+              "evidence:read",
+              "evidence:write",
+              "signal:read",
+              "signal:write",
+              "results:read"
+            ],
+            "inspection_scopes": [
+              "sandbox:read",
+              "borrowers:read",
+              "configuration:read",
+              "connections:read",
+              "evidence:read",
+              "signal:read",
+              "results:read"
+            ],
+            "required_products": [
+              "signal"
+            ]
           }
         ]
       }
@@ -41860,14 +42685,14 @@
         "CreateSandboxRunRequest",
         "catalog_version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
         "SandboxCatalog",
         "version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
     },
     {
       "path": [
@@ -41879,7 +42704,7 @@
           "id": "sample_pack",
           "name": "Complete sample workspace",
           "category": "Getting started",
-          "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+          "description": "Six fictional businesses with 36 complete months of reconciled banking, payment, commerce and accounting activity, plus documents, underwriting, monitoring, exports, payment attempts and ledger entries. Labeled opening-settlement references preserve carried balances.",
           "expected": "Six businesses and associated records are available in the API and console.",
           "owner_only": true,
           "requires_endpoint": false,
@@ -42982,6 +43807,114 @@
           "required_products": [
             "insights"
           ]
+        },
+        {
+          "id": "full_metric_coverage",
+          "name": "Comprehensive business metrics",
+          "category": "Underwriting",
+          "description": "Adds explicit credit-sales, receivables, cohort, reconciliation, fictional credit-report and review evidence. Run with Maple and Cedar to exercise business financial metrics.",
+          "expected": "Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable.",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "personal_income",
+          "name": "Personal income and affordability",
+          "category": "Underwriting",
+          "description": "Creates Alex Example as an individual borrower, with 36 months of two fictional payroll streams, matching bank deposits, expenses, documents and exact proposed repayment terms.",
+          "expected": "All sixteen person-only metrics have supported examples, including a conditional income-stress result.",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "insights:read",
+            "insights:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "insights:read",
+            "results:read"
+          ],
+          "required_products": [
+            "insights"
+          ]
+        },
+        {
+          "id": "monitoring_metric_coverage",
+          "name": "Monitoring baseline comparisons",
+          "category": "Monitoring",
+          "description": "Creates a reconciled funded-portfolio baseline and a second evaluation of the same observations. Inspect all four baseline comparison metrics and their frozen evidence.",
+          "expected": "Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change.",
+          "owner_only": false,
+          "requires_endpoint": false,
+          "required_scopes": [
+            "sandbox:read",
+            "sandbox:write",
+            "borrowers:read",
+            "borrowers:write",
+            "configuration:read",
+            "configuration:write",
+            "connections:read",
+            "connections:write",
+            "evidence:read",
+            "evidence:write",
+            "signal:read",
+            "signal:write",
+            "results:read"
+          ],
+          "inspection_scopes": [
+            "sandbox:read",
+            "borrowers:read",
+            "configuration:read",
+            "connections:read",
+            "evidence:read",
+            "signal:read",
+            "results:read"
+          ],
+          "required_products": [
+            "signal"
+          ]
         }
       ]
     },
@@ -42990,7 +43923,35 @@
         "SandboxRun",
         "catalog_version"
       ],
-      "value": "2026-11-19.2"
+      "value": "2026-11-19.3"
+    },
+    {
+      "path": [
+        "EmbeddingSession",
+        "created_at"
+      ],
+      "value": "2026-11-18T12:00:00Z"
+    },
+    {
+      "path": [
+        "EmbeddingSession",
+        "first_opened_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "EmbeddingSession",
+        "completed_at"
+      ],
+      "value": null
+    },
+    {
+      "path": [
+        "EmbeddingSession",
+        "cancelled_at"
+      ],
+      "value": null
     }
   ],
   "operations": [
