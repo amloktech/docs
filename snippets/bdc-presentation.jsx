@@ -360,6 +360,8 @@ export const BdcPresentation = () => {
               ["link", "Resolve entities and map relationships"],
               ["layers", "Normalize and reconcile activity across sources"],
               ["search", "Identify duplicates, inconsistencies and missing evidence"],
+              ["flow", "Assess revenue quality, liquidity and existing obligations"],
+              ["shield", "Evaluate repayment capacity and resilience under stress"],
               ["document", "Link findings to source records and lender policy"]
             ].map(([icon, title]) => <span key={title}><BdcIcon name={icon} size={17} />{title}</span>)}</div>
           </div>
