@@ -12,6 +12,7 @@ Use `GET /v1/risk-packages/{id}` with the representation that fits your task. Th
 | No `view`, or `view=full` | Complete `RiskPackage` under `data`, subject to the JSON byte limit |
 | `view=summary` | `RiskPackageSummary`: IDs, completeness, evidence-set ID, section names/counts and export source |
 | `view=section&section=verification.screenings&limit=100` | Typed section items, complete section metadata and ordinary `page` metadata |
+| `view=section&section=metrics&limit=1` | One metric with its parent dimension key/status and ordinary `page` metadata |
 
 `section`, `cursor` and `limit` are valid only with `view=section`; section is required in that view. Unsupported names or parameter combinations return `400 validation_error`. Use the section names returned in the summary. The OpenAPI declares the exact item schema for every section, including financial analyses, policy results, sources and KYC/KYB observations.
 
@@ -24,6 +25,14 @@ curl --fail-with-body --max-time 30 \
 Persist `page.next_cursor` only after committing that page. Keep the package and section unchanged. `page.has_more` determines completion; a short page does not. Cursors expire at `page.expires_at`, bind authorization and freeze array order at package publication. After `410`, restart that section and deduplicate by package/section and original item identity or array position. No item is added, replaced or omitted because a newer assessment exists.
 
 For structured sections, `section_metadata` contains the original status, coverage and limitations with only `items` separated for pagination. For plain arrays it is null. `total_items` is the complete section count. An empty array is not a successful verification: read its status and coverage. A summary does not contain a lending recommendation or substitute for reviewing required actions and limitations. Full-only objects such as submitted application/product/policy definitions remain in the complete package or export.
+
+## Read individual metrics
+
+Start with `view=summary`, then request `view=section&section=metrics&limit=1` for evidence-rich underwriting results. A metric page contains `RiskMetricEntry` items with `dimension_key`, `dimension_status` and the complete `metric` object. The parent status describes the entire dimension; `metric.status` describes that metric. Values, inputs, evidence references, assumptions and missing reasons are unchanged.
+
+This is a flat view of `dimensions[].metrics`, in original dimension order followed by metric order. It adds no stored field to the complete package or its export. The summary's `metrics` count includes available, unavailable and not-applicable metrics. Follow `page.next_cursor` with the same package and section until `page.has_more` is false.
+
+`section=dimensions` remains available for grouped results. A dimension can exceed the byte limit even at `limit=1` because one dimension contains many metrics and their evidence. Use `section=metrics` to page those metrics individually. If a single metric still exceeds the byte limit, follow the ordinary `413` export recovery; no inputs or evidence are silently removed.
 
 ## Byte limits and exact oversized records
 

@@ -248,6 +248,8 @@ def build():
     risk_data_expansion(spec,f)
     from financial_intelligence import finalize as financial_finalize
     financial_finalize(spec,f)
+    from metric_section import extend as metric_section
+    metric_section(spec,f)
     annotate_fields(spec)
     # Apply shared transport metadata after all generators have added their responses.
     for methods in spec['paths'].values():

@@ -30,13 +30,17 @@ The backend audit inspected 9 assessment cases and checked every metric's type/s
 | Executable example checks | Passed; 68 JavaScript examples, 90 shell examples and 36 guide blocks. |
 | Sandbox/integration client tests | Passed; 12 tests including retries, resumable commands, origin boundaries and pagination. |
 | Readiness contract | Passed; 196 schema/client checks, 21 event types and 110 offline client calls. |
-| Enterprise transport contract | Passed; 189 checks and 51 paged risk-package sections. |
+| Enterprise transport contract | Passed; 199 checks and 52 paged risk-package sections. |
 
 The Mintlify renderer was not available in the local tool installation, so no visual Mintlify build is claimed. This review covers local generation, links, schemas and executable examples. Hosted staging acceptance and release deployment are tracked separately by the application release; this document makes no production-publication claim. Offline contract checks do not demonstrate live integrations, predictive accuracy or production load capacity.
 
 ## Canonical-generation compatibility correction
 
-Local integration subsequently caught a pre-existing mismatch between the documentation generator and the checked-in runtime contract: generation omitted the optional Hub session `created_at`, `first_opened_at`, `completed_at` and `cancelled_at` fields. Internal docs/Data Lookup parity alone did not detect this because both had been regenerated from the same incomplete source. The canonical lifecycle patch now preserves all four existing definitions and both create/get response examples. Both Hub operations and the `EmbeddingSession` schema match the prior runtime HEAD exactly; the only changed schema is the intended `CreateSandboxRunRequest` scenario enum. A second canonical generation retained the repaired contract digest, and all five runtime contract/semantic tests passed. Documentation readiness checks now explicitly require the timestamp properties/examples, reject invalid timestamps and permit omission on older sessions.
+Local integration subsequently caught a pre-existing mismatch between the documentation generator and the checked-in runtime contract: generation omitted the optional Hub session `created_at`, `first_opened_at`, `completed_at` and `cancelled_at` fields. Internal docs/Data Lookup parity alone did not detect this because both had been regenerated from the same incomplete source. The canonical lifecycle patch now preserves all four existing definitions and both create/get response examples. Both Hub operations and the `EmbeddingSession` schema match the prior runtime HEAD exactly; the remaining schema changes are the intended scenario enum and the derived paged-metric view described below. A second canonical generation retained the repaired contract digest, and all five runtime contract/semantic tests passed. Documentation readiness checks now explicitly require the timestamp properties/examples, reject invalid timestamps and permit omission on older sessions.
+
+## Bounded metric retrieval
+
+Integration testing also demonstrated that one complete dimension could exceed the response byte limit even with a page size of one, because its metrics contain complete evidence references. The additive `section=metrics` representation returns `RiskMetricEntry` objects with the parent dimension key/status and one unchanged metric. It flattens the existing immutable dimensions rather than adding a field to stored packages or exports. The summary indexes 184 metric entries and the contract exposes 52 total sections. Clients start at `limit=1` and follow cursors; individually oversized metrics still use explicit export recovery. New contract checks reject incorrect parent dimension keys, missing wrapper fields and invalid statuses. This preserves evidence instead of truncating it to meet the byte limit.
 
 ## Reproduction
 
