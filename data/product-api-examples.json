@@ -7455,7 +7455,11 @@
     ],
     "embed_origin": "https://institution.example.com",
     "return_url": "https://institution.example.com/connected",
-    "failure": null
+    "failure": null,
+    "created_at": "2026-11-18T12:00:00Z",
+    "first_opened_at": null,
+    "completed_at": null,
+    "cancelled_at": null
   },
   "Connection": {
     "id": "con_synthetic",
@@ -13353,7 +13357,7 @@
   "CreateSandboxRunRequest": {
     "scenario_id": "healthy",
     "fixture_id": "maple-retail",
-    "catalog_version": "2026-11-19.2"
+    "catalog_version": "2026-11-19.4"
   },
   "RepeatSandboxRunRequest": {},
   "SimulateSandboxActionRequest": {
@@ -13367,7 +13371,7 @@
     "status": "cancelled"
   },
   "SandboxCatalog": {
-    "version": "2026-11-19.2",
+    "version": "2026-11-19.4",
     "businesses": [
       {
         "id": "maple-retail",
@@ -13435,7 +13439,7 @@
         "id": "sample_pack",
         "name": "Complete sample workspace",
         "category": "Getting started",
-        "description": "Six fictional businesses, linked integrations, documents, underwriting, monitoring, exports, payment attempts and ledger entries.",
+        "description": "Six fictional businesses with 36 complete months of reconciled banking, payment, commerce and accounting activity, plus documents, underwriting, monitoring, exports, payment attempts and ledger entries. Labeled opening-settlement references preserve carried balances.",
         "expected": "Six businesses and associated records are available in the API and console.",
         "owner_only": true,
         "requires_endpoint": false,
@@ -14538,6 +14542,150 @@
         "required_products": [
           "insights"
         ]
+      },
+      {
+        "id": "full_metric_coverage",
+        "name": "Comprehensive business metrics",
+        "category": "Underwriting",
+        "description": "Adds explicit credit-sales, receivables, cohort, reconciliation, fictional credit-report and review evidence. Run with Maple and Cedar to exercise business financial metrics.",
+        "expected": "Completed risk package with supported business metrics; consumer and baseline-only metrics remain inapplicable.",
+        "owner_only": false,
+        "requires_endpoint": false,
+        "required_scopes": [
+          "sandbox:read",
+          "sandbox:write",
+          "borrowers:read",
+          "borrowers:write",
+          "configuration:read",
+          "configuration:write",
+          "connections:read",
+          "connections:write",
+          "evidence:read",
+          "evidence:write",
+          "insights:read",
+          "insights:write",
+          "results:read"
+        ],
+        "inspection_scopes": [
+          "sandbox:read",
+          "borrowers:read",
+          "configuration:read",
+          "connections:read",
+          "evidence:read",
+          "insights:read",
+          "results:read"
+        ],
+        "required_products": [
+          "insights"
+        ]
+      },
+      {
+        "id": "personal_income",
+        "name": "Personal income and affordability",
+        "category": "Underwriting",
+        "description": "Creates Alex Example as an individual borrower, with 36 months of two fictional payroll streams, matching bank deposits, expenses, documents and exact proposed repayment terms.",
+        "expected": "All sixteen person-only metrics have supported examples, including a conditional income-stress result.",
+        "owner_only": false,
+        "requires_endpoint": false,
+        "required_scopes": [
+          "sandbox:read",
+          "sandbox:write",
+          "borrowers:read",
+          "borrowers:write",
+          "configuration:read",
+          "configuration:write",
+          "connections:read",
+          "connections:write",
+          "evidence:read",
+          "evidence:write",
+          "insights:read",
+          "insights:write",
+          "results:read"
+        ],
+        "inspection_scopes": [
+          "sandbox:read",
+          "borrowers:read",
+          "configuration:read",
+          "connections:read",
+          "evidence:read",
+          "insights:read",
+          "results:read"
+        ],
+        "required_products": [
+          "insights"
+        ]
+      },
+      {
+        "id": "monitoring_metric_coverage",
+        "name": "Monitoring baseline comparisons",
+        "category": "Monitoring",
+        "description": "Creates a reconciled funded-portfolio baseline and a second evaluation of the same observations. Inspect all four baseline comparison metrics and their frozen evidence.",
+        "expected": "Four comparable baseline metrics are available. Unchanged frozen observations legitimately produce zero change.",
+        "owner_only": false,
+        "requires_endpoint": false,
+        "required_scopes": [
+          "sandbox:read",
+          "sandbox:write",
+          "borrowers:read",
+          "borrowers:write",
+          "configuration:read",
+          "configuration:write",
+          "connections:read",
+          "connections:write",
+          "evidence:read",
+          "evidence:write",
+          "signal:read",
+          "signal:write",
+          "results:read"
+        ],
+        "inspection_scopes": [
+          "sandbox:read",
+          "borrowers:read",
+          "configuration:read",
+          "connections:read",
+          "evidence:read",
+          "signal:read",
+          "results:read"
+        ],
+        "required_products": [
+          "signal"
+        ]
+      },
+      {
+        "id": "detailed_attribute_coverage",
+        "name": "Detailed financial attributes",
+        "category": "Underwriting",
+        "description": "Use any of the six business profiles with 35 complete months plus the current partial month. Inspect bank, issuer-card and cross-system attributes with explicit category detail, source records and coverage.",
+        "expected": "Completed risk package with supported detailed attribute examples; missing sources, sparse samples and inapplicable contexts remain explicit.",
+        "owner_only": false,
+        "requires_endpoint": false,
+        "required_scopes": [
+          "sandbox:read",
+          "sandbox:write",
+          "borrowers:read",
+          "borrowers:write",
+          "configuration:read",
+          "configuration:write",
+          "connections:read",
+          "connections:write",
+          "evidence:read",
+          "evidence:write",
+          "insights:read",
+          "insights:write",
+          "results:read"
+        ],
+        "inspection_scopes": [
+          "sandbox:read",
+          "borrowers:read",
+          "configuration:read",
+          "connections:read",
+          "evidence:read",
+          "insights:read",
+          "results:read"
+        ],
+        "required_products": [
+          "insights"
+        ]
       }
     ]
   },
@@ -14550,7 +14698,7 @@
     "id": "srun_example",
     "scenario_id": "healthy",
     "fixture_id": "maple-retail",
-    "catalog_version": "2026-11-19.2",
+    "catalog_version": "2026-11-19.4",
     "status": "queued",
     "created_at": "2026-11-07T12:00:00Z",
     "updated_at": "2026-11-07T12:00:00Z",

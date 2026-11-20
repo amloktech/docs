@@ -83,3 +83,11 @@ A current subscription snapshot does not establish historical churn. Current inv
 The bank/card download uses `financial-attribute-references-v1` encoding to avoid repeating definitions. Resolve `selector` in `selectors`, `period` in `periods`, `statistic` in `statistics` and `context` in `contexts`. Statistics supply formula, unit and value type; selectors supply required inputs; contexts explain accounting interpretation. `calculation_version` applies to every entry. This preserves all definitions while reducing download size.
 
 In Console, open **Dev Tools → Data Lookup → Financial intelligence**. Search by key, category, period or source, then inspect the formula, required inputs and interpretation. This reference explains calculations; use Sandbox scenarios to execute them with fictional records.
+
+{/* BEGIN DETAILED ATTRIBUTE SCENARIO */}
+## Test with coherent Sandbox records
+
+Run `detailed_attribute_coverage` with any of the six fictional business profiles. Its history covers 35 complete months and the current partial month, totaling 36 calendar periods. The scenario supplies detailed category and cross-system records while preserving the distinction between bank cash, issuer-card activity and merchant settlements.
+
+See the [detailed attribute scenario](/sandbox/sample-package#explore-detailed-financial-attributes) for requests, result traversal and interpretation. An available zero requires supported absence; missing coverage, restricted records, insufficient category specificity and sparse statistical samples remain unavailable. A business does not need every category in the registry to be populated.
+{/* END DETAILED ATTRIBUTE SCENARIO */}

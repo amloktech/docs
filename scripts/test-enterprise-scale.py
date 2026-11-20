@@ -28,6 +28,26 @@ for methods in spec['paths'].values():
      validate(view['schema'],view['example']);validate(media['schema'],view['example'])
      if view['example'].get('data',{}).get('view')=='section':
       bad=deepcopy(view['example']);bad['data']['section']='unknown';validate(view['schema'],bad,False)
+# Large dimensions must be retrievable metric by metric without changing the
+# stored package, dropping evidence, or losing parent-dimension meaning.
+metric_view=spec['paths']['/v1/risk-packages/{id}']['get']['responses']['200']['content']['application/json']['x-response-views']['metrics']
+metric_entry=metric_view['example']['data']['items'][0]
+named('RiskMetricEntry',metric_entry)
+assert metric_entry['metric'] == json.loads((ROOT/'data/product-api-examples.json').read_text())['RiskPackage']['dimensions'][0]['metrics'][0]
+assert set(schemas['RiskMetricEntry']['properties']) == {'dimension_key','dimension_status','metric'}
+assert 'metrics' not in schemas['RiskPackage']['properties'], 'Flat view must not become a stored package field'
+assert spec['x-risk-package-sections']['metrics']['items'] == {'$ref':'#/components/schemas/RiskMetricEntry'}
+assert schemas['RiskSectionMetrics']['properties']['section_metadata'] == {'type':'null'}
+assert set(schemas['RiskMetricEntry']['properties']['dimension_key']['enum']) == set(schemas['Dimension']['properties']['key']['enum'])
+assert set(schemas['RiskMetricEntry']['properties']['dimension_status']['enum']) == set(schemas['Dimension']['properties']['status']['enum'])
+for missing in ['dimension_key','dimension_status','metric']:
+ bad=deepcopy(metric_entry);del bad[missing];named('RiskMetricEntry',bad,False)
+bad=deepcopy(metric_entry);bad['dimension_key']='unknown';named('RiskMetricEntry',bad,False)
+bad=deepcopy(metric_entry);bad['dimension_key']='liquidity';named('RiskMetricEntry',bad,False)
+bad=deepcopy(metric_entry);bad['dimension_status']='unknown';named('RiskMetricEntry',bad,False)
+summary=spec['paths']['/v1/risk-packages/{id}']['get']['responses']['200']['content']['application/json']['x-response-views']['summary']['example']['data']
+assert next(row['item_count'] for row in summary['sections'] if row['section']=='metrics') == metric_view['example']['data']['total_items'] == 184
+assert metric_view['example']['page']['has_more'] is True and metric_view['example']['page']['next_cursor']
 profile=json.loads((ROOT/'downloads/development-profile.json').read_text())
 named('OperationalProfile',profile)
 bad=deepcopy(profile);bad['capacity']['max_in_flight_requests']=0;named('OperationalProfile',bad,False)

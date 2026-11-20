@@ -20,6 +20,27 @@ def reject(name,value):
 
 # Field descriptions must retain their distinct financial and resource meanings.
 assert 'Published Hub' in s['EmbeddingSession']['properties']['embedding_version_id']['description']
+# Existing Hub activity timestamps must survive canonical regeneration. They are
+# optional for older sessions; client-reported opening is not verified consent.
+hub_times = ['created_at', 'first_opened_at', 'completed_at', 'cancelled_at']
+for field in hub_times:
+ assert field in s['EmbeddingSession']['properties'], ('Lost Hub timestamp', field)
+ assert field not in s['EmbeddingSession']['required'], ('Older sessions may omit', field)
+ assert s['EmbeddingSession']['properties'][field]['format'] == 'date-time'
+ assert field in f['EmbeddingSession'], ('Missing fixture timestamp', field)
+ reject('EmbeddingSession', {**f['EmbeddingSession'], field: 'not-a-timestamp'})
+assert s['EmbeddingSession']['properties']['created_at']['type'] == 'string'
+for field in hub_times[1:]:
+ assert set(s['EmbeddingSession']['properties'][field]['type']) == {'string', 'null'}
+assert 'client-reported' in s['EmbeddingSession']['properties']['first_opened_at']['description']
+accept('EmbeddingSession', f['EmbeddingSession'])
+accept('EmbeddingSession', {key:value for key,value in f['EmbeddingSession'].items() if key not in hub_times})
+for path,method in [('/v1/embedding-sessions','post'),('/v1/embedding-sessions/{id}','get')]:
+ for status,response in spec['paths'][path][method]['responses'].items():
+  if status.startswith('2'):
+   session=response['content']['application/json']['example']['data']
+   assert all(field in session for field in hub_times), ('Lost response timestamps',path)
+   accept('EmbeddingSession',session)
 assert 'Requested payment amount' in s['BillingPayment']['properties']['amount']['description']
 assert 'Total credits actually posted' in s['BillingPayment']['properties']['credited_amount']['description']
 assert 'unit rate' in s['BillingUsage']['properties']['unit_rate']['description']

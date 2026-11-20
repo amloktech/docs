@@ -50,6 +50,32 @@ AMLOK_SANDBOX_SCENARIO=healthy node run-sandbox-scenario.mjs healthy-run.json
 
 Set `AMLOK_SANDBOX_FIXTURE` to another fixture ID if needed. The client obtains the catalog version, saves the intended command and idempotency key to a private state file, submits it and polls its result. If the connection drops or polling times out, rerun with the **same file and key** to resume the original run. A new filename starts a new run; changing environment variables does not replace a command already saved in a state file. Keep the file private; it contains request and resource IDs but no API key. For webhook scenarios, set `AMLOK_SANDBOX_ENDPOINT_ID` to your enabled Sandbox endpoint before the first run; this explicitly enables delivery.
 
+
+## Exercise every underwriting metric
+
+Use the following scenarios in **Dev Tools > Sandbox scenarios**, or submit their IDs to `POST /v1/sandbox/runs`. Each run adds separate fictional records; it does not replace your existing businesses or historical assessments.
+
+| Scenario | Fixture | What it demonstrates |
+| --- | --- | --- |
+| `full_metric_coverage` | `maple-retail` | Business underwriting with explicit receivables, repayment and fixed-charge inputs, supplier history, reconciliation, simulated credit-report and fraud/consistency observations. |
+| `full_metric_coverage` | `cedar-software` | Subscription cohort and retention examples. Select this scenario explicitly; Cedar's starter `manual_review` case intentionally lacks a repayment schedule. |
+| `personal_income` | `maple-retail` | Alex Example, an individual borrower, with two fictional payroll streams, matching deposits, rent, essential expenses, obligations and proposed financing. The selected fixture supplies the market/currency; this scenario creates a person rather than the business. |
+| `monitoring_metric_coverage` | `maple-retail` | A funded portfolio with an explicitly reconciled debt inventory, a first monitoring baseline and a comparable second evaluation. |
+
+Together these cases demonstrate all **184 scalar underwriting metrics across 24 dimensions**. A single borrower does not have 184 applicable values: consumer affordability belongs to individuals, subscription retention requires a recurring cohort, inventory ratios require inventory, and baseline comparisons require a prior monitoring assessment. A zero denominator remains unavailable instead of becoming a fabricated zero.
+
+This coverage count refers to the scalar metrics in `dimensions[].metrics`, which can be used by risk-policy rules. The separate [financial attribute registry](/data-model/financial-attributes) contains **12,955 definitions** across contexts, categories, periods and statistics. It is not a promise that every attribute is applicable or available for every borrower.
+
+Download the [metric coverage manifest](/downloads/sandbox-metric-coverage.json) to find each metric's scenario, fixture, example value, unit, observation window and supporting-evidence count. It contains fictional examples evaluated at the stated `fixture_observation_at`, not customer records. A later run uses its own frozen observation dates; do not assert exact future values from this snapshot. The manifest includes all six comprehensive business fixtures, the individual case and both monitoring evaluations; the four runs in the table above are sufficient to demonstrate every metric.
+
+The monitoring comparison uses the same frozen observations twice, so zero change is the correct initial example. Inspect the previous-package reference, supporting evidence and calculation basis. The deterioration and recovery scenarios separately demonstrate changes in source activity and alert behavior. Pre-funding and post-funding DSCR are not silently treated as comparable.
+
+The comprehensive business case contains additional fictional source reports, not live credit-bureau results. Provider/model scores and benchmark percentiles are not invented to fill optional sections. Every available metric includes its time window, numeric inputs and evidence references. Missing-source and manual-review scenarios remain available to test null values and explicit missing reasons.
+
+Discover the current `catalog_version` from `GET /v1/sandbox/catalog`; pass it with `scenario_id` and `fixture_id` when creating a run. Poll the returned run ID until completion. Retrieve the resulting package with `GET /v1/risk-packages/{id}?view=summary`, then use `view=section&section=metrics&limit=1` to page individual metrics and `section=financial_attributes` for the detailed attributes. Each metric item contains `dimension_key`, `dimension_status` and the unchanged `metric` object. Follow `page.next_cursor` until `page.has_more` is false. `section=dimensions` remains available for smaller grouped results; an evidence-rich dimension can exceed the response byte limit even with `limit=1`. Use the individual-metric view in that case, or the returned export recovery when one metric is itself too large.
+
+The full example history remains 36 complete months; current underwriting metrics use their stated observation periods, usually the latest twelve months. Individual payroll evidence keeps gross income separate from net bank deposits. Its stressed residual income is conditional on the disclosed 20% income reduction, not a default probability.
+
 ## Permissions and isolation
 
 - Catalog, setup and history reads require `sandbox:read`; commands require `sandbox:write`.
@@ -96,7 +122,7 @@ The `autopay` scenario evaluates your saved enabled flag, threshold, recharge am
 
 ## Repeat and build your own tests
 
-Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an empty object and a new idempotency key. This creates a new run without deleting prior history, changing prior results, or resetting shared credits. Reuse the same idempotency key only when retrying the same intended command.
+Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an empty object and a new idempotency key. This creates a new run with the original catalog version, scenario, business and delivery settings, without deleting prior history, changing prior results, or resetting shared credits. New resource IDs and observation dates belong to the new run; this is not a byte-for-byte replay of a saved response. Permissions and destination eligibility are checked again. If the scenario or business is no longer available, choose one from the current catalog. To use newly added fixture behavior, submit a new `POST /v1/sandbox/runs` command with the current catalog version. Reuse the same idempotency key only when retrying the same intended command.
 
 Run history lists the newest 25 runs by default, up to 100 with `limit`. Retrieve a known run directly to inspect older history. The list omits detailed steps and resources. Retain returned IDs in your test system.
 

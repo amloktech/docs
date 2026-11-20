@@ -150,5 +150,6 @@ assert valid('ParticipantInput',{**party,'roles':['unrecognized_role']})
 assert valid('ParticipantInput',{**party,'authority':{**party['authority'],'purposes':[]}})
 assert valid('ParticipantInput',{**party,'connection_ids':['con_'+str(i) for i in range(101)]})
 assert 'participants' in spec['x-risk-package-sections']
-assert len(schemas['RiskPackageSummary']['properties']['sections']['items']['properties']['section']['enum'])==51
+assert set(schemas['RiskPackageSummary']['properties']['sections']['items']['properties']['section']['enum'])==set(spec['x-risk-package-sections'])
+assert 'metrics' in spec['x-risk-package-sections']
 print(json.dumps({'borrower_lifecycle_and_participants':'passed'}))
