@@ -122,7 +122,7 @@ The `autopay` scenario evaluates your saved enabled flag, threshold, recharge am
 
 ## Repeat and build your own tests
 
-Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an empty object and a new idempotency key. This creates a new run without deleting prior history, changing prior results, or resetting shared credits. Reuse the same idempotency key only when retrying the same intended command.
+Use **Repeat with fresh records** or `POST /v1/sandbox/runs/{id}/repeat` with an empty object and a new idempotency key. This creates a new run with the original catalog version, scenario, business and delivery settings, without deleting prior history, changing prior results, or resetting shared credits. New resource IDs and observation dates belong to the new run; this is not a byte-for-byte replay of a saved response. Permissions and destination eligibility are checked again. If the scenario or business is no longer available, choose one from the current catalog. To use newly added fixture behavior, submit a new `POST /v1/sandbox/runs` command with the current catalog version. Reuse the same idempotency key only when retrying the same intended command.
 
 Run history lists the newest 25 runs by default, up to 100 with `limit`. Retrieve a known run directly to inspect older history. The list omits detailed steps and resources. Retain returned IDs in your test system.
 

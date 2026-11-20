@@ -89,7 +89,7 @@ Monitoring scenarios let you create a deterioration event, restore the fixture a
 
 ## Repeat without losing your history
 
-**Repeat with fresh records** creates a new run and new linked records. It preserves previous results, logs and immutable ledger entries. Keep run IDs in your tests, and use new idempotency keys for new executions. Reuse a key only to retry the same intended command.
+**Repeat with fresh records** creates a new run and new linked records using the original catalog version, business and settings. It preserves previous results, logs and immutable ledger entries. New resource IDs and observation dates belong to the repeat; it is not a replay of the saved response. Use a new scenario command with the current catalog version to try newly added fixture behavior. Keep run IDs in your tests, and use new idempotency keys for new executions. Reuse a key only to retry the same intended command.
 
 For request bodies, permissions and automated execution, use the [API scenario guide](/api-reference/sandbox-journeys), [runnable client](https://raw.githubusercontent.com/amloktech/docs/main/downloads/run-sandbox-scenario.mjs) and **Data Lookup** in the console.
 
@@ -110,3 +110,11 @@ Compare operating receipts with debt proceeds and owner contributions. Inspect c
 Use **Dev Tools → Data Lookup** to inspect the request, response and field definitions. Discover scalar policy keys through `GET /v1/configuration`; use the returned calculation version when creating a risk-policy version. A required unavailable metric produces review instead of passing silently.
 
 Existing saved results keep their original catalog. New runs use the current definitions, while missing source coverage remains explicit. Loading or resetting sample data is an explicit workspace action; a catalog update does not erase your existing Sandbox records. See [risk-package methodology](/api-reference/risk-package-methodology) for formulas and observation requirements. All sample businesses, funds and conclusions are synthetic.
+
+{/* BEGIN DETAILED ATTRIBUTE SCENARIO */}
+## Detailed financial attribute examples
+
+Choose **Detailed financial attributes** (`detailed_attribute_coverage`) with any existing business profile. Each run contains 35 complete months plus the current partial month, within a total of 36 calendar periods. It exercises detailed bank, issuer-card and cross-system observations without changing your existing samples. The ordinary starter and scalar-metric cases retain their complete-month history.
+
+Read the [detailed scenario guide](/sandbox/sample-package#explore-detailed-financial-attributes) for execution, source evidence and the distinction between nonzero values, supported zeros and unavailable attributes. A catalog definition is not a guarantee of applicable activity for every business.
+{/* END DETAILED ATTRIBUTE SCENARIO */}

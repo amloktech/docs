@@ -317,6 +317,8 @@ def build():
     financial_guides()
     from financial_intelligence import write_export_note
     write_export_note()
+    from sandbox_attribute_guides import write_guides as sandbox_attribute_guides
+    sandbox_attribute_guides()
 
     from request_recovery import write_guides as request_recovery_guides
     request_recovery_guides(spec,index)

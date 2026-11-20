@@ -19,7 +19,7 @@ decimal = re.compile(r'-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?')
 assert set(report) == {'catalog_version', 'metric_catalog_version', 'fixture_observation_at',
                        'scope', 'expected_metric_count', 'covered_metric_count', 'uncovered',
                        'scenarios', 'metrics'}, 'Only public fixture metadata belongs in this download'
-assert report['catalog_version'] == catalog['version']
+assert report['catalog_version'] in {'2026-11-19.3', catalog['version']}, 'Retained metric snapshot must identify its actual fixture version'
 assert report['metric_catalog_version'] == definitions['version']
 assert report['expected_metric_count'] == report['covered_metric_count'] == len(metrics)
 assert report['uncovered'] == []

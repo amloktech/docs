@@ -61358,7 +61358,7 @@
                 },
                 "example": {
                   "data": {
-                    "version": "2026-11-19.3",
+                    "version": "2026-11-19.4",
                     "businesses": [
                       {
                         "id": "maple-retail",
@@ -62636,6 +62636,42 @@
                         ],
                         "required_products": [
                           "signal"
+                        ]
+                      },
+                      {
+                        "id": "detailed_attribute_coverage",
+                        "name": "Detailed financial attributes",
+                        "category": "Underwriting",
+                        "description": "Use any of the six business profiles with 35 complete months plus the current partial month. Inspect bank, issuer-card and cross-system attributes with explicit category detail, source records and coverage.",
+                        "expected": "Completed risk package with supported detailed attribute examples; missing sources, sparse samples and inapplicable contexts remain explicit.",
+                        "owner_only": false,
+                        "requires_endpoint": false,
+                        "required_scopes": [
+                          "sandbox:read",
+                          "sandbox:write",
+                          "borrowers:read",
+                          "borrowers:write",
+                          "configuration:read",
+                          "configuration:write",
+                          "connections:read",
+                          "connections:write",
+                          "evidence:read",
+                          "evidence:write",
+                          "insights:read",
+                          "insights:write",
+                          "results:read"
+                        ],
+                        "inspection_scopes": [
+                          "sandbox:read",
+                          "borrowers:read",
+                          "configuration:read",
+                          "connections:read",
+                          "evidence:read",
+                          "insights:read",
+                          "results:read"
+                        ],
+                        "required_products": [
+                          "insights"
                         ]
                       }
                     ]
@@ -64523,7 +64559,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-19.3",
+                    "catalog_version": "2026-11-19.4",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -65098,7 +65134,7 @@
               "example": {
                 "scenario_id": "healthy",
                 "fixture_id": "maple-retail",
-                "catalog_version": "2026-11-19.3"
+                "catalog_version": "2026-11-19.4"
               }
             }
           }
@@ -65113,15 +65149,15 @@
           {
             "lang": "Shell",
             "label": "cURL",
-            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createSandboxRun-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"scenario_id\":\"healthy\",\"fixture_id\":\"maple-retail\",\"catalog_version\":\"2026-11-19.3\"}'"
+            "source": "curl --request POST --fail-with-body --max-time 30 \\\n  \"${AMLOK_API_BASE_URL}/v1/sandbox/runs\" \\\n  --header \"Authorization: Bearer ${AMLOK_API_KEY}\" \\\n  --header 'Accept: application/json' \\\n  --header 'Idempotency-Key: createSandboxRun-synthetic-0042' \\\n  --header 'Content-Type: application/json' \\\n  --data '{\"scenario_id\":\"healthy\",\"fixture_id\":\"maple-retail\",\"catalog_version\":\"2026-11-19.4\"}'"
           },
           {
             "lang": "Python",
-            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createSandboxRun-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/sandbox/runs', headers=headers, json={'scenario_id': 'healthy', 'fixture_id': 'maple-retail', 'catalog_version': '2026-11-19.3'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
+            "source": "import os\nimport requests\n\nheaders = {'Accept': 'application/json', 'Idempotency-Key': 'createSandboxRun-synthetic-0042', 'Content-Type': 'application/json'}\nheaders[\"Authorization\"] = \"Bearer \" + os.environ[\"AMLOK_API_KEY\"]\nresponse = requests.request('POST', os.environ[\"AMLOK_API_BASE_URL\"] + '/v1/sandbox/runs', headers=headers, json={'scenario_id': 'healthy', 'fixture_id': 'maple-retail', 'catalog_version': '2026-11-19.4'}, timeout=30, allow_redirects=False)\nresponse.raise_for_status()\nprint(response.json())\n"
           },
           {
             "lang": "JavaScript",
-            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createSandboxRun-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/sandbox/runs\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"scenario_id\": \"healthy\", \"fixture_id\": \"maple-retail\", \"catalog_version\": \"2026-11-19.3\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
+            "source": "const headers = {\"Accept\": \"application/json\", \"Idempotency-Key\": \"createSandboxRun-synthetic-0042\", \"Content-Type\": \"application/json\"};\nheaders.Authorization = `Bearer ${process.env.AMLOK_API_KEY}`;\nconst response = await fetch(process.env.AMLOK_API_BASE_URL + \"/v1/sandbox/runs\", {\n  method: \"POST\", headers, redirect: \"error\", signal: AbortSignal.timeout(30000),\n  body: JSON.stringify({\"scenario_id\": \"healthy\", \"fixture_id\": \"maple-retail\", \"catalog_version\": \"2026-11-19.4\"})\n});\nif (!response.ok) throw new Error(`HTTP ${response.status}: ${await response.text()}`);\nconsole.log(await response.json());\n"
           }
         ]
       },
@@ -65177,7 +65213,7 @@
                       "id": "srun_example",
                       "scenario_id": "healthy",
                       "fixture_id": "maple-retail",
-                      "catalog_version": "2026-11-19.3",
+                      "catalog_version": "2026-11-19.4",
                       "status": "queued",
                       "created_at": "2026-11-07T12:00:00Z",
                       "updated_at": "2026-11-07T12:00:00Z",
@@ -65814,7 +65850,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-19.3",
+                    "catalog_version": "2026-11-19.4",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -66460,7 +66496,7 @@
                     "id": "srun_example",
                     "scenario_id": "healthy",
                     "fixture_id": "maple-retail",
-                    "catalog_version": "2026-11-19.3",
+                    "catalog_version": "2026-11-19.4",
                     "status": "queued",
                     "created_at": "2026-11-07T12:00:00Z",
                     "updated_at": "2026-11-07T12:00:00Z",
@@ -133416,7 +133452,8 @@
               "webhook_out_of_order",
               "full_metric_coverage",
               "personal_income",
-              "monitoring_metric_coverage"
+              "monitoring_metric_coverage",
+              "detailed_attribute_coverage"
             ],
             "description": "Stable scenario identifier from the versioned catalog."
           },
@@ -133432,7 +133469,7 @@
             "description": "Fictional business definition used to create this run."
           },
           "catalog_version": {
-            "const": "2026-11-19.3",
+            "const": "2026-11-19.4",
             "description": "Exact catalog version; reject mismatches rather than silently changing test behavior."
           },
           "endpoint_id": {
