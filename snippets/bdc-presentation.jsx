@@ -3,8 +3,8 @@ const bdcSlides = [
   ["The opportunity", "Capacity-based lending"],
   ["The challenge", "A fragmented picture. A moving risk."],
   ["Research", "AI research for better decisions."],
-  ["The unified process", "Unified data. A stronger underwriting process."],
   ["Two products", "From underwriting to ongoing intelligence."],
+  ["The unified process", "Unified data. A stronger underwriting process."],
   ["Embedded financing", "Turn each transaction into a financing opportunity."],
   ["After funding", "Keep the funded decision in view."],
   ["The full proposal", "From business evidence to responsible financing."],
@@ -654,8 +654,36 @@ export const BdcPresentation = () => {
 
       <section className="bdc-slide bdc-research" hidden={current !== 2} aria-labelledby="bdc-title-2"><BdcHeading index={2} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows - where general-purpose AI still falls short.</>} /><BdcResearch /></section>
 
-      <section className="bdc-slide bdc-unified" hidden={current !== 3} aria-labelledby="bdc-title-3">
+      <section className="bdc-slide bdc-product-pathways-slide" hidden={current !== 3} aria-labelledby="bdc-title-3">
         <BdcHeading index={3} />
+        <div className="bdc-product-pathways">
+          <div className="bdc-product-institutions">
+            <div className="bdc-product-institution-title"><BdcIcon name="bank" size={28} /><h3>Financial institutions</h3></div>
+            <ul aria-label="Institution types"><li>Banks</li><li>Neo-banks</li><li>Credit unions</li></ul>
+          </div>
+          <div className="bdc-product-branch" aria-hidden="true"><span /><span /></div>
+          <div className="bdc-product-pair">
+            <article className="bdc-product-card">
+              <div className="bdc-product-card-top"><span>Before funding</span><BdcIcon name="search" size={32} /></div>
+              <h3>Insights</h3>
+              <h4>Deal underwriting</h4>
+              <p>Understand the business, assess repayment capacity and evaluate the deal against your lending policies.</p>
+              <div className="bdc-product-result"><BdcIcon name="document" size={19} /><span>An evidence-backed credit assessment</span></div>
+            </article>
+            <article className="bdc-product-card">
+              <div className="bdc-product-card-top"><span>After funding</span><BdcIcon name="flow" size={32} /></div>
+              <h3>Signal</h3>
+              <h4>Portfolio monitoring</h4>
+              <p>Follow changes in the business, reassess risk and capacity, and identify when your team should review.</p>
+              <div className="bdc-product-result"><BdcIcon name="target" size={19} /><span>Timely signals for institution-led action</span></div>
+            </article>
+          </div>
+        </div>
+        <p className="bdc-product-principle">One risk engine. Your institution's policies and credit authority.</p>
+      </section>
+
+      <section className="bdc-slide bdc-unified" hidden={current !== 4} aria-labelledby="bdc-title-4">
+        <BdcHeading index={4} />
         <div className="bdc-unification-map">
           <div className="bdc-unification-sources" aria-label="Connected data sources">
             {[
@@ -688,34 +716,6 @@ export const BdcPresentation = () => {
           ].map(([title, subtitle, body]) => <div key={title}><h3>{title}</h3><strong>{subtitle}</strong><p>{body}</p></div>)}
         </div>
         <BdcNote>Business-system access is borrower-permissioned. Your institution retains final credit authority.</BdcNote>
-      </section>
-
-      <section className="bdc-slide bdc-product-pathways-slide" hidden={current !== 4} aria-labelledby="bdc-title-4">
-        <BdcHeading index={4} />
-        <div className="bdc-product-pathways">
-          <div className="bdc-product-institutions">
-            <div className="bdc-product-institution-title"><BdcIcon name="bank" size={28} /><h3>Financial institutions</h3></div>
-            <ul aria-label="Institution types"><li>Banks</li><li>Neo-banks</li><li>Credit unions</li></ul>
-          </div>
-          <div className="bdc-product-branch" aria-hidden="true"><span /><span /></div>
-          <div className="bdc-product-pair">
-            <article className="bdc-product-card">
-              <div className="bdc-product-card-top"><span>Before funding</span><BdcIcon name="search" size={32} /></div>
-              <h3>Insights</h3>
-              <h4>Deal underwriting</h4>
-              <p>Understand the business, assess repayment capacity and evaluate the deal against your lending policies.</p>
-              <div className="bdc-product-result"><BdcIcon name="document" size={19} /><span>An evidence-backed credit assessment</span></div>
-            </article>
-            <article className="bdc-product-card">
-              <div className="bdc-product-card-top"><span>After funding</span><BdcIcon name="flow" size={32} /></div>
-              <h3>Signal</h3>
-              <h4>Portfolio monitoring</h4>
-              <p>Follow changes in the business, reassess risk and capacity, and identify when your team should review.</p>
-              <div className="bdc-product-result"><BdcIcon name="target" size={19} /><span>Timely signals for institution-led action</span></div>
-            </article>
-          </div>
-        </div>
-        <p className="bdc-product-principle">One risk engine. Your institution's policies and credit authority.</p>
       </section>
 
       <section className="bdc-slide bdc-embedded" hidden={current !== 5} aria-labelledby="bdc-title-5"><BdcHeading index={5} intro="An embedded AMLOK widget underwrites at the point of payment, using the institution's policies and borrower-permissioned data." /><BdcEmbeddedFinance /><div className="bdc-embedded-caption"><p><strong>Research → Risk engine → In-flow financing</strong><span>The institution controls policy and approval. The business sees what can improve its offer.</span></p><small>BDC-branded concept, not an existing BDC product or offer. Illustrative CAD terms; subject to evidence, underwriting and approval. No live payments or connections.</small></div></section>
