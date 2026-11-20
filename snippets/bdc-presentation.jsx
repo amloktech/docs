@@ -2,8 +2,8 @@
 const bdcSlides = [
   ["The opportunity", "Capacity-based lending"],
   ["The challenge", "A fragmented picture. A moving risk."],
-  ["The unified process", "Unified data. A stronger underwriting process."],
   ["Research", "AI research for better decisions."],
+  ["The unified process", "Unified data. A stronger underwriting process."],
   ["Embedded financing", "Turn each transaction into a financing opportunity."],
   ["After funding", "Keep the funded decision in view."],
   ["The full proposal", "From business evidence to responsible financing."],
@@ -651,8 +651,10 @@ export const BdcPresentation = () => {
         <div className="bdc-challenge-impact"><strong>The consequence</strong><p>Slower decisions, more borrower effort, misjudged risk and capacity, and missed opportunities to intervene or reassess.</p></div>
       </section>
 
-      <section className="bdc-slide bdc-unified" hidden={current !== 2} aria-labelledby="bdc-title-2">
-        <BdcHeading index={2} />
+      <section className="bdc-slide bdc-research" hidden={current !== 2} aria-labelledby="bdc-title-2"><BdcHeading index={2} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows — where general-purpose AI still falls short.</>} /><BdcResearch /></section>
+
+      <section className="bdc-slide bdc-unified" hidden={current !== 3} aria-labelledby="bdc-title-3">
+        <BdcHeading index={3} />
         <div className="bdc-unification-map">
           <div className="bdc-unification-sources" aria-label="Connected data sources">
             {[
@@ -686,8 +688,6 @@ export const BdcPresentation = () => {
         </div>
         <BdcNote>Business-system access is borrower-permissioned. Your institution retains final credit authority.</BdcNote>
       </section>
-
-      <section className="bdc-slide bdc-research" hidden={current !== 3} aria-labelledby="bdc-title-3"><BdcHeading index={3} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows — where general-purpose AI still falls short.</>} /><BdcResearch /></section>
 
       <section className="bdc-slide bdc-embedded" hidden={current !== 4} aria-labelledby="bdc-title-4"><BdcHeading index={4} intro="An embedded AMLOK widget underwrites at the point of payment, using the institution's policies and borrower-permissioned data." /><BdcEmbeddedFinance /><div className="bdc-embedded-caption"><p><strong>Research → Risk engine → In-flow financing</strong><span>The institution controls policy and approval. The business sees what can improve its offer.</span></p><small>BDC-branded concept, not an existing BDC product or offer. Illustrative CAD terms; subject to evidence, underwriting and approval. No live payments or connections.</small></div></section>
 
