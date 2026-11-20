@@ -651,7 +651,7 @@ export const BdcPresentation = () => {
         <div className="bdc-challenge-impact"><strong>The consequence</strong><p>Slower decisions, more borrower effort, misjudged risk and capacity, and missed opportunities to intervene or reassess.</p></div>
       </section>
 
-      <section className="bdc-slide bdc-research" hidden={current !== 2} aria-labelledby="bdc-title-2"><BdcHeading index={2} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows — where general-purpose AI still falls short.</>} /><BdcResearch /></section>
+      <section className="bdc-slide bdc-research" hidden={current !== 2} aria-labelledby="bdc-title-2"><BdcHeading index={2} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows - where general-purpose AI still falls short.</>} /><BdcResearch /></section>
 
       <section className="bdc-slide bdc-unified" hidden={current !== 3} aria-labelledby="bdc-title-3">
         <BdcHeading index={3} />
