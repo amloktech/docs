@@ -4,7 +4,7 @@ const bdcSlides = [
   ["The challenge", "A fragmented picture. A moving risk."],
   ["The unified process", "Unified data. A stronger underwriting process."],
   ["Research", "AI research for better decisions."],
-  ["The permission", "Connect what matters, with clear permission."],
+  ["Embedded financing", "Turn each transaction into a financing opportunity."],
   ["After funding", "Keep the funded decision in view."],
   ["The full proposal", "From business evidence to responsible financing."],
   ["The controls", "Your policy. Your authority. Your borrower."],
@@ -509,16 +509,81 @@ const BdcResearch = () => {
   </div>;
 };
 
-const BdcPermission = () => {
-  const [provider, setProvider] = useState("Stripe");
-  const [monitoring, setMonitoring] = useState(false);
-  const sources = [
-    { name: "Stripe", icon: "card", records: "Payments, refunds, disputes and payouts", purpose: "Assess net receipts and settlement patterns" },
-    { name: "Shopify", icon: "shop", records: "Orders, sales, cancellations and returns", purpose: "Understand sales quality and return patterns" },
-    { name: "Accounting", icon: "book", records: "Invoices, invoice payments, receivables and payables", purpose: "Assess collections, payment terms and operating commitments" }
-  ];
-  const source = sources.find(item => item.name === provider);
-  return <div className="bdc-demo"><div className="bdc-demo-bar"><span><BdcIcon name="lock" size={18} />Data permission preview</span><span className="bdc-tag">Demo only</span></div><div className="bdc-permission-body"><p className="bdc-mini-label">Choose a relevant source</p><div className="bdc-provider-switch" role="group" aria-label="Example data source">{sources.map(item => <button key={item.name} type="button" onClick={() => setProvider(item.name)} aria-pressed={provider === item.name}><BdcIcon name={item.icon} size={19} />{item.name}</button>)}</div><dl className="bdc-permission-list"><div><dt>Records</dt><dd>{source.records}</dd></div><div><dt>Purpose</dt><dd>{source.purpose}</dd></div><div><dt>Access</dt><dd>Read-only. No movement of money or changes to source records.</dd></div><div><dt>History</dt><dd>12-month example, subject to available history and permissions</dd></div></dl><label className="bdc-consent"><input type="checkbox" checked={monitoring} onChange={e => setMonitoring(e.target.checked)} /><span><strong>Include ongoing monitoring</strong><small>Separate from this assessment. Scope, duration and refresh schedule are agreed with the lender.</small></span></label><p className="bdc-permission-state" role="status">{monitoring ? "Preview: assessment + ongoing monitoring" : "Preview: assessment only"}</p></div></div>;
+// Embedded-financing concept only. Selection updates local presentation state, never a payment.
+const bdcEmbeddedPlans = [
+  { key: "bank", name: "Bank data", amount: 6000, rate: 8, evidence: "Your bank transactions and cash flow.", condition: "Use your existing bank data.", connections: false, monitoring: false },
+  { key: "connected", name: "Connected business", amount: 8000, rate: 6, evidence: "Add sales, refunds and settlement evidence.", condition: "Connect Shopify and Stripe.", connections: true, monitoring: false },
+  { key: "monitored", name: "Connected + monitored", amount: 10000, rate: 4, evidence: "The same sources, with ongoing visibility.", condition: "Allow monitoring for the 6-month financing term.", connections: true, monitoring: true }
+];
+const BdcAppHeader = () => <div className="bdc-bank-header"><img src="/images/demobdc/bdc-logo.svg" alt="BDC" width="61" height="32" /><span>Business payments</span><span className="bdc-bank-avatar" aria-hidden="true">NM</span></div>;
+const BdcConnectionLogos = () => <span className="bdc-widget-connections"><span>Connect</span><span><img src="/images/demobdc/shopify.svg" alt="" />Shopify</span><span><img src="/images/demobdc/stripe.svg" alt="" />Stripe</span></span>;
+const BdcEmbeddedFinance = () => {
+  const [selected, setSelected] = useState("monitored");
+  const offerRef = useRef(null);
+  const plan = bdcEmbeddedPlans.find(item => item.key === selected);
+  const amount = 15000;
+  const financed = plan?.amount || 0;
+  const monthlyRate = (plan?.rate || 0) / 1200;
+  const instalment = plan ? financed * monthlyRate / (1 - Math.pow(1 + monthlyRate, -6)) : 0;
+  const dollars = value => new Intl.NumberFormat("en-CA", { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value);
+  const cents = value => new Intl.NumberFormat("en-CA", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value);
+  return <div className="bdc-embedded-journey">
+    <div className="bdc-journey-column">
+      <div className="bdc-journey-step"><span>01</span><h3>A payment becomes an opportunity</h3><BdcIcon name="arrow" size={18} /></div>
+      <div className="bdc-bank-screen">
+        <BdcAppHeader />
+        <div className="bdc-bank-body">
+          <p className="bdc-bank-breadcrumb">Payments / New transfer</p>
+          <h4>Send a payment</h4>
+          <div className="bdc-transfer-payee"><span className="bdc-payee-symbol"><BdcIcon name="shop" size={22} /></span><div><strong>Maple Supply Co.</strong><small>Equipment deposit · Invoice 2084</small></div></div>
+          <div className="bdc-transfer-amount"><span>Transfer amount</span><strong>$15,000<small>CAD</small></strong></div>
+          <div className="bdc-transfer-account"><BdcIcon name="bank" size={17} /><span>Business account <strong>•• 4821</strong></span></div>
+          <button type="button" className="bdc-pay-own" onClick={() => setSelected(null)}>Pay $15,000 from my account</button>
+          <div className="bdc-finance-widget">
+            <div className="bdc-widget-brand"><img src="/logo/amlok-logo-blue.svg" alt="AMLOK" /><span>Financing option</span></div>
+            <h5>Keep more cash in your business.</h5>
+            <p>Finance up to <strong>$10,000</strong> of this payment.<br />Rates starting at <strong>4.00% APR.</strong></p>
+            <button type="button" onClick={() => { setSelected("monitored"); offerRef.current?.focus(); }}>Explore financing<BdcIcon name="arrow" size={15} /></button>
+          </div>
+        </div>
+        <div className="bdc-bank-footer"><BdcIcon name="lock" size={12} />Northline Manufacturing Inc.</div>
+      </div>
+    </div>
+    <div className="bdc-journey-column">
+      <div className="bdc-journey-step"><span>02</span><h3>See a path to better terms</h3><BdcIcon name="arrow" size={18} /></div>
+      <div className="bdc-bank-screen">
+        <BdcAppHeader />
+        <div className="bdc-bank-body bdc-options-body">
+          <div className="bdc-finance-title"><div><p className="bdc-bank-breadcrumb">Financing / Your options</p><h4>Choose how to qualify</h4></div><img src="/logo/amlok-blue.svg" alt="AMLOK" /></div>
+          <p className="bdc-offer-explainer">More evidence can support better terms.</p>
+          <div className="bdc-embedded-options" role="group" aria-label="Illustrative financing options">
+            {bdcEmbeddedPlans.map((offer, index) => <button key={offer.key} ref={index === 2 ? offerRef : undefined} type="button" aria-pressed={selected === offer.key} onClick={() => setSelected(offer.key)} className="bdc-embedded-option" aria-label={`Preview ${offer.name}: CAD ${dollars(offer.amount)} at ${offer.rate}% APR for 6 months`}>
+              <span className="bdc-option-heading"><strong>{offer.name}</strong><span className="bdc-option-radio" aria-hidden="true">{selected === offer.key && <BdcIcon name="check" size={11} />}</span></span>
+              <span className="bdc-option-terms"><strong>${dollars(offer.amount)}</strong><span>{offer.rate.toFixed(2)}% APR<span>6 months</span></span></span>
+              <span className="bdc-option-evidence">{offer.evidence}</span>
+              <span className="bdc-option-condition">{offer.connections ? <BdcConnectionLogos /> : <span className="bdc-existing-source"><BdcIcon name="bank" size={13} />Bank data</span>}{offer.monitoring && <span className="bdc-monitor-label"><BdcIcon name="flow" size={13} />Monitoring</span>}</span>
+              <span className="bdc-option-requirement">{offer.condition}</span>
+            </button>)}
+          </div>
+          <p className="bdc-options-consent">You choose which sources to connect and whether to permit monitoring. Terms depend on the assessment.</p>
+        </div>
+        <div className="bdc-bank-footer"><BdcIcon name="shield" size={12} />Assessed against the institution's lending policy</div>
+      </div>
+    </div>
+    <div className="bdc-journey-column">
+      <div className="bdc-journey-step"><span>03</span><h3>Pay with clarity and control</h3></div>
+      <div className="bdc-bank-screen">
+        <BdcAppHeader />
+        <div className="bdc-bank-body bdc-confirm-body" aria-live="polite" aria-atomic="true">
+          <div className="bdc-payment-success"><span><BdcIcon name="check" size={23} /></span><h4>Payment sent</h4><strong>$15,000 <small>CAD</small></strong><p>To Maple Supply Co.</p></div>
+          <div className="bdc-payment-split"><div className="bdc-split-bar" aria-hidden="true"><span style={{width:`${financed/amount*100}%`}} /></div><dl><div><dt><i />Financed by BDC</dt><dd>${dollars(financed)}</dd></div><div><dt><i />From your account</dt><dd>${dollars(amount-financed)}</dd></div></dl></div>
+          {plan ? <div className="bdc-confirm-financing"><div className="bdc-confirm-plan"><strong>Your financing</strong><span>{plan.name}</span></div><dl><div><dt>Annual percentage rate</dt><dd>{plan.rate.toFixed(2)}%</dd></div><div><dt>Repayment term</dt><dd>6 months</dd></div><div><dt>Est. monthly payment</dt><dd>${cents(instalment)}</dd></div></dl><p><BdcIcon name={plan.monitoring ? "flow" : "check"} size={14} />{plan.monitoring ? "Monitoring authorized for the financing term" : plan.connections ? "Shopify + Stripe used for this assessment" : "Assessed with bank data"}</p></div> : <div className="bdc-confirm-financing"><strong>Paid from your account</strong><p>No financing selected. No repayments.</p></div>}
+          <div className="bdc-receipt-link"><BdcIcon name="document" size={15} />{plan ? "Payment receipt and financing terms" : "Payment receipt"}</div>
+        </div>
+        <div className="bdc-bank-footer">{plan ? "Financing by BDC" : "Payment confirmed"}<span>Powered by AMLOK</span></div>
+      </div>
+    </div>
+  </div>;
 };
 
 export const BdcPresentation = () => {
@@ -555,7 +620,7 @@ export const BdcPresentation = () => {
     try { if (document.fullscreenElement) await document.exitFullscreen(); else if (rootRef.current?.requestFullscreen) await rootRef.current.requestFullscreen(); else setNotice("Use your browser's full-screen option on this device."); }
     catch { setNotice("Use your browser's full-screen option on this device."); }
   };
-  return <main id="demobdc-deck" className="not-prose" ref={rootRef} aria-label="AMLOK presentation for BDC">
+  return <main id="demobdc-deck" className={`not-prose${current === 4 ? " bdc-embedded-active" : ""}`} ref={rootRef} aria-label="AMLOK presentation for BDC">
     <header className="bdc-topbar"><a href="#slide-01" onClick={e => { e.preventDefault(); goTo(0); }} aria-label="AMLOK presentation, first slide"><img src="/logo/amlok-logo-blue.svg" alt="AMLOK" width="139" height="26" /></a><div className="bdc-meeting-label">Prepared for BDC<span>Capacity-based lending</span></div><div className="bdc-toolbar"><button ref={overviewButtonRef} type="button" onClick={() => overviewRef.current?.showModal()} aria-label="Open slide overview" title="Slide overview"><BdcIcon name="grid" size={18} /><span>Overview</span></button><button type="button" onClick={() => window.print()} aria-label="Print or save presentation as PDF" title="Print or save PDF"><BdcIcon name="print" size={18} /></button><button type="button" onClick={toggleFullscreen} aria-label={fullscreen ? "Exit full screen" : "Enter full screen"} title="Full screen"><BdcIcon name="expand" size={18} /></button></div></header>
     <div className="bdc-sr-only" aria-live="polite">Slide {current + 1} of {bdcSlides.length}: {bdcSlides[current][1]}</div>
     {notice && <div className="bdc-notice" role="status">{notice}<button type="button" onClick={() => setNotice("")} aria-label="Dismiss message"><BdcIcon name="close" size={16} /></button></div>}
@@ -624,7 +689,7 @@ export const BdcPresentation = () => {
 
       <section className="bdc-slide bdc-research" hidden={current !== 3} aria-labelledby="bdc-title-3"><BdcHeading index={3} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows — where general-purpose AI still falls short.</>} /><BdcResearch /></section>
 
-      <section className="bdc-slide" hidden={current !== 4} aria-labelledby="bdc-title-4"><BdcHeading index={4} /><div className="bdc-permission-layout"><div className="bdc-consent-story"><p className="bdc-eyebrow">Borrower-controlled access</p><h3>A specific purpose.<br />A clear scope.<br />A separate choice.</h3><ul>{["Explain the underwriting question.", "Show which records will be accessed.", "Separate assessment from ongoing monitoring.", "Explain disconnection and its implications."].map(t => <li key={t}><BdcIcon name="check" size={17} />{t}</li>)}</ul><p>Refresh depends on the source, permissions and agreed synchronization schedule. A disconnected source is a coverage issue, not proof of financial distress.</p></div><BdcPermission /></div><BdcNote>Interactive preview only. These controls do not connect accounts or record actual borrower consent.</BdcNote></section>
+      <section className="bdc-slide bdc-embedded" hidden={current !== 4} aria-labelledby="bdc-title-4"><BdcHeading index={4} intro="An embedded AMLOK widget underwrites at the point of payment, using the institution's policies and borrower-permissioned data." /><BdcEmbeddedFinance /><div className="bdc-embedded-caption"><p><strong>Research → Risk engine → In-flow financing</strong><span>The institution controls policy and approval. The business sees what can improve its offer.</span></p><small>BDC-branded concept, not an existing BDC product or offer. Illustrative CAD terms; subject to evidence, underwriting and approval. No live payments or connections.</small></div></section>
 
       <section className="bdc-slide" hidden={current !== 5} aria-labelledby="bdc-title-5"><BdcHeading index={5} intro="AMLOK Signal monitors changes and reassesses the business against the evidence behind the funded decision." /><div className="bdc-monitor-flow"><div className="bdc-baseline"><p className="bdc-eyebrow">Funded baseline</p><BdcIcon name="document" size={35} /><h3>Preserve the rationale</h3><p>Approved assumptions, financial evidence, conditions and policy context.</p></div><div className="bdc-monitor-events"><p className="bdc-eyebrow">Illustrative change signals</p>{[["flow", "Cash generation changes", "Compare receipts, costs and liquidity."], ["layers", "Risk and capacity shift", "Review new debt, concentrations or stronger repayment headroom."], ["link", "Evidence becomes unavailable", "Flag incomplete coverage separately."]].map(([icon, title, text]) => <div key={title}><BdcIcon name={icon} size={19} /><span><strong>{title}</strong>{text}</span></div>)}</div><div className="bdc-intervention"><p className="bdc-eyebrow">Lender review</p><h3>Know when <br />to look closer.</h3><p>Prioritize risk, capacity and renewal reviews with changed facts and affected assumptions.</p><span className="bdc-tag">Institution-led intervention</span></div></div><BdcNote>Signal includes change-driven reassessment. The institution handles borrower outreach and action in its own systems. Monitoring does not automatically reprice a signed facility.</BdcNote></section>
 
