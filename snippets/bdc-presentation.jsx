@@ -39,20 +39,241 @@ const BdcHeading = ({ index, intro }) => <header className="bdc-heading"><p clas
 const BdcNote = ({ children }) => <p className="bdc-note">{children}</p>;
 const BdcSteps = ({ items, className = "" }) => <div className={`bdc-steps ${className}`}>{items.map(([title, body, detail], i) => <div key={title}><span className="bdc-index">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{body}</p>{detail && <small>{detail}</small>}</div>)}</div>;
 
-// Headline figures supplied by AMLOK for this presentation. The comparison remains proposed.
-const bdcResearchComparison = [
-  ["Cash-flow category coverage", 70, 88, "%"],
-  ["Revenue settlement reconciliation", 75, 90, "%"],
-  ["AML false-positive manual-review burden index", 100, 65, ""],
-  ["Named counterparty coverage", 65, 86, "%"],
-  ["Customer concentration coverage", 60, 84, "%"],
-  ["Vendor concentration coverage", 60, 88, "%"],
-  ["Debt-repayment miss rate", 4.4, 3.96, "%"],
-  ["Debt-service coverage assessability", 70, 85, "%"],
-  ["Working-capital cycle visibility", 65, 79, "%"],
-  ["Graph relationship precision", 80, 95, "%"],
-  ["60-day cash-flow forecast error", 20, 18.5, "%"],
-  ["Transaction classification error", 2.8, 2.66, "%"]
+// Metric names and applicability from downloads/underwriting-metric-catalog.json (2026-11-12.1).
+// Keep every catalog metric in its assigned dimension when this catalog changes.
+const bdcMetricDimensions = [
+  { key: "identity", label: "Identity and verification", metrics: [
+    ["business_age_months","Business age",["business"]],
+    ["verified_account_owner_ratio","Verified account ownership share",["business","person"]]
+  ] },
+  { key: "ownership_and_control", label: "Ownership and control", metrics: [
+    ["ownership_disclosed_ratio","Disclosed ownership share",["business"]],
+    ["related_party_balance_share","Related-party receivables share",["business"]],
+    ["supported_guarantee_coverage","Supported guarantee coverage",["business"]]
+  ] },
+  { key: "cashflow", label: "Cash flow", metrics: [
+    ["total_inflows","Posted inflows",["business","person"]],
+    ["total_outflows","Posted outflows",["business","person"]],
+    ["net_cash_flow","Net cash flow",["business","person"]],
+    ["operating_cash_inflows","Operating receipts",["business","person"]],
+    ["operating_cash_outflows","Operating cash payments",["business","person"]],
+    ["operating_net_cash_flow","Net operating cash flow",["business","person"]],
+    ["internal_transfer_inflows","Internal transfer inflows",["business","person"]],
+    ["financing_inflows","Financing inflows",["business","person"]],
+    ["positive_cashflow_month_share","Positive cash-flow months",["business","person"]],
+    ["cashflow_volatility","Operating cash-flow volatility",["business","person"]],
+    ["cashflow_change_90d","Operating cash-flow change",["business","person"]],
+    ["posted_transaction_count","Posted transaction count",["business"]],
+    ["operating_receipt_count","Operating receipt count",["business"]],
+    ["owner_contribution_inflows","Owner capital contributions",["business"]],
+    ["owner_distribution_outflows","Owner distributions",["business"]],
+    ["debt_proceeds_inflows","Debt proceeds",["business"]],
+    ["observed_debt_service","Observed debt-service payments",["business"]],
+    ["bank_fee_outflows","Bank fees paid",["business"]],
+    ["cash_withdrawal_outflows","Cash withdrawals",["business"]],
+    ["payroll_outflows","Payroll paid",["business"]],
+    ["inventory_purchase_outflows","Inventory purchases paid",["business"]],
+    ["internal_transfer_outflows","Internal transfer outflows",["business"]],
+    ["spending_to_receipts_ratio","Operating spending to receipts",["business"]],
+    ["spending_to_receipts_change_90d","Change in spending to receipts",["business"]]
+  ] },
+  { key: "liquidity", label: "Liquidity", metrics: [
+    ["unrestricted_cash","Unrestricted cash",["business","person"]],
+    ["average_daily_balance","Average daily cash balance",["business","person"]],
+    ["minimum_daily_balance","Minimum daily cash balance",["business","person"]],
+    ["negative_balance_days","Days below zero",["business","person"]],
+    ["cash_buffer_days","Cash buffer",["business","person"]],
+    ["current_ratio","Current ratio",["business"]],
+    ["quick_ratio","Quick ratio",["business"]],
+    ["cash_ratio","Cash ratio",["business"]],
+    ["balance_stddev","Daily balance variability",["business"]],
+    ["balance_coefficient_of_variation","Relative daily balance variability",["business"]],
+    ["maximum_daily_balance","Maximum daily cash balance",["business"]],
+    ["median_daily_balance","Median daily cash balance",["business"]],
+    ["low_balance_days","Days below the declared cash floor",["business"]],
+    ["balance_change_90d","Cash balance change over 90 days",["business"]],
+    ["cash_shock_count","Observed cash-shock episodes",["business"]],
+    ["balance_recovery_days","Most recent cash-shock recovery",["business"]],
+    ["unrecovered_cash_shock_count","Unrecovered cash-shock episodes",["business"]]
+  ] },
+  { key: "revenue_quality", label: "Revenue quality", metrics: [
+    ["verified_revenue","Verified revenue",["business"]],
+    ["recurring_revenue_share","Recurring revenue share",["business"]],
+    ["revenue_growth_yoy","Revenue growth year over year",["business"]],
+    ["revenue_growth_90d","Revenue growth over 90 days",["business"]],
+    ["revenue_volatility","Monthly revenue volatility",["business"]],
+    ["refund_amount_share","Refund amount share",["business"]],
+    ["chargeback_amount_share","Chargeback amount share",["business"]],
+    ["revenue_cash_realization","Revenue cash realization",["business"]],
+    ["unverified_receipts_share","Unverified receipts share",["business"]],
+    ["nonrecurring_revenue_share","Nonrecurring revenue share",["business"]],
+    ["receipt_gap_mean_days","Mean interval between receipts",["business"]],
+    ["receipt_gap_stddev_days","Receipt interval variability",["business"]],
+    ["receipt_day_of_month_stddev","Receipt calendar-day variability",["business"]],
+    ["zero_revenue_month_count","Months without recorded receipts",["business"]],
+    ["operating_receipts_volatility","Operating receipts volatility",["business"]],
+    ["operating_receipts_change_90d","Operating receipts change",["business"]],
+    ["days_since_last_operating_receipt","Days since last observed receipt",["business"]],
+    ["unclassified_receipt_share","Unclassified external receipts",["business"]]
+  ] },
+  { key: "profitability", label: "Profitability", metrics: [
+    ["gross_profit","Gross profit",["business"]],
+    ["gross_margin","Gross margin",["business"]],
+    ["ebitda","EBITDA",["business"]],
+    ["ebitda_margin","EBITDA margin",["business"]],
+    ["operating_profit","Operating profit",["business"]],
+    ["operating_margin","Operating margin",["business"]],
+    ["net_profit","Net profit",["business"]],
+    ["net_margin","Net margin",["business"]],
+    ["free_cash_flow","Free cash flow",["business"]],
+    ["return_on_assets","Return on assets",["business"]]
+  ] },
+  { key: "working_capital", label: "Working capital", metrics: [
+    ["net_working_capital","Net working capital",["business"]],
+    ["receivables_days","Receivable days",["business"]],
+    ["payables_days","Payable days",["business"]],
+    ["inventory_days","Inventory days",["business"]],
+    ["cash_conversion_cycle","Cash conversion cycle",["business"]],
+    ["ar_overdue_share","Overdue receivables share",["business"]],
+    ["ar_90_plus_share","Receivables over 90 days past due",["business"]],
+    ["ap_overdue_share","Overdue payables share",["business"]],
+    ["inventory_turnover","Inventory turnover",["business"]]
+  ] },
+  { key: "leverage", label: "Debt and leverage", metrics: [
+    ["total_debt","Total interest-bearing debt",["business","person"]],
+    ["net_debt","Net debt",["business","person"]],
+    ["debt_to_assets","Debt to assets",["business"]],
+    ["debt_to_equity","Debt to equity",["business"]],
+    ["net_debt_to_ebitda","Net debt to EBITDA",["business"]],
+    ["credit_utilization","Revolving credit utilization",["business","person"]],
+    ["short_term_debt_share","Debt due within one year",["business","person"]],
+    ["debt_maturing_90d","Debt maturing within 90 days",["business","person"]],
+    ["concurrent_financing_count","Observed active financing facilities",["business"]],
+    ["new_financing_count_90d","Recently funded active facilities",["business"]],
+    ["debt_to_operating_receipts","Debt to annual operating receipts",["business"]]
+  ] },
+  { key: "repayment_capacity", label: "Repayment capacity", metrics: [
+    ["dscr","Cash-flow debt-service coverage",["business"]],
+    ["fixed_charge_coverage","Fixed-charge coverage",["business"]],
+    ["interest_coverage","Interest coverage",["business"]],
+    ["existing_debt_service","Existing debt service",["business"]],
+    ["proposed_debt_service","Proposed debt service",["business"]],
+    ["total_debt_service","Total debt service",["business"]],
+    ["residual_cash_after_debt","Cash after debt service",["business"]],
+    ["debt_service_headroom","Debt-service headroom",["business"]],
+    ["debt_payment_to_receipts","Debt payments to operating receipts",["business"]],
+    ["debt_service_to_outflows","Debt-service share of outflows",["business"]]
+  ] },
+  { key: "concentration", label: "Concentration", metrics: [
+    ["top_customer_share","Largest customer share",["business"]],
+    ["top_five_customer_share","Top five customer share",["business"]],
+    ["top_supplier_share","Largest supplier share",["business"]],
+    ["top_channel_share","Largest sales channel share",["business"]],
+    ["customer_hhi","Customer concentration index",["business"]],
+    ["income_source_hhi","Income-source concentration index",["person"]]
+  ] },
+  { key: "collateral", label: "Collateral and security", metrics: [
+    ["collateral_ltv","Loan to collateral value",["business","person"]],
+    ["combined_ltv","Combined loan to value",["business","person"]],
+    ["collateral_coverage","Collateral coverage",["business","person"]],
+    ["eligible_receivables","Eligible borrowing-base receivables",["business"]],
+    ["collateral_haircut_ratio","Collateral haircut",["business","person"]]
+  ] },
+  { key: "fraud_and_consistency", label: "Fraud and consistency", metrics: [
+    ["reconciliation_break_share","Unreconciled value share",["business","person"]],
+    ["duplicate_transaction_share","Duplicate transaction share",["business","person"]],
+    ["document_contradiction_count","Document contradictions",["business","person"]],
+    ["identity_mismatch_count","Unresolved identity mismatches",["business","person"]],
+    ["declared_income_gap_ratio","Declared-to-verified income gap",["business","person"]]
+  ] },
+  { key: "income_and_affordability", label: "Income and affordability", metrics: [
+    ["verified_gross_monthly_income","Verified gross monthly income",["person"]],
+    ["verified_net_monthly_income","Verified net monthly income",["person"]],
+    ["debt_to_income","Debt to income",["person"]],
+    ["housing_to_income","Housing cost to income",["person"]],
+    ["essential_monthly_spend","Essential monthly expenditure",["person"]],
+    ["residual_monthly_income","Residual monthly income",["person"]],
+    ["payment_to_income","Proposed payment to income",["person"]],
+    ["liquid_reserve_months","Liquid reserve months",["person"]]
+  ] },
+  { key: "income_stability", label: "Income stability", metrics: [
+    ["income_source_count","Verified income sources",["person"]],
+    ["income_volatility","Monthly income volatility",["person"]],
+    ["income_growth_yoy","Income growth year over year",["person"]],
+    ["days_since_last_income","Days since last income",["person"]],
+    ["income_interruption_days","Income interruption",["person"]],
+    ["income_continuity_share","Income continuity",["person"]]
+  ] },
+  { key: "payment_behavior", label: "Payment behavior", metrics: [
+    ["nsf_event_count","Insufficient-funds events",["business","person"]],
+    ["overdraft_days","Overdraft days",["business","person"]],
+    ["returned_payment_amount","Returned payment amount",["business","person"]],
+    ["delinquent_obligation_count","Delinquent obligations",["business","person"]],
+    ["maximum_days_past_due","Maximum days past due",["business","person"]],
+    ["on_time_payment_share","On-time payment share",["business","person"]]
+  ] },
+  { key: "credit_history", label: "Credit history", metrics: [
+    ["open_credit_obligation_count","Open credit obligations",["business","person"]],
+    ["bureau_utilization","Reported revolving utilization",["business","person"]],
+    ["recent_credit_inquiry_count","Recent credit inquiries",["business","person"]],
+    ["severe_delinquency_count","Severe delinquency events",["business","person"]],
+    ["public_record_event_count","Relevant public-record events",["business","person"]]
+  ] },
+  { key: "commerce_performance", label: "Commerce and subscriptions", metrics: [
+    ["gross_sales","Gross sales",["business"]],
+    ["net_sales","Net sales",["business"]],
+    ["average_order_value","Average order value",["business"]],
+    ["repeat_customer_share","Repeat customer share",["business"]],
+    ["monthly_recurring_revenue","Monthly recurring revenue",["business"]],
+    ["gross_revenue_retention","Gross revenue retention",["business"]],
+    ["net_revenue_retention","Net revenue retention",["business"]],
+    ["settlement_delay_days","Settlement delay",["business"]]
+  ] },
+  { key: "operating_resilience", label: "Operating resilience", metrics: [
+    ["payroll_burden_share","Payroll burden",["business"]],
+    ["payroll_growth_yoy","Payroll growth year over year",["business"]],
+    ["inventory_stockout_share","Inventory stockout share",["business"]],
+    ["fulfillment_on_time_share","On-time fulfillment share",["business"]],
+    ["supplier_payment_delay_days","Supplier payment delay",["business"]],
+    ["operating_outflows_change_90d","Operating payments change",["business"]]
+  ] },
+  { key: "tax_and_compliance", label: "Tax and statutory obligations", metrics: [
+    ["tax_liability","Reported tax liability",["business"]],
+    ["tax_overdue_amount","Overdue tax amount",["business"]],
+    ["tax_payment_coverage","Tax payment coverage",["business"]],
+    ["filing_coverage","Filing evidence coverage",["business"]]
+  ] },
+  { key: "financial_reporting_quality", label: "Financial reporting quality", metrics: [
+    ["bank_accounting_match_share","Bank-to-books match share",["business"]],
+    ["statement_balance_discrepancy","Balance-sheet discrepancy",["business"]],
+    ["material_adjustment_share","Material accounting adjustments",["business"]],
+    ["books_closing_lag_days","Books closing lag",["business"]]
+  ] },
+  { key: "data_quality", label: "Data quality and coverage", metrics: [
+    ["observed_account_coverage","Declared-account coverage",["business","person"]],
+    ["covered_history_days","Covered history",["business","person"]],
+    ["stale_source_share","Stale required sources",["business","person"]],
+    ["unclassified_transaction_share","Unclassified transactions",["business","person"]],
+    ["reconciled_value_share","Reconciled financial value",["business","person"]]
+  ] },
+  { key: "forecasting_and_stress", label: "Forecasting and stress", metrics: [
+    ["projected_minimum_cash","Projected minimum cash",["business","person"]],
+    ["stress_dscr","Stressed debt-service coverage",["business"]],
+    ["stress_residual_income","Stressed residual income",["person"]],
+    ["liquidity_shortfall","Projected liquidity shortfall",["business","person"]],
+    ["break_even_revenue_decline","Break-even revenue decline",["business"]]
+  ] },
+  { key: "relationship_risk", label: "Related-party and network exposure", metrics: [
+    ["related_party_receipts_share","Related-party receipts share",["business"]],
+    ["circular_flow_amount","Potential circular-flow amount",["business"]],
+    ["connected_counterparty_share","Connected-counterparty exposure",["business"]]
+  ] },
+  { key: "monitoring_change", label: "Monitoring changes", metrics: [
+    ["revenue_change_from_baseline","Revenue change from baseline",["business"]],
+    ["liquidity_change_from_baseline","Liquidity change from baseline",["business","person"]],
+    ["dscr_change_from_baseline","DSCR change from baseline",["business"]],
+    ["obligation_growth_from_baseline","Debt change from baseline",["business","person"]]
+  ] }
 ];
 const bdcResearchApproach = [
   ["Disciplines", "Evaluation, financial language, temporal reasoning, entity relationships and model governance.", [
@@ -232,8 +453,37 @@ const BdcAIComparison = () => {
   <a className="bdc-ai-protocol" href="/research/frontier-benchmark" target="_blank" rel="noopener noreferrer">How a measured performance comparison is evaluated<BdcIcon name="arrow" size={14} /></a>
 </div>;
 };
+const BdcMetricCatalog = () => {
+  const [query, setQuery] = useState("");
+  const [audience, setAudience] = useState("all");
+  const search = query.trim().toLowerCase().replace(/[_-]+/g, " ");
+  const visible = bdcMetricDimensions.map(dimension => ({
+    ...dimension,
+    metrics: dimension.metrics.filter(([key, label, borrowers]) =>
+      (audience === "all" || borrowers.includes(audience)) &&
+      (!search || `${dimension.label} ${key.replace(/_/g, " ")} ${label}`.toLowerCase().includes(search))
+    )
+  })).filter(dimension => dimension.metrics.length);
+  const total = bdcMetricDimensions.reduce((sum, dimension) => sum + dimension.metrics.length, 0);
+  const shown = visible.reduce((sum, dimension) => sum + dimension.metrics.length, 0);
+  return <div className="bdc-metric-catalog">
+    <div className="bdc-metric-intro">
+      <div><h3>What the API assesses</h3><p>Financial, operational and risk measures used across underwriting and ongoing monitoring. Available values depend on borrower type, authorized sources and the evidence for each assessment.</p></div>
+      <div className="bdc-metric-totals" aria-label={`${bdcMetricDimensions.length} dimensions and ${total} metrics in the API catalog`}><span><strong>{bdcMetricDimensions.length}</strong>dimensions</span><span><strong>{total}</strong>metrics</span></div>
+    </div>
+    <div className="bdc-metric-controls">
+      <label className="bdc-metric-search"><span className="bdc-sr-only">Search metrics or dimensions</span><BdcIcon name="search" size={18} /><input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search metrics or dimensions" /></label>
+      <div className="bdc-metric-audience" role="group" aria-label="Borrower type">{[["all", "All"], ["business", "Business"], ["person", "Consumer"]].map(([value, label]) => <button type="button" key={value} aria-pressed={audience === value} onClick={() => setAudience(value)}>{label}</button>)}</div>
+    </div>
+    <div className="bdc-metric-result-bar"><p role="status">{shown} {shown === 1 ? "metric" : "metrics"} across {visible.length} {visible.length === 1 ? "dimension" : "dimensions"}</p><a href="/api-reference/underwriting-dimensions" target="_blank" rel="noopener noreferrer">Full metric dictionary<BdcIcon name="arrow" size={14} /></a></div>
+    <div className="bdc-metric-grid">{visible.map(dimension => <section className="bdc-metric-group" key={dimension.key} aria-labelledby={`bdc-metric-${dimension.key}`}><header><h4 id={`bdc-metric-${dimension.key}`}>{dimension.label}</h4><span aria-label={`${dimension.metrics.length} ${dimension.metrics.length === 1 ? "metric" : "metrics"}`}>{dimension.metrics.length}</span></header><ul>{dimension.metrics.map(([key, label]) => <li key={key}>{label}</li>)}</ul></section>)}</div>
+    {!visible.length && <div className="bdc-metric-empty"><p>No metrics match this search.</p><button type="button" onClick={() => { setQuery(""); setAudience("all"); }}>Show all metrics</button></div>}
+    <p className="bdc-metric-footnote">Each metric is defined with its calculation, units, observation window and evidence requirements. Missing or inapplicable values are identified explicitly. <a href="/api-reference/risk-package-methodology" target="_blank" rel="noopener noreferrer">View the assessment methodology</a>.</p>
+  </div>;
+};
+
 const BdcResearch = () => {
-  const [view, setView] = useState("comparison");
+  const [view, setView] = useState("metrics");
   const dialogRef = useRef(null), openerRef = useRef(null);
   const openDetails = (next, event) => { openerRef.current = event.currentTarget; setView(next); dialogRef.current?.showModal(); };
   const closeDetails = () => dialogRef.current?.close();
@@ -248,16 +498,12 @@ const BdcResearch = () => {
     </div>
     <div className="bdc-research-findings" aria-label="AMLOK-reported research findings">{[["40% → 82%", "Assessable information"], ["60-85%", "Unreadable transaction value resolved"], ["25-45%", "Signal-bearing defaults flagged"], ["6-8 weeks", "Earlier distress detection"]].map(([value, label]) => <div key={label}><strong>{value}</strong><p>{label}</p></div>)}</div>
     <dl className="bdc-research-functions">{bdcResearchApproach.find(([title]) => title === "Capabilities")[2].map(([title, description]) => <div key={title}><dt>{title}</dt><dd>{description}</dd></div>)}</dl>
-    <div className="bdc-research-actions"><div><button type="button" onClick={e => openDetails("landscape", e)}>AI comparison<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("comparison", e)}>12 comparison measures<BdcIcon name="arrow" size={16} /></button></div></div>
+    <div className="bdc-research-actions"><div><button type="button" onClick={e => openDetails("landscape", e)}>AI comparison<BdcIcon name="arrow" size={16} /></button><button type="button" onClick={e => openDetails("metrics", e)}>Metrics and dimensions<BdcIcon name="arrow" size={16} /></button></div></div>
     <dialog className="bdc-research-dialog" data-view={view} ref={dialogRef} aria-labelledby="bdc-research-details-title" onClose={() => openerRef.current?.focus()} onClick={e => { if (e.target === e.currentTarget) closeDetails(); }}>
       <div className="bdc-research-dialog-header"><div><p className="bdc-eyebrow">AMLOK / Research</p><h2 id="bdc-research-details-title">{view === "landscape" ? "Financial AI comparison" : "Research details"}</h2></div><button type="button" onClick={closeDetails} aria-label="Close research details"><BdcIcon name="close" /></button></div>
-      <div className="bdc-research-switch" role="group" aria-label="Research detail view"><button type="button" aria-pressed={view === "landscape"} onClick={() => setView("landscape")}>AI comparison</button><button type="button" aria-pressed={view === "comparison"} onClick={() => setView("comparison")}>Proposed comparison</button><button type="button" aria-pressed={view === "approach"} onClick={() => setView("approach")}>Research approach</button></div>
+      <div className="bdc-research-switch" role="group" aria-label="Research detail view"><button type="button" aria-pressed={view === "landscape"} onClick={() => setView("landscape")}>AI comparison</button><button type="button" aria-pressed={view === "metrics"} onClick={() => setView("metrics")}>Metrics and dimensions</button><button type="button" aria-pressed={view === "approach"} onClick={() => setView("approach")}>Research approach</button></div>
       <div hidden={view !== "landscape"}><BdcAIComparison /></div>
-      <div hidden={view !== "comparison"} className="bdc-research-comparison">
-        <h3>Connected-data validation</h3><p>Proposed comparison from the AMLOK research summary. Values are approximate; relative change is calculated as (AMLOK - baseline) / baseline.</p>
-        <div className="bdc-research-table-scroll" role="region" aria-label="Scrollable proposed comparison" tabIndex={0}><table><caption className="bdc-sr-only">Proposed connected-data comparison across 12 measurement dimensions</caption><thead><tr><th scope="col">Measurement dimension</th><th scope="col">Baseline</th><th scope="col">AMLOK (proposed)</th><th scope="col">Relative change</th></tr></thead><tbody>{bdcResearchComparison.map(([label, baseline, amlok, unit]) => { const delta = (amlok - baseline) / baseline * 100; return <tr key={label}><th scope="row">{label}</th><td>{baseline.toFixed(2)}{unit}</td><td>≈{amlok.toFixed(2)}{unit}</td><td>≈{delta > 0 ? "+" : ""}{delta.toFixed(2)}%</td></tr>; })}</tbody></table></div>
-        <p className="bdc-research-detail-note">The AML measure is a normalized manual-review burden index (baseline = 100), not verification accuracy, review time or cost. Percentage change is distinct from a percentage-point difference.</p>
-      </div>
+      <div hidden={view !== "metrics"}><BdcMetricCatalog /></div>
       <div hidden={view !== "approach"} className="bdc-research-approach"><p>Research focuses on financial understanding for full underwriting and ongoing monitoring. Each task has its own evidence, evaluation population and intended use.</p><div>{bdcResearchApproach.map(([title, summary, details]) => <section key={title}><h3>{title === "Models" ? "Model architecture" : title}</h3><dl>{details.map(([label, detail]) => <div key={label}><dt>{label}</dt><dd>{detail}</dd></div>)}</dl></section>)}</div><p className="bdc-research-detail-note">The headline figures are supplied AMLOK research results. The public research documentation describes separate structured-loan and financial-document baseline studies.</p><a href="/research" target="_blank" rel="noopener noreferrer">Explore the research documentation<BdcIcon name="arrow" size={16} /></a></div>
     </dialog>
   </div>;
