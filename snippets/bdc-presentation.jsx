@@ -3,7 +3,7 @@ const bdcSlides = [
   ["The opportunity", "Capacity-based lending"],
   ["The challenge", "A fragmented picture. A moving risk."],
   ["Research", "AI research for better decisions."],
-  ["Two products", "From underwriting to ongoing intelligence."],
+  ["Two products", "Insights and Signal"],
   ["The unified process", "Unified data. A stronger underwriting process."],
   ["Embedded financing", "Turn each transaction into a financing opportunity."],
   ["After funding", "Keep the funded decision in view."],
@@ -652,7 +652,7 @@ export const BdcPresentation = () => {
       <section className="bdc-slide bdc-research" hidden={current !== 2} aria-labelledby="bdc-title-2"><BdcHeading index={2} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows - where general-purpose AI still falls short.</>} /><BdcResearch /></section>
 
       <section className="bdc-slide bdc-product-pathways-slide" hidden={current !== 3} aria-labelledby="bdc-title-3">
-        <BdcHeading index={3} />
+        <p className="bdc-eyebrow bdc-product-slide-label" id="bdc-title-3">04 / Two products</p>
         <div className="bdc-product-pathways">
           <div className="bdc-product-institutions">
             <div className="bdc-product-institution-title"><BdcIcon name="bank" size={28} /><h3>Financial institutions</h3></div>
