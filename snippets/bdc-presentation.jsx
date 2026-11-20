@@ -769,6 +769,10 @@ export const BdcPresentation = () => {
             ["shield", "Growth within risk appetite", "Evaluate each financing need against current capacity and existing obligations, then follow changes through the term with permission."]
           ].map(([icon, title, body], index) => <article key={title} className={index === 0 ? "bdc-widget-value-card bdc-widget-value-primary" : "bdc-widget-value-card"}><div className="bdc-widget-value-card-top"><BdcIcon name={icon} size={26} /><span>{String(index + 1).padStart(2, "0")}</span></div><h3>{title}</h3><p>{body}</p></article>)}
         </div>
+        <div className="bdc-widget-focus" role="group" aria-labelledby="bdc-widget-focus-title">
+          <p id="bdc-widget-focus-title">Priority lending products</p>
+          <ul>{["Supplier payments", "Inventory", "Purchase orders", "Working capital"].map(product => <li key={product}>{product}</li>)}</ul>
+        </div>
         <BdcNote>The institution retains eligibility, pricing, approval and funding authority. Businesses choose whether to use financing and which additional permissions to grant.</BdcNote>
       </section>
 
