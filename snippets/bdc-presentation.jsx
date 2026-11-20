@@ -5,8 +5,8 @@ const bdcSlides = [
   ["Research", "AI research for better decisions."],
   ["Two products", "Insights and Signal"],
   ["The unified process", "Unified data. A stronger underwriting process."],
+  ["After funding", "New signals. A continuous view of risk."],
   ["Embedded financing", "Turn each transaction into a financing opportunity."],
-  ["After funding", "Keep the funded decision in view."],
   ["The conversation", "Where could better evidence change a decision?"]
 ];
 
@@ -618,7 +618,7 @@ export const BdcPresentation = () => {
     try { if (document.fullscreenElement) await document.exitFullscreen(); else if (rootRef.current?.requestFullscreen) await rootRef.current.requestFullscreen(); else setNotice("Use your browser's full-screen option on this device."); }
     catch { setNotice("Use your browser's full-screen option on this device."); }
   };
-  return <main id="demobdc-deck" className={`not-prose${current === 5 ? " bdc-embedded-active" : ""}`} ref={rootRef} aria-label="AMLOK presentation for BDC">
+  return <main id="demobdc-deck" className={`not-prose${current === 6 ? " bdc-embedded-active" : ""}`} ref={rootRef} aria-label="AMLOK presentation for BDC">
     <header className="bdc-topbar"><a href="#slide-01" onClick={e => { e.preventDefault(); goTo(0); }} aria-label="AMLOK presentation, first slide"><img src="/logo/amlok-logo-blue.svg" alt="AMLOK" width="139" height="26" /></a><div className="bdc-meeting-label">Prepared for BDC<span>Capacity-based lending</span></div><div className="bdc-toolbar"><button ref={overviewButtonRef} type="button" onClick={() => overviewRef.current?.showModal()} aria-label="Open slide overview" title="Slide overview"><BdcIcon name="grid" size={18} /><span>Overview</span></button><button type="button" onClick={() => window.print()} aria-label="Print or save presentation as PDF" title="Print or save PDF"><BdcIcon name="print" size={18} /></button><button type="button" onClick={toggleFullscreen} aria-label={fullscreen ? "Exit full screen" : "Enter full screen"} title="Full screen"><BdcIcon name="expand" size={18} /></button></div></header>
     <div className="bdc-sr-only" aria-live="polite">Slide {current + 1} of {bdcSlides.length}: {bdcSlides[current][1]}</div>
     {notice && <div className="bdc-notice" role="status">{notice}<button type="button" onClick={() => setNotice("")} aria-label="Dismiss message"><BdcIcon name="close" size={16} /></button></div>}
@@ -715,9 +715,46 @@ export const BdcPresentation = () => {
         <BdcNote>Business-system access is borrower-permissioned. Your institution retains final credit authority.</BdcNote>
       </section>
 
-      <section className="bdc-slide bdc-embedded" hidden={current !== 5} aria-labelledby="bdc-title-5"><BdcHeading index={5} intro="An embedded AMLOK widget underwrites at the point of payment, using the institution's policies and borrower-permissioned data." /><BdcEmbeddedFinance /><div className="bdc-embedded-caption"><p><strong>Research → Risk engine → In-flow financing</strong><span>The institution controls policy and approval. The business sees what can improve its offer.</span></p><small>BDC-branded concept, not an existing BDC product or offer. Illustrative CAD terms; subject to evidence, underwriting and approval. No live payments or connections.</small></div></section>
+      <section className="bdc-slide bdc-unified bdc-signal" hidden={current !== 5} aria-labelledby="bdc-title-5">
+        <BdcHeading index={5} intro="Signal compares new evidence with the funded baseline, so your team can see what changed and when to review." />
+        <div className="bdc-signal-map">
+          <div className="bdc-signal-inputs" aria-label="Monitored signals">
+            {[
+              ["flow", "Cash flow and liquidity", "Operating cash, balances, cash buffer and volatility."],
+              ["shop", "Revenue and margin", "Sales trends, recurring receipts, costs and margins."],
+              ["card", "Payments and new debt", "Missed payments, insufficient funds, refunds, disputes and new obligations."],
+              ["target", "Capacity and covenants", "Debt-service coverage, repayment headroom and policy thresholds."],
+              ["book", "Working capital and operations", "Overdue invoices, payables, inventory, payroll and settlement delays."],
+              ["link", "Counterparty exposure", "Customer, supplier and channel concentration; related-party activity."],
+              ["shield", "Collateral and obligations", "Collateral coverage, tax arrears and relevant public-record changes."],
+              ["search", "Data health and consistency", "Stale feeds, lost permission, reconciliation gaps and conflicting records."]
+            ].map(([icon, title, detail]) => <div key={title}><BdcIcon name={icon} size={21} /><div><h3>{title}</h3><p>{detail}</p></div></div>)}
+          </div>
+          <div className="bdc-unification-arrow"><BdcIcon name="arrow" size={30} /></div>
+          <div className="bdc-unification-engine bdc-signal-engine">
+            <p className="bdc-eyebrow">Signal / Portfolio monitoring</p>
+            <h3>Know what changed.<br />Know why it matters.</h3>
+            <div>{[
+              ["document", "Compare new evidence with the funded baseline"],
+              ["flow", "Reassess risk, capacity and repayment headroom"],
+              ["target", "Apply lender-defined thresholds and policy context"],
+              ["link", "Link alerts to source evidence, timing and severity"],
+              ["search", "Separate financial changes from missing or stale data"],
+              ["layers", "Deliver updated findings through APIs and webhooks"]
+            ].map(([icon, title]) => <span key={title}><BdcIcon name={icon} size={19} />{title}</span>)}</div>
+          </div>
+        </div>
+        <div className="bdc-unified-outcomes bdc-signal-outcomes">
+          {[
+            ["Detect", "Changes that warrant attention", "Surface deterioration, repayment stress and emerging exposures."],
+            ["Reassess", "Improvement and headroom", "Recognize stronger cash flow, lower debt and changing financing capacity."],
+            ["Prioritize", "Evidence for institution-led review", "Connect changed facts to the borrower, affected policies and supporting records."]
+          ].map(([title, subtitle, body]) => <div key={title}><h3>{title}</h3><strong>{subtitle}</strong><p>{body}</p></div>)}
+        </div>
+        <BdcNote>Coverage and refresh depend on authorized sources. Change-driven reassessment is included in Signal. Your institution owns outreach and decisions; monitoring does not automatically reprice a facility.</BdcNote>
+      </section>
 
-      <section className="bdc-slide" hidden={current !== 6} aria-labelledby="bdc-title-6"><BdcHeading index={6} intro="AMLOK Signal monitors changes and reassesses the business against the evidence behind the funded decision." /><div className="bdc-monitor-flow"><div className="bdc-baseline"><p className="bdc-eyebrow">Funded baseline</p><BdcIcon name="document" size={35} /><h3>Preserve the rationale</h3><p>Approved assumptions, financial evidence, conditions and policy context.</p></div><div className="bdc-monitor-events"><p className="bdc-eyebrow">Illustrative change signals</p>{[["flow", "Cash generation changes", "Compare receipts, costs and liquidity."], ["layers", "Risk and capacity shift", "Review new debt, concentrations or stronger repayment headroom."], ["link", "Evidence becomes unavailable", "Flag incomplete coverage separately."]].map(([icon, title, text]) => <div key={title}><BdcIcon name={icon} size={19} /><span><strong>{title}</strong>{text}</span></div>)}</div><div className="bdc-intervention"><p className="bdc-eyebrow">Lender review</p><h3>Know when <br />to look closer.</h3><p>Prioritize risk, capacity and renewal reviews with changed facts and affected assumptions.</p><span className="bdc-tag">Institution-led intervention</span></div></div><BdcNote>Signal includes change-driven reassessment. The institution handles borrower outreach and action in its own systems. Monitoring does not automatically reprice a signed facility.</BdcNote></section>
+      <section className="bdc-slide bdc-embedded" hidden={current !== 6} aria-labelledby="bdc-title-6"><BdcHeading index={6} intro="An embedded AMLOK widget underwrites at the point of payment, using the institution's policies and borrower-permissioned data." /><BdcEmbeddedFinance /><div className="bdc-embedded-caption"><p><strong>Research → Risk engine → In-flow financing</strong><span>The institution controls policy and approval. The business sees what can improve its offer.</span></p><small>BDC-branded concept, not an existing BDC product or offer. Illustrative CAD terms; subject to evidence, underwriting and approval. No live payments or connections.</small></div></section>
 
       <section className="bdc-slide bdc-closing" hidden={current !== 7} aria-labelledby="bdc-title-7"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-7">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
     </div>
