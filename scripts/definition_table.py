@@ -85,7 +85,7 @@ def write_definition_table(root, meaning, metrics, bank, cross, taxonomy):
 title: "Definition catalog"
 description: "Read and search the meaning of every dimension, metric, financial attribute and transaction category in the AMLOK API."
 keywords: [dimensions, metrics, attributes, categories, financial definitions, data dictionary]
-icon: "table-list"
+icon: "table"
 mode: "wide"
 ---
 
