@@ -17,13 +17,13 @@ Provider and observation context remain visible. Inconclusive, not checked and n
 
 `id` · `string` · Required · Nullable: No
 
-Id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Identifier of this summarized verification check, retained for traceability within the assessment.
 
 ### VerificationCheck-check
 
 `check` · `string` · Required · Nullable: No
 
-Check. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type or named check summarized by this observation.
 
 Allowed values: `identity`, `account_ownership`, `business_registration`, `beneficial_ownership`, `document_authenticity`, `income_verification`, `credit_report_match`, `lien`, `tax_filing`.
 
@@ -31,13 +31,13 @@ Allowed values: `identity`, `account_ownership`, `business_registration`, `benef
 
 `subject_id` · `string` · Required · Nullable: No
 
-Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The business or person to which this check applies.
 
 ### VerificationCheck-result
 
 `result` · `string` · Required · Nullable: No
 
-Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The recorded outcome of the check. Read the explanation and evidence; an unresolved result is not a successful verification.
 
 Allowed values: `matched`, `not_matched`, `inconclusive`, `not_checked`.
 
@@ -45,19 +45,19 @@ Allowed values: `matched`, `not_matched`, `inconclusive`, `not_checked`.
 
 `provider` · `string | null` · Required · Nullable: Yes
 
-Provider. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source or provider attributed to the check, when available and permitted to disclose.
 
 ### VerificationCheck-observed_at
 
 `observed_at` · `string | null` · Required · Nullable: Yes
 
-Observed at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When the verification observation was made, rather than when you retrieved it.
 
 ### VerificationCheck-explanation
 
 `explanation` · `string` · Required · Nullable: No
 
-Explanation. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The readable explanation of the check's result and relevant limitations.
 
 ### VerificationCheck-evidence
 
@@ -87,7 +87,7 @@ Explicit explanation code when no complete usable value is available.
 
 `evidence_ids` · `string[]` · Required · Nullable: No
 
-Evidence ids. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+References to evidence supporting the checks in this section.
 
 ### VerificationCheckSection-items
 
@@ -183,7 +183,7 @@ RFC 6901 pointer relative to this item for a field with different provenance.
 
 `field_evidence[].basis` · `string` · Required · Nullable: No
 
-Basis. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+How the individual field was established, such as a declaration, source observation or document extraction. Different bases remain distinguishable.
 
 Allowed values: `registry`, `provider_verified`, `document_extracted`, `declared`, `derived`.
 
@@ -273,7 +273,7 @@ ISO 3166-2 subdivision where known, otherwise source jurisdiction label.
 
 `disclosure` · `string` · Required · Nullable: No
 
-Disclosure. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The disclosure level applied to this identifier, such as masked or otherwise restricted presentation.
 
 Allowed values: `full`, `masked`, `unavailable`.
 
@@ -367,7 +367,7 @@ Opaque ID referenced by item provenance.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The kind of source supplying the verification evidence.
 
 Allowed values: `identity_verification`, `business_verification`, `registry`, `regulatory_registry`, `screening`, `document`, `institution`.
 
@@ -497,7 +497,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of verification check whose execution and result are recorded here.
 
 Allowed values: `identity`, `document_authenticity`, `liveness`, `face_match`, `duplicate_identity`, `proof_of_address`, `database`, `business_registration`, `good_standing`, `ownership`, `sanctions`, `pep`, `adverse_media`, `watchlist`, `tax_identifier`, `licence`, `public_records`, `contact`, `device`, `bank_ownership`, `signature`, `other`.
 
@@ -505,7 +505,7 @@ Allowed values: `identity`, `document_authenticity`, `liveness`, `face_match`, `
 
 `state` · `string` · Required · Nullable: No
 
-State. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The check's execution state, separate from the verification outcome. An uncompleted check cannot establish a successful result.
 
 Allowed values: `pending`, `in_progress`, `completed`, `failed`, `not_requested`, `not_applicable`.
 
@@ -601,7 +601,7 @@ Explicit explanation code when no complete usable value is available.
 
 `override.decided_at` · `string` · Required · Nullable: No
 
-Decided at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When the recorded human override decision was made.
 
 Format: `date-time`.
 
@@ -609,7 +609,7 @@ Format: `date-time`.
 
 `override.actor_reference` · `string` · Required · Nullable: No
 
-Actor reference. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Reference to the authorized actor responsible for the override, rather than an automatically inferred reviewer.
 
 ## VerificationBusiness
 
@@ -669,7 +669,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `resolution` · `string` · Required · Nullable: No
 
-Resolution. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Whether the business observation is a candidate or a resolved legal-entity match under the stated evidence.
 
 Allowed values: `candidate`, `selected`, `unresolved`.
 
@@ -749,31 +749,31 @@ IDs in relationships.
 
 `industry_codes` · `object[]` · Required · Nullable: No
 
-Industry codes. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Industry classifications attributed to the business, retaining each classification scheme and evidence basis.
 
 ### VerificationBusiness-industry_codes-scheme
 
 `industry_codes[].scheme` · `string` · Required · Nullable: No
 
-Scheme. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The classification system in which this industry code has meaning.
 
 ### VerificationBusiness-industry_codes-code
 
 `industry_codes[].code` · `string` · Required · Nullable: No
 
-Code. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The industry code within the stated classification scheme.
 
 ### VerificationBusiness-industry_codes-label
 
 `industry_codes[].label` · `string | null` · Required · Nullable: Yes
 
-Label. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The readable industry description associated with the code, when supplied.
 
 ### VerificationBusiness-industry_codes-basis
 
 `industry_codes[].basis` · `string` · Required · Nullable: No
 
-Basis. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The evidence basis for assigning this industry classification, distinguished from the business's own declaration.
 
 Allowed values: `declared`, `registry`, `predicted`.
 
@@ -781,7 +781,7 @@ Allowed values: `declared`, `registry`, `predicted`.
 
 `industry_codes[].confidence` · `VerificationScore | null` · Required · Nullable: Yes
 
-Confidence. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source's confidence measure for the industry assignment, retaining its own scale and meaning rather than becoming a credit score.
 
 ### VerificationBusiness-website
 
@@ -949,7 +949,7 @@ Detailed verification check IDs.
 
 `identity_assurance` · `string` · Required · Nullable: No
 
-Identity assurance. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The supported assurance state for the person's identity. It does not establish creditworthiness or completion of unrelated checks.
 
 Allowed values: `unverified`, `documentary`, `database_match`, `cryptographic`, `unknown`.
 
@@ -1089,7 +1089,7 @@ Filing date for the most recent annual return.
 
 `annual_return_status` · `string` · Required · Nullable: No
 
-Annual return status. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported state of the entity's annual-return filing obligations, distinct from its registration status.
 
 Allowed values: `current`, `overdue`, `unknown`, `not_applicable`.
 
@@ -1097,7 +1097,7 @@ Allowed values: `current`, `overdue`, `unknown`, `not_applicable`.
 
 `outstanding_return_years` · `integer[]` · Required · Nullable: No
 
-Outstanding return years. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The annual-return years reported as outstanding by the source. Missing information does not establish that all years were filed.
 
 ### VerificationRegistration-registered_agent_relationship_id
 
@@ -1223,7 +1223,7 @@ Formatted address.
 
 `validation` · `string` · Required · Nullable: No
 
-Validation. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The supported validation result for the address, rather than an assumption that a supplied address is verified.
 
 Allowed values: `validated`, `partial`, `not_validated`, `unknown`.
 
@@ -1327,7 +1327,7 @@ Related person or business subject ID.
 
 `related_entity_type` · `string` · Required · Nullable: No
 
-Related entity type. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Whether the linked party is represented as a person, business or other permitted entity type.
 
 Allowed values: `person`, `business`, `unknown`.
 
@@ -1407,7 +1407,7 @@ Whether this party requires verification under effective policy.
 
 `verification_state` · `string` · Required · Nullable: No
 
-Verification state. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The evidence-supported verification state of the relationship, distinct from the identity verification of either party.
 
 Allowed values: `completed`, `pending`, `not_requested`, `skipped`, `unavailable`.
 
@@ -1487,7 +1487,7 @@ Owned entity ID.
 
 `interest_type` · `string` · Required · Nullable: No
 
-Interest type. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of ownership or control interest represented by this record, such as an economic, voting or other supported interest.
 
 Allowed values: `direct`, `indirect`, `beneficial`, `voting`, `unknown`.
 
@@ -1693,7 +1693,7 @@ Person whose identity is on the document.
 
 `method` · `string` · Required · Nullable: No
 
-Method. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The method used to assess the identity document, retaining the source's stated basis.
 
 Allowed values: `document`, `database`, `wallet`, `nfc`, `unknown`.
 
@@ -1707,7 +1707,7 @@ Documentary, data match or cryptographic assurance as supported by evidence.
 
 `authenticity` · `string` · Required · Nullable: No
 
-Authenticity. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported document-authenticity result. Unknown or unresolved authenticity does not establish a genuine document.
 
 Allowed values: `passed`, `failed`, `inconclusive`, `not_checked`.
 
@@ -1721,7 +1721,7 @@ Allowlisted identity fields and extraction confidence/quality facts.
 
 `quality_scores` · `VerificationScore[]` · Required · Nullable: No
 
-Quality scores. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Source-reported document-quality measures with their own names and scales, rather than a combined credit or identity score.
 
 ### VerificationIdentityDocument-nfc
 
@@ -1787,13 +1787,13 @@ Verified digital credential attributes; no access tokens.
 
 `wallet.issuer` · `string | null` · Required · Nullable: Yes
 
-Issuer. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Issuer attributed to the digital identity or wallet credential, when supported.
 
 ### VerificationIdentityDocument-wallet-country
 
 `wallet.country` · `string | null` · Required · Nullable: Yes
 
-Country. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Country associated with the credential issuer as reported in the wallet evidence; it is not an inferred nationality.
 
 ### VerificationIdentityDocument-wallet-credential_type
 
@@ -1817,7 +1817,7 @@ Whether the credential signature passed source validation.
 
 `wallet.verified_at` · `string | null` · Required · Nullable: Yes
 
-Verified at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When the wallet or credential verification was recorded.
 
 ### VerificationIdentityDocument-document_id
 
@@ -1889,7 +1889,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of biometric check represented, such as liveness or face comparison; this does not expose a raw biometric template.
 
 Allowed values: `liveness`, `face_match`, `document_selfie_match`.
 
@@ -1945,13 +1945,13 @@ Potential name match until disposition is confirmed. News allegations and PEP st
 
 `id` · `string` · Required · Nullable: No
 
-Id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Identifier of the individual screening candidate hit.
 
 ### VerificationScreeningHit-category
 
 `category` · `string` · Required · Nullable: No
 
-Category. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The screening category to which the candidate hit belongs. A category alone does not establish a confirmed match.
 
 Allowed values: `sanctions`, `pep`, `adverse_media`, `watchlist`, `other`.
 
@@ -1965,7 +1965,7 @@ Candidate subject name returned by screening, not a confirmed identity match.
 
 `aliases` · `string[]` · Required · Nullable: No
 
-Aliases. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Alternative names reported for the candidate hit, not automatically verified names of the assessed subject.
 
 ### VerificationScreeningHit-list_name
 
@@ -1989,19 +1989,19 @@ Permitted native screening record identifier used to trace this candidate.
 
 `source_url` · `string | null` · Required · Nullable: Yes
 
-Source url. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Permitted source reference for the screening candidate, when available. It does not grant access to a controlled report.
 
 ### VerificationScreeningHit-match_score
 
 `match_score` · `VerificationScore | null` · Required · Nullable: Yes
 
-Match score. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source's similarity measure between the query and the candidate, retaining the original scale. Similarity is not a confirmed identity match.
 
 ### VerificationScreeningHit-risk_score
 
 `risk_score` · `VerificationScore | null` · Required · Nullable: Yes
 
-Risk score. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+A source-reported risk measure associated with the candidate hit, retaining its original method and scale. It is not an AMLOK default probability.
 
 ### VerificationScreeningHit-disposition
 
@@ -2039,7 +2039,7 @@ UTC time this source last recorded the candidate, when known.
 
 `properties` · `VerificationFact[]` · Required · Nullable: No
 
-Properties. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Additional allowlisted facts about the candidate, each retaining its own meaning and provenance.
 
 ### VerificationScreeningHit-evidence
 
@@ -2105,7 +2105,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of screening performed, which identifies the screening purpose separately from the datasets actually searched.
 
 Allowed values: `sanctions`, `pep`, `adverse_media`, `watchlist`, `combined`.
 
@@ -2113,7 +2113,7 @@ Allowed values: `sanctions`, `pep`, `adverse_media`, `watchlist`, `combined`.
 
 `state` · `string` · Required · Nullable: No
 
-State. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Execution state of the screening request. Incomplete execution does not establish a no-match result.
 
 Allowed values: `completed`, `pending`, `failed`, `not_requested`.
 
@@ -2121,7 +2121,7 @@ Allowed values: `completed`, `pending`, `failed`, `not_requested`.
 
 `result` · `string` · Required · Nullable: No
 
-Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The screening outcome within the stated searched scope. A candidate, inconclusive result and completed no-match result have different meanings.
 
 Allowed values: `no_match`, `potential_match`, `confirmed_match`, `inconclusive`, `not_screened`.
 
@@ -2239,7 +2239,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `identifier` · `VerificationIdentifier` · Required · Nullable: No
 
-Identifier. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The tax identifier assessed, retaining its scheme, jurisdiction and disclosure restrictions.
 
 See [VerificationIdentifier](#verificationidentifier).
 
@@ -2253,7 +2253,7 @@ Source authority or registry used for validation.
 
 `result` · `string` · Required · Nullable: No
 
-Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The outcome of the stated tax-identifier or name check. It does not prove taxes were paid or that no tax debt exists.
 
 Allowed values: `matched`, `not_matched`, `partial_match`, `format_valid`, `invalid_format`, `unavailable`, `not_checked`.
 
@@ -2579,19 +2579,19 @@ Permitted source-specific facts that do not have a canonical field.
 
 `share_classes` · `object[]` · Required · Nullable: No
 
-Share classes. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The share classes reported for the entity, including supported rights, restrictions and nominal values.
 
 ### VerificationCorporateStructure-share_classes-name
 
 `share_classes[].name` · `string` · Required · Nullable: No
 
-Name. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source-reported name of the share class.
 
 ### VerificationCorporateStructure-share_classes-description
 
 `share_classes[].description` · `string | null` · Required · Nullable: Yes
 
-Description. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported description of the share class and its provisions, when available.
 
 ### VerificationCorporateStructure-share_classes-authorized_quantity
 
@@ -2627,7 +2627,7 @@ Number of votes per share in this class, represented as a decimal string.
 
 `share_classes[].nominal_value` · `Money | null` · Required · Nullable: Yes
 
-Nominal value. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The stated nominal or par value of the share class in its currency, rather than a market valuation.
 
 ### VerificationCorporateStructure-share_classes-dividend_rights
 
@@ -2753,7 +2753,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of public or entitled record observation, which determines how its status and facts should be interpreted.
 
 Allowed values: `lien`, `judgment`, `litigation`, `bankruptcy`, `fraud_consortium`, `regulatory_action`, `other`.
 
@@ -2761,7 +2761,7 @@ Allowed values: `lien`, `judgment`, `litigation`, `bankruptcy`, `fraud_consortiu
 
 `match_status` · `string` · Required · Nullable: No
 
-Match status. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Whether and how the public-record subject has been matched to the assessed subject; a search candidate is not a resolved match.
 
 Allowed values: `candidate`, `confirmed`, `excluded`, `unresolved`.
 
@@ -2835,31 +2835,31 @@ UCC/PPSA lien type, bankruptcy chapter or case type.
 
 `parties` · `object[]` · Required · Nullable: No
 
-Parties. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Parties named in the record and their reported roles and supported links.
 
 ### VerificationPublicRecord-parties-name
 
 `parties[].name` · `string` · Required · Nullable: No
 
-Name. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The party's name as recorded in the source record.
 
 ### VerificationPublicRecord-parties-role
 
 `parties[].role` · `string | null` · Required · Nullable: Yes
 
-Role. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The party's reported role in the record, when supplied.
 
 ### VerificationPublicRecord-parties-subject_id
 
 `parties[].subject_id` · `string | null` · Required · Nullable: Yes
 
-Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+A supported link to an authorized business or person identity; null means no such link is established.
 
 ### VerificationPublicRecord-parties-address_id
 
 `parties[].address_id` · `string | null` · Required · Nullable: Yes
 
-Address id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Reference to the party's associated address observation, when established.
 
 ### VerificationPublicRecord-amount
 
@@ -2877,55 +2877,55 @@ Original collateral descriptions and classifications.
 
 `amendments` · `object[]` · Required · Nullable: No
 
-Amendments. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Reported changes or filings that amend the original record.
 
 ### VerificationPublicRecord-amendments-reference
 
 `amendments[].reference` · `string` · Required · Nullable: No
 
-Reference. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source reference identifying this amendment.
 
 ### VerificationPublicRecord-amendments-kind
 
 `amendments[].kind` · `string | null` · Required · Nullable: Yes
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source-reported type of amendment, when known.
 
 ### VerificationPublicRecord-amendments-filed_on
 
 `amendments[].filed_on` · `string | null` · Required · Nullable: Yes
 
-Filed on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The amendment's reported filing date, rather than the date it was collected.
 
 ### VerificationPublicRecord-amendments-document_ids
 
 `amendments[].document_ids` · `string[]` · Required · Nullable: No
 
-Document ids. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Authorized document references supporting this amendment.
 
 ### VerificationPublicRecord-events
 
 `events` · `object[]` · Required · Nullable: No
 
-Events. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Dated events reported in the record's history, with their supporting document references.
 
 ### VerificationPublicRecord-events-date
 
 `events[].date` · `string | null` · Required · Nullable: Yes
 
-Date. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported event date; null does not establish that the event did not occur.
 
 ### VerificationPublicRecord-events-description
 
 `events[].description` · `string` · Required · Nullable: No
 
-Description. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source-supported description of what occurred at this event.
 
 ### VerificationPublicRecord-events-document_ids
 
 `events[].document_ids` · `string[]` · Required · Nullable: No
 
-Document ids. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Authorized documents supporting the reported event.
 
 ### VerificationPublicRecord-consortium_observation
 
@@ -2937,49 +2937,49 @@ Licensed attributed report, not independently established fraud.
 
 `consortium_observation.reported_on` · `string | null` · Required · Nullable: Yes
 
-Reported on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When the entitled consortium observation was reported, distinguished from account opening or closing dates.
 
 ### VerificationPublicRecord-consortium_observation-product_type
 
 `consortium_observation.product_type` · `string | null` · Required · Nullable: Yes
 
-Product type. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The financial product type reported for the consortium observation.
 
 ### VerificationPublicRecord-consortium_observation-opened_on
 
 `consortium_observation.opened_on` · `string | null` · Required · Nullable: Yes
 
-Opened on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported opening date of the observed product or account.
 
 ### VerificationPublicRecord-consortium_observation-closed_on
 
 `consortium_observation.closed_on` · `string | null` · Required · Nullable: Yes
 
-Closed on. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported closing date of the observed product or account, when known.
 
 ### VerificationPublicRecord-consortium_observation-closure_reason
 
 `consortium_observation.closure_reason` · `string | null` · Required · Nullable: Yes
 
-Closure reason. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The source's reported reason for closure, without inferring default from closure alone.
 
 ### VerificationPublicRecord-consortium_observation-first_payment_default
 
 `consortium_observation.first_payment_default` · `boolean | null` · Required · Nullable: Yes
 
-First payment default. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Whether the source explicitly reports a first-payment default under its definition. Null is unknown, not false.
 
 ### VerificationPublicRecord-consortium_observation-original_amount
 
 `consortium_observation.original_amount` · `Money | null` · Required · Nullable: Yes
 
-Original amount. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The original amount reported for the product or account, in the reported currency.
 
 ### VerificationPublicRecord-consortium_observation-charge_off_amount
 
 `consortium_observation.charge_off_amount` · `Money | null` · Required · Nullable: Yes
 
-Charge off amount. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The amount the source reports as charged off, in its currency. It is not an estimate of future loss.
 
 ### VerificationPublicRecord-document_ids
 
@@ -3045,7 +3045,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of online business presence observed, such as a website or other permitted business profile.
 
 Allowed values: `website`, `directory`, `review_profile`, `business_social`.
 
@@ -3077,7 +3077,7 @@ Source description and stated limitations.
 
 `match` · `string` · Required · Nullable: No
 
-Match. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The supported match between the online presence and the assessed subject. A located page alone does not establish ownership.
 
 Allowed values: `matched`, `partial`, `not_matched`, `unresolved`.
 
@@ -3223,7 +3223,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of contact verification performed, distinguished from the value or verification result itself.
 
 Allowed values: `email`, `phone`.
 
@@ -3589,7 +3589,7 @@ Allowed values: `passed`, `failed`, `review_required`, `inconclusive`, `not_perf
 
 `tamper_result` · `string` · Required · Nullable: No
 
-Tamper result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The reported assessment of possible document alteration. A signal requires interpretation and does not by itself prove fraud.
 
 Allowed values: `not_detected`, `suspected`, `inconclusive`, `not_checked`.
 
@@ -3723,7 +3723,7 @@ Open banking, account check or source verification method.
 
 `result` · `string` · Required · Nullable: No
 
-Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The outcome of the stated bank-account check, interpreted with its scope and ownership evidence. It does not establish financial capacity.
 
 Allowed values: `matched`, `partial_match`, `not_matched`, `unavailable`, `not_checked`.
 
@@ -3845,7 +3845,7 @@ Actual submission time when supplied.
 
 `answers` · `object[]` · Required · Nullable: No
 
-Answers. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Recorded answers to the questionnaire, retaining question identity and answer provenance. A declaration is not automatically verified evidence.
 
 ### VerificationQuestionnaire-answers-question_id
 
@@ -3989,7 +3989,7 @@ Signing lifecycle status.
 
 `validation` · `string` · Required · Nullable: No
 
-Validation. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The supported validation result for the recorded signature or signing evidence, rather than an inferred conclusion from a document's existence.
 
 Allowed values: `valid`, `invalid`, `indeterminate`, `not_checked`.
 
@@ -4135,7 +4135,7 @@ Authorized scalar source value. Structured extras use named scalar facts, not un
 
 `result` · `string` · Required · Nullable: No
 
-Result. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The result of comparing the stated fields across sources, preserving differences, missing values and unresolved comparisons.
 
 Allowed values: `matched`, `partial_match`, `not_matched`, `not_submitted`, `not_checked`, `source_unavailable`, `inconclusive`.
 
@@ -4233,7 +4233,7 @@ Provider score category, such as identity_match, fraud, KYB or risk.
 
 `score` · `VerificationScore` · Required · Nullable: No
 
-Score. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+A source-provided score with its name, scale, direction and method when known. It is not interchangeable with other provider scores or an AMLOK default probability.
 
 See [VerificationScore](#verificationscore).
 
@@ -4307,7 +4307,7 @@ Permitted source-specific facts that do not have a canonical field.
 
 `kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of duplicate or related-identity check represented within the authorized scope.
 
 Allowed values: `document`, `face`, `email`, `phone`, `entity`.
 
@@ -4329,37 +4329,37 @@ Provider total when known.
 
 `authorized_matches` · `object[]` · Required · Nullable: No
 
-Authorized matches. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Matches that may be disclosed within the authorized scope. This list does not expose identities from other customers or prove every possible match was searched.
 
 ### VerificationDuplicateCheck-authorized_matches-subject_id
 
 `authorized_matches[].subject_id` · `string` · Required · Nullable: No
 
-Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The authorized matched business or person identity.
 
 ### VerificationDuplicateCheck-authorized_matches-assessment_id
 
 `authorized_matches[].assessment_id` · `string | null` · Required · Nullable: Yes
 
-Assessment id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Reference to the associated authorized verification assessment, when available.
 
 ### VerificationDuplicateCheck-authorized_matches-similarity
 
 `authorized_matches[].similarity` · `VerificationScore | null` · Required · Nullable: Yes
 
-Similarity. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Source-reported similarity between the assessed identity and the authorized candidate, retaining its scale rather than implying a confirmed duplicate.
 
 ### VerificationDuplicateCheck-authorized_matches-observed_at
 
 `authorized_matches[].observed_at` · `string | null` · Required · Nullable: Yes
 
-Observed at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When this authorized match observation was recorded.
 
 ### VerificationDuplicateCheck-authorized_matches-list_disposition
 
 `authorized_matches[].list_disposition` · `string` · Required · Nullable: No
 
-List disposition. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The recorded treatment or disposition of the match in the relevant list or review context, rather than an automatic adverse conclusion.
 
 Allowed values: `none`, `allowlisted`, `blocklisted`, `unknown`.
 
@@ -5445,13 +5445,13 @@ Source files accessible through existing document endpoints with authorization r
 
 `documents[].document_id` · `string` · Required · Nullable: No
 
-Document id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The AMLOK document identifier for the supporting file. Access is checked separately when the document is retrieved.
 
 ### VerificationAssessment-documents-kind
 
 `documents[].kind` · `string` · Required · Nullable: No
 
-Kind. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The type of supporting document represented by the reference.
 
 Allowed values: `identity`, `registry_report`, `verification_report`, `search_report`, `articles`, `filing`, `licence`, `court`, `signed_document`, `other`.
 
@@ -5459,7 +5459,7 @@ Allowed values: `identity`, `registry_report`, `verification_report`, `search_re
 
 `documents[].access` · `string` · Required · Nullable: No
 
-Access. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The current permitted availability of the referenced document. A reference does not itself authorize download.
 
 Allowed values: `available`, `restricted`, `not_retained`.
 
@@ -5473,7 +5473,7 @@ Explicit explanation code when no complete usable value is available.
 
 `documents[].source_id` · `string` · Required · Nullable: No
 
-Source id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The verification source associated with the document reference.
 
 ### VerificationAssessment-checks
 
@@ -5683,31 +5683,31 @@ One immutable version of an authorized KYC/KYB assessment, available through dat
 
 `id` · `string` · Required · Nullable: No
 
-Id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Stable identifier of the normalized verification-assessment record, distinct from a provider's identifier.
 
 ### NormalizedVerificationAssessment-object
 
 `object` · `string` · Required · Nullable: No
 
-Object. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The normalized resource discriminator identifying this record as a verification assessment.
 
 ### NormalizedVerificationAssessment-subject_id
 
 `subject_id` · `string` · Required · Nullable: No
 
-Subject id. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The canonical business or person identity to which the normalized assessment applies.
 
 ### NormalizedVerificationAssessment-record_version
 
 `record_version` · `integer` · Required · Nullable: No
 
-Record version. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+Revision of the normalized record used to distinguish changes to the same logical observation.
 
 ### NormalizedVerificationAssessment-created_at
 
 `created_at` · `string` · Required · Nullable: No
 
-Created at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When this normalized record was first created.
 
 Format: `date-time`.
 
@@ -5715,7 +5715,7 @@ Format: `date-time`.
 
 `updated_at` · `string` · Required · Nullable: No
 
-Updated at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When this normalized record was last updated.
 
 Format: `date-time`.
 
@@ -5723,7 +5723,7 @@ Format: `date-time`.
 
 `observed_at` · `string` · Required · Nullable: No
 
-Observed at. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+When the underlying verification observation was made, distinguished from ingestion or retrieval time.
 
 Format: `date-time`.
 
@@ -5731,12 +5731,12 @@ Format: `date-time`.
 
 `schema_version` · `string` · Required · Nullable: No
 
-Schema version. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The normalized schema version used to interpret this record.
 
 ### NormalizedVerificationAssessment-assessment
 
 `assessment` · `VerificationAssessment` · Required · Nullable: No
 
-Assessment. Preserve the source meaning; null or unknown does not establish a negative or a verified result.
+The detailed verification assessment, including its checks, observations, coverage, provenance and limitations.
 
 See [VerificationAssessment](#verificationassessment).

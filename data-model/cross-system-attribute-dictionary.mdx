@@ -1,0 +1,952 @@
+---
+title: "Cross-system attribute dictionary"
+description: "Understand all 150 cross-system attributes across receivables, payables, commerce, payments, inventory, debt, subscriptions and reconciliation."
+keywords: ["API definitions", "financial metrics", "data dictionary"]
+sidebarTitle: "Cross-system dictionary"
+---
+
+AMLOK's **150 cross-system attributes** describe the supplied invoices, bills, orders, payments, inventory and other authorized records. This dictionary explains each key without requiring you to read its calculation specification.
+
+Every entry describes **observed records**, not a claim that all accounts or business systems are known. Read the result's scope, dates, currency, status and input manifest. Missing records do not establish zero. Receivables and payables aging follows due dates; timed observations follow the cohort specified in the definition.
+
+Amounts use the returned currency. Ratios are fractions; concentration indices run from zero to one. Higher concentration means greater dependence on fewer parties, not an automatic adverse decision. [Retrieve attributes](/data-model/financial-attributes), [read result fields](/data-model/assessment-definitions), or [download the full attribute dictionary](https://raw.githubusercontent.com/amloktech/docs/main/downloads/financial-attribute-dictionary.csv).
+
+## Accounts receivable
+
+Customer invoices, unpaid balances, aging and collection experience.
+
+### cross_system.ar.open_document_count
+
+Unit: `count`.
+
+Number of observed non-draft, non-void customer invoices with a positive balance still owed.
+
+### cross_system.ar.observed_outstanding_amount
+
+Unit: `currency`.
+
+Total outstanding value of observed non-draft, non-void customer invoices. This does not establish the whole business's balance.
+
+### cross_system.ar.aging.current.amount
+
+Unit: `currency`.
+
+Outstanding money owed on customer invoices that are not yet past due, including amounts due today. Age is measured from the payment due date.
+
+### cross_system.ar.aging.current.count
+
+Unit: `count`.
+
+Number of open customer invoices that are not yet past due, including amounts due today. Age is measured from the payment due date.
+
+### cross_system.ar.aging.current.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices that are not yet past due, including amounts due today. Age is measured from the payment due date.
+
+### cross_system.ar.aging.1_30.amount
+
+Unit: `currency`.
+
+Outstanding money owed on customer invoices that are 1-30 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.1_30.count
+
+Unit: `count`.
+
+Number of open customer invoices that are 1-30 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.1_30.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices that are 1-30 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.31_60.amount
+
+Unit: `currency`.
+
+Outstanding money owed on customer invoices that are 31-60 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.31_60.count
+
+Unit: `count`.
+
+Number of open customer invoices that are 31-60 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.31_60.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices that are 31-60 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.61_90.amount
+
+Unit: `currency`.
+
+Outstanding money owed on customer invoices that are 61-90 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.61_90.count
+
+Unit: `count`.
+
+Number of open customer invoices that are 61-90 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.61_90.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices that are 61-90 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.91_120.amount
+
+Unit: `currency`.
+
+Outstanding money owed on customer invoices that are 91-120 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.91_120.count
+
+Unit: `count`.
+
+Number of open customer invoices that are 91-120 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.91_120.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices that are 91-120 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.over_120.amount
+
+Unit: `currency`.
+
+Outstanding money owed on customer invoices that are more than 120 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.over_120.count
+
+Unit: `count`.
+
+Number of open customer invoices that are more than 120 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.aging.over_120.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices that are more than 120 days past due. Age is measured from the payment due date.
+
+### cross_system.ar.weighted_days_past_due
+
+Unit: `days`.
+
+Lateness of open customer invoices, weighted by outstanding value. Amounts not yet overdue contribute zero days.
+
+### cross_system.ar.maximum_days_past_due
+
+Unit: `days`.
+
+Age of the most overdue open customer invoice. No open documents is not applicable.
+
+### cross_system.ar.largest_counterparty_outstanding_share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value attributable to the largest identified customer.
+
+### cross_system.ar.paid_document_days.mean
+
+Unit: `days`.
+
+Average time from issue to full collection for observed customer invoices fully paid within the reporting window.
+
+### cross_system.ar.paid_document_days.median
+
+Unit: `days`.
+
+Middle time from issue to full collection for observed customer invoices fully paid within the reporting window.
+
+### cross_system.ar.paid_document_days.p90
+
+Unit: `days`.
+
+90th-percentile time from issue to full collection for observed customer invoices fully paid within the reporting window.
+
+### cross_system.ar.paid_document_late_share
+
+Unit: `ratio`.
+
+Portion of observed customer invoices fully paid in the window that were paid after their due dates.
+
+### cross_system.ar.paid_document_mean_late_days
+
+Unit: `days`.
+
+Average lateness among late customer invoices fully paid in the window. On-time documents are excluded.
+
+### cross_system.ar.partial_payment_outstanding_share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on customer invoices explicitly marked partially paid.
+
+### cross_system.ar.issued_document_credit_share
+
+Unit: `ratio`.
+
+Source-reported credits applied to customer invoices issued in the window, relative to their original totals. This follows the issue cohort, not when credits or write-offs occurred.
+
+## Accounts payable
+
+Supplier bills, unpaid balances, aging and payment experience.
+
+### cross_system.ap.open_document_count
+
+Unit: `count`.
+
+Number of observed non-draft, non-void supplier bills with a positive balance still owed.
+
+### cross_system.ap.observed_outstanding_amount
+
+Unit: `currency`.
+
+Total outstanding value of observed non-draft, non-void supplier bills. This does not establish the whole business's balance.
+
+### cross_system.ap.aging.current.amount
+
+Unit: `currency`.
+
+Outstanding money owed on supplier bills that are not yet past due, including amounts due today. Age is measured from the payment due date.
+
+### cross_system.ap.aging.current.count
+
+Unit: `count`.
+
+Number of open supplier bills that are not yet past due, including amounts due today. Age is measured from the payment due date.
+
+### cross_system.ap.aging.current.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills that are not yet past due, including amounts due today. Age is measured from the payment due date.
+
+### cross_system.ap.aging.1_30.amount
+
+Unit: `currency`.
+
+Outstanding money owed on supplier bills that are 1-30 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.1_30.count
+
+Unit: `count`.
+
+Number of open supplier bills that are 1-30 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.1_30.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills that are 1-30 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.31_60.amount
+
+Unit: `currency`.
+
+Outstanding money owed on supplier bills that are 31-60 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.31_60.count
+
+Unit: `count`.
+
+Number of open supplier bills that are 31-60 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.31_60.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills that are 31-60 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.61_90.amount
+
+Unit: `currency`.
+
+Outstanding money owed on supplier bills that are 61-90 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.61_90.count
+
+Unit: `count`.
+
+Number of open supplier bills that are 61-90 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.61_90.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills that are 61-90 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.91_120.amount
+
+Unit: `currency`.
+
+Outstanding money owed on supplier bills that are 91-120 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.91_120.count
+
+Unit: `count`.
+
+Number of open supplier bills that are 91-120 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.91_120.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills that are 91-120 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.over_120.amount
+
+Unit: `currency`.
+
+Outstanding money owed on supplier bills that are more than 120 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.over_120.count
+
+Unit: `count`.
+
+Number of open supplier bills that are more than 120 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.aging.over_120.share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills that are more than 120 days past due. Age is measured from the payment due date.
+
+### cross_system.ap.weighted_days_past_due
+
+Unit: `days`.
+
+Lateness of open supplier bills, weighted by outstanding value. Amounts not yet overdue contribute zero days.
+
+### cross_system.ap.maximum_days_past_due
+
+Unit: `days`.
+
+Age of the most overdue open supplier bill. No open documents is not applicable.
+
+### cross_system.ap.largest_counterparty_outstanding_share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value attributable to the largest identified supplier.
+
+### cross_system.ap.paid_document_days.mean
+
+Unit: `days`.
+
+Average time from issue to full payment for observed supplier bills fully paid within the reporting window.
+
+### cross_system.ap.paid_document_days.median
+
+Unit: `days`.
+
+Middle time from issue to full payment for observed supplier bills fully paid within the reporting window.
+
+### cross_system.ap.paid_document_days.p90
+
+Unit: `days`.
+
+90th-percentile time from issue to full payment for observed supplier bills fully paid within the reporting window.
+
+### cross_system.ap.paid_document_late_share
+
+Unit: `ratio`.
+
+Portion of observed supplier bills fully paid in the window that were paid after their due dates.
+
+### cross_system.ap.paid_document_mean_late_days
+
+Unit: `days`.
+
+Average lateness among late supplier bills fully paid in the window. On-time documents are excluded.
+
+### cross_system.ap.partial_payment_outstanding_share
+
+Unit: `ratio`.
+
+Portion of observed outstanding value on supplier bills explicitly marked partially paid.
+
+### cross_system.ap.issued_document_credit_share
+
+Unit: `ratio`.
+
+Source-reported credits applied to supplier bills issued in the window, relative to their original totals. This follows the issue cohort, not when credits or write-offs occurred.
+
+## Commerce
+
+Observed order activity, discounts, fulfillment and concentration.
+
+### cross_system.commerce.cancelled_order_share
+
+Unit: `ratio`.
+
+Portion of observed orders placed in the window that are cancelled.
+
+### cross_system.commerce.discounted_order_share
+
+Unit: `ratio`.
+
+Portion of observed noncancelled orders placed in the window with a positive discount.
+
+### cross_system.commerce.discount_to_subtotal_share
+
+Unit: `ratio`.
+
+Discount value relative to source-reported subtotals on observed noncancelled orders. The source subtotal convention matters; this is not a profit margin.
+
+### cross_system.commerce.paid_unfulfilled_order_count
+
+Unit: `count`.
+
+Number of observed noncancelled orders that are paid but remain wholly or partially unfulfilled.
+
+### cross_system.commerce.paid_unfulfilled_order_value
+
+Unit: `currency`.
+
+Full current value of paid orders that remain wholly or partially unfulfilled. Partial fulfillment does not mean this entire value is undelivered.
+
+### cross_system.commerce.oldest_paid_unfulfilled_order_days
+
+Unit: `days`.
+
+Age of the oldest paid, wholly or partially unfulfilled order among observed orders placed in the reporting window.
+
+### cross_system.commerce.channel_concentration_hhi
+
+Unit: `ratio`.
+
+Concentration of observed noncancelled order value across sales channels. Higher zero-to-one values indicate greater dependence on fewer channels.
+
+### cross_system.commerce.customer_concentration_hhi
+
+Unit: `ratio`.
+
+Concentration of observed noncancelled order value across identified customers. Higher zero-to-one values indicate greater dependence on fewer customers.
+
+### cross_system.commerce.location_concentration_hhi
+
+Unit: `ratio`.
+
+Concentration of observed noncancelled order value across identified locations. Higher zero-to-one values indicate greater dependence on fewer locations.
+
+## Settlements
+
+Processor payout status, failure and arrival timing.
+
+### cross_system.settlements.payout.pending.count
+
+Unit: `count`.
+
+Number of observed payouts created in the window and currently awaiting processing. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.pending.net_amount
+
+Unit: `currency`.
+
+Source-reported net value of observed payouts created in the window and currently awaiting processing. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.in_transit.count
+
+Unit: `count`.
+
+Number of observed payouts created in the window and currently in transit. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.in_transit.net_amount
+
+Unit: `currency`.
+
+Source-reported net value of observed payouts created in the window and currently in transit. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.paid.count
+
+Unit: `count`.
+
+Number of observed payouts created in the window and currently reported as paid. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.paid.net_amount
+
+Unit: `currency`.
+
+Source-reported net value of observed payouts created in the window and currently reported as paid. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.failed.count
+
+Unit: `count`.
+
+Number of observed payouts created in the window and currently reported as failed. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.failed.net_amount
+
+Unit: `currency`.
+
+Source-reported net value of observed payouts created in the window and currently reported as failed. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.cancelled.count
+
+Unit: `count`.
+
+Number of observed payouts created in the window and currently reported as cancelled. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout.cancelled.net_amount
+
+Unit: `currency`.
+
+Source-reported net value of observed payouts created in the window and currently reported as cancelled. A payout status alone does not establish reconciled bank cash.
+
+### cross_system.settlements.payout_failure_share
+
+Unit: `ratio`.
+
+Portion of observed payouts created in the window that failed. The assessed population also includes pending attempts.
+
+### cross_system.settlements.payout_delay_days.median
+
+Unit: `days`.
+
+Middle lateness of paid payouts against their expected arrival dates, with early arrivals counted as zero delay. This is not total payout-processing time.
+
+### cross_system.settlements.payout_delay_days.p90
+
+Unit: `days`.
+
+90th-percentile lateness of paid payouts against their expected arrival dates, with early arrivals counted as zero delay. This is not total payout-processing time.
+
+## Payments and disputes
+
+Captured-payment fees, refunds, settlement and dispute observations.
+
+### cross_system.payments.effective_processing_fee_share
+
+Unit: `ratio`.
+
+Explicitly reported processing fees relative to captured payment value. Missing fees are not estimated from a nominal fee schedule.
+
+### cross_system.payments.refunded_payment_count_share
+
+Unit: `ratio`.
+
+Portion of payments captured in the window with a positive refunded amount. This follows the capture cohort rather than the date of refund events.
+
+### cross_system.payments.capture_to_settlement_days.median
+
+Unit: `days`.
+
+Middle elapsed time from payment capture to settlement among observed settled payments captured in the window.
+
+### cross_system.payments.capture_to_settlement_days.p90
+
+Unit: `days`.
+
+90th-percentile elapsed time from payment capture to settlement among observed settled payments captured in the window.
+
+### cross_system.payments.dispute.needs_response.count
+
+Unit: `count`.
+
+Number of observed disputes opened in the window and currently requiring a response.
+
+### cross_system.payments.dispute.under_review.count
+
+Unit: `count`.
+
+Number of observed disputes opened in the window and currently under review.
+
+### cross_system.payments.dispute.won.count
+
+Unit: `count`.
+
+Number of observed disputes opened in the window and currently explicitly recorded as won.
+
+### cross_system.payments.dispute.lost.count
+
+Unit: `count`.
+
+Number of observed disputes opened in the window and currently explicitly recorded as lost.
+
+### cross_system.payments.dispute.closed.count
+
+Unit: `count`.
+
+Number of observed disputes opened in the window and currently closed without inferring whether they were won or lost.
+
+### cross_system.payments.resolved_dispute_win_share
+
+Unit: `ratio`.
+
+Portion of explicitly won or lost disputes recorded as won. Unresolved and generically closed disputes do not count as wins.
+
+### cross_system.payments.open_dispute_exposure
+
+Unit: `currency`.
+
+Value disputed in cases requiring a response or under review. This is unresolved exposure, not expected loss.
+
+### cross_system.payments.overdue_dispute_response_count
+
+Unit: `count`.
+
+Number of observed disputes still requiring a response after their response deadlines.
+
+## Inventory
+
+Recorded stock ownership, carrying value, expiry and movements.
+
+### cross_system.inventory.ownership.owned.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value of observed inventory explicitly owned by the business. Carrying value is not liquidation value or confirmed collateral eligibility.
+
+### cross_system.inventory.ownership.consigned.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value of observed inventory explicitly held under a consignment arrangement. Carrying value is not liquidation value or confirmed collateral eligibility.
+
+### cross_system.inventory.ownership.third_party.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value of observed inventory explicitly classified as third-party inventory. Carrying value is not liquidation value or confirmed collateral eligibility.
+
+### cross_system.inventory.expiry.expired.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value for inventory already expired before the assessment date. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.expired.position_count
+
+Unit: `count`.
+
+Number of recorded positions for inventory already expired before the assessment date. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.expired.value_share
+
+Unit: `ratio`.
+
+Share of total observed carrying value for inventory already expired before the assessment date. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.0_30.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value for inventory expiring from today through 30 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.0_30.position_count
+
+Unit: `count`.
+
+Number of recorded positions for inventory expiring from today through 30 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.0_30.value_share
+
+Unit: `ratio`.
+
+Share of total observed carrying value for inventory expiring from today through 30 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.31_60.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value for inventory expiring 31-60 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.31_60.position_count
+
+Unit: `count`.
+
+Number of recorded positions for inventory expiring 31-60 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.31_60.value_share
+
+Unit: `ratio`.
+
+Share of total observed carrying value for inventory expiring 31-60 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.61_90.carrying_value
+
+Unit: `currency`.
+
+Recorded carrying value for inventory expiring 61-90 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.61_90.position_count
+
+Unit: `count`.
+
+Number of recorded positions for inventory expiring 61-90 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.expiry.61_90.value_share
+
+Unit: `ratio`.
+
+Share of total observed carrying value for inventory expiring 61-90 days ahead. Missing expiry dates do not establish nonperishability.
+
+### cross_system.inventory.negative_quantity_position_count
+
+Unit: `count`.
+
+Number of inventory positions with negative recorded on-hand quantity. It does not combine quantities of unrelated products.
+
+### cross_system.inventory.reserved_value_share
+
+Unit: `ratio`.
+
+Portion of observed inventory carrying value represented by reserved quantities within each position. Reservations do not establish a completed sale.
+
+### cross_system.inventory.movements.write_off.absolute_cost
+
+Unit: `currency`.
+
+Magnitude of source-recorded cost associated with inventory write-offs in the window. An adjustment or return does not automatically establish shrinkage.
+
+### cross_system.inventory.movements.adjustment.absolute_cost
+
+Unit: `currency`.
+
+Magnitude of source-recorded cost associated with inventory adjustments in the window. An adjustment or return does not automatically establish shrinkage.
+
+### cross_system.inventory.movements.return.absolute_cost
+
+Unit: `currency`.
+
+Magnitude of source-recorded cost associated with inventory returns in the window. An adjustment or return does not automatically establish shrinkage.
+
+## Debt and installments
+
+Observed loan balances, upcoming maturities and supplied payment schedules.
+
+### cross_system.debt.maturing_7d.observed_principal
+
+Unit: `currency`.
+
+Observed outstanding loan principal on facilities maturing from the assessment date up to, but excluding, 7 days later. This is maturity exposure, not the amount of scheduled installments.
+
+### cross_system.debt.installments_due_7d.remaining_amount
+
+Unit: `currency`.
+
+Remaining payments on supplied installments due from the assessment date up to, but excluding, 7 days later. It does not assert that all external debt was supplied.
+
+### cross_system.debt.maturing_30d.observed_principal
+
+Unit: `currency`.
+
+Observed outstanding loan principal on facilities maturing from the assessment date up to, but excluding, 30 days later. This is maturity exposure, not the amount of scheduled installments.
+
+### cross_system.debt.installments_due_30d.remaining_amount
+
+Unit: `currency`.
+
+Remaining payments on supplied installments due from the assessment date up to, but excluding, 30 days later. It does not assert that all external debt was supplied.
+
+### cross_system.debt.maturing_60d.observed_principal
+
+Unit: `currency`.
+
+Observed outstanding loan principal on facilities maturing from the assessment date up to, but excluding, 60 days later. This is maturity exposure, not the amount of scheduled installments.
+
+### cross_system.debt.installments_due_60d.remaining_amount
+
+Unit: `currency`.
+
+Remaining payments on supplied installments due from the assessment date up to, but excluding, 60 days later. It does not assert that all external debt was supplied.
+
+### cross_system.debt.maturing_90d.observed_principal
+
+Unit: `currency`.
+
+Observed outstanding loan principal on facilities maturing from the assessment date up to, but excluding, 90 days later. This is maturity exposure, not the amount of scheduled installments.
+
+### cross_system.debt.installments_due_90d.remaining_amount
+
+Unit: `currency`.
+
+Remaining payments on supplied installments due from the assessment date up to, but excluding, 90 days later. It does not assert that all external debt was supplied.
+
+### cross_system.debt.overdue_installment_amount
+
+Unit: `currency`.
+
+Remaining amount on observed installments whose due dates are before the assessment date.
+
+### cross_system.debt.overdue_installment_count
+
+Unit: `count`.
+
+Number of observed past-due installments with a positive amount still owed.
+
+### cross_system.debt.variable_rate_principal_share
+
+Unit: `ratio`.
+
+Portion of observed loan principal explicitly subject to variable interest rates. Unknown rate types are not treated as fixed.
+
+### cross_system.debt.largest_creditor_principal_share
+
+Unit: `ratio`.
+
+Portion of observed outstanding loan principal owed to the largest identified creditor.
+
+## Subscriptions
+
+Current recurring-billing membership and the next scheduled charges.
+
+### cross_system.subscriptions.active_customer_count
+
+Unit: `count`.
+
+Distinct customers with an observed active subscription at the assessment time. This is current membership, not a historical retention measure.
+
+### cross_system.subscriptions.past_due_subscription_share
+
+Unit: `ratio`.
+
+Portion of observed active or past-due subscriptions recorded as past due.
+
+### cross_system.subscriptions.next_invoice_7d.amount
+
+Unit: `currency`.
+
+One next recurring billing amount per observed active subscription due from the assessment date up to, but excluding, 7 days later. It is not a collection forecast and excludes additional future cycles and usage charges.
+
+### cross_system.subscriptions.next_invoice_30d.amount
+
+Unit: `currency`.
+
+One next recurring billing amount per observed active subscription due from the assessment date up to, but excluding, 30 days later. It is not a collection forecast and excludes additional future cycles and usage charges.
+
+### cross_system.subscriptions.next_invoice_60d.amount
+
+Unit: `currency`.
+
+One next recurring billing amount per observed active subscription due from the assessment date up to, but excluding, 60 days later. It is not a collection forecast and excludes additional future cycles and usage charges.
+
+### cross_system.subscriptions.next_invoice_90d.amount
+
+Unit: `currency`.
+
+One next recurring billing amount per observed active subscription due from the assessment date up to, but excluding, 90 days later. It is not a collection forecast and excludes additional future cycles and usage charges.
+
+## Accounting
+
+Explicit journal origins, reversal links and source-document links.
+
+### cross_system.accounting.reversal_journal_share
+
+Unit: `ratio`.
+
+Portion of observed posted or reversed journals with an explicit link to the journal they reverse. Missing links do not prove no reversals occurred.
+
+### cross_system.accounting.source_document_link_share
+
+Unit: `ratio`.
+
+Portion of observed posted or reversed journals linked to a source document. An absent link alone does not establish fraud or manual origin.
+
+### cross_system.accounting.manual_origin_journal_share
+
+Unit: `ratio`.
+
+Portion of observed posted or reversed journals explicitly identified as manual entries. Narrative text is not used to guess manual origin.
+
+## Reconciliation
+
+Status of supplied links between records across systems.
+
+### cross_system.reconciliation.order_payment.observed_link_count
+
+Unit: `count`.
+
+Number of supplied reconciliation links between orders and payments.
+
+### cross_system.reconciliation.order_payment.matched_link_share
+
+Unit: `ratio`.
+
+Portion of supplied links between orders and payments marked matched. This describes link status, not the share of all transaction value reconciled.
+
+### cross_system.reconciliation.order_payment.conflict_link_count
+
+Unit: `count`.
+
+Number of supplied links between orders and payments explicitly marked as conflicting.
+
+### cross_system.reconciliation.payment_payout.observed_link_count
+
+Unit: `count`.
+
+Number of supplied reconciliation links between payments and payouts.
+
+### cross_system.reconciliation.payment_payout.matched_link_share
+
+Unit: `ratio`.
+
+Portion of supplied links between payments and payouts marked matched. This describes link status, not the share of all transaction value reconciled.
+
+### cross_system.reconciliation.payment_payout.conflict_link_count
+
+Unit: `count`.
+
+Number of supplied links between payments and payouts explicitly marked as conflicting.
+
+### cross_system.reconciliation.payout_bank.observed_link_count
+
+Unit: `count`.
+
+Number of supplied reconciliation links between payouts and bank transactions.
+
+### cross_system.reconciliation.payout_bank.matched_link_share
+
+Unit: `ratio`.
+
+Portion of supplied links between payouts and bank transactions marked matched. This describes link status, not the share of all transaction value reconciled.
+
+### cross_system.reconciliation.payout_bank.conflict_link_count
+
+Unit: `count`.
+
+Number of supplied links between payouts and bank transactions explicitly marked as conflicting.
+
+### cross_system.reconciliation.invoice_bank.observed_link_count
+
+Unit: `count`.
+
+Number of supplied reconciliation links between invoices and bank transactions.
+
+### cross_system.reconciliation.invoice_bank.matched_link_share
+
+Unit: `ratio`.
+
+Portion of supplied links between invoices and bank transactions marked matched. This describes link status, not the share of all transaction value reconciled.
+
+### cross_system.reconciliation.invoice_bank.conflict_link_count
+
+Unit: `count`.
+
+Number of supplied links between invoices and bank transactions explicitly marked as conflicting.
+
+### cross_system.reconciliation.bank_journal.observed_link_count
+
+Unit: `count`.
+
+Number of supplied reconciliation links between bank transactions and journals.
+
+### cross_system.reconciliation.bank_journal.matched_link_share
+
+Unit: `ratio`.
+
+Portion of supplied links between bank transactions and journals marked matched. This describes link status, not the share of all transaction value reconciled.
+
+### cross_system.reconciliation.bank_journal.conflict_link_count
+
+Unit: `count`.
+
+Number of supplied links between bank transactions and journals explicitly marked as conflicting.

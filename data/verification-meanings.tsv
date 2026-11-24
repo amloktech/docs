@@ -1,0 +1,106 @@
+key	meaning
+VerificationCheck.id	Identifier of this summarized verification check, retained for traceability within the assessment.
+VerificationCheck.check	The type or named check summarized by this observation.
+VerificationCheck.subject_id	The business or person to which this check applies.
+VerificationCheck.result	The recorded outcome of the check. Read the explanation and evidence; an unresolved result is not a successful verification.
+VerificationCheck.provider	The source or provider attributed to the check, when available and permitted to disclose.
+VerificationCheck.observed_at	When the verification observation was made, rather than when you retrieved it.
+VerificationCheck.explanation	The readable explanation of the check's result and relevant limitations.
+VerificationCheckSection.evidence_ids	References to evidence supporting the checks in this section.
+VerificationProvenance.field_evidence[].basis	How the individual field was established, such as a declaration, source observation or document extraction. Different bases remain distinguishable.
+VerificationIdentifier.disclosure	The disclosure level applied to this identifier, such as masked or otherwise restricted presentation.
+VerificationSource.kind	The kind of source supplying the verification evidence.
+VerificationResult.kind	The type of verification check whose execution and result are recorded here.
+VerificationResult.state	The check's execution state, separate from the verification outcome. An uncompleted check cannot establish a successful result.
+VerificationResult.override.decided_at	When the recorded human override decision was made.
+VerificationResult.override.actor_reference	Reference to the authorized actor responsible for the override, rather than an automatically inferred reviewer.
+VerificationBusiness.resolution	Whether the business observation is a candidate or a resolved legal-entity match under the stated evidence.
+VerificationBusiness.industry_codes	Industry classifications attributed to the business, retaining each classification scheme and evidence basis.
+VerificationBusiness.industry_codes[].scheme	The classification system in which this industry code has meaning.
+VerificationBusiness.industry_codes[].code	The industry code within the stated classification scheme.
+VerificationBusiness.industry_codes[].label	The readable industry description associated with the code, when supplied.
+VerificationBusiness.industry_codes[].basis	The evidence basis for assigning this industry classification, distinguished from the business's own declaration.
+VerificationBusiness.industry_codes[].confidence	The source's confidence measure for the industry assignment, retaining its own scale and meaning rather than becoming a credit score.
+VerificationPerson.identity_assurance	The supported assurance state for the person's identity. It does not establish creditworthiness or completion of unrelated checks.
+VerificationRegistration.annual_return_status	The reported state of the entity's annual-return filing obligations, distinct from its registration status.
+VerificationRegistration.outstanding_return_years	The annual-return years reported as outstanding by the source. Missing information does not establish that all years were filed.
+VerificationAddress.validation	The supported validation result for the address, rather than an assumption that a supplied address is verified.
+VerificationRelationship.related_entity_type	Whether the linked party is represented as a person, business or other permitted entity type.
+VerificationRelationship.verification_state	The evidence-supported verification state of the relationship, distinct from the identity verification of either party.
+VerificationOwnership.interest_type	The type of ownership or control interest represented by this record, such as an economic, voting or other supported interest.
+VerificationIdentityDocument.method	The method used to assess the identity document, retaining the source's stated basis.
+VerificationIdentityDocument.authenticity	The reported document-authenticity result. Unknown or unresolved authenticity does not establish a genuine document.
+VerificationIdentityDocument.quality_scores	Source-reported document-quality measures with their own names and scales, rather than a combined credit or identity score.
+VerificationIdentityDocument.wallet.issuer	Issuer attributed to the digital identity or wallet credential, when supported.
+VerificationIdentityDocument.wallet.country	Country associated with the credential issuer as reported in the wallet evidence; it is not an inferred nationality.
+VerificationIdentityDocument.wallet.verified_at	When the wallet or credential verification was recorded.
+VerificationBiometric.kind	The type of biometric check represented, such as liveness or face comparison; this does not expose a raw biometric template.
+VerificationScreeningHit.id	Identifier of the individual screening candidate hit.
+VerificationScreeningHit.category	The screening category to which the candidate hit belongs. A category alone does not establish a confirmed match.
+VerificationScreeningHit.aliases	Alternative names reported for the candidate hit, not automatically verified names of the assessed subject.
+VerificationScreeningHit.source_url	Permitted source reference for the screening candidate, when available. It does not grant access to a controlled report.
+VerificationScreeningHit.match_score	The source's similarity measure between the query and the candidate, retaining the original scale. Similarity is not a confirmed identity match.
+VerificationScreeningHit.risk_score	A source-reported risk measure associated with the candidate hit, retaining its original method and scale. It is not an AMLOK default probability.
+VerificationScreeningHit.properties	Additional allowlisted facts about the candidate, each retaining its own meaning and provenance.
+VerificationScreening.kind	The type of screening performed, which identifies the screening purpose separately from the datasets actually searched.
+VerificationScreening.state	Execution state of the screening request. Incomplete execution does not establish a no-match result.
+VerificationScreening.result	The screening outcome within the stated searched scope. A candidate, inconclusive result and completed no-match result have different meanings.
+VerificationTaxCheck.identifier	The tax identifier assessed, retaining its scheme, jurisdiction and disclosure restrictions.
+VerificationTaxCheck.result	The outcome of the stated tax-identifier or name check. It does not prove taxes were paid or that no tax debt exists.
+VerificationCorporateStructure.share_classes	The share classes reported for the entity, including supported rights, restrictions and nominal values.
+VerificationCorporateStructure.share_classes[].name	The source-reported name of the share class.
+VerificationCorporateStructure.share_classes[].description	The reported description of the share class and its provisions, when available.
+VerificationCorporateStructure.share_classes[].nominal_value	The stated nominal or par value of the share class in its currency, rather than a market valuation.
+VerificationPublicRecord.kind	The type of public or entitled record observation, which determines how its status and facts should be interpreted.
+VerificationPublicRecord.match_status	Whether and how the public-record subject has been matched to the assessed subject; a search candidate is not a resolved match.
+VerificationPublicRecord.parties	Parties named in the record and their reported roles and supported links.
+VerificationPublicRecord.parties[].name	The party's name as recorded in the source record.
+VerificationPublicRecord.parties[].role	The party's reported role in the record, when supplied.
+VerificationPublicRecord.parties[].subject_id	A supported link to an authorized business or person identity; null means no such link is established.
+VerificationPublicRecord.parties[].address_id	Reference to the party's associated address observation, when established.
+VerificationPublicRecord.amendments	Reported changes or filings that amend the original record.
+VerificationPublicRecord.amendments[].reference	The source reference identifying this amendment.
+VerificationPublicRecord.amendments[].kind	The source-reported type of amendment, when known.
+VerificationPublicRecord.amendments[].filed_on	The amendment's reported filing date, rather than the date it was collected.
+VerificationPublicRecord.amendments[].document_ids	Authorized document references supporting this amendment.
+VerificationPublicRecord.events	Dated events reported in the record's history, with their supporting document references.
+VerificationPublicRecord.events[].date	The reported event date; null does not establish that the event did not occur.
+VerificationPublicRecord.events[].description	The source-supported description of what occurred at this event.
+VerificationPublicRecord.events[].document_ids	Authorized documents supporting the reported event.
+VerificationPublicRecord.consortium_observation.reported_on	When the entitled consortium observation was reported, distinguished from account opening or closing dates.
+VerificationPublicRecord.consortium_observation.product_type	The financial product type reported for the consortium observation.
+VerificationPublicRecord.consortium_observation.opened_on	The reported opening date of the observed product or account.
+VerificationPublicRecord.consortium_observation.closed_on	The reported closing date of the observed product or account, when known.
+VerificationPublicRecord.consortium_observation.closure_reason	The source's reported reason for closure, without inferring default from closure alone.
+VerificationPublicRecord.consortium_observation.first_payment_default	Whether the source explicitly reports a first-payment default under its definition. Null is unknown, not false.
+VerificationPublicRecord.consortium_observation.original_amount	The original amount reported for the product or account, in the reported currency.
+VerificationPublicRecord.consortium_observation.charge_off_amount	The amount the source reports as charged off, in its currency. It is not an estimate of future loss.
+VerificationOnlinePresence.kind	The type of online business presence observed, such as a website or other permitted business profile.
+VerificationOnlinePresence.match	The supported match between the online presence and the assessed subject. A located page alone does not establish ownership.
+VerificationContactCheck.kind	The type of contact verification performed, distinguished from the value or verification result itself.
+VerificationDocumentCheck.tamper_result	The reported assessment of possible document alteration. A signal requires interpretation and does not by itself prove fraud.
+VerificationBankAccountCheck.result	The outcome of the stated bank-account check, interpreted with its scope and ownership evidence. It does not establish financial capacity.
+VerificationQuestionnaire.answers	Recorded answers to the questionnaire, retaining question identity and answer provenance. A declaration is not automatically verified evidence.
+VerificationSignature.validation	The supported validation result for the recorded signature or signing evidence, rather than an inferred conclusion from a document's existence.
+VerificationFieldComparison.result	The result of comparing the stated fields across sources, preserving differences, missing values and unresolved comparisons.
+VerificationSourceScore.score	A source-provided score with its name, scale, direction and method when known. It is not interchangeable with other provider scores or an AMLOK default probability.
+VerificationDuplicateCheck.kind	The type of duplicate or related-identity check represented within the authorized scope.
+VerificationDuplicateCheck.authorized_matches	Matches that may be disclosed within the authorized scope. This list does not expose identities from other customers or prove every possible match was searched.
+VerificationDuplicateCheck.authorized_matches[].subject_id	The authorized matched business or person identity.
+VerificationDuplicateCheck.authorized_matches[].assessment_id	Reference to the associated authorized verification assessment, when available.
+VerificationDuplicateCheck.authorized_matches[].similarity	Source-reported similarity between the assessed identity and the authorized candidate, retaining its scale rather than implying a confirmed duplicate.
+VerificationDuplicateCheck.authorized_matches[].observed_at	When this authorized match observation was recorded.
+VerificationDuplicateCheck.authorized_matches[].list_disposition	The recorded treatment or disposition of the match in the relevant list or review context, rather than an automatic adverse conclusion.
+VerificationAssessment.documents[].document_id	The AMLOK document identifier for the supporting file. Access is checked separately when the document is retrieved.
+VerificationAssessment.documents[].kind	The type of supporting document represented by the reference.
+VerificationAssessment.documents[].access	The current permitted availability of the referenced document. A reference does not itself authorize download.
+VerificationAssessment.documents[].source_id	The verification source associated with the document reference.
+NormalizedVerificationAssessment.id	Stable identifier of the normalized verification-assessment record, distinct from a provider's identifier.
+NormalizedVerificationAssessment.object	The normalized resource discriminator identifying this record as a verification assessment.
+NormalizedVerificationAssessment.subject_id	The canonical business or person identity to which the normalized assessment applies.
+NormalizedVerificationAssessment.record_version	Revision of the normalized record used to distinguish changes to the same logical observation.
+NormalizedVerificationAssessment.created_at	When this normalized record was first created.
+NormalizedVerificationAssessment.updated_at	When this normalized record was last updated.
+NormalizedVerificationAssessment.observed_at	When the underlying verification observation was made, distinguished from ingestion or retrieval time.
+NormalizedVerificationAssessment.schema_version	The normalized schema version used to interpret this record.
+NormalizedVerificationAssessment.assessment	The detailed verification assessment, including its checks, observations, coverage, provenance and limitations.

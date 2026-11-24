@@ -325,6 +325,10 @@ def build():
     from engineering_feedback import write_guides as feedback_guides
     feedback_guides()
 
+    # Reading definitions follow the technical guides and never mutate the catalogs.
+    from financial_meaning_guides import write_guides as financial_meaning_guides
+    financial_meaning_guides()
+
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re
     for guide in ['api-reference/examples', 'api-reference/downloads', 'api-reference/overview',

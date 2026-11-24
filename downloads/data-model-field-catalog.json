@@ -5547,7 +5547,7 @@
       "required": false,
       "parentRequired": true,
       "nullable": true,
-      "description": "Read-only financial category id from the normalized record.",
+      "description": "Stable leaf identifier for the supported economic purpose in the versioned transaction taxonomy. It is distinct from a merchant industry code or a provider category.",
       "details": {
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/financial_category_id"
@@ -5581,7 +5581,7 @@
       "required": false,
       "parentRequired": true,
       "nullable": true,
-      "description": "Read-only provider category from the normalized record.",
+      "description": "Original provider classification observation, retaining its taxonomy version and source semantics. It does not independently verify the transaction purpose.",
       "details": {
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/provider_category"
@@ -5598,7 +5598,7 @@
       "required": false,
       "parentRequired": true,
       "nullable": true,
-      "description": "Read-only card event type from the normalized record.",
+      "description": "The issuer-card event, such as a purchase, settlement, refund or fee. A card purchase is distinct from the later bank payment that settles it.",
       "details": {
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/card_event_type"
@@ -5615,7 +5615,7 @@
       "required": false,
       "parentRequired": true,
       "nullable": true,
-      "description": "Read-only card last4 from the normalized record.",
+      "description": "Last four digits reported for the card. This masked display attribute is not a unique card identifier and alone cannot establish a card change.",
       "details": {
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/card_last4"
@@ -5632,7 +5632,7 @@
       "required": false,
       "parentRequired": true,
       "nullable": true,
-      "description": "Read-only card brand from the normalized record.",
+      "description": "Card network or brand reported by the source, such as Visa or Mastercard. It does not identify an individual card or establish ownership.",
       "details": {
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/card_brand"
@@ -5649,7 +5649,7 @@
       "required": false,
       "parentRequired": true,
       "nullable": true,
-      "description": "Read-only counterparty role from the normalized record.",
+      "description": "Supported role of the other party in the transaction, such as customer, supplier, creditor or owner. A role does not independently verify identity or ownership.",
       "details": {
         "Presence": "Optional within its containing object. All containing objects are required.",
         "Schema": "NormalizedBankTransactionRead/properties/counterparty_role"

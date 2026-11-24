@@ -1,27 +1,42 @@
 ---
 title: "Underwriting dimensions"
-description: "Definitions, formulas, evidence requirements and applicability for 184 risk metrics."
+description: "Understand all 24 risk dimensions and 184 underwriting metrics, including their business meaning, units, borrower applicability and interpretation."
+keywords: ["API definitions", "financial metrics", "data dictionary"]
 ---
 
-Every risk package accounts for the following 24 dimension families and 184 metric definitions. A value is available only when its applicability, evidence, history and denominator requirements are met. The [machine-readable catalog](/downloads/underwriting-metric-catalog.json) is generated from the same definitions used by the API and console Data Lookup.
+AMLOK organizes underwriting observations into **24 dimension families and 184 scalar metrics**. Each definition below explains the financial concept, its unit and the borrower types it applies to. The metric is an assessment input; your institution retains the credit decision.
 
-`GET /v1/configuration` returns the entitled scalar definitions in `dimensions`. These are the keys accepted by `PolicyRule.dimension_key`; a family such as `liquidity` is not itself a scalar policy field. An API key can have access to a subset of the public catalog.
+## Find the right definition
 
-Ratios are fractions; currency metrics use `scope.reporting_currency`. Counts and durations are nonnegative; the cash conversion cycle can be negative when suppliers are paid after cash is collected. Unsupported values are null with explicit reasons. [Calculation and interpretation rules](/api-reference/risk-package-methodology) apply to every entry.
+| Term | What it represents | Where to read it |
+| --- | --- | --- |
+| Dimension | A family of related financial concepts, such as liquidity | `dimensions[].key` in a risk package |
+| Metric | One scalar measurement, such as unrestricted cash | `dimensions[].metrics[].key` |
+| Detailed attribute | A more specific observation by category, period or source population | `financial_attributes[].key`; see [Financial attributes](/data-model/financial-attributes) |
+| Transaction category | The supported economic purpose of activity | See [Category dictionary](/data-model/transaction-category-dictionary) |
+| Analysis | Structured supporting records or segments behind the assessment | `analyses`; see [Read assessment fields](/data-model/assessment-definitions) |
+
+The `dimensions` list returned by `GET /v1/configuration` contains **metric definitions**. A policy rule's `dimension_key` uses a scalar metric key such as `dscr`, not a family name such as `repayment_capacity`. Detailed financial-attribute keys do not become policy-rule keys.
+
+## Read values consistently
+
+`currency` values are money amounts in the returned currency. `count`, `days` and `months` retain those units. `ratio` values are decimal fractions or multiples: `0.25` is 25 percent and DSCR `1.50` is 1.5 times the stated debt service. Ratio changes can be absolute changes rather than relative growth; their definitions say which.
+
+Read the actual observation window, as-of date, basis, availability and evidence with the value. An unavailable value is null, not zero. A family marked available means its applicable metrics are available; it does not mean the borrower meets policy. See [field and status meanings](/data-model/assessment-definitions).
+
+Catalog version: **2026-11-12.1**. Exact calculation specifications and required inputs remain in the [metric catalog](/downloads/underwriting-metric-catalog.json) and [methodology](/api-reference/risk-package-methodology). [Download plain-language definitions](/downloads/financial-definitions.json).
 
 ## Identity and verification
 
-Identity and account-ownership checks identify inconsistencies; they do not substitute for financial capacity.
+Whether the assessed business identity and connected account ownership are supported by evidence.
 
-Sources: identity, registry, banking, documents.
+Family key: `identity`.
 
 ### business_age_months
 
 **Business age** · `months` · business
 
-Whole calendar months from verified formation date to assessment date.
-
-Required inputs and conditions: Verified formation date; assessment date; business only.
+The business's age in completed months since its verified formation date.
 
 Calculation version: `amlok-business_age_months-1`.
 
@@ -29,25 +44,21 @@ Calculation version: `amlok-business_age_months-1`.
 
 **Verified account ownership share** · `ratio` · business, person
 
-Accounts with positively matched ownership divided by eligible disclosed connected accounts.
-
-Required inputs and conditions: Account ownership evidence and resolved borrower identity; nonzero eligible-account count.
+The share of eligible disclosed connected accounts whose ownership positively matches the assessed borrower.
 
 Calculation version: `amlok-verified_account_owner_ratio-1`.
 
 ## Ownership and control
 
-Use documented beneficial ownership, control, guarantees and related-party exposure. Do not infer family relationships or hidden ownership.
+Who owns or controls the borrower, its related-party balances, and supported guarantees.
 
-Sources: registry, identity, accounting, application, documents.
+Family key: `ownership_and_control`.
 
 ### ownership_disclosed_ratio
 
 **Disclosed ownership share** · `ratio` · business
 
-Sum of supported non-overlapping ownership fractions in the assessed entity.
-
-Required inputs and conditions: Current ownership register; common share basis; do not double-count direct and indirect paths.
+The portion of ownership in the assessed entity supported by non-overlapping ownership evidence.
 
 Calculation version: `amlok-ownership_disclosed_ratio-1`.
 
@@ -55,9 +66,7 @@ Calculation version: `amlok-ownership_disclosed_ratio-1`.
 
 **Related-party receivables share** · `ratio` · business
 
-Related-party receivables divided by total receivables.
-
-Required inputs and conditions: Resolved related parties and same-date receivables; positive total receivables.
+The portion of receivables owed by related parties rather than unrelated customers.
 
 Calculation version: `amlok-related_party_balance_share-1`.
 
@@ -65,25 +74,21 @@ Calculation version: `amlok-related_party_balance_share-1`.
 
 **Supported guarantee coverage** · `ratio` · business
 
-Documented collectible guarantee amount capped at exposure divided by exposure.
-
-Required inputs and conditions: Guarantee terms, guarantor assessment, currency and exposure; positive exposure; no unsupported collectible value.
+The portion of the assessed exposure covered by documented collectible guarantees, capped at the exposure.
 
 Calculation version: `amlok-supported_guarantee_coverage-1`.
 
 ## Cash flow
 
-Use posted, deduplicated flows. Consolidation eliminates matched transfers; raw inflows remain distinct from operating receipts and revenue.
+Money entering and leaving the assessed accounts, with operating activity separated from transfers and funding.
 
-Sources: banking, payments, accounting.
+Family key: `cashflow`.
 
 ### total_inflows
 
 **Posted inflows** · `currency` · business, person
 
-Sum posted inflow magnitudes before transfer or revenue exclusions.
-
-Required inputs and conditions: Complete eligible transaction set for the window, scope and currency.
+All posted money received in the assessed accounts before excluding transfers, borrowing or other non-revenue receipts.
 
 Calculation version: `amlok-total_inflows-1`.
 
@@ -91,9 +96,7 @@ Calculation version: `amlok-total_inflows-1`.
 
 **Posted outflows** · `currency` · business, person
 
-Sum posted outflow magnitudes before transfer or operating exclusions.
-
-Required inputs and conditions: Complete eligible transaction set for the window, scope and currency.
+All posted money leaving the assessed accounts before separating operating payments, transfers and financing activity.
 
 Calculation version: `amlok-total_outflows-1`.
 
@@ -101,9 +104,7 @@ Calculation version: `amlok-total_outflows-1`.
 
 **Net cash flow** · `currency` · business, person
 
-Posted inflows minus posted outflows after consolidation transfer elimination.
-
-Required inputs and conditions: Matched transfers, complete transactions and consistent scope/currency.
+The net change from posted cash movements after eliminating transfers within the consolidated account scope.
 
 Calculation version: `amlok-net_cash_flow-1`.
 
@@ -111,9 +112,7 @@ Calculation version: `amlok-net_cash_flow-1`.
 
 **Operating receipts** · `currency` · business, person
 
-Sum classified operating receipts excluding financing, internal transfers and owner injections.
-
-Required inputs and conditions: Supported transaction classifications and explicit exclusion bridge.
+Cash received from supported operating activity, excluding borrowing, owner funding and internal transfers.
 
 Calculation version: `amlok-operating_cash_inflows-1`.
 
@@ -121,9 +120,7 @@ Calculation version: `amlok-operating_cash_inflows-1`.
 
 **Operating cash payments** · `currency` · business, person
 
-Sum operating outflows excluding financing principal, capital expenditures and matched transfers.
-
-Required inputs and conditions: Supported classifications and cash-flow basis; interest/tax treatment disclosed.
+Cash paid for operations, excluding financing principal, capital expenditure and matched internal transfers.
 
 Calculation version: `amlok-operating_cash_outflows-1`.
 
@@ -131,9 +128,7 @@ Calculation version: `amlok-operating_cash_outflows-1`.
 
 **Net operating cash flow** · `currency` · business, person
 
-Operating receipts minus operating cash payments.
-
-Required inputs and conditions: Same-window receipts/outflows and documented classification basis.
+The cash surplus or deficit from operating receipts and operating payments during the observation period.
 
 Calculation version: `amlok-operating_net_cash_flow-1`.
 
@@ -141,9 +136,7 @@ Calculation version: `amlok-operating_net_cash_flow-1`.
 
 **Internal transfer inflows** · `currency` · business, person
 
-Sum inflows matched to outflows within the consolidation scope.
-
-Required inputs and conditions: Supported transfer pairs with stable IDs and explicit FX treatment.
+Money received from another account within the assessed consolidation scope, rather than new external income.
 
 Calculation version: `amlok-internal_transfer_inflows-1`.
 
@@ -151,9 +144,7 @@ Calculation version: `amlok-internal_transfer_inflows-1`.
 
 **Financing inflows** · `currency` · business, person
 
-Sum identified debt and equity financing receipts.
-
-Required inputs and conditions: Financing classification and evidence; uncertain receipts remain unclassified.
+Cash received from identified debt or equity funding, rather than trading activity.
 
 Calculation version: `amlok-financing_inflows-1`.
 
@@ -161,9 +152,7 @@ Calculation version: `amlok-financing_inflows-1`.
 
 **Positive cash-flow months** · `ratio` · business, person
 
-Complete months with positive net cash flow divided by complete covered months.
-
-Required inputs and conditions: At least three complete months and consistent account scope.
+The share of fully covered months in which net cash flow was positive.
 
 Calculation version: `amlok-positive_cashflow_month_share-1`.
 
@@ -171,9 +160,7 @@ Calculation version: `amlok-positive_cashflow_month_share-1`.
 
 **Operating cash-flow volatility** · `ratio` · business, person
 
-Population standard deviation of complete monthly net operating cash flow divided by absolute mean.
-
-Required inputs and conditions: At least six complete months; nonzero mean; disclose near-zero denominator sensitivity.
+How variable monthly net operating cash flow is relative to its typical magnitude. A higher value indicates less stable cash generation.
 
 Calculation version: `amlok-cashflow_volatility-1`.
 
@@ -181,9 +168,7 @@ Calculation version: `amlok-cashflow_volatility-1`.
 
 **Operating cash-flow change** · `ratio` · business, person
 
-Current 90-day operating net flow minus previous 90-day flow, divided by absolute previous flow.
-
-Required inputs and conditions: Two complete comparable 90-day windows; nonzero previous flow.
+The relative improvement or deterioration in operating net cash flow against the preceding 90 days, using the prior period's absolute magnitude.
 
 Calculation version: `amlok-cashflow_change_90d-1`.
 
@@ -191,9 +176,7 @@ Calculation version: `amlok-cashflow_change_90d-1`.
 
 **Posted transaction count** · `count` · business
 
-Count eligible posted records, each current resource version once.
-
-Required inputs and conditions: Valid date, direction, currency and nonnegative amount.
+The number of eligible posted transaction records, counting each current resource version once.
 
 Calculation version: `amlok-posted_transaction_count-1`.
 
@@ -201,9 +184,7 @@ Calculation version: `amlok-posted_transaction_count-1`.
 
 **Operating receipt count** · `count` · business
 
-Count posted external sales receipts.
-
-Required inputs and conditions: Explicit classification and transfer exclusion.
+The number of posted external sales receipts in the observed activity.
 
 Calculation version: `amlok-operating_receipt_count-1`.
 
@@ -211,9 +192,7 @@ Calculation version: `amlok-operating_receipt_count-1`.
 
 **Owner capital contributions** · `currency` · business
 
-Sum external owner-contribution inflows.
-
-Required inputs and conditions: Explicit direction and category.
+Cash supplied by owners from outside the assessed account scope.
 
 Calculation version: `amlok-owner_contribution_inflows-1`.
 
@@ -221,9 +200,7 @@ Calculation version: `amlok-owner_contribution_inflows-1`.
 
 **Owner distributions** · `currency` · business
 
-Sum external owner-distribution outflows.
-
-Required inputs and conditions: Explicit direction and category.
+Cash paid out to owners, distinguished from operating expenses and internal transfers.
 
 Calculation version: `amlok-owner_distribution_outflows-1`.
 
@@ -231,9 +208,7 @@ Calculation version: `amlok-owner_distribution_outflows-1`.
 
 **Debt proceeds** · `currency` · business
 
-Sum external debt-proceeds inflows.
-
-Required inputs and conditions: Explicit direction and category.
+Cash received from borrowing outside the assessed account scope.
 
 Calculation version: `amlok-debt_proceeds_inflows-1`.
 
@@ -241,9 +216,7 @@ Calculation version: `amlok-debt_proceeds_inflows-1`.
 
 **Observed debt-service payments** · `currency` · business
 
-Sum external debt-service outflows, including principal and lender charges already included in the debit.
-
-Required inputs and conditions: Explicit debt-service classification; no assumption of complete contractual obligations.
+Actual observed external debt-payment debits, including principal and any lender charges included in those debits. This is not the contractual payment schedule.
 
 Calculation version: `amlok-observed_debt_service-1`.
 
@@ -251,9 +224,7 @@ Calculation version: `amlok-observed_debt_service-1`.
 
 **Bank fees paid** · `currency` · business
 
-Sum external fee outflows.
-
-Required inputs and conditions: Explicit fee classification.
+Observed external cash payments classified as financial fees in the transaction evidence.
 
 Calculation version: `amlok-bank_fee_outflows-1`.
 
@@ -261,9 +232,7 @@ Calculation version: `amlok-bank_fee_outflows-1`.
 
 **Cash withdrawals** · `currency` · business
 
-Sum outflows explicitly identified as cash withdrawals.
-
-Required inputs and conditions: Known product_activity for every eligible external outflow.
+Cash removed from the accounts through identified withdrawals; the withdrawal alone does not establish its later use.
 
 Calculation version: `amlok-cash_withdrawal_outflows-1`.
 
@@ -271,9 +240,7 @@ Calculation version: `amlok-cash_withdrawal_outflows-1`.
 
 **Payroll paid** · `currency` · business
 
-Sum external payroll outflows.
-
-Required inputs and conditions: Explicit payroll classification.
+Observed external cash payments classified as payroll.
 
 Calculation version: `amlok-payroll_outflows-1`.
 
@@ -281,9 +248,7 @@ Calculation version: `amlok-payroll_outflows-1`.
 
 **Inventory purchases paid** · `currency` · business
 
-Sum outflows explicitly identified as inventory purchases.
-
-Required inputs and conditions: Known product_activity for every eligible external outflow.
+Observed cash payments explicitly identified as inventory purchases.
 
 Calculation version: `amlok-inventory_purchase_outflows-1`.
 
@@ -291,9 +256,7 @@ Calculation version: `amlok-inventory_purchase_outflows-1`.
 
 **Internal transfer outflows** · `currency` · business
 
-Sum outflows explicitly identified as internal transfers.
-
-Required inputs and conditions: Known transfer status for every posted transaction.
+Cash sent to other accounts within the assessed consolidation scope.
 
 Calculation version: `amlok-internal_transfer_outflows-1`.
 
@@ -301,9 +264,7 @@ Calculation version: `amlok-internal_transfer_outflows-1`.
 
 **Operating spending to receipts** · `ratio` · business
 
-Operating cash payments divided by operating receipts.
-
-Required inputs and conditions: Positive operating receipts; complete classification.
+Operating cash spending relative to operating cash receipts. A value above one means spending exceeds receipts for the period.
 
 Calculation version: `amlok-spending_to_receipts_ratio-1`.
 
@@ -311,25 +272,21 @@ Calculation version: `amlok-spending_to_receipts_ratio-1`.
 
 **Change in spending to receipts** · `ratio` · business
 
-Current 90-day operating spending/receipts minus preceding 90-day operating spending/receipts.
-
-Required inputs and conditions: Two fully observed 90-day windows; positive receipts in both.
+The absolute change in the operating spending-to-receipts ratio against the preceding 90 days. It is a change in ratio units, not a relative growth rate.
 
 Calculation version: `amlok-spending_to_receipts_change_90d-1`.
 
 ## Liquidity
 
-Separate available, restricted and observed balances. Reconstructed daily balances require reconciled opening/closing balances and complete transaction coverage.
+Cash available to meet near-term obligations, including balance stability and periods of pressure.
 
-Sources: banking, accounting.
+Family key: `liquidity`.
 
 ### unrestricted_cash
 
 **Unrestricted cash** · `currency` · business, person
 
-Sum verified cash balances available for use, excluding restricted balances.
-
-Required inputs and conditions: Same-as-of reconciled balances and restriction status.
+Supported cash balances available for use, excluding restricted funds.
 
 Calculation version: `amlok-unrestricted_cash-1`.
 
@@ -337,9 +294,7 @@ Calculation version: `amlok-unrestricted_cash-1`.
 
 **Average daily cash balance** · `currency` · business, person
 
-Sum end-of-day balances divided by covered calendar days.
-
-Required inputs and conditions: Complete reconciled daily balances for the selected account scope.
+The average consolidated closing cash balance over covered calendar days.
 
 Calculation version: `amlok-average_daily_balance-1`.
 
@@ -347,9 +302,7 @@ Calculation version: `amlok-average_daily_balance-1`.
 
 **Minimum daily cash balance** · `currency` · business, person
 
-Minimum consolidated end-of-day balance.
-
-Required inputs and conditions: Complete comparable daily balances; disclose observed versus reconstructed basis.
+The lowest consolidated end-of-day cash balance observed in the period.
 
 Calculation version: `amlok-minimum_daily_balance-1`.
 
@@ -357,9 +310,7 @@ Calculation version: `amlok-minimum_daily_balance-1`.
 
 **Days below zero** · `days` · business, person
 
-Count covered days with negative consolidated end-of-day balance.
-
-Required inputs and conditions: Complete daily balance series; no missing day treated as zero.
+The number of covered days when the consolidated closing balance was negative. This differs from an overdraft in an individual account.
 
 Calculation version: `amlok-negative_balance_days-1`.
 
@@ -367,9 +318,7 @@ Calculation version: `amlok-negative_balance_days-1`.
 
 **Cash buffer** · `days` · business, person
 
-Unrestricted cash divided by mean daily essential cash outflows.
-
-Required inputs and conditions: Positive essential-outflow denominator; current cash; documented window and exclusions.
+How many days of essential cash outgoings the unrestricted cash balance represents at the observed spending pace.
 
 Calculation version: `amlok-cash_buffer_days-1`.
 
@@ -377,9 +326,7 @@ Calculation version: `amlok-cash_buffer_days-1`.
 
 **Current ratio** · `ratio` · business
 
-Current assets divided by current liabilities.
-
-Required inputs and conditions: Same-date classified balance sheet; positive current liabilities.
+Current assets relative to current liabilities, indicating the balance-sheet resources available against near-term obligations.
 
 Calculation version: `amlok-current_ratio-1`.
 
@@ -387,9 +334,7 @@ Calculation version: `amlok-current_ratio-1`.
 
 **Quick ratio** · `ratio` · business
 
-Cash plus short-term investments plus eligible receivables, divided by current liabilities.
-
-Required inputs and conditions: Same-date asset/liability classifications; positive current liabilities.
+Cash, short-term investments and eligible receivables relative to current liabilities, without relying on inventory.
 
 Calculation version: `amlok-quick_ratio-1`.
 
@@ -397,9 +342,7 @@ Calculation version: `amlok-quick_ratio-1`.
 
 **Cash ratio** · `ratio` · business
 
-Unrestricted cash and cash equivalents divided by current liabilities.
-
-Required inputs and conditions: Same-date balances; positive current liabilities.
+Unrestricted cash and cash equivalents relative to current liabilities.
 
 Calculation version: `amlok-cash_ratio-1`.
 
@@ -407,9 +350,7 @@ Calculation version: `amlok-cash_ratio-1`.
 
 **Daily balance variability** · `currency` · business
 
-Population standard deviation of consolidated daily closing balances.
-
-Required inputs and conditions: At least 30 complete comparable calendar days across every included account.
+The spread of daily consolidated closing balances, expressed as a money amount.
 
 Calculation version: `amlok-balance_stddev-1`.
 
@@ -417,9 +358,7 @@ Calculation version: `amlok-balance_stddev-1`.
 
 **Relative daily balance variability** · `ratio` · business
 
-Daily balance population standard deviation divided by absolute mean balance.
-
-Required inputs and conditions: At least 30 complete comparable days; nonzero mean; near-zero sensitivity.
+The variability of daily closing balances relative to the absolute average balance.
 
 Calculation version: `amlok-balance_coefficient_of_variation-1`.
 
@@ -427,9 +366,7 @@ Calculation version: `amlok-balance_coefficient_of_variation-1`.
 
 **Maximum daily cash balance** · `currency` · business
 
-Maximum consolidated daily closing balance.
-
-Required inputs and conditions: Complete daily balances across every included account.
+The highest consolidated daily closing balance in the covered period.
 
 Calculation version: `amlok-maximum_daily_balance-1`.
 
@@ -437,9 +374,7 @@ Calculation version: `amlok-maximum_daily_balance-1`.
 
 **Median daily cash balance** · `currency` · business
 
-Median consolidated daily closing balance; mean of two central values when even.
-
-Required inputs and conditions: Complete daily balances across every included account.
+The middle consolidated daily closing balance, representing a typical covered day with less influence from extremes.
 
 Calculation version: `amlok-median_daily_balance-1`.
 
@@ -447,9 +382,7 @@ Calculation version: `amlok-median_daily_balance-1`.
 
 **Days below the declared cash floor** · `days` · business
 
-Count covered days with consolidated closing cash below the explicit liquidity floor.
-
-Required inputs and conditions: Complete daily balances; evidenced reporting-currency liquidity floor.
+The number of covered days when consolidated closing cash was below the explicitly specified liquidity floor.
 
 Calculation version: `amlok-low_balance_days-1`.
 
@@ -457,9 +390,7 @@ Calculation version: `amlok-low_balance_days-1`.
 
 **Cash balance change over 90 days** · `currency` · business
 
-Last covered closing balance minus closing balance exactly 90 calendar days earlier.
-
-Required inputs and conditions: Both dates observed; complete comparable daily balances.
+The money amount by which closing cash has increased or decreased from the closing balance 90 days earlier.
 
 Calculation version: `amlok-balance_change_90d-1`.
 
@@ -467,9 +398,7 @@ Calculation version: `amlok-balance_change_90d-1`.
 
 **Observed cash-shock episodes** · `count` · business
 
-Count nonoverlapping episodes beginning with a one-day decline of at least 20 percent from a positive previous closing balance.
-
-Required inputs and conditions: Complete daily balances; episode ends when balance recovers to its pre-shock level; no predictive interpretation.
+Distinct cash-pressure episodes beginning with a one-day decline of at least 20 percent from a positive prior closing balance. Overlapping episodes are not counted again.
 
 Calculation version: `amlok-cash_shock_count-1`.
 
@@ -477,9 +406,7 @@ Calculation version: `amlok-cash_shock_count-1`.
 
 **Most recent cash-shock recovery** · `days` · business
 
-Calendar days to regain the pre-shock closing balance for the most recent episode.
-
-Required inputs and conditions: A completed most-recent episode; unavailable when no episode or when recovery is not observed.
+The time taken to regain the pre-shock closing balance for the most recent cash-shock episode.
 
 Calculation version: `amlok-balance_recovery_days-1`.
 
@@ -487,25 +414,21 @@ Calculation version: `amlok-balance_recovery_days-1`.
 
 **Unrecovered cash-shock episodes** · `count` · business
 
-Count open episodes at the end of the observation window under the same nonoverlapping 20 percent shock rule.
-
-Required inputs and conditions: Complete daily balances; an unrecovered episode is right-censored, not a forecast.
+Cash-shock episodes that remain unresolved at the end of the observation window under the same 20 percent decline definition.
 
 Calculation version: `amlok-unrecovered_cash_shock_count-1`.
 
 ## Revenue quality
 
-Distinguish accrual revenue, gross sales, refunds, taxes, fees and cash settlement. Financing, transfers and owner injections are not sales.
+How well revenue is supported, how recurring it is, and how reliably sales become cash.
 
-Sources: banking, payments, commerce, accounting.
+Family key: `revenue_quality`.
 
 ### verified_revenue
 
 **Verified revenue** · `currency` · business
 
-Sum supported revenue on the declared cash or accrual basis after exclusions.
-
-Required inputs and conditions: Reconciled bank, accounting or commerce evidence; taxes, financing and transfers excluded.
+Revenue supported by evidence on the declared cash or accrual basis after applicable exclusions. It is not all money deposited.
 
 Calculation version: `amlok-verified_revenue-1`.
 
@@ -513,9 +436,7 @@ Calculation version: `amlok-verified_revenue-1`.
 
 **Recurring revenue share** · `ratio` · business
 
-Supported recurring revenue divided by total verified revenue.
-
-Required inputs and conditions: Defined recurrence rule and matched periods; positive total revenue.
+The portion of verified revenue supported as recurring rather than one-off activity.
 
 Calculation version: `amlok-recurring_revenue_share-1`.
 
@@ -523,9 +444,7 @@ Calculation version: `amlok-recurring_revenue_share-1`.
 
 **Revenue growth year over year** · `ratio` · business
 
-Current-period revenue minus prior-year comparable revenue, divided by prior-year revenue.
-
-Required inputs and conditions: Comparable periods separated by one year; positive prior revenue.
+The relative increase or decrease in revenue against the comparable period in the prior year.
 
 Calculation version: `amlok-revenue_growth_yoy-1`.
 
@@ -533,9 +452,7 @@ Calculation version: `amlok-revenue_growth_yoy-1`.
 
 **Revenue growth over 90 days** · `ratio` · business
 
-Current 90-day revenue minus preceding 90-day revenue, divided by preceding revenue.
-
-Required inputs and conditions: Two complete 90-day periods; positive prior revenue.
+The relative increase or decrease in revenue against the immediately preceding 90-day period.
 
 Calculation version: `amlok-revenue_growth_90d-1`.
 
@@ -543,9 +460,7 @@ Calculation version: `amlok-revenue_growth_90d-1`.
 
 **Monthly revenue volatility** · `ratio` · business
 
-Population standard deviation of monthly revenue divided by mean monthly revenue.
-
-Required inputs and conditions: At least six complete months; positive mean; consistent recognition basis.
+The variability of monthly revenue relative to average monthly revenue.
 
 Calculation version: `amlok-revenue_volatility-1`.
 
@@ -553,9 +468,7 @@ Calculation version: `amlok-revenue_volatility-1`.
 
 **Refund amount share** · `ratio` · business
 
-Refunded sales amount divided by eligible gross sales amount.
-
-Required inputs and conditions: Matched sales/refund cohort and treatment of late refunds; positive gross sales.
+The portion of eligible gross sales value returned through refunds.
 
 Calculation version: `amlok-refund_amount_share-1`.
 
@@ -563,9 +476,7 @@ Calculation version: `amlok-refund_amount_share-1`.
 
 **Chargeback amount share** · `ratio` · business
 
-Disputed chargeback amount divided by eligible processed sales amount.
-
-Required inputs and conditions: Matched processing cohort and consistent chargeback stage; positive denominator.
+Disputed chargeback value relative to eligible processed sales value; this is not the probability of a future chargeback.
 
 Calculation version: `amlok-chargeback_amount_share-1`.
 
@@ -573,9 +484,7 @@ Calculation version: `amlok-chargeback_amount_share-1`.
 
 **Revenue cash realization** · `ratio` · business
 
-Matched collections on recognized sales divided by recognized sales.
-
-Required inputs and conditions: Defined collection horizon and sales cohort; positive recognized sales; not raw deposits/revenue.
+The portion of recognized sales supported by matched cash collections.
 
 Calculation version: `amlok-revenue_cash_realization-1`.
 
@@ -583,9 +492,7 @@ Calculation version: `amlok-revenue_cash_realization-1`.
 
 **Unverified receipts share** · `ratio` · business
 
-Unclassified or unsupported operating-like receipts divided by total candidate receipts.
-
-Required inputs and conditions: Classification coverage and positive candidate receipts.
+The portion of candidate operating-like receipts whose classification or supporting evidence remains unresolved.
 
 Calculation version: `amlok-unverified_receipts_share-1`.
 
@@ -593,9 +500,7 @@ Calculation version: `amlok-unverified_receipts_share-1`.
 
 **Nonrecurring revenue share** · `ratio` · business
 
-Identified nonrecurring revenue divided by verified revenue.
-
-Required inputs and conditions: Versioned recurrence criteria and positive revenue.
+The portion of verified revenue identified as nonrecurring.
 
 Calculation version: `amlok-nonrecurring_revenue_share-1`.
 
@@ -603,9 +508,7 @@ Calculation version: `amlok-nonrecurring_revenue_share-1`.
 
 **Mean interval between receipts** · `days` · business
 
-Mean UTC-day gap between distinct operating-receipt dates.
-
-Required inputs and conditions: At least three distinct receipt dates; whole-window bank coverage.
+The typical time between distinct dates with operating receipts.
 
 Calculation version: `amlok-receipt_gap_mean_days-1`.
 
@@ -613,9 +516,7 @@ Calculation version: `amlok-receipt_gap_mean_days-1`.
 
 **Receipt interval variability** · `days` · business
 
-Population standard deviation of UTC-day gaps between distinct operating-receipt dates.
-
-Required inputs and conditions: At least three distinct receipt dates; whole-window bank coverage.
+How irregular the gaps between operating-receipt dates are, expressed in days.
 
 Calculation version: `amlok-receipt_gap_stddev_days-1`.
 
@@ -623,9 +524,7 @@ Calculation version: `amlok-receipt_gap_stddev_days-1`.
 
 **Receipt calendar-day variability** · `days` · business
 
-Population standard deviation of day-of-month across distinct operating-receipt dates.
-
-Required inputs and conditions: At least three receipt dates; descriptive only, not a timing forecast.
+How widely operating-receipt dates vary within the calendar month. This describes calendar timing, not receipt amounts.
 
 Calculation version: `amlok-receipt_day_of_month_stddev-1`.
 
@@ -633,9 +532,7 @@ Calculation version: `amlok-receipt_day_of_month_stddev-1`.
 
 **Months without recorded receipts** · `count` · business
 
-Count completely covered UTC calendar months with no operating receipts.
-
-Required inputs and conditions: Complete transaction coverage; exclude partial months; no receipts does not prove no accrual revenue.
+Fully covered calendar months with no operating receipts. This is a cash-receipt observation and does not prove zero accrual revenue.
 
 Calculation version: `amlok-zero_revenue_month_count-1`.
 
@@ -643,9 +540,7 @@ Calculation version: `amlok-zero_revenue_month_count-1`.
 
 **Operating receipts volatility** · `ratio` · business
 
-Population standard deviation divided by mean of complete monthly operating receipts.
-
-Required inputs and conditions: At least six complete months; positive mean.
+The variability of complete monthly operating cash receipts relative to their average amount.
 
 Calculation version: `amlok-operating_receipts_volatility-1`.
 
@@ -653,9 +548,7 @@ Calculation version: `amlok-operating_receipts_volatility-1`.
 
 **Operating receipts change** · `ratio` · business
 
-Current 90-day receipts minus previous 90-day receipts divided by previous receipts.
-
-Required inputs and conditions: Two fully observed 90-day windows; positive previous receipts.
+The relative change in operating cash receipts against the preceding 90 days.
 
 Calculation version: `amlok-operating_receipts_change_90d-1`.
 
@@ -663,9 +556,7 @@ Calculation version: `amlok-operating_receipts_change_90d-1`.
 
 **Days since last observed receipt** · `days` · business
 
-Days from latest receipt date to the last included UTC date of the observation window.
-
-Required inputs and conditions: At least one classified receipt; no claim about time outside source coverage.
+The time from the most recent operating receipt to the last included observation date, rather than to the date you retrieve the result.
 
 Calculation version: `amlok-days_since_last_operating_receipt-1`.
 
@@ -673,25 +564,21 @@ Calculation version: `amlok-days_since_last_operating_receipt-1`.
 
 **Unclassified external receipts** · `ratio` · business
 
-External inflow amount in unknown or other categories divided by external inflows.
-
-Required inputs and conditions: Known transfer status; positive external receipts; uncertainty is not fraud.
+The portion of external cash inflows assigned to unknown or other categories.
 
 Calculation version: `amlok-unclassified_receipt_share-1`.
 
 ## Profitability
 
-Align accounting basis, reporting scope and periods. EBITDA addbacks require itemized justification; never infer profit from deposits alone.
+Earnings retained after different layers of costs, distinguished from cash received.
 
-Sources: accounting, tax, documents.
+Family key: `profitability`.
 
 ### gross_profit
 
 **Gross profit** · `currency` · business
 
-Recognized revenue minus cost of goods sold.
-
-Required inputs and conditions: Same-period income statement with classified COGS.
+Recognized revenue remaining after the cost of goods sold, before other operating costs.
 
 Calculation version: `amlok-gross_profit-1`.
 
@@ -699,9 +586,7 @@ Calculation version: `amlok-gross_profit-1`.
 
 **Gross margin** · `ratio` · business
 
-Gross profit divided by recognized revenue.
-
-Required inputs and conditions: Positive revenue and consistent accounting basis.
+Gross profit as a share of recognized revenue.
 
 Calculation version: `amlok-gross_margin-1`.
 
@@ -709,9 +594,7 @@ Calculation version: `amlok-gross_margin-1`.
 
 **EBITDA** · `currency` · business
 
-Net income plus income tax expense, interest expense, depreciation and amortization.
-
-Required inputs and conditions: Complete supported statement line items; no automatic discretionary addbacks.
+Earnings before interest, income taxes, depreciation and amortization, supported by statement items without automatic discretionary addbacks.
 
 Calculation version: `amlok-ebitda-1`.
 
@@ -719,9 +602,7 @@ Calculation version: `amlok-ebitda-1`.
 
 **EBITDA margin** · `ratio` · business
 
-EBITDA divided by recognized revenue.
-
-Required inputs and conditions: Positive revenue and supported EBITDA.
+EBITDA as a share of recognized revenue.
 
 Calculation version: `amlok-ebitda_margin-1`.
 
@@ -729,9 +610,7 @@ Calculation version: `amlok-ebitda_margin-1`.
 
 **Operating profit** · `currency` · business
 
-Revenue minus COGS and operating expenses.
-
-Required inputs and conditions: Complete same-period operating statement; financing excluded.
+Recognized profit after the cost of goods sold and operating expenses, excluding financing costs.
 
 Calculation version: `amlok-operating_profit-1`.
 
@@ -739,9 +618,7 @@ Calculation version: `amlok-operating_profit-1`.
 
 **Operating margin** · `ratio` · business
 
-Operating profit divided by revenue.
-
-Required inputs and conditions: Positive recognized revenue.
+Operating profit as a share of recognized revenue.
 
 Calculation version: `amlok-operating_margin-1`.
 
@@ -749,9 +626,7 @@ Calculation version: `amlok-operating_margin-1`.
 
 **Net profit** · `currency` · business
 
-Total recognized income minus all recognized expenses.
-
-Required inputs and conditions: Complete statement on declared accounting basis.
+Recognized income remaining after all recognized expenses on the stated accounting basis.
 
 Calculation version: `amlok-net_profit-1`.
 
@@ -759,9 +634,7 @@ Calculation version: `amlok-net_profit-1`.
 
 **Net margin** · `ratio` · business
 
-Net profit divided by recognized revenue.
-
-Required inputs and conditions: Positive recognized revenue.
+Net profit as a share of recognized revenue.
 
 Calculation version: `amlok-net_margin-1`.
 
@@ -769,9 +642,7 @@ Calculation version: `amlok-net_margin-1`.
 
 **Free cash flow** · `currency` · business
 
-Operating cash flow minus cash capital expenditures.
-
-Required inputs and conditions: Reconciled cash-flow statement or supported cash reconstruction; no debt proceeds.
+Operating cash remaining after cash capital expenditures; borrowing proceeds do not establish free cash flow.
 
 Calculation version: `amlok-free_cash_flow-1`.
 
@@ -779,25 +650,21 @@ Calculation version: `amlok-free_cash_flow-1`.
 
 **Return on assets** · `ratio` · business
 
-Period net profit divided by mean opening and closing total assets.
-
-Required inputs and conditions: Positive average assets and complete period; disclose annualization, never apply silently.
+Period net profit relative to the average asset base. Annualization is only meaningful when explicitly stated.
 
 Calculation version: `amlok-return_on_assets-1`.
 
 ## Working capital
 
-Use dated invoice/bill aging, sales and cost denominators on the same basis. Inventory valuation and credit-sales coverage must be explicit.
+Funds tied up in receivables, inventory and payables, and the timing of their conversion into cash.
 
-Sources: accounting, commerce, inventory.
+Family key: `working_capital`.
 
 ### net_working_capital
 
 **Net working capital** · `currency` · business
 
-Current assets minus current liabilities.
-
-Required inputs and conditions: Same-date classified balance sheet.
+The balance-sheet surplus or deficit of current assets over current liabilities at the same date.
 
 Calculation version: `amlok-net_working_capital-1`.
 
@@ -805,9 +672,7 @@ Calculation version: `amlok-net_working_capital-1`.
 
 **Receivable days** · `days` · business
 
-Average trade receivables divided by credit sales, multiplied by period days.
-
-Required inputs and conditions: Positive credit sales; opening/closing receivables; same accounting period.
+The collection-time equivalent of trade receivables relative to credit sales for the period.
 
 Calculation version: `amlok-receivables_days-1`.
 
@@ -815,9 +680,7 @@ Calculation version: `amlok-receivables_days-1`.
 
 **Payable days** · `days` · business
 
-Average trade payables divided by credit purchases, multiplied by period days.
-
-Required inputs and conditions: Positive credit purchases; opening/closing payables; do not substitute COGS silently.
+The payment-time equivalent of trade payables relative to credit purchases for the period.
 
 Calculation version: `amlok-payables_days-1`.
 
@@ -825,9 +688,7 @@ Calculation version: `amlok-payables_days-1`.
 
 **Inventory days** · `days` · business
 
-Average inventory divided by COGS, multiplied by period days.
-
-Required inputs and conditions: Positive COGS; opening/closing comparable inventory valuation.
+The holding-time equivalent of inventory relative to the period's cost of goods sold.
 
 Calculation version: `amlok-inventory_days-1`.
 
@@ -835,9 +696,7 @@ Calculation version: `amlok-inventory_days-1`.
 
 **Cash conversion cycle** · `days` · business
 
-Receivable days plus inventory days minus payable days.
-
-Required inputs and conditions: All three components available on comparable periods and basis.
+The length of the operating funding cycle across inventory holding, customer collections and supplier payment timing.
 
 Calculation version: `amlok-cash_conversion_cycle-1`.
 
@@ -845,9 +704,7 @@ Calculation version: `amlok-cash_conversion_cycle-1`.
 
 **Overdue receivables share** · `ratio` · business
 
-Overdue collectible trade receivables divided by total collectible trade receivables.
-
-Required inputs and conditions: Due dates and same-as-of open balances; positive receivables.
+The portion of collectible trade receivables whose contractual payment due dates have passed.
 
 Calculation version: `amlok-ar_overdue_share-1`.
 
@@ -855,9 +712,7 @@ Calculation version: `amlok-ar_overdue_share-1`.
 
 **Receivables over 90 days past due** · `ratio` · business
 
-Receivables more than 90 days past due divided by total trade receivables.
-
-Required inputs and conditions: Aging based on due date, not invoice date; positive receivables.
+The portion of trade receivables more than 90 days past their payment due dates.
 
 Calculation version: `amlok-ar_90_plus_share-1`.
 
@@ -865,9 +720,7 @@ Calculation version: `amlok-ar_90_plus_share-1`.
 
 **Overdue payables share** · `ratio` · business
 
-Overdue trade payables divided by total trade payables.
-
-Required inputs and conditions: Due dates and open balances; positive payables.
+The portion of trade payables whose contractual payment due dates have passed.
 
 Calculation version: `amlok-ap_overdue_share-1`.
 
@@ -875,25 +728,21 @@ Calculation version: `amlok-ap_overdue_share-1`.
 
 **Inventory turnover** · `ratio` · business
 
-Period COGS divided by average inventory.
-
-Required inputs and conditions: Positive comparable inventory and supported COGS.
+How many times the period's cost of goods sold represents the average inventory balance.
 
 Calculation version: `amlok-inventory_turnover-1`.
 
 ## Debt and leverage
 
-Reconcile observed debt payments to disclosed and entitled bureau obligations. Unknown balances and undisclosed obligations are not zero.
+The size, utilization and maturity of debt relative to the borrower's resources and operating activity.
 
-Sources: accounting, banking, credit_bureau, lender, documents.
+Family key: `leverage`.
 
 ### total_debt
 
 **Total interest-bearing debt** · `currency` · business, person
 
-Sum outstanding principal of resolved interest-bearing obligations.
-
-Required inputs and conditions: Complete disclosed and supported debt inventory; leases treatment explicit.
+Outstanding principal of resolved interest-bearing obligations within the supported debt scope.
 
 Calculation version: `amlok-total_debt-1`.
 
@@ -901,9 +750,7 @@ Calculation version: `amlok-total_debt-1`.
 
 **Net debt** · `currency` · business, person
 
-Total debt minus unrestricted cash eligible for offset.
-
-Required inputs and conditions: Same-as-of currency and consolidated scope.
+Debt remaining after offsetting eligible unrestricted cash at the same assessment date.
 
 Calculation version: `amlok-net_debt-1`.
 
@@ -911,9 +758,7 @@ Calculation version: `amlok-net_debt-1`.
 
 **Debt to assets** · `ratio` · business
 
-Total interest-bearing debt divided by total assets.
-
-Required inputs and conditions: Positive total assets and matched scope; excludes non-debt liabilities by definition.
+Interest-bearing debt relative to total assets; non-debt liabilities are not included as debt.
 
 Calculation version: `amlok-debt_to_assets-1`.
 
@@ -921,9 +766,7 @@ Calculation version: `amlok-debt_to_assets-1`.
 
 **Debt to equity** · `ratio` · business
 
-Total debt divided by equity.
-
-Required inputs and conditions: Positive equity; zero/negative equity produces unavailable ratio and a separate finding.
+Interest-bearing debt relative to positive equity. Nonpositive equity does not produce a usable ratio.
 
 Calculation version: `amlok-debt_to_equity-1`.
 
@@ -931,9 +774,7 @@ Calculation version: `amlok-debt_to_equity-1`.
 
 **Net debt to EBITDA** · `ratio` · business
 
-Net debt divided by trailing-12-month EBITDA.
-
-Required inputs and conditions: Positive EBITDA and complete 12-month period.
+Net debt relative to supported trailing-12-month EBITDA, indicating debt size against earnings capacity.
 
 Calculation version: `amlok-net_debt_to_ebitda-1`.
 
@@ -941,9 +782,7 @@ Calculation version: `amlok-net_debt_to_ebitda-1`.
 
 **Revolving credit utilization** · `ratio` · business, person
 
-Used revolving principal divided by committed revolving limits.
-
-Required inputs and conditions: Positive known limits; distinguish drawn balances from pending authorizations.
+The used portion of known committed revolving credit limits.
 
 Calculation version: `amlok-credit_utilization-1`.
 
@@ -951,9 +790,7 @@ Calculation version: `amlok-credit_utilization-1`.
 
 **Debt due within one year** · `ratio` · business, person
 
-Principal contractually due within 365 days divided by total debt.
-
-Required inputs and conditions: Complete maturity schedule and positive total debt.
+The portion of total debt principal contractually due within the next 365 days.
 
 Calculation version: `amlok-short_term_debt_share-1`.
 
@@ -961,9 +798,7 @@ Calculation version: `amlok-short_term_debt_share-1`.
 
 **Debt maturing within 90 days** · `currency` · business, person
 
-Sum principal contractually due within the next 90 days.
-
-Required inputs and conditions: Complete maturity schedule including balloon payments.
+Principal contractually due within the next 90 days, including supported balloon payments.
 
 Calculation version: `amlok-debt_maturing_90d-1`.
 
@@ -971,9 +806,7 @@ Calculation version: `amlok-debt_maturing_90d-1`.
 
 **Observed active financing facilities** · `count` · business
 
-Count distinct active provider facilities after facility-ID deduplication.
-
-Required inputs and conditions: Explicit facility identity and active status; observed-source inventory only; lender deal snapshot excluded.
+The number of distinct observed active financing facilities after resolving duplicate facility identities.
 
 Calculation version: `amlok-concurrent_financing_count-1`.
 
@@ -981,9 +814,7 @@ Calculation version: `amlok-concurrent_financing_count-1`.
 
 **Recently funded active facilities** · `count` · business
 
-Count observed active facilities funded in the 90 days ending at assessment time.
-
-Required inputs and conditions: Known funding date for every included active facility; observed-source inventory only.
+Observed active facilities funded during the 90 days ending at the assessment time.
 
 Calculation version: `amlok-new_financing_count_90d-1`.
 
@@ -991,25 +822,21 @@ Calculation version: `amlok-new_financing_count_90d-1`.
 
 **Debt to annual operating receipts** · `ratio` · business
 
-Supported total debt divided by observed trailing-year operating receipts.
-
-Required inputs and conditions: Complete trailing 12 calendar months and debt inventory; positive receipts; same scope; no silent annualization.
+Supported total debt relative to observed operating receipts over the trailing year.
 
 Calculation version: `amlok-debt_to_operating_receipts-1`.
 
 ## Repayment capacity
 
-Use complete existing and proposed debt schedules, eligible cash flow and consistent periods. Include balloon and variable-payment terms.
+The ability of evidenced cash flow to cover existing and proposed debt obligations.
 
-Sources: banking, accounting, lender, application, documents.
+Family key: `repayment_capacity`.
 
 ### dscr
 
 **Cash-flow debt-service coverage** · `ratio` · business
 
-Eligible cash flow available for debt service divided by existing plus proposed contractual debt service.
-
-Required inputs and conditions: Complete eligible cash-flow bridge and existing/proposed principal, interest and mandatory debt fees for the same period; positive debt service.
+Eligible cash available for debt service relative to existing and proposed contractual payments. A value of one represents coverage of the stated payments, not a lending approval.
 
 Calculation version: `amlok-dscr-1`.
 
@@ -1017,9 +844,7 @@ Calculation version: `amlok-dscr-1`.
 
 **Fixed-charge coverage** · `ratio` · business
 
-Cash flow before the specified fixed charges divided by those fixed charges.
-
-Required inputs and conditions: Explicit non-overlapping charge set, including leases where applicable; positive charges.
+Cash available against the explicitly defined set of fixed charges, including leases when applicable.
 
 Calculation version: `amlok-fixed_charge_coverage-1`.
 
@@ -1027,9 +852,7 @@ Calculation version: `amlok-fixed_charge_coverage-1`.
 
 **Interest coverage** · `ratio` · business
 
-EBIT divided by interest expense.
-
-Required inputs and conditions: Supported same-period EBIT and positive interest expense.
+Supported earnings before interest and tax relative to interest expense for the same period.
 
 Calculation version: `amlok-interest_coverage-1`.
 
@@ -1037,9 +860,7 @@ Calculation version: `amlok-interest_coverage-1`.
 
 **Existing debt service** · `currency` · business
 
-Sum existing contractual principal, interest and mandatory debt fees over the assessment window.
-
-Required inputs and conditions: Complete schedule; variable and balloon assumptions explicit.
+Contractual principal, interest and mandatory debt fees on existing obligations over the assessment window.
 
 Calculation version: `amlok-existing_debt_service-1`.
 
@@ -1047,9 +868,7 @@ Calculation version: `amlok-existing_debt_service-1`.
 
 **Proposed debt service** · `currency` · business
 
-Sum proposed contractual principal, interest and mandatory debt fees over the assessment window.
-
-Required inputs and conditions: Exact proposed product terms, amount, rate, amortization, fees and timing.
+Contractual payments and mandatory debt fees associated with the exact financing terms being assessed.
 
 Calculation version: `amlok-proposed_debt_service-1`.
 
@@ -1057,9 +876,7 @@ Calculation version: `amlok-proposed_debt_service-1`.
 
 **Total debt service** · `currency` · business
 
-Existing plus proposed debt service with duplicates removed.
-
-Required inputs and conditions: Comparable complete schedules and shared currency.
+The combined, deduplicated contractual payments for existing and proposed obligations over the assessment window.
 
 Calculation version: `amlok-total_debt_service-1`.
 
@@ -1067,9 +884,7 @@ Calculation version: `amlok-total_debt_service-1`.
 
 **Cash after debt service** · `currency` · business
 
-Eligible cash available for debt service minus total debt service.
-
-Required inputs and conditions: Supported cash-flow bridge and complete obligations.
+Cash left, or the shortfall, after existing and proposed contractual debt service.
 
 Calculation version: `amlok-residual_cash_after_debt-1`.
 
@@ -1077,9 +892,7 @@ Calculation version: `amlok-residual_cash_after_debt-1`.
 
 **Debt-service headroom** · `currency` · business
 
-Eligible cash flow divided by institution DSCR requirement, minus total debt service.
-
-Required inputs and conditions: Positive institution-approved DSCR threshold and complete components; analytical capacity, not an offer.
+Additional debt-service room at the institution's required coverage threshold. It is an analytical capacity amount, not a credit limit or offer.
 
 Calculation version: `amlok-debt_service_headroom-1`.
 
@@ -1087,9 +900,7 @@ Calculation version: `amlok-debt_service_headroom-1`.
 
 **Debt payments to operating receipts** · `ratio` · business
 
-Observed debt payments divided by operating cash receipts.
-
-Required inputs and conditions: Positive receipts; payments classified with evidence; not a substitute for DSCR.
+Observed debt payments relative to operating cash receipts. This describes payment burden and does not replace contractual coverage analysis.
 
 Calculation version: `amlok-debt_payment_to_receipts-1`.
 
@@ -1097,25 +908,21 @@ Calculation version: `amlok-debt_payment_to_receipts-1`.
 
 **Debt-service share of outflows** · `ratio` · business
 
-Observed external debt-service payments divided by all external posted outflows.
-
-Required inputs and conditions: Positive external outflows; explicit transfer and category classification.
+The portion of observed external cash outflows attributable to debt service.
 
 Calculation version: `amlok-debt_service_to_outflows-1`.
 
 ## Concentration
 
-Aggregate only resolved counterparties within the authorized borrower scope. Unknown counterparties remain a disclosed unallocated bucket.
+Dependence on a small number of customers, suppliers, sales channels or income sources.
 
-Sources: accounting, payments, commerce, payroll, banking.
+Family key: `concentration`.
 
 ### top_customer_share
 
 **Largest customer share** · `ratio` · business
 
-Largest resolved customer revenue divided by covered customer revenue.
-
-Required inputs and conditions: Positive covered revenue and disclosed unknown-counterparty share.
+The portion of covered customer revenue attributable to the largest resolved customer.
 
 Calculation version: `amlok-top_customer_share-1`.
 
@@ -1123,9 +930,7 @@ Calculation version: `amlok-top_customer_share-1`.
 
 **Top five customer share** · `ratio` · business
 
-Revenue of five largest resolved customers divided by covered customer revenue.
-
-Required inputs and conditions: Positive covered revenue; fewer than five uses all resolved customers.
+The portion of covered customer revenue attributable to the five largest resolved customers, or all resolved customers when fewer than five exist.
 
 Calculation version: `amlok-top_five_customer_share-1`.
 
@@ -1133,9 +938,7 @@ Calculation version: `amlok-top_five_customer_share-1`.
 
 **Largest supplier share** · `ratio` · business
 
-Largest resolved supplier spend divided by covered supplier spend.
-
-Required inputs and conditions: Positive supplier spend and explicit coverage.
+The portion of covered supplier spending attributable to the largest resolved supplier.
 
 Calculation version: `amlok-top_supplier_share-1`.
 
@@ -1143,9 +946,7 @@ Calculation version: `amlok-top_supplier_share-1`.
 
 **Largest sales channel share** · `ratio` · business
 
-Largest channel revenue divided by total covered channel revenue.
-
-Required inputs and conditions: Positive channel revenue; no duplicated cross-platform sales.
+The portion of covered sales-channel revenue attributable to the largest channel.
 
 Calculation version: `amlok-top_channel_share-1`.
 
@@ -1153,9 +954,7 @@ Calculation version: `amlok-top_channel_share-1`.
 
 **Customer concentration index** · `ratio` · business
 
-Sum squared customer revenue fractions on a 0-to-1 scale.
-
-Required inputs and conditions: Complete resolved customer allocation or explicit partial coverage; unknown is not one customer.
+Customer revenue concentration on a zero-to-one scale. Higher values indicate greater dependence on fewer resolved customers.
 
 Calculation version: `amlok-customer_hhi-1`.
 
@@ -1163,25 +962,21 @@ Calculation version: `amlok-customer_hhi-1`.
 
 **Income-source concentration index** · `ratio` · person
 
-Sum squared verified income-source fractions on a 0-to-1 scale.
-
-Required inputs and conditions: Positive verified income and resolved income streams.
+Concentration of verified income among resolved income sources on a zero-to-one scale. Higher values indicate greater dependence on fewer sources.
 
 Calculation version: `amlok-income_source_hhi-1`.
 
 ## Collateral and security
 
-Require current valuations, ownership, lien priority and permitted reports. This is collateral evidence, not a legal opinion or enforceability guarantee.
+Supported asset security, competing claims and the value eligible to support an exposure.
 
-Sources: collateral, registry, lender, accounting, documents.
+Family key: `collateral`.
 
 ### collateral_ltv
 
 **Loan to collateral value** · `ratio` · business, person
 
-Assessed facility exposure divided by supported collateral valuation.
-
-Required inputs and conditions: Positive eligible valuation with valuation date, currency and ownership.
+The assessed facility exposure relative to the supported value of its collateral.
 
 Calculation version: `amlok-collateral_ltv-1`.
 
@@ -1189,9 +984,7 @@ Calculation version: `amlok-collateral_ltv-1`.
 
 **Combined loan to value** · `ratio` · business, person
 
-All known secured claims including proposed exposure divided by collateral value.
-
-Required inputs and conditions: Positive valuation and complete supported lien/priority inventory.
+All known secured claims, including the proposed exposure, relative to the same collateral value.
 
 Calculation version: `amlok-combined_ltv-1`.
 
@@ -1199,9 +992,7 @@ Calculation version: `amlok-combined_ltv-1`.
 
 **Collateral coverage** · `ratio` · business, person
 
-Eligible realizable collateral value after approved haircuts divided by secured exposure.
-
-Required inputs and conditions: Positive exposure, documented haircut and enforceability assumptions.
+Supported realizable collateral value after approved reductions relative to secured exposure.
 
 Calculation version: `amlok-collateral_coverage-1`.
 
@@ -1209,9 +1000,7 @@ Calculation version: `amlok-collateral_coverage-1`.
 
 **Eligible borrowing-base receivables** · `currency` · business
 
-Sum receivables meeting institution eligibility and concentration rules.
-
-Required inputs and conditions: Versioned borrowing-base rules, aging, dilution and prior-pledge evidence.
+Receivables that meet the institution's stated borrowing-base eligibility and concentration rules.
 
 Calculation version: `amlok-eligible_receivables-1`.
 
@@ -1219,25 +1008,21 @@ Calculation version: `amlok-eligible_receivables-1`.
 
 **Collateral haircut** · `ratio` · business, person
 
-Gross eligible valuation minus supported realizable valuation, divided by gross valuation.
-
-Required inputs and conditions: Positive valuation and disclosed approved valuation/haircut method.
+The portion of gross eligible collateral value excluded when arriving at supported realizable value.
 
 Calculation version: `amlok-collateral_haircut_ratio-1`.
 
 ## Fraud and consistency
 
-Signals identify evidence needing review; no signal or score alone confirms fraud. Preserve document locations and conflicting values.
+Inconsistencies, duplicates and unsupported differences that warrant review. These observations do not establish fraud.
 
-Sources: documents, banking, accounting, payments, identity.
+Family key: `fraud_and_consistency`.
 
 ### reconciliation_break_share
 
 **Unreconciled value share** · `ratio` · business, person
 
-Unmatched absolute value divided by eligible source-side absolute value.
-
-Required inputs and conditions: Comparable transaction populations, period, currency and matching tolerance.
+The portion of eligible source value that remains unmatched across the compared evidence.
 
 Calculation version: `amlok-reconciliation_break_share-1`.
 
@@ -1245,9 +1030,7 @@ Calculation version: `amlok-reconciliation_break_share-1`.
 
 **Duplicate transaction share** · `ratio` · business, person
 
-Confirmed duplicate records divided by examined records before deduplication.
-
-Required inputs and conditions: Nonzero examined records and documented duplicate criteria.
+The portion of examined transaction records confirmed as duplicates before deduplication.
 
 Calculation version: `amlok-duplicate_transaction_share-1`.
 
@@ -1255,9 +1038,7 @@ Calculation version: `amlok-duplicate_transaction_share-1`.
 
 **Document contradictions** · `count` · business, person
 
-Count distinct supported inconsistencies between comparable document fields.
-
-Required inputs and conditions: Document-level findings with page/field evidence; a signal is not proof of fraud.
+Distinct supported inconsistencies between comparable document fields. A contradiction is a review signal, not proof of fraud.
 
 Calculation version: `amlok-document_contradiction_count-1`.
 
@@ -1265,9 +1046,7 @@ Calculation version: `amlok-document_contradiction_count-1`.
 
 **Unresolved identity mismatches** · `count` · business, person
 
-Count distinct unresolved mismatches across supported borrower identity attributes.
-
-Required inputs and conditions: Comparable identity sources; absent attributes are missing, not mismatched.
+Distinct unresolved differences across supported borrower identity attributes. An absent attribute is not a mismatch.
 
 Calculation version: `amlok-identity_mismatch_count-1`.
 
@@ -1275,25 +1054,21 @@ Calculation version: `amlok-identity_mismatch_count-1`.
 
 **Declared-to-verified income gap** · `ratio` · business, person
 
-Declared income minus verified comparable income, divided by verified income.
-
-Required inputs and conditions: Positive verified income; same gross/net basis, currency, scope and period.
+How much declared income exceeds or falls below comparable verified income, expressed relative to verified income.
 
 Calculation version: `amlok-declared_income_gap_ratio-1`.
 
 ## Income and affordability
 
-Distinguish verified gross income, net deposits and modeled estimates. Include housing, essential spending, obligations and proposed payments without counting them twice.
+A consumer's supported income, essential costs and room for existing and proposed payments.
 
-Sources: payroll, banking, tax, credit_bureau, application, documents, lender.
+Family key: `income_and_affordability`.
 
 ### verified_gross_monthly_income
 
 **Verified gross monthly income** · `currency` · person
 
-Supported recurring pretax income normalized to one calendar month.
-
-Required inputs and conditions: Payroll, tax or supported gross-income evidence; net deposits alone do not establish gross income.
+Supported recurring pretax consumer income expressed on a monthly basis. Net bank deposits alone do not establish this amount.
 
 Calculation version: `amlok-verified_gross_monthly_income-1`.
 
@@ -1301,9 +1076,7 @@ Calculation version: `amlok-verified_gross_monthly_income-1`.
 
 **Verified net monthly income** · `currency` · person
 
-Supported recurring after-deduction income normalized to one calendar month.
-
-Required inputs and conditions: Verified income streams, recurrence and calendar conversion; transfers excluded.
+Supported recurring consumer income after deductions, expressed on a monthly basis.
 
 Calculation version: `amlok-verified_net_monthly_income-1`.
 
@@ -1311,9 +1084,7 @@ Calculation version: `amlok-verified_net_monthly_income-1`.
 
 **Debt to income** · `ratio` · person
 
-Existing plus proposed required monthly debt payments divided by verified gross monthly income.
-
-Required inputs and conditions: Positive verified gross income and complete monthly obligations; housing treatment explicit.
+Existing and proposed required monthly debt payments relative to verified gross monthly income.
 
 Calculation version: `amlok-debt_to_income-1`.
 
@@ -1321,9 +1092,7 @@ Calculation version: `amlok-debt_to_income-1`.
 
 **Housing cost to income** · `ratio` · person
 
-Required monthly housing cost divided by verified gross monthly income.
-
-Required inputs and conditions: Positive gross income; rent/mortgage/tax/insurance/components explicit.
+Required monthly housing costs relative to verified gross monthly income, using the stated housing components.
 
 Calculation version: `amlok-housing_to_income-1`.
 
@@ -1331,9 +1100,7 @@ Calculation version: `amlok-housing_to_income-1`.
 
 **Essential monthly expenditure** · `currency` · person
 
-Sum evidenced essential non-debt spending normalized to one month.
-
-Required inputs and conditions: Versioned institution expense taxonomy; exclude sensitive merchant categories and avoid housing/debt duplication.
+Supported essential non-debt living expenditure on a monthly basis, with housing and debt counted only once.
 
 Calculation version: `amlok-essential_monthly_spend-1`.
 
@@ -1341,9 +1108,7 @@ Calculation version: `amlok-essential_monthly_spend-1`.
 
 **Residual monthly income** · `currency` · person
 
-Verified net income minus essential spending, housing and existing/proposed debt payments.
-
-Required inputs and conditions: Complete non-overlapping monthly expense/obligation set.
+Monthly net income left after essential spending, housing and existing and proposed debt payments.
 
 Calculation version: `amlok-residual_monthly_income-1`.
 
@@ -1351,9 +1116,7 @@ Calculation version: `amlok-residual_monthly_income-1`.
 
 **Proposed payment to income** · `ratio` · person
 
-Proposed required monthly payment divided by verified gross monthly income.
-
-Required inputs and conditions: Positive verified gross income and exact proposed terms.
+The proposed required monthly payment relative to verified gross monthly income.
 
 Calculation version: `amlok-payment_to_income-1`.
 
@@ -1361,25 +1124,21 @@ Calculation version: `amlok-payment_to_income-1`.
 
 **Liquid reserve months** · `months` · person
 
-Unrestricted liquid funds divided by required monthly outgoings.
-
-Required inputs and conditions: Positive complete essential/housing/debt outgoings; verified liquid balances.
+How many months of required outgoings the verified unrestricted liquid funds represent.
 
 Calculation version: `amlok-liquid_reserve_months-1`.
 
 ## Income stability
 
-Analyze authorized employment, self-employment and other recurring income streams separately. Income type is not itself an adverse risk reason.
+The recurrence, variability and continuity of a consumer's supported income streams.
 
-Sources: payroll, banking, tax, documents.
+Family key: `income_stability`.
 
 ### income_source_count
 
 **Verified income sources** · `count` · person
 
-Count distinct supported recurring income streams.
-
-Required inputs and conditions: Deduplicated income identities and complete observed window.
+The number of distinct supported recurring income streams after resolving duplicate identities.
 
 Calculation version: `amlok-income_source_count-1`.
 
@@ -1387,9 +1146,7 @@ Calculation version: `amlok-income_source_count-1`.
 
 **Monthly income volatility** · `ratio` · person
 
-Population standard deviation of complete monthly verified income divided by mean.
-
-Required inputs and conditions: At least six complete months; positive mean; gross/net basis fixed.
+The variability of complete monthly verified income relative to its average, on a consistent gross or net basis.
 
 Calculation version: `amlok-income_volatility-1`.
 
@@ -1397,9 +1154,7 @@ Calculation version: `amlok-income_volatility-1`.
 
 **Income growth year over year** · `ratio` · person
 
-Current verified income minus comparable prior-year income, divided by prior-year income.
-
-Required inputs and conditions: Positive prior income; same income basis and comparable periods.
+The relative change in verified income against the comparable prior-year period.
 
 Calculation version: `amlok-income_growth_yoy-1`.
 
@@ -1407,9 +1162,7 @@ Calculation version: `amlok-income_growth_yoy-1`.
 
 **Days since last income** · `days` · person
 
-Days from most recent verified recurring income receipt to assessment date.
-
-Required inputs and conditions: Supported receipt and assessment date; missing history is unavailable.
+The time since the most recent verified recurring income receipt as of the assessment date.
 
 Calculation version: `amlok-days_since_last_income-1`.
 
@@ -1417,9 +1170,7 @@ Calculation version: `amlok-days_since_last_income-1`.
 
 **Income interruption** · `days` · person
 
-Days past the next expected income date without a matched receipt.
-
-Required inputs and conditions: Documented payment cadence, complete account coverage and nonnegative elapsed interval.
+Elapsed days beyond the next expected recurring-income payment date without a matched receipt.
 
 Calculation version: `amlok-income_interruption_days-1`.
 
@@ -1427,25 +1178,21 @@ Calculation version: `amlok-income_interruption_days-1`.
 
 **Income continuity** · `ratio` · person
 
-Expected income periods with a supported receipt divided by elapsed expected periods.
-
-Required inputs and conditions: Explicit expected cadence and nonzero elapsed periods; missing account coverage cannot count as interruption.
+The portion of elapsed expected income periods with a supported receipt, given adequate account coverage.
 
 Calculation version: `amlok-income_continuity_share-1`.
 
 ## Payment behavior
 
-Deduplicate returns and their fees. Report payment outcomes and timing rather than inferring missed payments from missing source coverage.
+Observed payment timeliness, returned payments and overdraft experience.
 
-Sources: banking, accounting, credit_bureau, lender.
+Family key: `payment_behavior`.
 
 ### nsf_event_count
 
 **Insufficient-funds events** · `count` · business, person
 
-Count distinct supported returned-payment events caused by insufficient funds.
-
-Required inputs and conditions: Return reason evidence; deduplicate event and related fee records.
+Distinct returned-payment events supported as caused by insufficient funds, without counting the associated fee as another event.
 
 Calculation version: `amlok-nsf_event_count-1`.
 
@@ -1453,9 +1200,7 @@ Calculation version: `amlok-nsf_event_count-1`.
 
 **Overdraft days** · `days` · business, person
 
-Count covered days with a negative balance in any assessed account.
-
-Required inputs and conditions: Complete per-account daily balances; union calendar days, not sum across accounts.
+Covered calendar days when at least one assessed account had a negative balance. Several overdrawn accounts on one day still represent one day.
 
 Calculation version: `amlok-overdraft_days-1`.
 
@@ -1463,9 +1208,7 @@ Calculation version: `amlok-overdraft_days-1`.
 
 **Returned payment amount** · `currency` · business, person
 
-Sum principal amounts of distinct returned payment events.
-
-Required inputs and conditions: Return reason, direction and event linkage; exclude duplicate fees.
+The principal value of distinct returned-payment events, excluding duplicate fee records.
 
 Calculation version: `amlok-returned_payment_amount-1`.
 
@@ -1473,9 +1216,7 @@ Calculation version: `amlok-returned_payment_amount-1`.
 
 **Delinquent obligations** · `count` · business, person
 
-Count verified obligations past due at the assessment date.
-
-Required inputs and conditions: Due dates, payment allocation and complete supported debt schedule.
+Supported obligations that are past due at the assessment date.
 
 Calculation version: `amlok-delinquent_obligation_count-1`.
 
@@ -1483,9 +1224,7 @@ Calculation version: `amlok-delinquent_obligation_count-1`.
 
 **Maximum days past due** · `days` · business, person
 
-Maximum verified days past due among assessed obligations.
-
-Required inputs and conditions: Known contractual dues and allocated repayments; no delinquency inferred from missing feed.
+The longest supported payment delay among assessed obligations with known contractual dues and payment allocations.
 
 Calculation version: `amlok-maximum_days_past_due-1`.
 
@@ -1493,25 +1232,21 @@ Calculation version: `amlok-maximum_days_past_due-1`.
 
 **On-time payment share** · `ratio` · business, person
 
-Obligations paid by contractual due date divided by elapsed eligible obligations.
-
-Required inputs and conditions: Complete due/payment pairs and positive eligible count.
+The portion of elapsed eligible obligations paid by their contractual due dates.
 
 Calculation version: `amlok-on_time_payment_share-1`.
 
 ## Credit history
 
-Use entitled credit reports with source, score model, pull time and coverage. No matched report is not a clean credit history.
+Obligations, inquiries and adverse events present in entitled credit or lender evidence.
 
-Sources: credit_bureau, lender, documents.
+Family key: `credit_history`.
 
 ### open_credit_obligation_count
 
 **Open credit obligations** · `count` · business, person
 
-Count resolved open obligations in entitled credit evidence.
-
-Required inputs and conditions: Current permitted report or lender records; duplicate trades resolved.
+Distinct open credit obligations found in entitled credit evidence or lender records.
 
 Calculation version: `amlok-open_credit_obligation_count-1`.
 
@@ -1519,9 +1254,7 @@ Calculation version: `amlok-open_credit_obligation_count-1`.
 
 **Reported revolving utilization** · `ratio` · business, person
 
-Reported used revolving balances divided by reported limits.
-
-Required inputs and conditions: Same-report-date positive limits; disclose bureau coverage and currency.
+Used revolving balances relative to reported credit limits in the entitled credit report, on its observation date.
 
 Calculation version: `amlok-bureau_utilization-1`.
 
@@ -1529,9 +1262,7 @@ Calculation version: `amlok-bureau_utilization-1`.
 
 **Recent credit inquiries** · `count` · business, person
 
-Count supported inquiry events in the requested window.
-
-Required inputs and conditions: Entitled report; group duplicates/rate-shopping only under disclosed rules.
+Supported credit-inquiry events within the requested observation window.
 
 Calculation version: `amlok-recent_credit_inquiry_count-1`.
 
@@ -1539,9 +1270,7 @@ Calculation version: `amlok-recent_credit_inquiry_count-1`.
 
 **Severe delinquency events** · `count` · business, person
 
-Count reported obligations meeting institution-defined severe-delinquency criteria.
-
-Required inputs and conditions: Current entitled report, criterion version and observation window.
+Reported obligations meeting the institution's defined severe-delinquency criteria in the observation window.
 
 Calculation version: `amlok-severe_delinquency_count-1`.
 
@@ -1549,25 +1278,21 @@ Calculation version: `amlok-severe_delinquency_count-1`.
 
 **Relevant public-record events** · `count` · business, person
 
-Count supported relevant insolvency/judgment events in entitled evidence.
-
-Required inputs and conditions: Verified matching, jurisdiction, record date and status; disputed records remain flagged.
+Supported relevant insolvency or judgment events matched to the subject in entitled evidence.
 
 Calculation version: `amlok-public_record_event_count-1`.
 
 ## Commerce and subscriptions
 
-Keep store/platform coverage, settlement lags and currency explicit. Cohort metrics require stable customer identifiers and a complete comparable cohort.
+Sales, customer activity, recurring subscriptions and the timing of settlement into bank cash.
 
-Sources: payments, commerce, subscriptions.
+Family key: `commerce_performance`.
 
 ### gross_sales
 
 **Gross sales** · `currency` · business
 
-Sum eligible sales before refunds and discounts, excluding taxes.
-
-Required inputs and conditions: Complete store/processor scope and consistent order versus settlement basis.
+Eligible sales before discounts and refunds, excluding taxes, on the stated sales basis.
 
 Calculation version: `amlok-gross_sales-1`.
 
@@ -1575,9 +1300,7 @@ Calculation version: `amlok-gross_sales-1`.
 
 **Net sales** · `currency` · business
 
-Gross sales minus discounts, cancellations and refunds.
-
-Required inputs and conditions: Same sales cohort and recognition window; taxes excluded.
+Eligible sales after discounts, cancellations and refunds, excluding taxes.
 
 Calculation version: `amlok-net_sales-1`.
 
@@ -1585,9 +1308,7 @@ Calculation version: `amlok-net_sales-1`.
 
 **Average order value** · `currency` · business
 
-Net eligible order sales divided by completed noncancelled order count.
-
-Required inputs and conditions: Positive comparable order count; order-based rather than settlement data.
+Net eligible sales value per completed noncancelled order. This is an order measure, not a processor-payout measure.
 
 Calculation version: `amlok-average_order_value-1`.
 
@@ -1595,9 +1316,7 @@ Calculation version: `amlok-average_order_value-1`.
 
 **Repeat customer share** · `ratio` · business
 
-Customers with more than one completed purchase divided by purchasing customers.
-
-Required inputs and conditions: Stable authorized customer IDs and positive cohort count.
+The portion of purchasing customers who completed more than one purchase in the defined cohort.
 
 Calculation version: `amlok-repeat_customer_share-1`.
 
@@ -1605,9 +1324,7 @@ Calculation version: `amlok-repeat_customer_share-1`.
 
 **Monthly recurring revenue** · `currency` · business
 
-Contracted recurring subscription revenue normalized to a month.
-
-Required inputs and conditions: Active recurring subscriptions, currency and documented usage/discount treatment.
+Contracted recurring subscription revenue expressed on a monthly basis. It does not guarantee collection.
 
 Calculation version: `amlok-monthly_recurring_revenue-1`.
 
@@ -1615,9 +1332,7 @@ Calculation version: `amlok-monthly_recurring_revenue-1`.
 
 **Gross revenue retention** · `ratio` · business
 
-Opening recurring revenue minus churn and contraction divided by opening recurring revenue.
-
-Required inputs and conditions: Positive opening cohort revenue; expansion excluded.
+The portion of opening recurring revenue retained after churn and contraction, without counting expansion.
 
 Calculation version: `amlok-gross_revenue_retention-1`.
 
@@ -1625,9 +1340,7 @@ Calculation version: `amlok-gross_revenue_retention-1`.
 
 **Net revenue retention** · `ratio` · business
 
-Opening recurring revenue minus churn/contraction plus expansion divided by opening recurring revenue.
-
-Required inputs and conditions: Same opening customer cohort and positive starting revenue.
+Recurring revenue retained from the opening customer cohort after churn, contraction and expansion.
 
 Calculation version: `amlok-net_revenue_retention-1`.
 
@@ -1635,25 +1348,21 @@ Calculation version: `amlok-net_revenue_retention-1`.
 
 **Settlement delay** · `days` · business
 
-Amount-weighted days from captured sale to corresponding bank settlement.
-
-Required inputs and conditions: Matched eligible captures and settlements; positive settled value.
+The amount-weighted elapsed time between captured sales and their matched bank settlements.
 
 Calculation version: `amlok-settlement_delay_days-1`.
 
 ## Operating resilience
 
-Measure payroll, supplier, inventory and fulfillment exposure from operational evidence. Do not infer management quality from personal traits or social media.
+Operating cost pressure and the business's ability to maintain inventory, fulfillment and supplier payments.
 
-Sources: payroll, inventory, accounting, commerce, logistics.
+Family key: `operating_resilience`.
 
 ### payroll_burden_share
 
 **Payroll burden** · `ratio` · business
 
-Payroll cash cost including employer costs divided by verified revenue.
-
-Required inputs and conditions: Positive comparable revenue; supported payroll records.
+Payroll cash costs, including supported employer costs, relative to verified revenue.
 
 Calculation version: `amlok-payroll_burden_share-1`.
 
@@ -1661,9 +1370,7 @@ Calculation version: `amlok-payroll_burden_share-1`.
 
 **Payroll growth year over year** · `ratio` · business
 
-Current payroll cost minus prior-year cost divided by prior-year cost.
-
-Required inputs and conditions: Comparable periods; positive prior payroll; no employee protected attributes.
+The relative change in payroll cost against the comparable prior-year period.
 
 Calculation version: `amlok-payroll_growth_yoy-1`.
 
@@ -1671,9 +1378,7 @@ Calculation version: `amlok-payroll_growth_yoy-1`.
 
 **Inventory stockout share** · `ratio` · business
 
-Observed sellable item-days out of stock divided by observed eligible item-days.
-
-Required inputs and conditions: Inventory history and eligible active-item scope; positive coverage.
+The portion of observed eligible item-days when sellable inventory was out of stock.
 
 Calculation version: `amlok-inventory_stockout_share-1`.
 
@@ -1681,9 +1386,7 @@ Calculation version: `amlok-inventory_stockout_share-1`.
 
 **On-time fulfillment share** · `ratio` · business
 
-Fulfilled eligible orders on/before promised date divided by eligible fulfilled orders.
-
-Required inputs and conditions: Complete order and shipment dates; positive eligible count.
+The portion of eligible fulfilled orders completed by their promised dates.
 
 Calculation version: `amlok-fulfillment_on_time_share-1`.
 
@@ -1691,9 +1394,7 @@ Calculation version: `amlok-fulfillment_on_time_share-1`.
 
 **Supplier payment delay** · `days` · business
 
-Amount-weighted days paid after contractual due date for settled trade bills.
-
-Required inputs and conditions: Matched bill/payment allocations; positive paid amounts; early payments recorded as zero delay.
+The amount-weighted lateness of settled supplier bills against their contractual due dates, with early payments treated as zero delay.
 
 Calculation version: `amlok-supplier_payment_delay_days-1`.
 
@@ -1701,25 +1402,21 @@ Calculation version: `amlok-supplier_payment_delay_days-1`.
 
 **Operating payments change** · `ratio` · business
 
-Current 90-day operating payments minus preceding payments divided by preceding payments.
-
-Required inputs and conditions: Two fully observed 90-day windows; positive previous payments.
+The relative change in operating cash payments against the preceding 90 days.
 
 Calculation version: `amlok-operating_outflows_change_90d-1`.
 
 ## Tax and statutory obligations
 
-Separate declared, filed, assessed and paid amounts and their periods. Registration or filing evidence is not a legal or tax-compliance certification.
+Supported tax obligations, arrears and filing evidence. This is not a legal compliance opinion.
 
-Sources: tax, accounting, registry, documents.
+Family key: `tax_and_compliance`.
 
 ### tax_liability
 
 **Reported tax liability** · `currency` · business
 
-Sum supported outstanding assessed tax obligations at the assessment date.
-
-Required inputs and conditions: Entitled tax/statement evidence with assessed versus estimated status.
+Supported outstanding assessed tax obligations at the assessment date, distinguished from estimates.
 
 Calculation version: `amlok-tax_liability-1`.
 
@@ -1727,9 +1424,7 @@ Calculation version: `amlok-tax_liability-1`.
 
 **Overdue tax amount** · `currency` · business
 
-Sum supported unpaid tax obligations past their due dates.
-
-Required inputs and conditions: Actual due dates and paid allocations; estimated taxes not treated as arrears.
+Supported assessed tax obligations that remain unpaid after their due dates.
 
 Calculation version: `amlok-tax_overdue_amount-1`.
 
@@ -1737,9 +1432,7 @@ Calculation version: `amlok-tax_overdue_amount-1`.
 
 **Tax payment coverage** · `ratio` · business
 
-Payments allocated to due assessed taxes divided by due assessed taxes.
-
-Required inputs and conditions: Positive due taxes and matched same-period payments.
+Due assessed taxes supported as covered by allocated payments for the same period.
 
 Calculation version: `amlok-tax_payment_coverage-1`.
 
@@ -1747,25 +1440,21 @@ Calculation version: `amlok-tax_payment_coverage-1`.
 
 **Filing evidence coverage** · `ratio` · business
 
-Required filings with supported filing evidence divided by known required filings.
-
-Required inputs and conditions: Explicit jurisdiction and obligation inventory; positive required count; not a compliance opinion.
+The portion of known required filings supported by filing evidence. This is evidence coverage, not a compliance conclusion.
 
 Calculation version: `amlok-filing_coverage-1`.
 
 ## Financial reporting quality
 
-Measure statement coverage, closing lag, reconciliations and material adjustments; missing accounting records are not fabricated statements.
+Whether financial statements and books reconcile with each other and with bank evidence.
 
-Sources: accounting, banking, documents.
+Family key: `financial_reporting_quality`.
 
 ### bank_accounting_match_share
 
 **Bank-to-books match share** · `ratio` · business
 
-Matched bank-side absolute value divided by eligible bank-side absolute value.
-
-Required inputs and conditions: Same currency/period; positive eligible value; timing/FX/fees reconciled explicitly.
+The portion of eligible bank transaction value matched to accounting evidence for the same scope and period.
 
 Calculation version: `amlok-bank_accounting_match_share-1`.
 
@@ -1773,9 +1462,7 @@ Calculation version: `amlok-bank_accounting_match_share-1`.
 
 **Balance-sheet discrepancy** · `currency` · business
 
-Assets minus liabilities minus equity.
-
-Required inputs and conditions: Same-date complete statement and currency.
+The amount by which a balance sheet fails to reconcile assets with liabilities and equity.
 
 Calculation version: `amlok-statement_balance_discrepancy-1`.
 
@@ -1783,9 +1470,7 @@ Calculation version: `amlok-statement_balance_discrepancy-1`.
 
 **Material accounting adjustments** · `ratio` · business
 
-Absolute supported adjustment value divided by absolute pre-adjustment eligible activity.
-
-Required inputs and conditions: Versioned materiality rule; positive activity; journal reversals handled.
+Supported material accounting adjustments relative to the magnitude of activity before those adjustments.
 
 Calculation version: `amlok-material_adjustment_share-1`.
 
@@ -1793,25 +1478,21 @@ Calculation version: `amlok-material_adjustment_share-1`.
 
 **Books closing lag** · `days` · business
 
-Days between accounting period end and supported closing/finalization date.
-
-Required inputs and conditions: Both dates; draft or unknown close state yields unavailable.
+The elapsed time between the accounting period end and its supported closing or finalization date.
 
 Calculation version: `amlok-books_closing_lag_days-1`.
 
 ## Data quality and coverage
 
-Describe observed coverage against declared/required sources; never imply visibility into all of a borrower's external accounts.
+The completeness, freshness, classification and reconciliation of the evidence used in the assessment.
 
-Sources: banking, accounting, payments, commerce, payroll, identity, documents.
+Family key: `data_quality`.
 
 ### observed_account_coverage
 
 **Declared-account coverage** · `ratio` · business, person
 
-Assessed declared accounts divided by known declared relevant accounts.
-
-Required inputs and conditions: Explicit declared account inventory and positive denominator; not all external accounts.
+The portion of declared relevant accounts included in the assessment. It does not establish that every external account is known.
 
 Calculation version: `amlok-observed_account_coverage-1`.
 
@@ -1819,9 +1500,7 @@ Calculation version: `amlok-observed_account_coverage-1`.
 
 **Covered history** · `days` · business, person
 
-Count fully covered days across the required source/account set.
-
-Required inputs and conditions: Required source roster and gap-aware observed intervals.
+Days with complete evidence across the required source and account set, accounting for known gaps.
 
 Calculation version: `amlok-covered_history_days-1`.
 
@@ -1829,9 +1508,7 @@ Calculation version: `amlok-covered_history_days-1`.
 
 **Stale required sources** · `ratio` · business, person
 
-Required sources exceeding configured freshness tolerance divided by required sources.
-
-Required inputs and conditions: Nonzero required-source count; source-specific freshness policy.
+The portion of required sources older than their configured freshness tolerances.
 
 Calculation version: `amlok-stale_source_share-1`.
 
@@ -1839,9 +1516,7 @@ Calculation version: `amlok-stale_source_share-1`.
 
 **Unclassified transactions** · `ratio` · business, person
 
-Unclassified eligible transaction count divided by eligible transaction count.
-
-Required inputs and conditions: Nonzero posted deduplicated population and versioned classification taxonomy.
+The portion of eligible posted, deduplicated transaction records without a supported classification.
 
 Calculation version: `amlok-unclassified_transaction_share-1`.
 
@@ -1849,25 +1524,21 @@ Calculation version: `amlok-unclassified_transaction_share-1`.
 
 **Reconciled financial value** · `ratio` · business, person
 
-Reconciled eligible absolute amount divided by eligible absolute amount.
-
-Required inputs and conditions: Same comparable matching universe and positive denominator.
+The portion of eligible transaction value supported as reconciled across evidence.
 
 Calculation version: `amlok-reconciled_value_share-1`.
 
 ## Forecasting and stress
 
-Separate scenario assumptions from observations. Forecasts require model/version, horizon and interval methodology; stress outcomes are conditional, not default probabilities.
+Cash and repayment capacity under the stated forecast or stress assumptions, rather than observed future outcomes.
 
-Sources: banking, accounting, payroll, application, lender.
+Family key: `forecasting_and_stress`.
 
 ### projected_minimum_cash
 
 **Projected minimum cash** · `currency` · business, person
 
-Minimum closing cash in the defined forecast horizon.
-
-Required inputs and conditions: Versioned model or deterministic projection, explicit assumptions, horizon and complete starting balances.
+The lowest modeled closing cash balance within the specified forecast horizon.
 
 Calculation version: `amlok-projected_minimum_cash-1`.
 
@@ -1875,9 +1546,7 @@ Calculation version: `amlok-projected_minimum_cash-1`.
 
 **Stressed debt-service coverage** · `ratio` · business
 
-Scenario eligible cash flow divided by scenario existing/proposed debt service.
-
-Required inputs and conditions: Explicit parameter shocks, transmission method and positive complete debt service.
+Debt-service coverage under the stated stress scenario and its existing and proposed payment assumptions.
 
 Calculation version: `amlok-stress_dscr-1`.
 
@@ -1885,9 +1554,7 @@ Calculation version: `amlok-stress_dscr-1`.
 
 **Stressed residual income** · `currency` · person
 
-Scenario verified net income minus scenario non-overlapping essential/housing/debt outgoings.
-
-Required inputs and conditions: Defined consumer scenario, exact payment terms and complete base components.
+Consumer income remaining after essential, housing and debt outgoings under the stated stress scenario.
 
 Calculation version: `amlok-stress_residual_income-1`.
 
@@ -1895,9 +1562,7 @@ Calculation version: `amlok-stress_residual_income-1`.
 
 **Projected liquidity shortfall** · `currency` · business, person
 
-Maximum of zero and required liquidity floor minus minimum projected cash.
-
-Required inputs and conditions: Institution-defined floor and supported forecast horizon; no default-probability interpretation.
+The modeled cash deficit against the explicitly required liquidity floor, with no deficit represented as zero.
 
 Calculation version: `amlok-liquidity_shortfall-1`.
 
@@ -1905,25 +1570,21 @@ Calculation version: `amlok-liquidity_shortfall-1`.
 
 **Break-even revenue decline** · `ratio` · business
 
-Smallest modeled proportional revenue reduction that breaches an explicit capacity threshold.
-
-Required inputs and conditions: Documented cost elasticity, search bounds, institution threshold and scenario model; no universal shock.
+The modeled reduction in revenue at which the specified capacity threshold is first breached.
 
 Calculation version: `amlok-break_even_revenue_decline-1`.
 
 ## Related-party and network exposure
 
-Only borrower-authorized ownership and transaction relationships are in scope. Links require evidence and uncertainty; no cross-institution identity graph is exposed.
+Exposure to related parties and connected counterparties, including supported circular cash movements.
 
-Sources: registry, accounting, banking, application.
+Family key: `relationship_risk`.
 
 ### related_party_receipts_share
 
 **Related-party receipts share** · `ratio` · business
 
-Identified related-party operating receipts divided by operating receipts.
-
-Required inputs and conditions: Evidence-supported relationships and positive operating receipts.
+The portion of operating cash receipts attributable to identified related parties.
 
 Calculation version: `amlok-related_party_receipts_share-1`.
 
@@ -1931,9 +1592,7 @@ Calculation version: `amlok-related_party_receipts_share-1`.
 
 **Potential circular-flow amount** · `currency` · business
 
-Sum uniquely attributed flow amount in evidence-supported return paths.
-
-Required inputs and conditions: Versioned temporal/value matching and unique path attribution; suspicion requires review.
+The uniquely attributed value of evidence-supported cash paths that return funds through connected parties or accounts. This alone does not establish misconduct.
 
 Calculation version: `amlok-circular_flow_amount-1`.
 
@@ -1941,25 +1600,21 @@ Calculation version: `amlok-circular_flow_amount-1`.
 
 **Connected-counterparty exposure** · `ratio` · business
 
-Exposure to evidence-linked counterparties divided by total covered counterparty exposure.
-
-Required inputs and conditions: Authorized relationship graph, positive exposure and declared edge types.
+The portion of covered counterparty exposure attributable to evidence-linked counterparties.
 
 Calculation version: `amlok-connected_counterparty_share-1`.
 
 ## Monitoring changes
 
-Compare compatible windows, scope, currencies and calculation versions. If comparability fails, expose the reason and no numeric delta.
+Changes in comparable financial measures since the saved monitoring baseline.
 
-Sources: banking, accounting, payroll, lender.
+Family key: `monitoring_change`.
 
 ### revenue_change_from_baseline
 
 **Revenue change from baseline** · `ratio` · business
 
-Current comparable revenue minus baseline revenue divided by baseline revenue.
-
-Required inputs and conditions: Positive baseline revenue and compatible equal-length windows and calculation versions.
+The relative increase or decrease in comparable revenue since the saved monitoring baseline.
 
 Calculation version: `amlok-revenue_change_from_baseline-1`.
 
@@ -1967,9 +1622,7 @@ Calculation version: `amlok-revenue_change_from_baseline-1`.
 
 **Liquidity change from baseline** · `currency` · business, person
 
-Current unrestricted cash minus baseline unrestricted cash.
-
-Required inputs and conditions: Compatible account scope, currency, basis and source quality.
+The money amount by which unrestricted cash has changed since the saved monitoring baseline.
 
 Calculation version: `amlok-liquidity_change_from_baseline-1`.
 
@@ -1977,9 +1630,7 @@ Calculation version: `amlok-liquidity_change_from_baseline-1`.
 
 **DSCR change from baseline** · `ratio` · business
 
-Current DSCR minus baseline DSCR.
-
-Required inputs and conditions: Comparable complete schedules, windows, methodology and lending scope.
+The absolute change in the debt-service coverage ratio since the saved baseline, rather than a relative percentage change.
 
 Calculation version: `amlok-dscr_change_from_baseline-1`.
 
@@ -1987,8 +1638,6 @@ Calculation version: `amlok-dscr_change_from_baseline-1`.
 
 **Debt change from baseline** · `ratio` · business, person
 
-Current total debt minus baseline debt divided by baseline debt.
-
-Required inputs and conditions: Positive baseline debt, compatible reporting scope and verified obligations.
+The relative increase or decrease in total debt since the saved monitoring baseline.
 
 Calculation version: `amlok-obligation_growth_from_baseline-1`.

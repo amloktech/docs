@@ -1,0 +1,296 @@
+---
+title: "Assessment field glossary"
+description: "Interpret financial result fields, availability states, evidence bases, supporting analyses and every value in the transaction classification axes."
+keywords: ["API definitions", "financial metrics", "data dictionary"]
+sidebarTitle: "Assessment glossary"
+---
+
+AMLOK returns financial measurements together with the information you need to interpret them. Use this glossary to distinguish a supported value from missing evidence, a financial observation from an institution decision, and a transaction purpose from its cash effect.
+
+## Metric fields
+
+| Field | Meaning |
+| --- | --- |
+| `key / label` | The stable machine identifier and its readable name. Use the key for integration and the label for display. |
+| `value / unit / currency` | The decimal-string observation, its unit and its currency when monetary. Null is missing or inapplicable; zero is an actual supported value. |
+| `status` | Whether the metric is available, unavailable or not applicable. It is not a risk grade. |
+| `window` | The exact UTC observation interval, including its start and excluding its end. |
+| `as_of` | The assessment knowledge cutoff. Later source updates do not rewrite the saved observation. |
+| `definition_version / calculation_version` | The pinned definition and calculation implementation used for this result. Compare compatible versions and scopes. |
+| `basis` | Whether the supporting value is observed, declared, derived or estimated. These bases are not interchangeable. |
+| `analysis_basis` | Historical describes past activity; pro_forma describes the assessed financing configuration; scenario describes an explicitly assumed alternative. |
+| `assumptions` | Conditions used in the assessment, such as financing or scenario assumptions. They are not observed facts. |
+| `inputs` | Named numerical components with their own units, currency, evidence and basis. |
+| `coverage` | Observed versus expected days and a note defining the assessed scope. Coverage is not confidence in creditworthiness. |
+| `missing_reason / reason_code` | A readable explanation and structured reason for an unavailable or inapplicable result. |
+| `evidence_ids` | References to supporting evidence in the authorized package. The references support traceability, not an automatic verified conclusion. |
+| `series` | Ordered historical observations under the same metric definition, unit, currency and scope. Missing periods remain explicit. |
+
+## Availability and basis
+
+| Value | Meaning |
+| --- | --- |
+| Metric `available` | Evidence supports a value under the definition and stated scope. |
+| Metric `unavailable` | The metric applies but a supported value cannot be returned; read its reason. |
+| Metric `not_applicable` | The definition does not apply to this borrower or assessment context. |
+| Dimension `available` | All applicable metrics in the family are available. |
+| Dimension `partial` | Some applicable metrics are available and others are unavailable. |
+| Dimension `unavailable` | None of the applicable metrics can be calculated. |
+| Dimension `not_applicable` | No metric in the family applies. |
+| Basis `observed` | Directly supported by source observations. |
+| Basis `declared` | Supplied as a declaration rather than independently observed evidence. |
+| Basis `derived` | Obtained from supported inputs through the applicable definition. |
+| Basis `estimated` | An estimate whose assumptions and limitations remain relevant. |
+
+### Metric reason codes
+
+| Code | Meaning |
+| --- | --- |
+| `missing_source` | A required source is absent. |
+| `insufficient_history` | The observed history is shorter than the definition requires. |
+| `stale_source` | Required evidence is older than the permitted freshness tolerance. |
+| `incomplete_coverage` | The source or account population has known coverage gaps. |
+| `restricted_source` | Required evidence cannot be used under the applicable access or authorization. |
+| `invalid_denominator` | A ratio cannot be meaningfully calculated with the available denominator, such as zero or nonpositive values where prohibited. |
+| `conflicting_evidence` | Relevant sources disagree in a way that prevents a supported value. |
+| `unsupported_scope` | The requested population or scope is not supported. |
+| `not_applicable` | The definition does not apply to this assessment. |
+| `not_evaluated` | No evaluation of this item is represented. |
+| `no_comparable_baseline` | A valid comparable prior observation is not available. |
+| `model_not_eligible` | An applicable eligible model output is not available for the assessment. |
+
+## Detailed attribute fields
+
+Detailed attributes use `available` or `unavailable`, rather than the scalar metric's three-state status. They preserve their own definition, input population and window. Scalar metric reason-code enums do not define an exhaustive reason-code list for detailed attributes.
+
+| Field | Meaning |
+| --- | --- |
+| `key` | An exact published attribute key, including its applicable category, period or cross-system observation. |
+| `value_type` | Whether the decimal-string value represents a decimal or an integer. |
+| `value / unit / currency` | The supported observation and its unit; monetary values carry currency. An unavailable value is null. |
+| `status` | Available means a supported value is present; unavailable means its missing reason must be read. |
+| `window_start / window_end` | UTC calendar dates identifying the observation boundaries. The input manifest supplies exact timestamps, particularly for cross-system windows that end within a day. |
+| `as_of` | The knowledge cutoff for the saved observation. |
+| `definition_version / calculation_version` | The catalog definition and implementation pinned to the saved observation. |
+| `input_resource_ids` | Inline input references. An empty inline array does not mean there is no evidence; read the manifest. |
+| `input_manifest_id` | The complete frozen input population referenced in financial_attribute_inputs within the same package. |
+| `coverage_ratio` | The stated coverage measure. It is not a confidence score, and null does not imply complete coverage. |
+| `missing_reason / reason_code` | The explanation and structured reason the value cannot be supported. |
+| `data_scope` | observed_records describes supplied records; complete_account_history describes the declared account-history scope. Neither proves every external system or account is known. |
+| `scope / coverage` | The explicit population, observation limits, record counts and field-coverage information returned for the attribute. |
+
+The attribute summary's `definition_count` counts catalog definitions; `evaluated_count` counts observations assessed in this package; `available_count` and `unavailable_count` distinguish their availability. `input_manifest_count` counts frozen input populations, not unique borrowers or transactions. Read `coverage_statement` with these counts.
+
+## Supporting analysis sections
+
+These 14 sections hold structured supporting information. They are not additional scalar metric families. Read each section's status, reason, evidence and items.
+
+| Section | What it represents |
+| --- | --- |
+| `verifications` | Source-linked identity, business and related-person verification observations, with unresolved findings retained. |
+| `financial_statements` | Structured financial-statement observations on the stated reporting period, currency and accounting basis. |
+| `obligations` | Supported borrowing and payment obligations used to understand existing commitments. |
+| `income_streams` | Identified income sources, cadence and supported income amounts, including their verification basis. |
+| `reconciliations` | Links and differences between records describing related activity across source systems. |
+| `concentrations` | Exposure by customer, supplier, channel or another supported segment, with coverage identified. |
+| `projections` | Future financial paths under stated assumptions and horizons, separated from observed history. |
+| `benchmarks` | Comparisons against identified reference populations and measures, with applicability and evidence stated. |
+| `model_outputs` | Eligible model outputs with their model identity and limitations. This section does not imply every assessment includes a score or default probability. |
+| `changes` | Changes against a previous package, including whether the values are comparable. |
+| `collateral` | Supported asset valuations, security and competing-claim observations. |
+| `relationships` | Evidence-supported links among entities and counterparties. |
+| `credit_reports` | Entitled credit-report observations with their report dates and coverage. |
+| `tax_obligations` | Supported tax obligations and related evidence, distinguished from a tax-compliance opinion. |
+
+## Transaction classification fields
+
+| Field or value | Meaning |
+| --- | --- |
+| `taxonomy_version` | The version of the purpose categories used for this record. |
+| `category_id / category_path / category_label` | The stable leaf identifier, its hierarchy and its readable name. |
+| `legacy_category` | The retained broad compatibility label, not a replacement for a supported detailed purpose. |
+| Status `classified` | A category is supported by the available evidence. |
+| Status `unclassified` | The purpose cannot be assigned with the available evidence. |
+| Status `conflicting` | Classification evidence conflicts and remains unresolved. |
+| `method` | How the classification was supported. It does not establish trained-model accuracy. |
+| Confidence `high / medium / unknown` | Qualitative strength of classification evidence, not calibrated probabilities or a credit score. |
+| `reason_codes` | Reasons supporting or limiting the classification. |
+| `provider_category` | The original provider's category observation, retaining its source version and semantics. |
+
+The normalized source field `financial_category_id` names the purpose category. Card brand and last four digits are descriptive card observations, not globally unique card identifiers or sufficient evidence by themselves that a card changed. Merchant sector, provider category, account context and purpose remain distinct.
+
+## Transaction classification axes
+
+The ten axes answer different questions about the same transaction. Their meanings are independent; for example, a card purchase is not automatically a bank cash outflow, and an online payment is not automatically operating revenue.
+
+### Account context
+
+`account_contexts` - The kind of account on which the activity is recorded.
+
+| Value | Meaning |
+| --- | --- |
+| `depository` | A deposit account holding cash. |
+| `credit` | An issuer credit account, where a purchase and payment affect a liability. |
+| `loan` | A loan account recording borrowing and repayment activity. |
+| `unknown` | The account context is not supported. |
+
+### Cash-flow role
+
+`cash_flow_roles` - The economic role of the activity, separate from its cash effect.
+
+| Value | Meaning |
+| --- | --- |
+| `operating_receipt` | Receipt related to operating activity. |
+| `operating_payment` | Payment related to operating activity. |
+| `nonoperating_receipt` | Receipt outside ordinary operations. |
+| `financing_receipt` | Funds from financing or capital contributions. |
+| `financing_payment` | Debt settlement or a capital distribution. |
+| `investing_receipt` | Receipt from investments or asset recovery. |
+| `investing_payment` | Payment for investments or asset acquisition. |
+| `internal_transfer` | Movement within the relevant own-account scope. |
+| `cash_movement` | Movement involving physical cash with origin or use assessed separately. |
+| `contra_receipt` | Activity offsetting an earlier receipt. |
+| `contra_payment` | Activity offsetting an earlier payment. |
+| `unknown` | The economic cash-flow role is unresolved. |
+
+### Cash effect
+
+`cash_effects` - Whether the posting actually moves cash in the assessed context.
+
+| Value | Meaning |
+| --- | --- |
+| `cash_inflow` | Cash enters the account scope. |
+| `cash_outflow` | Cash leaves the account scope. |
+| `noncash` | The activity does not move cash in this context, such as a credit-card purchase. |
+| `unknown` | The cash effect is unresolved. |
+
+### Balance-sheet effect
+
+`balance_sheet_effects` - The supported direction of the effect on assets, liabilities or equity.
+
+| Value | Meaning |
+| --- | --- |
+| `asset_increase` | Increases an asset balance. |
+| `asset_decrease` | Decreases an asset balance. |
+| `liability_increase` | Increases an amount owed. |
+| `liability_decrease` | Reduces an amount owed. |
+| `equity_increase` | Increases equity. |
+| `equity_decrease` | Reduces equity. |
+| `mixed` | Has more than one balance-sheet effect or a combined effect. |
+| `unknown` | The effect is unsupported. |
+
+### Activity basis
+
+`activity_bases` - The nature of the recorded financial event.
+
+| Value | Meaning |
+| --- | --- |
+| `adjustment` | A correction or change to a recorded amount. |
+| `borrowing` | Obtaining borrowed funds. |
+| `capital` | An equity or owner-capital movement. |
+| `cash` | A physical-cash movement. |
+| `dispute` | An event relating to a disputed payment. |
+| `fee` | A separately identified service or financing charge. |
+| `interest` | A separately identified interest charge or receipt. |
+| `investment` | An investment or longer-term asset movement. |
+| `noncash_adjustment` | An adjustment that does not move cash. |
+| `purchase` | Acquiring goods or services. |
+| `receipt` | Receiving funds. |
+| `refund` | Returning value from an earlier payment. |
+| `settlement` | Discharging an amount due or settling prior activity. |
+| `tax` | A tax or statutory-remittance event. |
+| `transfer` | Moving value between accounts or systems. |
+| `unknown` | The event basis is unresolved. |
+
+### Economic role
+
+`economic_roles` - Whether evidence supports business, personal or mixed use.
+
+| Value | Meaning |
+| --- | --- |
+| `business` | Supported business use. |
+| `personal` | Explicitly supported non-business use. |
+| `mixed` | Documented business and non-business use. |
+| `unknown` | Use is not supported by sufficient evidence. |
+
+### Payment rail
+
+`payment_rails` - The normalized transfer mechanism or network label, not the economic purpose.
+
+| Value | Meaning |
+| --- | --- |
+| `ACH` | Automated Clearing House transfer. |
+| `EFT` | Electronic funds transfer recorded as EFT. |
+| `INTERAC` | Transfer through Interac. |
+| `WIRE` | Wire transfer. |
+| `SEPA` | Transfer through the Single Euro Payments Area scheme. |
+| `SWIFT` | Transfer identified through SWIFT messaging. |
+| `CARD` | Card-network payment. |
+| `CHECK` | Cheque or check payment. |
+| `CASH` | Physical cash. |
+| `BOOK_TRANSFER` | An internal book transfer between accounts. |
+| `OTHER` | A known rail outside the listed values. |
+| `UNKNOWN` | The rail is not established. |
+
+### Payment channel
+
+`payment_channels` - Where or how the payment was initiated, separate from the rail.
+
+| Value | Meaning |
+| --- | --- |
+| `in_store` | At a physical point of sale. |
+| `online` | Through an online channel. |
+| `mobile` | Through a mobile channel. |
+| `telephone` | By telephone. |
+| `mail` | By mail. |
+| `branch` | At a financial-institution branch. |
+| `atm` | At an automated teller machine. |
+| `other` | A known channel outside the listed values. |
+| `unknown` | The initiation channel is unknown. |
+
+### Card event
+
+`card_event_types` - The issuer-card event, separate from merchant sector and purchase purpose.
+
+| Value | Meaning |
+| --- | --- |
+| `purchase` | A purchase charged to the card. |
+| `settlement` | Payment toward the card balance. |
+| `cash_advance` | Borrowing cash through the card. |
+| `balance_transfer` | Moving a balance between credit facilities. |
+| `refund` | Credit for a returned or refunded purchase. |
+| `chargeback` | A disputed payment adjustment. |
+| `fee` | A separately identified card fee. |
+| `interest` | A card interest charge. |
+| `reward` | A card reward or rebate. |
+| `reversal` | Reversal of prior card activity. |
+| `authorization` | An authorization event that does not by itself establish a posted purchase. |
+| `unknown` | The card-event type is unknown. |
+
+### Counterparty role
+
+`counterparty_roles` - The supported role of the other party in the activity; a role does not verify identity.
+
+| Value | Meaning |
+| --- | --- |
+| `customer` | A purchaser of the business's goods or services. |
+| `supplier` | A provider of goods or services. |
+| `employee` | An employee of the business. |
+| `contractor` | A nonemployee service provider. |
+| `creditor` | A party to whom a financial obligation is owed. |
+| `owner` | An owner or equity holder. |
+| `related_party` | A party with a supported relationship to the subject. |
+| `tax_authority` | A public authority receiving or returning taxes. |
+| `insurer` | An insurance provider. |
+| `processor` | A payment processor or settlement intermediary. |
+| `financial_institution` | A bank or other financial institution acting as counterparty. |
+| `other` | A supported role outside the listed values. |
+| `unknown` | The role is unresolved. |
+
+## Continue reading
+
+- [Underwriting dimensions and metrics](/api-reference/underwriting-dimensions)
+- [Bank, card and cross-system attributes](/data-model/financial-attributes)
+- [All transaction categories](/data-model/transaction-category-dictionary)
+- [Normalized source-field dictionary](/data-model/field-dictionary)
+- [Calculation and interpretation methodology](/api-reference/risk-package-methodology)

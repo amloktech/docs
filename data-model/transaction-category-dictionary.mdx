@@ -1,0 +1,649 @@
+---
+title: "Transaction category dictionary"
+description: "Read the meaning of every transaction-purpose category and group, with distinctions between operating activity, funding, transfers and adjustments."
+keywords: ["API definitions", "financial metrics", "data dictionary"]
+sidebarTitle: "Category dictionary"
+---
+
+AMLOK classifies transaction purpose separately from account context, cash effect, payment rail and counterparty role. Use the leaf category to understand the activity and the group to summarize related purposes. The current taxonomy contains **327 leaf categories within 45 groups**; groups are not additional leaf categories.
+
+These meanings do not establish tax deductibility, accounting recognition, verified identity, fraud or creditworthiness. A card purchase can share a purpose category with a bank payment while having a different cash and liability effect. [Read the classification rules](/data-model/transaction-categorization) and [all classification-axis values](/data-model/assessment-definitions#transaction-classification-axes).
+
+Use the exact `category_id`, not a translated label. The [taxonomy download](/downloads/transaction-taxonomy.json) supplies allowed account contexts, directions, parent IDs and evidence requirements. [Plain-language definitions](/downloads/financial-definitions.json) are also available as JSON.
+
+## Operating receipts
+
+`revenue` - Cash receipts from the business's operating activity, distinguished from funding and asset sales.
+
+This parent group summarizes its child groups below.
+
+## Sales and service receipts
+
+`revenue.sales` - Receipts from goods, services and related customer activity. A receipt does not by itself establish when revenue is recognized.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `revenue.sales.unspecified` | **Unspecified operating sales receipts**. Supported operating sales receipts whose specific goods or service type is unresolved. |
+| `revenue.sales.goods` | **Goods sale receipts**. Money received for goods sold by the business. |
+| `revenue.sales.services` | **Service delivery receipts**. Money received for services delivered by the business. |
+| `revenue.sales.subscription` | **Subscription receipts**. Customer receipts under a subscription arrangement. |
+| `revenue.sales.usage` | **Usage-based service receipts**. Customer receipts for services billed according to usage. |
+| `revenue.sales.licensing` | **Licensing receipts**. Receipts for granting permission to use supported licensed rights or products. |
+| `revenue.sales.royalty` | **Royalty receipts**. Receipts earned through a supported royalty arrangement. |
+| `revenue.sales.commission` | **Commission receipts**. Receipts earned for arranging or facilitating a sale or service. |
+| `revenue.sales.franchise` | **Franchise fee receipts**. Fees received from franchisees under a franchise arrangement. |
+| `revenue.sales.rental` | **Operating rental receipts**. Receipts from renting property or assets as an operating activity. |
+| `revenue.sales.maintenance` | **Maintenance contract receipts**. Customer receipts under a maintenance or service-support contract. |
+| `revenue.sales.project` | **Project and milestone receipts**. Customer receipts tied to a project or completion milestone. |
+| `revenue.sales.invoice_collection` | **Customer invoice collections**. Cash received against a customer invoice; collection is distinct from issuing or recognizing the invoice. |
+| `revenue.sales.customer_deposit` | **Customer deposits and retainers**. Customer funds received in advance or as a retainer. They are not automatically earned revenue. |
+| `revenue.sales.gift_card_redemption` | **Supported redeemed stored-value receipts**. Receipts supported as relating to redeemed stored value, rather than an unsupported assumption from a gift-card balance. |
+| `revenue.sales.reimbursement` | **Customer expense reimbursements**. Customer money received to reimburse supported expenses incurred on the customer's behalf. |
+
+## Non-operating and other receipts
+
+`income` - Supported receipts outside ordinary sales, including investment income, grants and claim proceeds.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `income.interest` | **Interest received**. Interest income received on supported deposits, investments or lending activity. |
+| `income.dividend` | **Dividends received**. Distributions received as dividends on an ownership investment. |
+| `income.investment_distribution` | **Investment distributions**. Other supported distributions received from investments. |
+| `income.government_grant` | **Government grants received**. Funds received under a supported government grant, distinguished from a government loan. |
+| `income.operating_subsidy` | **Operating subsidies received**. Subsidy receipts supporting operations, rather than customer sales. |
+| `income.insurance_claim` | **Insurance claim proceeds**. Proceeds received in settlement of an insurance claim. |
+| `income.legal_settlement` | **Legal settlement receipts**. Money received through a supported legal settlement. |
+| `income.damages_award` | **Damages awards received**. Money received under a supported award of damages. |
+| `income.donation` | **Donations received**. Donated funds received without identifying them as customer sales. |
+| `income.other_supported` | **Other supported non-operating receipts**. Other non-operating receipts whose nature is supported but not covered by a more specific receipt category. |
+
+## Business operating payments
+
+`expense` - Payments or card purchases for operating the business. The category describes purpose, not tax deductibility or accounting recognition.
+
+This parent group summarizes its child groups below.
+
+## Payroll
+
+`expense.payroll` - Compensation and associated payments to employees or through payroll processors.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.payroll.salary` | **Salaries and wages**. Business spending for salaries and wages. The category identifies the supported purpose of the payment or purchase. |
+| `expense.payroll.overtime` | **Overtime wages**. Business spending for overtime wages. The category identifies the supported purpose of the payment or purchase. |
+| `expense.payroll.bonus` | **Bonuses**. Business spending for bonuses. The category identifies the supported purpose of the payment or purchase. |
+| `expense.payroll.commission` | **Employee commissions**. Business spending for employee commissions. The category identifies the supported purpose of the payment or purchase. |
+| `expense.payroll.severance` | **Severance payments**. Business spending for severance payments. The category identifies the supported purpose of the payment or purchase. |
+| `expense.payroll.payroll_processor` | **Payroll processor remittances**. Remittances to a payroll processor. The aggregate payment does not prove an allocation among wages, deductions and employer costs. |
+| `expense.payroll.employee_reimbursement` | **Employee expense reimbursements**. Payments returning supported business expenses to employees, rather than wages for work. |
+| `expense.payroll.payroll_unspecified` | **Unspecified payroll payments**. Supported payroll payments without enough detail to assign a more specific payroll category. |
+
+## Employee benefits
+
+`expense.benefits` - Employer spending on employee benefit programs and their administration.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.benefits.health_plan` | **Employer health-plan premiums**. Business spending for employer health-plan premiums. The category identifies the supported purpose of the payment or purchase. |
+| `expense.benefits.retirement` | **Employer retirement contributions**. Business spending for employer retirement contributions. The category identifies the supported purpose of the payment or purchase. |
+| `expense.benefits.workers_compensation` | **Workers compensation premiums**. Business spending for workers compensation premiums. The category identifies the supported purpose of the payment or purchase. |
+| `expense.benefits.life_disability` | **Employer life and disability cover**. Business spending for employer life and disability cover. The category identifies the supported purpose of the payment or purchase. |
+| `expense.benefits.benefits_administration` | **Benefits administration fees**. Business spending for benefits administration fees. The category identifies the supported purpose of the payment or purchase. |
+| `expense.benefits.other` | **Other documented employee benefits**. Business spending for other documented employee benefits. The category identifies the supported purpose of the payment or purchase. |
+
+## Contract and outsourced labor
+
+`expense.contract_labor` - Spending on nonemployee labor, staffing and outsourced operational services.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.contract_labor.subcontractor` | **Subcontractor services**. Business spending for subcontractor services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.contract_labor.temporary_staff` | **Temporary staffing**. Business spending for temporary staffing. The category identifies the supported purpose of the payment or purchase. |
+| `expense.contract_labor.freelancer` | **Freelance services**. Business spending for freelance services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.contract_labor.outsourced_operations` | **Outsourced operational services**. Business spending for outsourced operational services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.contract_labor.recruitment` | **Recruitment services**. Business spending for recruitment services. The category identifies the supported purpose of the payment or purchase. |
+
+## Premises and facilities
+
+`expense.premises` - Spending to occupy, maintain and operate business premises.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.premises.rent` | **Commercial premises rent**. Business spending for commercial premises rent. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.property_management` | **Property management**. Business spending for property management. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.common_area` | **Common-area charges**. Business spending for common-area charges. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.cleaning` | **Cleaning services**. Business spending for cleaning services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.security` | **Premises security services**. Business spending for premises security services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.landscaping` | **Landscaping and grounds**. Business spending for landscaping and grounds. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.waste` | **Waste removal**. Business spending for waste removal. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.storage` | **Storage rental**. Business spending for storage rental. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.parking` | **Business parking**. Business spending for business parking. The category identifies the supported purpose of the payment or purchase. |
+| `expense.premises.moving` | **Business relocation services**. Business spending for business relocation services. The category identifies the supported purpose of the payment or purchase. |
+
+## Utilities and communications
+
+`expense.utilities` - Spending on energy, water and communications services used by the business.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.utilities.electricity` | **Electricity**. Business spending for electricity. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.natural_gas` | **Natural gas**. Business spending for natural gas. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.water` | **Water and sewer**. Business spending for water and sewer. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.heating_fuel` | **Heating fuel**. Business spending for heating fuel. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.internet` | **Internet connectivity**. Business spending for internet connectivity. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.telephone` | **Telephone services**. Business spending for telephone services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.mobile` | **Business mobile services**. Business spending for business mobile services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.utilities.data_connectivity` | **Dedicated data connectivity**. Business spending for dedicated data connectivity. The category identifies the supported purpose of the payment or purchase. |
+
+## Technology
+
+`expense.technology` - Spending on technology services, subscriptions, support and consumables.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.technology.software_subscription` | **Software subscriptions**. Business spending for software subscriptions. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.software_license` | **Software licenses**. Business spending for software licenses. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.cloud_compute` | **Cloud computing**. Business spending for cloud computing. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.cloud_storage` | **Cloud data storage**. Business spending for cloud data storage. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.hosting` | **Web hosting**. Business spending for web hosting. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.domain` | **Domain registration**. Business spending for domain registration. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.cybersecurity` | **Cybersecurity services**. Business spending for cybersecurity services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.it_support` | **IT support**. Business spending for it support. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.data_services` | **Purchased business data**. Business spending for purchased business data. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.payment_software` | **Payment software**. Business spending for payment software. The category identifies the supported purpose of the payment or purchase. |
+| `expense.technology.equipment_consumables` | **Technology consumables**. Business spending for technology consumables. The category identifies the supported purpose of the payment or purchase. |
+
+## Professional services
+
+`expense.professional` - Spending on external professional advice and specialist services.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.professional.accounting` | **Accounting services**. Business spending for accounting services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.bookkeeping` | **Bookkeeping**. Business spending for bookkeeping. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.audit` | **Financial audit services**. Business spending for financial audit services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.tax_advisory` | **Tax advisory**. Business spending for tax advisory. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.legal` | **Legal services**. Business spending for legal services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.consulting` | **Business consulting**. Business spending for business consulting. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.valuation` | **Valuation services**. Business spending for valuation services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.engineering` | **Engineering services**. Business spending for engineering services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.architecture` | **Architecture services**. Business spending for architecture services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.design` | **Design services**. Business spending for design services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.professional.translation` | **Translation services**. Business spending for translation services. The category identifies the supported purpose of the payment or purchase. |
+
+## Marketing and selling
+
+`expense.marketing` - Spending to promote products, attract customers and support sales.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.marketing.digital_advertising` | **Digital advertising**. Business spending for digital advertising. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.print_advertising` | **Print advertising**. Business spending for print advertising. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.broadcast_advertising` | **Broadcast advertising**. Business spending for broadcast advertising. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.agency` | **Marketing agency services**. Business spending for marketing agency services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.market_research` | **Market research**. Business spending for market research. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.trade_show` | **Trade shows and exhibitions**. Business spending for trade shows and exhibitions. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.sponsorship` | **Business sponsorships**. Business spending for business sponsorships. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.sales_commission` | **External sales commissions**. Business spending for external sales commissions. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.promotional_material` | **Promotional materials**. Business spending for promotional materials. The category identifies the supported purpose of the payment or purchase. |
+| `expense.marketing.customer_acquisition` | **Documented customer acquisition services**. Business spending for documented customer acquisition services. The category identifies the supported purpose of the payment or purchase. |
+
+## Logistics and distribution
+
+`expense.logistics` - Spending to store, package, transport and deliver goods.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.logistics.freight` | **Freight**. Business spending for freight. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.courier` | **Courier services**. Business spending for courier services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.postage` | **Postage**. Business spending for postage. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.warehouse` | **Warehouse services**. Business spending for warehouse services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.fulfillment` | **Third-party fulfillment**. Business spending for third-party fulfillment. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.packaging` | **Packaging supplies**. Business spending for packaging supplies. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.customs_broker` | **Customs brokerage**. Business spending for customs brokerage. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.freight_forwarder` | **Freight forwarding**. Business spending for freight forwarding. The category identifies the supported purpose of the payment or purchase. |
+| `expense.logistics.last_mile` | **Last-mile delivery**. Business spending for last-mile delivery. The category identifies the supported purpose of the payment or purchase. |
+
+## Business vehicles
+
+`expense.vehicle` - Operating costs for business vehicles, distinct from acquiring a vehicle as an asset.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.vehicle.fuel` | **Vehicle fuel**. Business spending for vehicle fuel. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.charging` | **Vehicle charging**. Business spending for vehicle charging. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.lease` | **Operating vehicle leases**. Business spending for operating vehicle leases. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.maintenance` | **Vehicle maintenance**. Business spending for vehicle maintenance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.repair` | **Vehicle repairs**. Business spending for vehicle repairs. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.tolls` | **Business road tolls**. Business spending for business road tolls. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.fleet_management` | **Fleet management**. Business spending for fleet management. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.registration` | **Vehicle registration**. Business spending for vehicle registration. The category identifies the supported purpose of the payment or purchase. |
+| `expense.vehicle.vehicle_inspection` | **Vehicle inspections**. Business spending for vehicle inspections. The category identifies the supported purpose of the payment or purchase. |
+
+## Business travel
+
+`expense.travel` - Supported business travel and its related transportation and accommodation costs.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.travel.air` | **Business airfare**. Business spending for business airfare. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.rail` | **Business rail travel**. Business spending for business rail travel. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.lodging` | **Business lodging**. Business spending for business lodging. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.car_rental` | **Business vehicle hire**. Business spending for business vehicle hire. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.taxi` | **Business taxi and ride-hail**. Business spending for business taxi and ride-hail. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.ground_transport` | **Other business ground transportation**. Business spending for other business ground transportation. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.travel_agency` | **Travel agency services**. Business spending for travel agency services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.travel.travel_visa` | **Business travel visa fees**. Business spending for business travel visa fees. The category identifies the supported purpose of the payment or purchase. |
+
+## Business hospitality
+
+`expense.hospitality` - Supported business meals, events and hospitality arrangements.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.hospitality.meals` | **Supported business meals**. Business spending for supported business meals. The category identifies the supported purpose of the payment or purchase. |
+| `expense.hospitality.catering` | **Business catering**. Business spending for business catering. The category identifies the supported purpose of the payment or purchase. |
+| `expense.hospitality.client_event` | **Client events**. Business spending for client events. The category identifies the supported purpose of the payment or purchase. |
+| `expense.hospitality.staff_event` | **Staff events**. Business spending for staff events. The category identifies the supported purpose of the payment or purchase. |
+| `expense.hospitality.meeting_venue` | **Meeting venue hire**. Business spending for meeting venue hire. The category identifies the supported purpose of the payment or purchase. |
+
+## Administration
+
+`expense.administration` - Spending on office supplies, records, memberships and other administrative needs.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.administration.office_supplies` | **Office supplies**. Business spending for office supplies. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.printing` | **Printing and copying**. Business spending for printing and copying. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.records_storage` | **Records storage**. Business spending for records storage. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.document_services` | **Document handling services**. Business spending for document handling services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.membership` | **Business memberships**. Business spending for business memberships. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.subscriptions` | **Business publications**. Business spending for business publications. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.office_equipment_lease` | **Office equipment leases**. Business spending for office equipment leases. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.small_tools` | **Expensed small tools**. Business spending for expensed small tools. The category identifies the supported purpose of the payment or purchase. |
+| `expense.administration.filing` | **Administrative filing fees**. Business spending for administrative filing fees. The category identifies the supported purpose of the payment or purchase. |
+
+## Inventory and direct inputs
+
+`expense.inventory` - Purchases of goods and production inputs. Cash paid for stock is not automatically the period's cost of goods sold.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.inventory.resale_goods` | **Goods purchased for resale**. Business spending for goods purchased for resale. The category identifies the supported purpose of the payment or purchase. |
+| `expense.inventory.raw_material` | **Raw materials**. Business spending for raw materials. The category identifies the supported purpose of the payment or purchase. |
+| `expense.inventory.components` | **Production components**. Business spending for production components. The category identifies the supported purpose of the payment or purchase. |
+| `expense.inventory.work_in_process` | **Purchased work in process**. Purchases of partially completed goods or production inputs recorded as work in process. |
+| `expense.inventory.finished_goods` | **Finished goods**. Business spending for finished goods. The category identifies the supported purpose of the payment or purchase. |
+| `expense.inventory.spare_parts` | **Inventory spare parts**. Business spending for inventory spare parts. The category identifies the supported purpose of the payment or purchase. |
+| `expense.inventory.consumables` | **Production consumables**. Business spending for production consumables. The category identifies the supported purpose of the payment or purchase. |
+
+## Production costs
+
+`expense.production` - Operating spending on manufacturing, production services and production support.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.production.contract_manufacturing` | **Contract manufacturing**. Business spending for contract manufacturing. The category identifies the supported purpose of the payment or purchase. |
+| `expense.production.quality_testing` | **Quality testing**. Business spending for quality testing. The category identifies the supported purpose of the payment or purchase. |
+| `expense.production.production_equipment_rent` | **Production equipment rental**. Business spending for production equipment rental. The category identifies the supported purpose of the payment or purchase. |
+| `expense.production.production_maintenance` | **Production maintenance**. Business spending for production maintenance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.production.tooling_service` | **Tooling services**. Business spending for tooling services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.production.industrial_gases` | **Industrial gases**. Business spending for industrial gases. The category identifies the supported purpose of the payment or purchase. |
+| `expense.production.production_supplies` | **Other production supplies**. Business spending for other production supplies. The category identifies the supported purpose of the payment or purchase. |
+
+## Business insurance
+
+`expense.insurance` - Premiums and related spending for business insurance and bonding cover.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.insurance.general_liability` | **General liability insurance**. Business spending for general liability insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.professional_liability` | **Professional liability insurance**. Business spending for professional liability insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.property` | **Property insurance**. Business spending for property insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.business_interruption` | **Business interruption insurance**. Business spending for business interruption insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.cyber` | **Cyber insurance**. Business spending for cyber insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.vehicle` | **Commercial vehicle insurance**. Business spending for commercial vehicle insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.cargo` | **Cargo insurance**. Business spending for cargo insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.trade_credit` | **Trade credit insurance**. Spending on insurance covering supported customer nonpayment risks, rather than the underlying receivable itself. |
+| `expense.insurance.directors_officers` | **Directors and officers insurance**. Business spending for directors and officers insurance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.insurance.bonding` | **Surety and bonding premiums**. Premiums for surety or bonding arrangements, rather than a payment of the guaranteed obligation. |
+
+## Compliance and licensing
+
+`expense.compliance` - Spending on licenses, inspections, certifications and regulatory support services.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.compliance.business_license` | **Business licenses**. Business spending for business licenses. The category identifies the supported purpose of the payment or purchase. |
+| `expense.compliance.regulatory_fee` | **Regulatory fees**. Business spending for regulatory fees. The category identifies the supported purpose of the payment or purchase. |
+| `expense.compliance.certification` | **Business certifications**. Business spending for business certifications. The category identifies the supported purpose of the payment or purchase. |
+| `expense.compliance.inspection` | **Regulatory inspections**. Business spending for regulatory inspections. The category identifies the supported purpose of the payment or purchase. |
+| `expense.compliance.compliance_service` | **Compliance services**. Business spending for compliance services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.compliance.environmental_service` | **Environmental compliance services**. Business spending for environmental compliance services. The category identifies the supported purpose of the payment or purchase. |
+
+## Repairs and maintenance
+
+`expense.maintenance` - Spending on supported repairs and maintenance of existing business assets or software.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.maintenance.building` | **Building repairs**. Business spending for building repairs. The category identifies the supported purpose of the payment or purchase. |
+| `expense.maintenance.equipment` | **Equipment repairs**. Business spending for equipment repairs. The category identifies the supported purpose of the payment or purchase. |
+| `expense.maintenance.furniture` | **Furniture repairs**. Business spending for furniture repairs. The category identifies the supported purpose of the payment or purchase. |
+| `expense.maintenance.software` | **Software maintenance**. Business spending for software maintenance. The category identifies the supported purpose of the payment or purchase. |
+| `expense.maintenance.other` | **Other documented repairs**. Business spending for other documented repairs. The category identifies the supported purpose of the payment or purchase. |
+
+## Research and development
+
+`expense.research` - Spending on research, prototypes, testing and technical development services.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.research.research_service` | **Research services**. Business spending for research services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.research.prototyping` | **Prototyping costs**. Business spending for prototyping costs. The category identifies the supported purpose of the payment or purchase. |
+| `expense.research.laboratory` | **Laboratory services**. Business spending for laboratory services. The category identifies the supported purpose of the payment or purchase. |
+| `expense.research.product_testing` | **Product testing**. Business spending for product testing. The category identifies the supported purpose of the payment or purchase. |
+| `expense.research.technical_content` | **Technical research content**. Business spending for technical research content. The category identifies the supported purpose of the payment or purchase. |
+
+## Training and development
+
+`expense.training` - Spending on employee or professional learning and development.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.training.professional_training` | **Professional training**. Business spending for professional training. The category identifies the supported purpose of the payment or purchase. |
+| `expense.training.employee_training` | **Employee training**. Business spending for employee training. The category identifies the supported purpose of the payment or purchase. |
+| `expense.training.conference` | **Business conferences**. Business spending for business conferences. The category identifies the supported purpose of the payment or purchase. |
+| `expense.training.training_material` | **Training materials**. Business spending for training materials. The category identifies the supported purpose of the payment or purchase. |
+
+## Franchise operating costs
+
+`expense.franchise` - Ongoing royalties, levies and support charges paid under a franchise arrangement.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.franchise.royalty` | **Franchise royalties**. Business spending for franchise royalties. The category identifies the supported purpose of the payment or purchase. |
+| `expense.franchise.marketing_levy` | **Franchise marketing levies**. Business spending for franchise marketing levies. The category identifies the supported purpose of the payment or purchase. |
+| `expense.franchise.support_fee` | **Franchise support fees**. Business spending for franchise support fees. The category identifies the supported purpose of the payment or purchase. |
+
+## Other operating payments
+
+`expense.other` - Supported operating spending whose more specific purpose is not represented by another category.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `expense.other.unspecified` | **Unspecified supported operating payments**. Payments supported as business operating activity without a more specific purpose classification. |
+| `expense.other.reimbursement` | **Supported business cost reimbursements**. Supported reimbursement payments for business costs that are not assigned to a more specific category. |
+
+## Financial costs
+
+`financial` - Charges associated with banking, payment processing and financing, rather than borrowed principal.
+
+This parent group summarizes its child groups below.
+
+## Banking, payment and financing fees
+
+`financial.fee` - Separately identified banking, payment and financing fees, distinguished from interest and transaction principal.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `financial.fee.bank_account` | **Bank account fees**. Separately identified bank account fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.overdraft` | **Overdraft fees**. Separately identified overdraft fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.insufficient_funds` | **Insufficient-funds fees**. Fees charged because funds were insufficient. A fee is distinct from the related returned-payment principal. |
+| `financial.fee.returned_payment` | **Returned-payment fees**. Fees associated with a returned payment; the return reason may differ from insufficient funds. |
+| `financial.fee.wire` | **Wire-transfer fees**. Separately identified wire-transfer fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.ach` | **ACH and EFT fees**. Separately identified ach and eft fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.interac` | **Interac transfer fees**. Separately identified interac transfer fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.atm` | **ATM fees**. Separately identified atm fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.cash_handling` | **Cash-handling fees**. Separately identified cash-handling fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.foreign_exchange` | **Foreign-exchange fees**. Separately identified foreign-exchange fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.card_processing` | **Card-processing fees**. Separately identified card-processing fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.processor_platform` | **Processor platform fees**. Separately identified processor platform fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.chargeback` | **Chargeback administration fees**. Administration fees for a chargeback, distinct from the disputed sale amount. |
+| `financial.fee.payout` | **Payout fees**. Separately identified payout fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.card_annual` | **Card annual fees**. Separately identified card annual fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.card_late` | **Card late-payment fees**. Separately identified card late-payment fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.card_cash_advance` | **Card cash-advance fees**. Fees for a card cash advance, distinct from the cash received and any interest. |
+| `financial.fee.loan_origination` | **Loan origination fees**. Separately identified loan origination fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.facility_commitment` | **Facility commitment fees**. Separately identified facility commitment fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.guarantee` | **Financing guarantee fees**. Separately identified financing guarantee fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.factoring` | **Factoring fees**. Separately identified factoring fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.merchant_advance` | **Merchant advance fees**. Separately identified merchant advance fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.brokerage` | **Brokerage fees**. Separately identified brokerage fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.custody` | **Custody fees**. Separately identified custody fees, distinct from the principal value of the underlying payment, investment or borrowing. |
+| `financial.fee.unspecified` | **Unspecified financial fees**. Supported financial fees whose specific charge type is unresolved. |
+
+## Interest and finance charges
+
+`financial.interest` - Separately identified interest or finance charges for borrowing and credit facilities.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `financial.interest.term_loan` | **Term-loan interest**. Separately identified term-loan interest, distinct from repayment of borrowed principal. |
+| `financial.interest.revolver` | **Revolving-facility interest**. Separately identified revolving-facility interest, distinct from repayment of borrowed principal. |
+| `financial.interest.card` | **Card interest**. Separately identified card interest, distinct from repayment of borrowed principal. |
+| `financial.interest.mortgage` | **Mortgage interest**. Separately identified mortgage interest, distinct from repayment of borrowed principal. |
+| `financial.interest.lease` | **Lease finance charges**. Separately identified lease finance charges, distinct from repayment of borrowed principal. |
+| `financial.interest.overdraft` | **Overdraft interest**. Separately identified overdraft interest, distinct from repayment of borrowed principal. |
+| `financial.interest.related_party` | **Related-party borrowing interest**. Separately identified related-party borrowing interest, distinct from repayment of borrowed principal. |
+| `financial.interest.unspecified` | **Unspecified interest paid**. Supported interest paid without a more specific borrowing-product classification. |
+
+## Taxes and public remittances
+
+`tax` - Tax payments, statutory remittances and related public charges. The category does not establish filing compliance or tax deductibility.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `tax.corporate_income` | **Corporate income tax**. Payments or charges identified as corporate income tax under the applicable jurisdiction. |
+| `tax.income_installment` | **Income-tax installments**. Payments or charges identified as income-tax installments under the applicable jurisdiction. |
+| `tax.gst_hst` | **GST and HST remittances**. Remittances of Canadian goods and services tax or harmonized sales tax collected or owed. |
+| `tax.pst_qst` | **PST and QST remittances**. Remittances of provincial sales tax or Quebec sales tax. |
+| `tax.sales_use` | **Sales and use taxes**. Payments or charges identified as sales and use taxes under the applicable jurisdiction. |
+| `tax.vat` | **VAT remittances**. Remittances of value-added tax under the applicable jurisdiction. |
+| `tax.payroll_withholding` | **Payroll tax withholding remittances**. Amounts withheld from employee pay and remitted to the tax authority, distinct from the employer's own payroll taxes. |
+| `tax.employer_payroll` | **Employer payroll taxes**. Payroll taxes borne by the employer, distinct from employee withholding remittances. |
+| `tax.social_contribution` | **Employer statutory social contributions**. Payments or charges identified as employer statutory social contributions under the applicable jurisdiction. |
+| `tax.property` | **Property taxes**. Payments or charges identified as property taxes under the applicable jurisdiction. |
+| `tax.excise` | **Excise taxes**. Payments or charges identified as excise taxes under the applicable jurisdiction. |
+| `tax.customs_duty` | **Customs duties**. Payments or charges identified as customs duties under the applicable jurisdiction. |
+| `tax.withholding` | **Other withholding-tax remittances**. Other tax amounts withheld and remitted on behalf of a recipient. |
+| `tax.franchise` | **Franchise taxes**. Statutory franchise-tax payments, distinct from commercial royalties paid to a franchisor. |
+| `tax.business_levy` | **Business levies**. Payments or charges identified as business levies under the applicable jurisdiction. |
+| `tax.penalty` | **Tax penalties**. Payments or charges identified as tax penalties under the applicable jurisdiction. |
+| `tax.interest` | **Tax interest**. Payments or charges identified as tax interest under the applicable jurisdiction. |
+| `tax.unspecified` | **Unspecified tax remittances**. Supported tax remittances without a more specific tax classification. |
+
+## Financing and capital movements
+
+`financing` - Borrowing, debt settlement, owner funding and distributions, rather than operating sales.
+
+This parent group summarizes its child groups below.
+
+## Borrowing proceeds
+
+`financing.loan_proceeds` - Funding received from supported borrowing or financing arrangements.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `financing.loan_proceeds.term` | **Term-loan proceeds**. Cash received from a term loan. |
+| `financing.loan_proceeds.revolver` | **Revolving-facility draw**. Funds drawn from a revolving credit facility. |
+| `financing.loan_proceeds.card_advance` | **Card cash-advance proceeds**. Cash received through a credit-card cash advance. |
+| `financing.loan_proceeds.mortgage` | **Mortgage proceeds**. Funds received from mortgage borrowing. |
+| `financing.loan_proceeds.equipment` | **Equipment-finance proceeds**. Funding received under an equipment-financing arrangement. |
+| `financing.loan_proceeds.merchant_advance` | **Merchant cash-advance proceeds**. Funds received under a merchant cash-advance arrangement, distinct from customer sales receipts. |
+| `financing.loan_proceeds.invoice_finance` | **Invoice-finance proceeds**. Funds advanced against invoices, distinct from customer invoice collections. |
+| `financing.loan_proceeds.factoring` | **Factoring funding**. Funding received from a factoring arrangement. The category alone does not establish the accounting or legal treatment of the receivable transfer. |
+| `financing.loan_proceeds.bridge` | **Bridge-loan proceeds**. Funds received under short-term bridge financing. |
+| `financing.loan_proceeds.government` | **Government-loan proceeds**. Funds received from a supported government loan, distinguished from a grant. |
+| `financing.loan_proceeds.related_party` | **Related-party loan proceeds**. Loan funds received from a supported related party, distinct from an equity contribution. |
+| `financing.loan_proceeds.unspecified` | **Unspecified supported loan proceeds**. Supported borrowing receipts without a more specific financing-product classification. |
+
+## Debt and facility settlements
+
+`financing.debt_service` - Payments that settle debt or a financing facility. Components remain combined unless evidence supports a principal, interest or fee split.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `financing.debt_service.term` | **Term-loan payments**. Settlement of obligations through term-loan payments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.revolver` | **Revolving-facility repayments**. Settlement of obligations through revolving-facility repayments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.card` | **Credit-card balance settlements**. Payment of a credit-card balance. The bank-side cash outflow and issuer-side settlement are not another purchase and must not double count the original card spending. |
+| `financing.debt_service.mortgage` | **Mortgage payments**. Settlement of obligations through mortgage payments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.equipment` | **Equipment-finance payments**. Settlement of obligations through equipment-finance payments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.lease` | **Finance-lease payments**. Settlement of obligations through finance-lease payments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.merchant_advance` | **Merchant cash-advance remittances**. Settlement of obligations through merchant cash-advance remittances. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.invoice_finance` | **Invoice-finance repayments**. Settlement of obligations through invoice-finance repayments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.factoring` | **Factoring settlements**. Settlement of obligations through factoring settlements. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.bridge` | **Bridge-loan repayments**. Settlement of obligations through bridge-loan repayments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.government` | **Government-loan repayments**. Settlement of obligations through government-loan repayments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.related_party` | **Related-party loan repayments**. Settlement of obligations through related-party loan repayments. The posting may combine principal and charges unless a supported split is available. |
+| `financing.debt_service.principal` | **Supported principal-only repayments**. Repayment explicitly supported as principal only, without assumed interest or fee components. |
+| `financing.debt_service.unspecified` | **Unspecified debt-service payments**. Supported debt-service payments whose facility type or component split is unresolved. |
+
+## Equity contributions
+
+`financing.equity_in` - Capital supplied by owners or equity investors, distinguished from revenue and borrowing.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `financing.equity_in.owner` | **Owner capital contributions**. Capital supplied by an owner without classifying it as a loan or sales receipt. |
+| `financing.equity_in.share_issue` | **Share-issue proceeds**. Funds received from issuing shares. |
+| `financing.equity_in.partner` | **Partner capital contributions**. Capital supplied by a partner as an ownership contribution. |
+| `financing.equity_in.capital_call` | **Capital-call receipts**. Funds received in response to a supported request for committed investor capital. |
+| `financing.equity_in.other` | **Other documented equity contributions**. Other supported equity contributions not assigned to a more specific capital category. |
+
+## Owner and equity distributions
+
+`financing.equity_out` - Cash or value distributed to owners and equity investors, distinguished from ordinary operating costs.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `financing.equity_out.draw` | **Owner draws**. Funds withdrawn by an owner as a distribution, rather than supported wages or supplier costs. |
+| `financing.equity_out.dividend` | **Dividends paid**. Dividends paid to equity holders. |
+| `financing.equity_out.partner` | **Partner distributions**. Distributions paid to partners in their ownership capacity. |
+| `financing.equity_out.share_repurchase` | **Share repurchases**. Funds paid to repurchase the entity's own shares. |
+| `financing.equity_out.return_of_capital` | **Capital returned to owners**. Capital returned to owners or investors, distinguished from ordinary expenses. |
+
+## Investing and asset movements
+
+`investing` - Acquisition, disposal and recovery of investments and longer-term assets.
+
+This parent group summarizes its child groups below.
+
+## Asset acquisition payments
+
+`investing.acquisition` - Payments to acquire supported assets, make investments or advance loans.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `investing.acquisition.equipment` | **Equipment acquisition**. Payments for equipment acquisition recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.vehicle` | **Vehicle acquisition**. Payments for vehicle acquisition recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.real_estate` | **Real-estate acquisition**. Payments for real-estate acquisition recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.leasehold_improvement` | **Capitalized leasehold improvements**. Payments for capitalized leasehold improvements recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.hardware` | **Capitalized technology hardware**. Payments for capitalized technology hardware recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.software` | **Capitalized software**. Payments for capitalized software recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.intellectual_property` | **Intellectual-property acquisition**. Payments for intellectual-property acquisition recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.business` | **Business acquisition**. Payments for business acquisition recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.security` | **Financial-security purchases**. Payments for financial-security purchases recorded as supported asset or investment activity rather than an ordinary operating purchase. |
+| `investing.acquisition.deposit_investment` | **Term-deposit placements**. Funds placed into a term-deposit investment. |
+| `investing.acquisition.loan_advance` | **Loans advanced**. Funds lent to another party, creating a supported loan asset rather than an operating expense. |
+| `investing.acquisition.other` | **Other documented investment payments**. Other supported investment or asset-acquisition payments without a more specific classification. |
+
+## Asset disposal and recovery receipts
+
+`investing.disposal` - Receipts from disposing of assets, maturing investments or recovering loans advanced.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `investing.disposal.equipment` | **Equipment-sale proceeds**. Receipts identified as equipment-sale proceeds, distinguished from ordinary operating sales. |
+| `investing.disposal.vehicle` | **Vehicle-sale proceeds**. Receipts identified as vehicle-sale proceeds, distinguished from ordinary operating sales. |
+| `investing.disposal.real_estate` | **Real-estate-sale proceeds**. Receipts identified as real-estate-sale proceeds, distinguished from ordinary operating sales. |
+| `investing.disposal.intellectual_property` | **Intellectual-property-sale proceeds**. Receipts identified as intellectual-property-sale proceeds, distinguished from ordinary operating sales. |
+| `investing.disposal.business` | **Business-disposal proceeds**. Receipts identified as business-disposal proceeds, distinguished from ordinary operating sales. |
+| `investing.disposal.security` | **Financial-security sale proceeds**. Receipts identified as financial-security sale proceeds, distinguished from ordinary operating sales. |
+| `investing.disposal.deposit_maturity` | **Term-deposit maturity proceeds**. Funds returned on maturity of a term-deposit investment. Interest is separate where supported. |
+| `investing.disposal.loan_repayment` | **Repayments of loans advanced**. Receipts recovering loans the business previously advanced, rather than customer sales. |
+| `investing.disposal.other` | **Other supported asset-disposal receipts**. Other supported receipts from disposing of or recovering investment assets. |
+
+## Transfers and clearing
+
+`transfer` - Movements between accounts, settlement systems, escrow or clearing balances whose underlying economic purpose is recorded separately where supported.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `transfer.internal` | **Verified own-account transfers**. A supported movement between the subject's own accounts within the relevant scope, rather than external income or spending. |
+| `transfer.sweep` | **Verified internal cash sweeps**. A supported automated movement of cash between the subject's accounts. |
+| `transfer.fx` | **Verified internal currency conversions**. A supported own-account movement that converts between currencies. It is not new revenue. |
+| `transfer.escrow_in` | **Escrow funding received**. Funds received into an escrow-related arrangement; receipt does not establish unrestricted access. |
+| `transfer.escrow_out` | **Escrow funding paid**. Funds paid into or through an escrow-related arrangement. |
+| `transfer.processor_payout` | **Processor settlement deposits**. A processor's settlement deposit. Underlying sales, fees, refunds and reserves require reconciliation before assigning gross revenue. |
+| `transfer.processor_reserve` | **Processor reserve movements**. Funds held, released or moved as part of a payment processor's reserve arrangement. |
+| `transfer.clearing` | **Unresolved clearing movements**. Movement through a clearing account whose underlying purpose remains unresolved. |
+| `transfer.external_unresolved` | **Unresolved external transfers**. A transfer to or from an external party whose economic purpose remains unresolved. |
+
+## Physical cash movements
+
+`cash` - Movements between an account and physical cash. They do not establish the origin or final use of the cash.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `cash.withdrawal` | **Cash withdrawals**. Money taken from an account as physical cash, without asserting how it is subsequently spent. |
+| `cash.deposit` | **Cash deposits**. Physical cash deposited into an account, without assuming it represents sales revenue. |
+
+## Refunds and reimbursements
+
+`refund` - Amounts returned in relation to a prior purchase, payment, deposit or advance.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `refund.purchase` | **Purchase refunds received**. Funds returned for an earlier purchase. |
+| `refund.customer` | **Customer refunds paid**. Funds returned to a customer for an earlier payment or sale. |
+| `refund.tax` | **Tax refunds received**. Tax money returned by the relevant authority. |
+| `refund.insurance_premium` | **Insurance premium refunds**. Previously paid insurance premiums returned to the payer. |
+| `refund.fee` | **Financial-fee refunds**. Previously charged financial fees refunded to the payer. |
+| `refund.deposit_return` | **Security deposit returns**. Return of a previously paid security deposit, rather than new sales revenue. |
+| `refund.employee_return` | **Employee advance returns**. Funds returned by an employee from an earlier advance. |
+| `refund.supplier_return` | **Supplier credit returns**. Funds returned by a supplier against a supported credit or return. |
+| `refund.unspecified` | **Unspecified supported refunds**. A supported refund whose original payment type is not further identified. |
+
+## Payment disputes and reversals
+
+`dispute` - Debits, recoveries and provisional adjustments arising from payment disputes.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `dispute.chargeback_debit` | **Chargebacks debited**. Value debited because a payment was charged back, distinct from a chargeback administration fee. |
+| `dispute.chargeback_recovery` | **Chargeback recoveries**. Recovery of value previously debited through a chargeback. |
+| `dispute.provisional_credit` | **Provisional dispute credits**. A temporary credit while a payment dispute is unresolved; it does not establish a final recovery. |
+| `dispute.provisional_debit` | **Provisional dispute debits**. A temporary debit while a payment dispute is unresolved; it does not establish a final loss. |
+| `dispute.arbitration` | **Dispute arbitration adjustments**. An adjustment linked to dispute arbitration, with direction and finality determined by the supporting record. |
+
+## Adjustments and corrections
+
+`adjustment` - Corrections, reversals and other supported account postings that require separate treatment from new economic activity.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `adjustment.reversal` | **Transaction reversals**. A posting that reverses a previous transaction rather than new independent activity. |
+| `adjustment.correction` | **Posting corrections**. A correction to a previous posting, with its relationship retained where supported. |
+| `adjustment.opening_balance` | **Opening-balance postings**. An opening-balance posting representing starting account position, rather than new period cash generation. |
+| `adjustment.balance_adjustment` | **Balance adjustments**. A supported adjustment to account balance that is not assigned to a more specific economic activity. |
+| `adjustment.fx_revaluation` | **Noncash foreign-exchange revaluation**. A noncash change from revaluing foreign-currency balances, not a cash receipt or payment. |
+| `adjustment.write_off` | **Supported write-offs**. A supported reduction or removal of a recorded balance through a write-off. |
+| `adjustment.reward` | **Card rewards and rebates**. Card rewards or rebates recorded on the account, distinguished from operating sales. |
+
+## Non-business activity
+
+`personal` - Activity explicitly supported as non-business or mixed-purpose. Account ownership alone does not establish this classification.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `personal.identified` | **Explicitly identified non-business activity**. Activity explicitly supported as non-business. The classification is not inferred solely from a merchant name or account owner. |
+| `personal.mixed` | **Documented mixed-purpose activity**. Activity documented as serving both business and non-business purposes; it does not assert an unsupported allocation between them. |
+
+## Unclassified activity
+
+`unknown` - Activity whose economic purpose cannot be supported by the available evidence.
+
+| Category key | Name and meaning |
+| --- | --- |
+| `unknown.unclassified` | **Unclassified activity**. Activity for which the evidence cannot support an economic-purpose category. |

@@ -91,3 +91,68 @@ Run `detailed_attribute_coverage` with any of the six fictional business profile
 
 See the [detailed attribute scenario](/sandbox/sample-package#explore-detailed-financial-attributes) for requests, result traversal and interpretation. An available zero requires supported absence; missing coverage, restricted records, insufficient category specificity and sparse statistical samples remain unavailable. A business does not need every category in the registry to be populated.
 {/* END DETAILED ATTRIBUTE SCENARIO */}
+
+{/* BEGIN PLAIN LANGUAGE ATTRIBUTES */}
+## Read every bank and card attribute
+
+The **12,805 bank and card definitions** combine an account context, direction, activity selection, observation period and statistic. Only combinations present in the published catalog are defined; do not construct arbitrary keys.
+
+For example, `transactions.bank_cashflow.outflow.expense.inventory.rolling_30d.amount` means the **total bank cash paid for inventory and direct inputs over the last 30 complete days**. It does not mean inventory on hand, cost of goods sold or the amount eligible as collateral.
+
+### Account context and direction
+
+| Context | Meaning |
+| --- | --- |
+| `bank_cashflow` | Posted cash movement in depository accounts. Inflow is cash received and outflow is cash paid. |
+| `card_activity` | Issuer credit-account activity. Direction follows the normalized account posting; a purchase can increase a liability without moving bank cash. |
+
+Use `cash_effect`, `balance_sheet_effect` and `card_event_type` to interpret issuer-card activity. Merchant payment acceptance and processor payouts are separate cross-system observations. Do not add card purchases to the bank payments that later settle those purchases.
+
+### Activity selection
+
+| Selector | Meaning |
+| --- | --- |
+| `category:<id>` | A single supported leaf economic-purpose category. |
+| `group:<id>` | Activity under a category group, including its supported descendants. Group totals overlap their leaf totals; do not add them together. |
+| `posted:posted` | All eligible posted activity in the context and direction. |
+| `external:external` | Activity explicitly identified as external under the transfer classification. |
+| `unclassified:unclassified` | Activity whose purpose is unclassified or conflicting. |
+
+The [category dictionary](/data-model/transaction-category-dictionary) explains every category and group. A merchant sector alone does not prove economic purpose.
+
+### Observation periods
+
+| Period key | Meaning |
+| --- | --- |
+| `rolling_7d` | Last 7 complete days, anchored to the stated observation window rather than the retrieval time. |
+| `rolling_30d` | Last 30 complete days, anchored to the stated observation window rather than the retrieval time. |
+| `rolling_90d` | Last 90 complete days, anchored to the stated observation window rather than the retrieval time. |
+| `rolling_180d` | Last 180 complete days, anchored to the stated observation window rather than the retrieval time. |
+| `rolling_365d` | Last 365 complete days, anchored to the stated observation window rather than the retrieval time. |
+| `month_to_date` | Current calendar month through the last complete day, anchored to the stated observation window rather than the retrieval time. |
+| `previous_calendar_month` | Previous complete calendar month, anchored to the stated observation window rather than the retrieval time. |
+
+### Statistics
+
+| Statistic | Unit | What it represents |
+| --- | --- | --- |
+| `amount` | currency | Total money amount of the selected posted activity in one direction. It is not a net cash-flow or revenue figure. |
+| `count` | count | Number of distinct current posted transactions in the selection. |
+| `amount_share` | ratio | Selected activity as a share of all posted value in the same account context, currency, direction and period. |
+| `mean` | currency | Average money amount of the selected transactions. |
+| `median` | currency | Middle transaction amount, describing a typical transaction with less influence from extremes. |
+| `p90` | currency | The transaction amount at the 90th percentile, describing the upper end of the observed amount distribution. |
+| `maximum` | currency | Largest money amount of a selected transaction. |
+| `stddev` | currency | Spread of the selected transaction amounts, expressed in currency units rather than a percentage. |
+| `active_days` | days | Number of distinct UTC posting dates with selected activity. |
+| `days_since_last` | days | Time since the latest selected posting, measured at the last complete day in the period rather than the retrieval date. |
+
+The 90th percentile needs at least ten selected transactions; standard deviation needs at least three. Amount distributions and recency are unavailable for an empty selection. An available zero total or count requires sufficient coverage and classification to establish no matching activity.
+
+### Complete definition downloads
+
+- [Full attribute dictionary (CSV)](https://raw.githubusercontent.com/amloktech/docs/main/downloads/financial-attribute-dictionary.csv): one row and a plain-language meaning for every one of the 12,955 bank/card and cross-system keys, with units and context.
+- [Cross-system dictionary](/data-model/cross-system-attribute-dictionary): all 150 cross-system definitions grouped by business area.
+- [Definition meanings (JSON)](/downloads/financial-definitions.json): all scalar metric, category, group, axis and cross-system meanings, with source-catalog versions and checksums.
+- [Assessment field glossary](/data-model/assessment-definitions): how to read statuses, evidence, units and supporting analyses.
+{/* END PLAIN LANGUAGE ATTRIBUTES */}

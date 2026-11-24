@@ -3395,7 +3395,7 @@ Cheque number where explicitly reported. Preserve original evidence; do not inve
 
 **API:bank_transaction.financial_category_id** · `string` · Optional · Nullable: Yes
 
-Read-only financial category id from the normalized record.
+Stable leaf identifier for the supported economic purpose in the versioned transaction taxonomy. It is distinct from a merchant industry code or a provider category.
 
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/financial_category_id
@@ -3413,7 +3413,7 @@ Versioned economic-purpose classification, evidence strength and explicit uncert
 
 **API:bank_transaction.provider_category** · `object` · Optional · Nullable: Yes
 
-Read-only provider category from the normalized record.
+Original provider classification observation, retaining its taxonomy version and source semantics. It does not independently verify the transaction purpose.
 
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/provider_category
@@ -3422,7 +3422,7 @@ Read-only provider category from the normalized record.
 
 **API:bank_transaction.card_event_type** · `string` · Optional · Nullable: Yes
 
-Read-only card event type from the normalized record.
+The issuer-card event, such as a purchase, settlement, refund or fee. A card purchase is distinct from the later bank payment that settles it.
 
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/card_event_type
@@ -3431,7 +3431,7 @@ Read-only card event type from the normalized record.
 
 **API:bank_transaction.card_last4** · `string` · Optional · Nullable: Yes
 
-Read-only card last4 from the normalized record.
+Last four digits reported for the card. This masked display attribute is not a unique card identifier and alone cannot establish a card change.
 
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/card_last4
@@ -3440,7 +3440,7 @@ Read-only card last4 from the normalized record.
 
 **API:bank_transaction.card_brand** · `string` · Optional · Nullable: Yes
 
-Read-only card brand from the normalized record.
+Card network or brand reported by the source, such as Visa or Mastercard. It does not identify an individual card or establish ownership.
 
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/card_brand
@@ -3449,7 +3449,7 @@ Read-only card brand from the normalized record.
 
 **API:bank_transaction.counterparty_role** · `string` · Optional · Nullable: Yes
 
-Read-only counterparty role from the normalized record.
+Supported role of the other party in the transaction, such as customer, supplier, creditor or owner. A role does not independently verify identity or ownership.
 
 - **Presence:** Optional within its containing object. All containing objects are required.
 - **Schema:** NormalizedBankTransactionRead/properties/counterparty_role
@@ -13922,83 +13922,86 @@ Human disposition of uncertain matches. Preserve original evidence; do not inven
 
 ## Financial supporting schedule fields
 
-`financial_statement.supporting_schedule` contains the following optional nullable decimal-string inputs. Amounts use the parent statement currency and reporting period. Missing fields are unknown, not zero. Opening balances mean the start of that period; closing balances mean its end. Exact formulas and eligibility are in [risk-package methodology](/api-reference/risk-package-methodology). The same nested fields are searchable in Console Data Lookup.
+`financial_statement.supporting_schedule` contains 76 optional nullable decimal-string inputs. The meanings below identify the financial concept rather than its calculation. Money amounts use the parent statement currency and reporting period. Counts, days and the required DSCR ratio keep their stated units. Missing is unknown, not zero. Opening balances refer to the start of the period; closing balances refer to its end.
+
+These inputs do not automatically establish eligibility for a risk metric. Read the supported scope and evidence with the [metric definition](/api-reference/underwriting-dimensions). The same nested fields are searchable in Console Data Lookup.
 
 | Field | Meaning |
 | --- | --- |
-| `supporting_schedule.revenue` | Revenue. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.prior_year_revenue` | Prior year revenue. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.cogs` | Cogs. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.payroll` | Payroll. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.prior_year_payroll` | Prior year payroll. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.other_operating_expenses` | Other operating expenses. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.depreciation` | Depreciation. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.interest` | Interest. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.tax` | Tax. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.net_profit` | Net profit. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.cash` | Cash. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.processor_receivable` | Processor receivable. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.receivables` | Trade receivables at the end of the statement period. |
-| `supporting_schedule.inventory` | Inventory at the end of the statement period. |
-| `supporting_schedule.current_assets` | Current assets. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.current_liabilities` | Current liabilities. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.total_assets` | Total assets. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.total_liabilities` | Total liabilities. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.equity` | Equity. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.opening_assets` | Opening assets. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.capex` | Capex. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.existing_debt_service` | Existing debt service. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.existing_principal_service` | Existing principal service. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.total_debt` | Total debt. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.revolving_used` | Revolving used. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.revolving_limit` | Revolving limit. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.trade_payables` | Trade payables at the end of the statement period. |
-| `supporting_schedule.overdue_receivables` | Overdue receivables. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.ar_90_plus` | Ar 90 plus. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.overdue_payables` | Overdue payables. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.related_party_receivables` | Related party receivables. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.eligible_receivables` | Eligible receivables. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.tax_assessed` | Tax assessed. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.tax_paid` | Tax paid. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.tax_outstanding` | Tax outstanding. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.prior_year_cash` | Prior year cash. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.collateral_valuation` | Collateral valuation. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.collateral_realizable` | Collateral realizable. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.existing_secured_claims` | Existing secured claims. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.guarantee_amount` | Guarantee amount. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.required_dscr` | Required dscr. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.liquidity_floor` | Explicit cash threshold in the statement currency; not an Amlok credit decision. |
-| `supporting_schedule.gross_sales` | Gross sales. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.refunds` | Refunds. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.chargebacks` | Chargebacks. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.recurring_revenue` | Recurring revenue. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.prior_recurring_monthly` | Prior recurring monthly. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.recurring_churn` | Recurring churn. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.recurring_expansion` | Recurring expansion. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.customer_count` | Customer count. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.repeat_customers` | Repeat customers. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.completed_orders` | Completed orders. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.fulfilled_orders` | Fulfilled orders. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.on_time_orders` | On time orders. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.eligible_item_days` | Eligible item days. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.stockout_item_days` | Stockout item days. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.settlement_days` | Settlement days. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.supplier_delay_days` | Supplier delay days. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.books_closing_lag_days` | Books closing lag days. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.required_filings` | Required filings. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.filed_filings` | Filed filings. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.returned_payment_count` | Returned payment count. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.nsf_event_count` | Specifically identified insufficient-funds events; other payment returns do not count. |
-| `supporting_schedule.returned_payment_amount` | Returned payment amount. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.delinquent_obligations` | Delinquent obligations. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.maximum_days_past_due` | Maximum days past due. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.elapsed_installments` | Elapsed installments. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.timely_installments` | Timely installments. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.declared_accounts` | Declared accounts. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.matched_owners` | Matched owners. Source-supported numeric schedule input; money uses the parent statement currency and period. Count/day/ratio inputs use the named unit. Missing is null or omitted, never an assumed zero. |
-| `supporting_schedule.opening_receivables` | Trade receivables at the start of the statement period. |
-| `supporting_schedule.opening_trade_payables` | Trade payables at the start of the statement period. |
-| `supporting_schedule.opening_inventory` | Inventory at the start of the statement period. |
-| `supporting_schedule.credit_sales` | Sales on credit during this period; excludes cash sales. Required for receivable days. |
-| `supporting_schedule.credit_purchases` | Purchases on credit during this period; excludes cash purchases. Required for payable days. |
-| `supporting_schedule.short_term_investments` | Supported short-term investment amount used in the quick ratio. |
+| `supporting_schedule.revenue` | Revenue recognized on the statement's declared accounting basis during its reporting period, rather than all bank deposits. |
+| `supporting_schedule.prior_year_revenue` | Revenue for the comparable period in the previous year, on a consistent reporting basis. |
+| `supporting_schedule.cogs` | Cost of goods sold: the cost attributed to goods sold during the period, distinct from cash paid to purchase inventory. |
+| `supporting_schedule.payroll` | Supported payroll cost for the reporting period. |
+| `supporting_schedule.prior_year_payroll` | Supported payroll cost for the comparable prior-year period. |
+| `supporting_schedule.other_operating_expenses` | Other supported operating expenses for the period, distinct from the separately identified costs in the schedule. |
+| `supporting_schedule.depreciation` | The period's accounting allocation for the use of depreciable assets, rather than a current cash purchase. |
+| `supporting_schedule.interest` | Supported interest expense for the reporting period, separate from debt-principal repayment. |
+| `supporting_schedule.tax` | Tax expense reported for the period, distinct from tax cash payments or an outstanding tax balance. |
+| `supporting_schedule.net_profit` | Reported profit remaining after recognized expenses for the period. |
+| `supporting_schedule.cash` | Supported cash balance for the statement date. Whether it is eligible for a specific metric depends on that metric's restrictions and scope. |
+| `supporting_schedule.processor_receivable` | Amounts recorded as due from payment processors but not yet represented as settled bank cash. |
+| `supporting_schedule.receivables` | Trade receivables outstanding at the end of the statement period. |
+| `supporting_schedule.inventory` | Recorded inventory value at the end of the statement period. |
+| `supporting_schedule.current_assets` | Assets classified as current on the statement, including the supported near-term asset balances. |
+| `supporting_schedule.current_liabilities` | Obligations classified as current on the statement, representing its near-term liability balances. |
+| `supporting_schedule.total_assets` | The entity's total recorded asset balance within the statement scope. |
+| `supporting_schedule.total_liabilities` | The entity's total recorded liabilities, including both debt and non-debt obligations. |
+| `supporting_schedule.equity` | Recorded ownership interest remaining in the entity after its liabilities, on the statement's accounting basis. |
+| `supporting_schedule.opening_assets` | Total recorded assets at the beginning of the reporting period. |
+| `supporting_schedule.capex` | Cash capital expenditures for acquiring or improving longer-term assets during the period. |
+| `supporting_schedule.existing_debt_service` | Supported contractual payments on existing debt for the assessment period, including principal, interest and applicable mandatory debt fees. |
+| `supporting_schedule.existing_principal_service` | The principal-repayment component of existing contractual debt service for the period. |
+| `supporting_schedule.total_debt` | Supported outstanding principal of interest-bearing obligations, distinguished from all liabilities. |
+| `supporting_schedule.revolving_used` | Outstanding amount drawn on the supported revolving-credit facilities. |
+| `supporting_schedule.revolving_limit` | The supported committed limits of those revolving-credit facilities. |
+| `supporting_schedule.trade_payables` | Amounts owed to suppliers at the end of the statement period. |
+| `supporting_schedule.overdue_receivables` | Trade receivable balances whose contractual due dates have passed. |
+| `supporting_schedule.ar_90_plus` | Trade receivable balances more than 90 days past their contractual due dates. |
+| `supporting_schedule.overdue_payables` | Trade payable balances whose contractual due dates have passed. |
+| `supporting_schedule.related_party_receivables` | Receivable balances owed by supported related parties. |
+| `supporting_schedule.eligible_receivables` | Receivable balances supported as meeting the applicable institution borrowing-base eligibility rules. |
+| `supporting_schedule.tax_assessed` | Assessed tax obligations in the stated scope, distinguished from unconfirmed estimates. |
+| `supporting_schedule.tax_paid` | Supported payments allocated to the assessed tax obligations in scope. |
+| `supporting_schedule.tax_outstanding` | Supported assessed tax obligations that remain unpaid; outstanding does not automatically mean overdue. |
+| `supporting_schedule.prior_year_cash` | The supported cash balance at the comparable prior-year reference date. |
+| `supporting_schedule.collateral_valuation` | Supported gross value of the collateral at its valuation date, rather than an assumed sale price. |
+| `supporting_schedule.collateral_realizable` | Supported realizable collateral value after the applicable approved reductions or haircuts. |
+| `supporting_schedule.existing_secured_claims` | Supported existing claims secured against the collateral, which compete with the assessed exposure. |
+| `supporting_schedule.guarantee_amount` | Supported guarantee amount for the exposure. Collectibility and eligibility remain subject to the assessment evidence. |
+| `supporting_schedule.required_dscr` | The institution's required debt-service coverage ratio, expressed as a multiple rather than a money amount. |
+| `supporting_schedule.liquidity_floor` | The explicit minimum cash threshold in the statement currency, rather than an AMLOK credit decision. |
+| `supporting_schedule.gross_sales` | Supported gross sales value for the period before the applicable sales deductions, on the stated sales basis. |
+| `supporting_schedule.refunds` | Supported value refunded for sales in the stated assessment scope. |
+| `supporting_schedule.chargebacks` | Supported disputed chargeback value in the stated sales or payment scope. |
+| `supporting_schedule.recurring_revenue` | Revenue supported as recurring within the period, distinguished from identified one-off revenue. |
+| `supporting_schedule.prior_recurring_monthly` | The supported opening monthly recurring-revenue amount used as the reference for the recurring-revenue cohort. |
+| `supporting_schedule.recurring_churn` | Supported recurring-revenue value lost from the assessed opening cohort, rather than a customer-count rate. |
+| `supporting_schedule.recurring_expansion` | Supported additional recurring-revenue value from customers in the assessed opening cohort. |
+| `supporting_schedule.customer_count` | The number of distinct customers in the supported customer cohort. |
+| `supporting_schedule.repeat_customers` | The number of customers in that cohort with more than one supported completed purchase. |
+| `supporting_schedule.completed_orders` | The number of supported completed orders in the assessment scope. |
+| `supporting_schedule.fulfilled_orders` | The number of eligible orders supported as fulfilled in the assessment scope. |
+| `supporting_schedule.on_time_orders` | The number of eligible fulfilled orders completed by their promised dates. |
+| `supporting_schedule.eligible_item_days` | Covered item-day observations in the eligible inventory scope; each item observed on a day contributes to this population. |
+| `supporting_schedule.stockout_item_days` | Eligible item-day observations where the item was out of stock. |
+| `supporting_schedule.settlement_days` | Supported sale-to-bank-settlement timing in days for matched captures and settlements, using the applicable metric basis. |
+| `supporting_schedule.supplier_delay_days` | Supported lateness in days for settled supplier bills relative to contractual due dates, using the applicable metric basis. |
+| `supporting_schedule.books_closing_lag_days` | Days between the accounting period end and its supported close or finalization date. |
+| `supporting_schedule.required_filings` | The number of known required filings in the stated jurisdiction and obligation scope. |
+| `supporting_schedule.filed_filings` | The number of those required filings supported by filing evidence. |
+| `supporting_schedule.returned_payment_count` | The number of distinct supported returned-payment events, without assuming every return was caused by insufficient funds. |
+| `supporting_schedule.nsf_event_count` | Distinct returned-payment events specifically supported as caused by insufficient funds; other payment returns do not count. |
+| `supporting_schedule.returned_payment_amount` | Principal value of distinct supported returned-payment events, excluding duplicate fee records. |
+| `supporting_schedule.delinquent_obligations` | The number of supported obligations past due at the assessment date. |
+| `supporting_schedule.maximum_days_past_due` | The longest supported payment delay among the assessed obligations, expressed in days. |
+| `supporting_schedule.elapsed_installments` | The number of eligible installments whose contractual due dates have elapsed in the assessment scope. |
+| `supporting_schedule.timely_installments` | The number of those eligible installments paid by their contractual due dates. |
+| `supporting_schedule.declared_accounts` | The number of declared relevant accounts in the assessed account inventory, rather than all accounts the borrower might hold. |
+| `supporting_schedule.matched_owners` | The number of eligible accounts whose ownership positively matches the assessed borrower, rather than a count of business owners. |
+| `supporting_schedule.opening_receivables` | Trade receivables at the start of the reporting period, used with closing balances on the same basis. |
+| `supporting_schedule.opening_trade_payables` | Trade payables at the start of the reporting period, used with closing balances on the same basis. |
+| `supporting_schedule.opening_inventory` | Recorded inventory value at the start of the reporting period, on a basis comparable to closing inventory. |
+| `supporting_schedule.credit_sales` | Sales made on credit during the reporting period, excluding cash sales. |
+| `supporting_schedule.credit_purchases` | Purchases made on credit during the reporting period, excluding cash purchases. |
+| `supporting_schedule.short_term_investments` | Supported short-term investment balance considered for the applicable liquidity assessment. |
+
