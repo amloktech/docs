@@ -33,6 +33,37 @@ for d in cross['definitions']:
     assert row['meaning'] == meaning['cross_system_attributes'][d['key']]
     assert row['unit'] == d['unit'] and row['period'] == d['period_basis']
 
+# The on-page catalog must be as complete and precise as the downloadable one.
+catalog = json.loads((ROOT / 'downloads/definition-table.json').read_text())
+assert catalog['schema_version'] == 1
+readable = {(r['type'], r['key']): r for r in catalog['rows']}
+assert len(readable) == len(catalog['rows']), 'Duplicate table row'
+for row in readable.values():
+    row['explanation'] = ' '.join(catalog['text'][i] for i in row['meaning'])
+    assert row['name'] and row['category'] and row['explanation']
+assert {key for kind, key in readable if kind == 'Attribute'} == keys
+for key in keys:
+    assert readable['Attribute', key]['explanation'] == by_key[key]['meaning'], key
+    assert readable['Attribute', key]['unit'] == by_key[key]['unit'], key
+for kind, collection in [('Dimension', 'dimensions'), ('Metric', 'metrics'), ('Category', 'categories'), ('Group', 'groups')]:
+    assert {key for row_type, key in readable if row_type == kind} == set(meaning[collection])
+    for key, description in meaning[collection].items():
+        assert readable[kind, key]['explanation'] == description
+for axis, details in meaning['axes'].items():
+    assert readable['Classification axis', axis]['explanation'] == details['meaning']
+    for value, description in details['values'].items():
+        assert readable['Classification value', axis + '.' + value]['explanation'] == description
+for key, description in meaning['supporting_schedule'].items():
+    assert readable['Supporting field', 'supporting_schedule.' + key]['explanation'] == description
+for key, description in meaning['analyses'].items():
+    assert readable['Analysis section', 'analyses.' + key]['explanation'] == description
+for kind, count in catalog['counts'].items():
+    assert count == sum(row['type'] == kind for row in readable.values())
+catalog_page = (ROOT / 'data-model/definition-catalog.mdx').read_text()
+catalog_hash = hashlib.sha256((ROOT / 'downloads/definition-table.json').read_bytes()).hexdigest()[:16]
+assert 'version="' + catalog_hash + '"' in catalog_page
+assert 'data-model/definition-catalog' in (ROOT / 'docs.json').read_text()
+
 spec = json.loads((ROOT / 'openapi/amlok.json').read_text())
 schemas = spec['components']['schemas']
 assert set(schemas['Dimension']['properties']['key']['enum']) == set(meaning['dimensions'])

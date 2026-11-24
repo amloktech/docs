@@ -406,7 +406,9 @@ The [category dictionary](/data-model/transaction-category-dictionary) explains 
     body += '### Statistics\n\n' + table(['Statistic', 'Unit', 'What it represents'], [('`' + k + '`', bank['statistics'][k]['unit'], v) for k, v in STATISTICS.items()])
     body += '''The 90th percentile needs at least ten selected transactions; standard deviation needs at least three. Amount distributions and recency are unavailable for an empty selection. An available zero total or count requires sufficient coverage and classification to establish no matching activity.
 
-### Complete definition downloads
+### Browse definitions or download
+
+Read and search every key in the [definition catalog](/data-model/definition-catalog). Its table shows the explanation, unit, category and context without opening a file.
 
 - [Full attribute dictionary (CSV)](https://raw.githubusercontent.com/amloktech/docs/main/downloads/financial-attribute-dictionary.csv): one row and a plain-language meaning for every one of the 12,955 bank/card and cross-system keys, with units and context.
 - [Cross-system dictionary](/data-model/cross-system-attribute-dictionary): all 150 cross-system definitions grouped by business area.
@@ -447,7 +449,7 @@ These inputs do not automatically establish eligibility for a risk metric. Read 
 These sets describe different layers and can reference the same underlying evidence. Do not add their counts together as independent facts available for every borrower. Definition versions identify their own catalogs; they do not change the public API's version.
 ''')
     nav = read_json('docs.json')
-    additions = {'data-model/financial-attributes': ['data-model/cross-system-attribute-dictionary', 'data-model/assessment-definitions'], 'data-model/transaction-categorization': ['data-model/transaction-category-dictionary']}
+    additions = {'data-model/start-here': ['data-model/definition-catalog'], 'data-model/financial-attributes': ['data-model/cross-system-attribute-dictionary', 'data-model/assessment-definitions'], 'data-model/transaction-categorization': ['data-model/transaction-category-dictionary']}
     new_pages = {p for pages in additions.values() for p in pages}
     def walk(item):
         if isinstance(item, dict):
@@ -466,6 +468,8 @@ These sets describe different layers and can reference the same underlying evide
                 walk(value)
     walk(nav)
     (ROOT / 'docs.json').write_text(json.dumps(nav, indent=2, ensure_ascii=False) + '\n')
+    from definition_table import write_definition_table
+    write_definition_table(ROOT, meaning, metrics, bank, cross, taxonomy)
 
 
 def write_verification_meanings():

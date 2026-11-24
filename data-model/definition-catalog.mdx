@@ -1,0 +1,36 @@
+---
+title: "Definition catalog"
+description: "Read and search the meaning of every dimension, metric, financial attribute and transaction category in the AMLOK API."
+keywords: [dimensions, metrics, attributes, categories, financial definitions, data dictionary]
+icon: "table-list"
+mode: "wide"
+---
+
+import { DefinitionTable } from "/snippets/definition-table.jsx";
+
+Find a definition by name, API key or financial concept. Filter by **type** and **dimension or category** to see what each item represents, its unit and its applicable context. Every explanation is readable here; downloads are optional.
+
+<DefinitionTable version="59ac9cee2002e3e9" />
+
+## Read the catalog
+
+| Type | What it represents |
+| --- | --- |
+| Dimension | A family of related underwriting concepts, such as liquidity or repayment capacity. |
+| Metric | One scalar underwriting measure within a dimension, with its stated unit. |
+| Attribute | A detailed observation for a particular activity, source population or period. |
+| Category | The supported economic purpose of a transaction. |
+| Group | A collection of related transaction categories. Group totals overlap their leaf categories. |
+| Classification axis or value | An independent perspective such as cash effect, account context or payment rail, and its allowed values. |
+| Analysis section | Structured supporting observations within the risk package. |
+| Supporting field | A financial-statement input used alongside the source evidence. |
+
+Definitions describe the catalog, not the number of independent facts available for each borrower. Availability depends on evidence and coverage. Missing values are not zero. Money uses the returned currency; ratios use fractions or multiples, not percentage-formatted numbers.
+
+For record schemas and other response fields, read the [source-field dictionary](/data-model/field-dictionary), [verification fields](/api-reference/verification-fields), [source-derived attributes](/data-model/derived-attributes) and [assessment glossary](/data-model/assessment-definitions). See [Financial attributes](/data-model/financial-attributes) for retrieval and coverage rules, or [Underwriting dimensions](/api-reference/underwriting-dimensions) for the metric reference.
+
+## Optional downloads
+
+- [Attribute dictionary (CSV)](https://raw.githubusercontent.com/amloktech/docs/main/downloads/financial-attribute-dictionary.csv): every detailed attribute key and its complete explanation.
+- [Definition meanings (JSON)](/downloads/financial-definitions.json): dimension, metric, category, group, classification and supporting-field meanings.
+- [Metric catalog (JSON)](/downloads/underwriting-metric-catalog.json) and [transaction taxonomy (JSON)](/downloads/transaction-taxonomy.json): technical definitions and allowed classifications.

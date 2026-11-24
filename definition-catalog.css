@@ -1,0 +1,84 @@
+/* Searchable API definition catalog. Scoped to its own component. */
+.amlok-definitions {
+  --def-ink: #172238;
+  --def-muted: #56647a;
+  --def-blue: #052698;
+  --def-border: #dce4f1;
+  --def-surface: #fff;
+  --def-soft: #f5f8fe;
+  margin: 28px 0 40px;
+  color: var(--def-ink);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.dark .amlok-definitions {
+  --def-ink: #edf3ff;
+  --def-muted: #afbdd2;
+  --def-blue: #a8c2ff;
+  --def-border: #2a3c59;
+  --def-surface: #101b2c;
+  --def-soft: #15243c;
+}
+.amlok-definitions button, .amlok-definitions input, .amlok-definitions select { font: inherit; }
+.amlok-definitions button { cursor: pointer; }
+.amlok-definitions button:focus-visible, .amlok-definitions input:focus-visible, .amlok-definitions select:focus-visible, .amlok-definitions-scroll:focus-visible { outline: 2px solid var(--def-blue); outline-offset: 3px; }
+.amlok-definitions-totals { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; margin-bottom: 26px; }
+.amlok-definitions-totals button { display: flex; flex-direction: column; gap: 10px; padding: 16px 18px; text-align: left; color: var(--def-muted); background: var(--def-surface); border: 1px solid var(--def-border); border-radius: 9px; }
+.amlok-definitions-totals span { font-size: 12px; }
+.amlok-definitions-totals strong { color: var(--def-ink); font-size: 27px; line-height: 1.1; letter-spacing: -.035em; }
+.amlok-definitions-totals button:hover, .amlok-definitions-totals button[aria-pressed="true"] { border-color: var(--def-blue); background: var(--def-soft); }
+.amlok-definitions-filters { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.3fr); gap: 12px; }
+.amlok-definitions label { display: block; color: var(--def-ink); font-size: 12px; font-weight: 500; }
+.amlok-definitions-filters label { margin-bottom: 7px; }
+.amlok-definitions input, .amlok-definitions select { box-sizing: border-box; width: 100%; min-width: 0; height: 44px; padding: 9px 12px; border: 1px solid var(--def-border); border-radius: 7px; color: var(--def-ink); background: var(--def-surface); }
+.amlok-definitions input::placeholder { color: var(--def-muted); opacity: 1; }
+.amlok-definitions-results { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 54px; font-size: 12px; color: var(--def-muted); }
+.amlok-definitions-results p { margin: 0; }
+.amlok-definitions-results button, .amlok-definitions-empty button { color: var(--def-blue); background: none; border: 0; padding: 8px 0; text-decoration: underline; text-underline-offset: 3px; }
+.amlok-definitions-scroll { max-height: 72vh; overflow: auto; border: 1px solid var(--def-border); border-radius: 10px; background: var(--def-surface); }
+.amlok-definitions table { display: table; width: 100%; min-width: 850px; margin: 0; table-layout: fixed; border-collapse: separate; border-spacing: 0; font-size: 13px; line-height: 1.6; }
+.amlok-definitions th, .amlok-definitions td { padding: 18px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--def-border); overflow-wrap: anywhere; }
+.amlok-definitions thead th { position: sticky; top: 0; z-index: 1; background: #052698; color: #fff; font-size: 11px; font-weight: 600; }
+.amlok-definitions thead th:nth-child(1) { width: 24%; }
+.amlok-definitions thead th:nth-child(2) { width: 12%; }
+.amlok-definitions thead th:nth-child(3) { width: 16%; }
+.amlok-definitions thead th:nth-child(4) { width: 40%; }
+.amlok-definitions thead th:nth-child(5) { width: 8%; }
+.amlok-definitions tbody tr:nth-child(even) { background: var(--def-soft); }
+.amlok-definitions tbody th { font-weight: 500; }
+.amlok-definitions tbody tr:last-child > * { border-bottom: 0; }
+.amlok-definitions td p { margin: 0; }
+.amlok-definitions-name { display: block; margin-bottom: 6px; font-weight: 600; }
+.amlok-definitions code { padding: 0; background: transparent; color: var(--def-muted); font-size: 11px; font-weight: 400; white-space: normal; overflow-wrap: anywhere; }
+.amlok-definitions code::before, .amlok-definitions code::after { content: none; }
+.amlok-definitions-type { display: inline-block; padding: 2px 7px; border: 1px solid var(--def-border); border-radius: 5px; color: var(--def-blue); font-size: 11px; }
+.amlok-definitions-context { display: flex; flex-wrap: wrap; gap: 5px 10px; margin-top: 10px; color: var(--def-muted); font-size: 11px; }
+.amlok-definitions-context span { border-left: 2px solid var(--def-border); padding-left: 7px; }
+.amlok-definitions .amlok-definitions-empty { padding: 40px 20px; text-align: center; }
+.amlok-definitions-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 16px; color: var(--def-muted); font-size: 12px; }
+.amlok-definitions-pagination > div { display: flex; gap: 8px; }
+.amlok-definitions-pagination label { display: flex; align-items: center; gap: 8px; }
+.amlok-definitions-pagination select { width: 70px; height: 36px; padding: 4px 8px; }
+.amlok-definitions-pagination button, .amlok-definitions-notice button { min-height: 36px; padding: 7px 13px; color: var(--def-ink); background: var(--def-surface); border: 1px solid var(--def-border); border-radius: 6px; }
+.amlok-definitions-pagination button:hover:not(:disabled) { border-color: var(--def-blue); }
+.amlok-definitions-pagination button:disabled { opacity: .45; cursor: default; }
+.amlok-definitions-notice { padding: 26px; border: 1px solid var(--def-border); border-radius: 9px; background: var(--def-soft); }
+.amlok-definitions-notice p { margin: 8px 0 16px; }
+.amlok-definitions-sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 700px) {
+  .amlok-definitions-totals { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .amlok-definitions-totals button { padding: 12px; }
+  .amlok-definitions-totals strong { font-size: 24px; }
+  .amlok-definitions-filters { grid-template-columns: 1fr; }
+  .amlok-definitions-scroll { max-height: none; }
+  .amlok-definitions table { min-width: 0; }
+  .amlok-definitions thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .amlok-definitions tbody tr { display: grid; grid-template-columns: 1fr 1fr; padding: 18px; border-bottom: 1px solid var(--def-border); gap: 10px; }
+  .amlok-definitions tbody tr:last-child { border-bottom: 0; }
+  .amlok-definitions th, .amlok-definitions td { border: 0; padding: 0; }
+  .amlok-definitions tbody th, .amlok-definitions tbody td:nth-child(4), .amlok-definitions tbody td:last-child { grid-column: 1 / -1; }
+  .amlok-definitions tbody td:nth-child(3) { text-align: right; font-size: 12px; color: var(--def-muted); }
+  .amlok-definitions tbody td:last-child::before { content: "Unit: "; color: var(--def-muted); font-size: 11px; }
+  .amlok-definitions .amlok-definitions-empty::before { content: none; }
+  .amlok-definitions-pagination { gap: 16px; }
+}
