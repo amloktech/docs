@@ -92,7 +92,7 @@ for f in vf.values():
     assert f['description'] and 'Preserve the source meaning' not in f['description']
     assert f['description'] in (ROOT / 'api-reference/verification-fields.mdx').read_text()
 sf = json.loads((ROOT / 'downloads/data-model-field-catalog.json').read_text())['fields']
-assert len(sf) == 981
+assert len(sf) == 982
 for f in sf.values():
     assert f['description']
     assert not re.match(r'Read-only .* from the normalized record\.$', f['description']), f['path']
@@ -115,4 +115,4 @@ assert 'not a relative growth rate' in meaning['metrics']['spending_to_receipts_
 assert 'not the amount of scheduled installments' in meaning['cross_system_attributes']['cross_system.debt.maturing_30d.observed_principal']
 assert 'not expected loss' in meaning['cross_system_attributes']['cross_system.payments.open_dispute_exposure']
 assert 'must not double count' in meaning['categories']['financing.debt_service.card']
-print('Definition coverage passed: 24 dimensions, 184 metrics, 12,955 attributes, 327 categories, 45 groups, 10 axes, 14 analysis sections, 981 source fields and 860 verification fields.')
+print('Definition coverage passed: 24 dimensions, 184 metrics, 12,955 attributes, 327 categories, 45 groups, 10 axes, 14 analysis sections, 982 source fields and 860 verification fields.')

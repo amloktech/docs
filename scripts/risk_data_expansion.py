@@ -87,7 +87,7 @@ def extend_normalized(s):
   if name in s:s[name]['properties']['supporting_schedule']=nullable({'$ref':'#/components/schemas/FinancialSupportingSchedule'},'Supported accounting and obligation schedule for this statement period and currency. Refer to metric definitions for eligibility; not a model output.')
  # Preserve old immutable assessments without rewriting their values to the new catalog.
  for name,prop in [('Metric','definition_version'),('RiskMetricDefinition','definition_version'),('RiskPackage','catalog_version')]:
-  s[name]['properties'][prop]={'type':'string','enum':[PREVIOUS_VERSION,VERSION]}
+  s[name]['properties'][prop]={'type':'string','enum':[PREVIOUS_VERSION,VERSION,'2026-11-25.1']}
  s['RiskPackage']['properties']['completeness']['properties']['expected_metric_count']={'type':'integer','minimum':1}
 
  from risk_package_catalog import catalog

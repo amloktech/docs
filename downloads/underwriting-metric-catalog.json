@@ -1161,11 +1161,13 @@
       "key": "chargeback_amount_share",
       "dimension_key": "revenue_quality",
       "label": "Chargeback amount share",
-      "description": "Chargeback amount share. Disputed chargeback amount divided by eligible processed sales amount.",
+      "description": "Chargeback amount share. Gross chargeback-stage disputed amount divided by eligible captured sales amount.",
       "unit": "ratio",
-      "formula": "Disputed chargeback amount divided by eligible processed sales amount",
+      "formula": "Gross chargeback-stage disputed amount divided by eligible captured sales amount",
       "required_inputs": [
-        "Matched processing cohort and consistent chargeback stage",
+        "Matched captured-sale cohort",
+        "explicit chargeback stage excludes inquiries",
+        "opened by period end regardless of resolution status",
         "positive denominator"
       ],
       "eligibility": "Distinguish accrual revenue, gross sales, refunds, taxes, fees and cash settlement. Financing, transfers and owner injections are not sales.",
@@ -1178,8 +1180,8 @@
         "commerce",
         "accounting"
       ],
-      "definition_version": "2026-11-12.1",
-      "calculation_version": "amlok-chargeback_amount_share-1",
+      "definition_version": "2026-11-25.1",
+      "calculation_version": "amlok-chargeback_amount_share-2",
       "window_rule": "Return the actual UTC observation window and as-of date. Point-in-time metrics use dated observations; period, cohort and prior-period requirements above are mandatory. No silent annualization.",
       "unavailable_rule": "Return null with a typed reason when inputs, coverage, entitlement or a valid denominator are missing. Do not replace missing values with zero.",
       "interpretation": "Ratios are fractions, not percentages. Amounts have an explicit currency. A metric is an assessment input, not an institution decision."

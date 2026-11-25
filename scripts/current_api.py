@@ -329,6 +329,9 @@ def build():
     from financial_meaning_guides import write_guides as financial_meaning_guides
     financial_meaning_guides()
 
+    from review_remediation_guides import write_guides as reviewed_guides
+    reviewed_guides()
+
     # Include Sandbox controls in count-sensitive guides, as in the download.
     import re
     for guide in ['api-reference/examples', 'api-reference/downloads', 'api-reference/overview',

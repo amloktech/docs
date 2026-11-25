@@ -10120,6 +10120,22 @@
                 "x-availability": "Source, module, country, consent and contracted permissions determine population."
               }
             }
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "inquiry",
+                  "chargeback",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Financial dispute stage, independent of workflow or resolution status. Inquiry is a retrieval or pre-chargeback request; chargeback represents gross disputed captured-sale exposure. Unknown or missing stage does not establish chargeback exposure. Do not infer realized losses from this field."
           }
         },
         "required": [
@@ -35554,6 +35570,22 @@
                 "x-availability": "Source, module, country, consent and contracted permissions determine population."
               }
             }
+          },
+          "stage": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "inquiry",
+                  "chargeback",
+                  "unknown"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Financial dispute stage, independent of workflow or resolution status. Inquiry is a retrieval or pre-chargeback request; chargeback represents gross disputed captured-sale exposure. Unknown or missing stage does not establish chargeback exposure. Do not infer realized losses from this field."
           }
         },
         "required": [

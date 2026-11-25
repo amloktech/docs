@@ -1,5 +1,5 @@
 {
-  "contractSha256": "ce66d6015c451074532f721aa5d432a61193df9445257ca3a0b5f6f302759c57",
+  "contractSha256": "78fc52b11ea4ad3f35739b488fa2aae224211ac03ffb4a0dfd34afd31d40fccf",
   "version": "1.0.0",
   "resources": {
     "common": {
@@ -8307,6 +8307,23 @@
         "Source families": "PAY; ECOM",
         "Presence": "Optional within its containing object. A containing object is optional; absence is not JSON null.",
         "Schema": "NormalizedDisputeRead/properties/fee_amount/properties/currency"
+      },
+      "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#dispute"
+    },
+    "API:dispute.stage": {
+      "id": "API:dispute.stage",
+      "path": "dispute.stage",
+      "resource": "dispute",
+      "schema": "NormalizedDisputeRead",
+      "schemaPointer": "/properties/stage",
+      "type": "string",
+      "required": false,
+      "parentRequired": true,
+      "nullable": true,
+      "description": "Financial dispute stage, independent of workflow or resolution status. Inquiry is a retrieval or pre-chargeback request; chargeback represents gross disputed captured-sale exposure. Unknown or missing stage does not establish chargeback exposure. Do not infer realized losses from this field.",
+      "details": {
+        "Presence": "Optional within its containing object. All containing objects are required.",
+        "Schema": "NormalizedDisputeRead/properties/stage"
       },
       "docsUrl": "https://docs.amlok.io/data-model/field-dictionary#dispute"
     },

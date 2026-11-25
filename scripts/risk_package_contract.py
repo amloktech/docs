@@ -23,7 +23,7 @@ def extend_schemas(s):
  {'if':{'properties':{'analysis_basis':{'enum':['pro_forma','scenario']}}},'then':{'properties':{'assumptions':{'minItems':1}}}},
  {'if':{'properties':{'unit':{'const':'currency'}}},'then':{'properties':{'currency':currency}},'else':{'properties':{'currency':{'type':'null'}}}},
  {'if':{'properties':{'status':{'const':'available'}}},'then':{'properties':{'reason_code':{'type':'null'},'inputs':{'minItems':1},'evidence_ids':{'minItems':1}}},'else':{'properties':{'reason_code':enum(*REASONS)}}},
- *[{'if':{'properties':{'key':{'const':m['key']}}},'then':{'properties':{'unit':{'const':m['unit']},'calculation_version':{'const':m['calculation_version']}}}} for m in c['metrics']]]
+ *[{'if':{'properties':{'key':{'const':m['key']}}},'then':{'properties':{'unit':{'const':m['unit']},'calculation_version':({'enum':['amlok-chargeback_amount_share-1',m['calculation_version']]} if m['key']=='chargeback_amount_share' else {'const':m['calculation_version']})}}} for m in c['metrics']]]
  s['Dimension']['properties']['key']=enum(*[d['key'] for d in c['dimensions']])
  s['Dimension']['properties']['metrics']['description']='Every catalog metric assigned to this dimension exactly once, including unavailable and not-applicable entries. Segment analyses are in analyses; do not silently drop metrics.'
  s['Dimension']['allOf']=[]

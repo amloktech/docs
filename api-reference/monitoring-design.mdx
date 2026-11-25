@@ -90,3 +90,9 @@ curl --request PATCH --fail-with-body "$AMLOK_API_BASE_URL/v1/monitors/$MONITOR_
 `MONITOR_ETAG` is the exact ETag response header, including its quotes. The response confirms scheduling, not a completed evaluation. Poll the Monitor and read `GET /v1/monitoring-runs?monitor_id=...` for the new result. A stale version returns `412`; resolve it by reading again. Invalid or revoked sources must be corrected before activation.
 
 The previous failed run remains in history. Institution-supplied application and deal inputs remain evidence, but are not counted as collected provider records or uploaded documents in the monitoring workload allowance. Resuming does not replay old periods or erase billing records. Do not repeatedly create new Monitors to work around a failure. If the same failure returns, send support the Monitor ID, environment and `failure.request_id`, without your API key.
+
+## Compare the same evidence scope
+
+Monitoring baseline metrics and `analyses.changes` use the same comparability checks: borrower, account and entity scope, connected sources, currency, accounting basis, exclusions, calculation and definition versions, and equal-length chronological periods. Related-party identity and source scope is finalized before comparison. Related-party finances do not become primary-business financial inputs. Incompatible observations return a reason and no numeric delta; unchanged, comparable observations can correctly return zero.
+
+`MonitoringRun.started_at` records evaluation start and `completed_at` records completion after result publication. Their difference measures evaluation processing, not queue wait, provider collection time or a latency guarantee.

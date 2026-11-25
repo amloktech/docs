@@ -1,6 +1,6 @@
 ---
 title: "Source field dictionary"
-description: "981 source-normalized definitions with API types, presence, nullability, provenance and coverage rules."
+description: "982 source-normalized definitions with API types, presence, nullability, provenance and coverage rules."
 keywords: ["AMLOK", "data model", "API contract"]
 ---
 
@@ -5013,7 +5013,7 @@ Ledger event representing the refund. Preserve original evidence; do not invent 
 
 </Accordion>
 
-<Accordion title="dispute" id="dispute" description="11 fields">
+<Accordion title="dispute" id="dispute" description="12 fields">
 
 #### `dispute.payment_id`
 
@@ -5169,6 +5169,15 @@ Currency for fee amount. Uppercase ISO 4217 code when known; null for unsupporte
 - **Source families:** PAY; ECOM
 - **Presence:** Optional within its containing object. A containing object is optional; absence is not JSON null.
 - **Schema:** NormalizedDisputeRead/properties/fee_amount/properties/currency
+
+#### `dispute.stage`
+
+**API:dispute.stage** · `string` · Optional · Nullable: Yes
+
+Financial dispute stage, independent of workflow or resolution status. Inquiry is a retrieval or pre-chargeback request; chargeback represents gross disputed captured-sale exposure. Unknown or missing stage does not establish chargeback exposure. Do not infer realized losses from this field.
+
+- **Presence:** Optional within its containing object. All containing objects are required.
+- **Schema:** NormalizedDisputeRead/properties/stage
 
 </Accordion>
 

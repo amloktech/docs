@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parents[1]
 catalog = json.loads((ROOT / 'data/sandbox-catalog.json').read_text())
 spec = json.loads((ROOT / 'openapi/amlok.json').read_text())
 schemas = spec['components']['schemas']
-assert catalog['version'] == '2026-11-19.4'
+assert catalog['version'] == '2026-11-25.1'
 assert len(catalog['businesses']) == 6
 assert len(catalog['scenarios']) == len({s['id'] for s in catalog['scenarios']}) == 39
 scenario = next(s for s in catalog['scenarios'] if s['id'] == 'detailed_attribute_coverage')
@@ -41,7 +41,7 @@ assert metric_snapshot['covered_metric_count'] == 184
 coverage = json.loads((ROOT / 'downloads/sandbox-attribute-coverage.json').read_text())
 summary = json.loads((ROOT / 'downloads/sandbox-attribute-coverage-summary.json').read_text())
 assert coverage['complete'] and summary['complete']
-assert coverage['fixture_catalog_version'] == summary['fixture_catalog_version'] == catalog['version']
+assert coverage['fixture_catalog_version'] == summary['fixture_catalog_version'] == '2026-11-19.4', 'Preserve the measured historical coverage version'
 assert coverage['fixture_observation_at'] == summary['fixture_observation_at']
 assert len(coverage['attributes']) == len({a['key'] for a in coverage['attributes']}) == 12955
 assert len(coverage['scenarios']) == len(summary['scenarios']) == 21

@@ -62,7 +62,7 @@ revenue_growth_yoy|Revenue growth year over year|ratio|Current-period revenue mi
 revenue_growth_90d|Revenue growth over 90 days|ratio|Current 90-day revenue minus preceding 90-day revenue, divided by preceding revenue|Two complete 90-day periods; positive prior revenue
 revenue_volatility|Monthly revenue volatility|ratio|Population standard deviation of monthly revenue divided by mean monthly revenue|At least six complete months; positive mean; consistent recognition basis
 refund_amount_share|Refund amount share|ratio|Refunded sales amount divided by eligible gross sales amount|Matched sales/refund cohort and treatment of late refunds; positive gross sales
-chargeback_amount_share|Chargeback amount share|ratio|Disputed chargeback amount divided by eligible processed sales amount|Matched processing cohort and consistent chargeback stage; positive denominator
+chargeback_amount_share|Chargeback amount share|ratio|Gross chargeback-stage disputed amount divided by eligible captured sales amount|Matched captured-sale cohort; explicit chargeback stage excludes inquiries; opened by period end regardless of resolution status; positive denominator
 revenue_cash_realization|Revenue cash realization|ratio|Matched collections on recognized sales divided by recognized sales|Defined collection horizon and sales cohort; positive recognized sales; not raw deposits/revenue
 unverified_receipts_share|Unverified receipts share|ratio|Unclassified or unsupported operating-like receipts divided by total candidate receipts|Classification coverage and positive candidate receipts
 nonrecurring_revenue_share|Nonrecurring revenue share|ratio|Identified nonrecurring revenue divided by verified revenue|Versioned recurrence criteria and positive revenue''',
@@ -198,6 +198,10 @@ def catalog():
   if metric['key'] in person_only: metric['borrower_types']=['person']
  assert len({m['key'] for m in metrics})==len(metrics)
  from risk_data_expansion import extend_catalog
+ for metric in metrics:
+  if metric['key']=='chargeback_amount_share':
+   metric['calculation_version']='amlok-chargeback_amount_share-2'
+   metric['definition_version']='2026-11-25.1'
  return extend_catalog({'version':VERSION,'dimensions':dimensions,'metrics':metrics})
 
 if __name__=='__main__':

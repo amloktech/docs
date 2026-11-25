@@ -117,8 +117,8 @@ export async function runJourney({ phase, client, billingClient = null, state, i
   const origination=await command('origination','createOrigination','/v1/originations',request,id=>'/v1/originations/'+id);
   const completed=await client.wait('/v1/originations/'+origination.id,profile);
   if (completed.status!=='completed') return {phase:completed.status,origination_id:completed.id,requirements:completed.requirements,failure:completed.failure};
-  const pkg=(await client.request('GET','/v1/risk-packages/'+completed.risk_package_id)).data;
-  let evidenceCount=0;for await(const batch of client.pages('/v1/evidence?evidence_set_id='+encodeURIComponent(pkg.evidence_set.id)))evidenceCount+=batch.data.length;
+  const pkg=(await client.request('GET','/v1/risk-packages/'+completed.risk_package_id+'?view=summary')).data;
+  let evidenceCount=0;for await(const batch of client.pages('/v1/evidence?evidence_set_id='+encodeURIComponent(pkg.evidence_set_id)))evidenceCount+=batch.data.length;
   let dataCount=0,changesCursor;for await(const batch of client.pages('/v1/data/records?borrower_id='+borrowerId)){dataCount+=batch.data.length;changesCursor??=batch.page.changes_cursor;}
   const changes=await client.request('GET','/v1/data/changes?cursor='+encodeURIComponent(changesCursor));
   // A real consumer applies each batch and checkpoints atomically in its database.

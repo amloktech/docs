@@ -55,6 +55,8 @@ for(const kind of ['business','person'])test(kind+' complete journey uses schema
   const definition=spec.paths[op.path][op.method.toLowerCase()];
   const [status,response]=Object.entries(definition.responses).find(([code])=>code.startsWith('2'));
   const out=clone(response.content['application/json'].example);out.data=op.many?[d]:d;
+  if(op.id==='getRiskPackage'){assert.equal(parsed.searchParams.get('view'),'summary','The executable journey must not request an unbounded full package');out.data=clone(response.content['application/json']['x-response-views'].summary.example.data);}
+  if(op.id==='listEvidence')assert.notEqual(parsed.searchParams.get('evidence_set_id'),'undefined');
   if(op.id==='createOrigination'){out.data.status='accepted';out.data.risk_package_id=null;}
   if(op.id==='createMonitor'){out.data.status='initializing';out.data.latest_package_id=null;out.data.next_evaluation_at=null;}
   captured.push({kind,operationId:op.id,status,response:out});

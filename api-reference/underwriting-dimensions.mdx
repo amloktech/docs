@@ -481,7 +481,7 @@ Calculation version: `amlok-refund_amount_share-1`.
 
 Disputed chargeback value relative to eligible processed sales value; this is not the probability of a future chargeback.
 
-Calculation version: `amlok-chargeback_amount_share-1`.
+Calculation version: `amlok-chargeback_amount_share-2`.
 
 ### revenue_cash_realization
 
@@ -1644,3 +1644,9 @@ Calculation version: `amlok-dscr_change_from_baseline-1`.
 The relative increase or decrease in total debt since the saved monitoring baseline.
 
 Calculation version: `amlok-obligation_growth_from_baseline-1`.
+
+## Chargeback stage and method version
+
+`chargeback_amount_share` method `amlok-chargeback_amount_share-2` divides gross disputed **chargeback-stage** exposure by captured sales in the matched assessment-period cohort. `NormalizedDisputeRead.stage` distinguishes `inquiry`, `chargeback` and `unknown`. Disputes must have opened before period end. Their workflow status, including `needs_response`, `under_review`, `won`, `lost` or `closed`, does not change cohort membership. Inquiries are excluded; disputed exposure is not realized loss. Missing stage remains unsupported, never inferred from a resolution label.
+
+Previously published packages retain their original method and values. Comparisons across method versions are unavailable. Publish a new immutable policy version using the method returned by configuration if a policy pins the older chargeback method; it is not silently evaluated using the new method.
