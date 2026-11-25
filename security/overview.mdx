@@ -1,39 +1,41 @@
 ---
-title: "Security & Compliance"
+title: "Security and compliance"
 sidebarTitle: "Security overview"
-description: "Security controls, privacy practices, and regulatory considerations for AMLOK Insights and AMLOK Signal."
+description: "Review Amlok's Azure platform, Stripe billing, privacy controls, AI assurance, financial-sector frameworks, and open-banking responsibilities."
+keywords: ["security", "compliance", "Azure", "Stripe", "FDX", "AIUC-1"]
 ---
 
-AMLOK maintains security controls, privacy and data-handling policies, and incident-response procedures to protect borrower information and support accountable processing. The program covers Insights, Signal, their integrations, and the infrastructure and providers involved in processing data.
+Amlok's institutional platform runs on **Microsoft Azure**, with **Stripe** as the payment provider for platform billing. These guides bring together infrastructure, data handling, assurance frameworks, and the responsibilities relevant to Insights and Signal.
 
-AMLOK is built with controls aligned to the SOC 2 Trust Services Criteria and ISO/IEC 27001:2022 security-management principles. Read our [standards and control alignment](/security/standards) for our security frameworks and financial-sector control focus.
+Agree the processing purpose, permitted sources and locations, access, retention, model use, and institutional responsibilities before connecting live borrower information. Amlok service data is contractually restricted to Canadian processing across its listed providers, with core hosting in Canada Central. The [provider register](/security/hosting-and-subprocessors) distinguishes hosting, billing, financial-data and verification services, sign-in, development, and public website services.
 
-Agree the processing scope, security requirements, permitted locations, retention schedule, and responsibilities before connecting live borrower data.
-
-<CardGroup cols={2}>
-  <Card title="Standards and control alignment" icon="shield-check" href="/security/standards">SOC 2, ISO/IEC 27001, and financial-sector security expectations.</Card>
-  <Card title="Hosting and subprocessors" icon="network" href="/security/hosting-and-subprocessors">Data locations, service categories, and supplier oversight.</Card>
-  <Card title="Platform security" icon="shield" href="/security/platform-security">Access, encryption, tenant separation, secure development, and monitoring.</Card>
-  <Card title="Privacy and data handling" icon="lock" href="/security/privacy">Source permissions, sensitive information, retention, and individual requests.</Card>
-  <Card title="Canadian requirements" icon="map" href="/security/canada">PIPEDA, provincial privacy laws, OSFI guidance, and financial-sector scope.</Card>
-  <Card title="United States requirements" icon="landmark" href="/security/united-states">Financial safeguards, lending decisions, consumer reporting, and state privacy.</Card>
-</CardGroup>
-
-Security policies, applicable service-provider SOC reports, and supporting assurance materials are available for scoped review [under NDA](/security/due-diligence#security-materials-under-nda), subject to availability and distribution permissions.
+<Columns cols={2}>
+  <Card title="Standards and control alignment" icon="shield-check" href="/security/standards">SOC reports, ISO standards, AIUC-1, PCI scope, and applicable regulatory frameworks.</Card>
+  <Card title="Hosting and subprocessors" icon="network" href="/security/hosting-and-subprocessors">Canadian processing, Azure, Stripe, Flinks, Plaid, Baselayer, identity services, and website providers.</Card>
+  <Card title="Platform security" icon="shield" href="/security/platform-security">Access, environment separation, protected storage, service identities, and operational review.</Card>
+  <Card title="Identity and access" icon="key" href="/security/identity-and-access">Invitations, MFA policy, sessions, roles, credentials and access reviews.</Card>
+  <Card title="API and integration security" icon="lock" href="/security/api-and-integration-security">Resource permissions, source consent, downloads, idempotency and signed delivery.</Card>
+  <Card title="Operations and resilience" icon="activity" href="/security/operations-and-resilience">Audit records, diagnostic handling, changes, vulnerabilities, backups and recovery.</Card>
+  <Card title="Payments and PCI" icon="credit-card" href="/security/payments-and-pci">Stripe's role, billing records, payment-data responsibilities, and review evidence.</Card>
+  <Card title="AI and model governance" icon="brain" href="/security/ai-governance">ISO/IEC 42001, AIUC-1, NIST, model validation, and institution-owned decisions.</Card>
+  <Card title="Open banking and FDX" icon="landmark" href="/security/open-banking-and-fdx">Permissioned data exchange, Canadian standards, consent, and connection responsibilities.</Card>
+  <Card title="Canadian requirements" icon="map" href="/security/canada">Privacy, OSFI guidance, sanctions, AML, accessibility, and activity-specific obligations.</Card>
+  <Card title="United States requirements" icon="landmark" href="/security/united-states">Financial safeguards, consumer reporting, fair lending, state privacy, and AI requirements.</Card>
+</Columns>
 
 ## Shared responsibilities
 
-| Area | AMLOK responsibilities | Customer responsibilities |
+| Area | Amlok and its service providers | Your institution |
 | --- | --- | --- |
-| Data processing | Process agreed information for authorized workflows. | Establish collection authority, notices, source permissions, and permitted purposes. |
-| Access | Protect service and tenant boundaries. | Approve users, protect credentials, and remove unnecessary access. |
-| Underwriting and monitoring | Process information within the agreed scope and protect workflow records. | Set lending policy, approve model use, review exceptions, and own decisions and notices. |
-| Privacy and incidents | Maintain data-handling, investigation, and escalation procedures. | Identify applicable obligations and coordinate requests, notifications, and retention. |
+| Infrastructure | Operate the agreed Azure services and application safeguards; review provider dependencies. | Define your required processing locations, service boundary, and assurance evidence. |
+| Payments | Use Stripe for platform billing and maintain relevant Amlok billing records. | Authorize billing administrators and payment arrangements. |
+| Data | Process agreed information for authorized workflows. | Establish collection authority, source permissions, notices, and permitted purposes. |
+| Access | Enforce application and environment boundaries. | Approve users and identity policies, protect credentials, and remove unnecessary access. |
+| Underwriting and monitoring | Produce evidence and risk signals within the agreed scope. | Validate use, set policy, own decisions and notices, and perform interventions in your systems. |
+| Privacy and incidents | Support the agreed data handling, investigation, and escalation process. | Identify applicable duties and coordinate individual requests, notifications, and retention. |
 
-The signed agreement and applicable law determine each party's obligations. A software integration does not transfer a lender's regulatory accountability to its provider.
+Provider assurance covers the provider services named in its reports. Amlok's control mapping, certifications or reports, and your institution's obligations require their own scoped evidence. See [standards](/security/standards).
 
 ## Plan your review
 
-Start with [due diligence](/security/due-diligence). Review [hosting and subprocessors](/security/hosting-and-subprocessors), [incident response](/security/incident-response), and [AI and model governance](/security/ai-governance).
-
-The regulatory guides focus on Canada and the United States. Requirements depend on the institution, product, jurisdiction, data, and actual activity. Review that scope with your legal and compliance teams.
+Review the public [Trust Center](https://amlok.io/trust), [Privacy Policy](https://amlok.io/privacy), [Terms and Conditions](https://amlok.io/terms), and [Cookies Policy](https://amlok.io/cookies) alongside your agreement. Start with [due diligence](/security/due-diligence), then review [privacy and data handling](/security/privacy), [Québec privacy](/security/quebec), and [incident response](/security/incident-response). Available confidential materials are shared through an agreed review process, subject to scope and distribution permissions.

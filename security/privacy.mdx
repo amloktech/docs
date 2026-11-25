@@ -1,15 +1,26 @@
 ---
 title: "Privacy and data handling"
-description: "Authorized processing, sensitive information, retention, and individual-rights procedures."
+description: "Review authorized data use, Azure and Stripe processing boundaries, source permissions, retention, individual rights, and support-coordinated deletion."
+keywords: ["privacy", "retention", "Azure", "Stripe", "data handling"]
 ---
 
-For the AMLOK web application, the [published privacy policy](https://amlok.io/privacy) describes collection, consent, rights, retention, and cross-border processing. Send privacy requests to [privacy@amlok.io](mailto:privacy@amlok.io). Enterprise processing instructions and responsibilities are documented in your agreement.
+The [Amlok Privacy Policy](https://amlok.io/privacy) describes collection, permitted use, recipients, rights, and retention. Read it with the [Terms and Conditions](https://amlok.io/terms), [Cookies Policy](https://amlok.io/cookies), [connection terms](https://amlok.io/connection-terms), and your institutional agreement. Send privacy requests to [support@amlok.tech](mailto:support@amlok.tech).
+
+## Providers and Canadian processing
+
+Microsoft Azure hosts the institutional platform in Canada Central, and Stripe handles platform billing. Flinks and Plaid support permitted financial-data connections; Baselayer supports business verification and related risk checks. Google, Microsoft, and GitHub support optional sign-in. GitHub also supports versioning and software delivery. Cloudflare supports domains, DNS, and the website; Cal.com supports scheduling; Mintlify hosts public documentation.
+
+Amlok's contracted provider arrangements restrict Amlok service-data processing to Canada, including storage, backups, and support access. This is a service-specific commitment, not a statement that every provider is headquartered in Canada or that a person's separate provider account is governed by Amlok's agreement. Review the role, data scope, and independent provider activities in [hosting and subprocessors](/security/hosting-and-subprocessors).
+
+Source-specific permitted-use limits remain in force. Baselayer business information must not be used for consumer eligibility purposes prohibited by its terms; a business-verification output is not a consumer report. Review the [provider register](/security/hosting-and-subprocessors) and [financial-provider privacy guidance](https://amlok.io/privacy#financial-and-verification-providers).
+
+Sign-in uses the identity and basic profile information needed for account access. It does not authorize mailbox, document, repository, or financial-account access. Connected financial data requires separate permission. GitHub development tools are not intended repositories for borrower records. See [platform security](/security/platform-security) and [payments and PCI](/security/payments-and-pci).
 
 ## Purpose and processing scope
 
-AMLOK uses purpose-limited processing: the institution defines its underwriting or portfolio-monitoring purpose, and AMLOK processes agreed information under documented instructions. Actual activities and applicable law determine the legal allocation of responsibilities.
+Amlok uses purpose-limited processing: the institution defines its underwriting or portfolio-monitoring purpose, and Amlok processes agreed information under documented instructions. Actual activities and applicable law determine the legal allocation of responsibilities.
 
-The processing schedule should identify people and entities involved, data categories, permitted workflows, duration, customer instructions, approved providers, and secondary-use restrictions.
+The processing schedule should identify people and entities involved, data categories, permitted workflows, duration, customer instructions, approved providers, Canadian processing arrangements, and secondary-use restrictions. A provider may have a separate independent-controller or source-provider role; record that role and its applicable notice rather than treating every recipient as an interchangeable subprocessor.
 
 ## Source permissions and notices
 
@@ -27,26 +38,84 @@ Avoid full borrower records, credentials, identification documents, or sensitive
 
 ## Model use and secondary purposes
 
-AMLOK's data-handling policy separates customer-requested inference from model training, service improvement, and other secondary purposes. Review AMLOK's use and each model provider's retention and training terms independently.
+Amlok's data-handling policy separates customer-requested inference from model training, service improvement, and other secondary purposes. Review Amlok's use and each model provider's retention and training terms independently.
 
 The agreement must state permitted uses, any opt-in mechanism, and restrictions on customer data and derived information. An integration's ability to transmit data does not establish permission to use it for training.
 
-## Retention and workspace deletion
+## Retention, cancellation, and deletion
 
-Retention requirements follow the agreement, the data's processing purpose and applicable obligations. Contact [support](/support/create-ticket) or [privacy@amlok.io](mailto:privacy@amlok.io) to review your requirements or request deletion. Console does not expose a customer-configurable retention setting, and the public API has no retention-setting or deletion-request command.
+Agree the retention schedule for each record category, including source records, derived outputs, billing information, operational logs, and backups. Azure storage settings do not define a universal retention period for all customer information. Review the complete provider boundary in [hosting and subprocessors](/security/hosting-and-subprocessors).
 
-Support confirms the authorized scope, cessation of processing, deletion schedule, any legal hold and the records that must be retained separately. Do not treat a support acknowledgment, account closure or an expired download link as confirmation that all stored copies have been erased. Completion confirmation must cover the agreed source data, normalized records, derived results, documents, exports and backup handling.
+Retention changes, cancellation, refunds, disputes, and deletion are coordinated through support or your account manager. Do not treat a support acknowledgment, a disabled credential, or a calendar date as proof that deletion or refund processing is complete. There is no separate public privacy-deletion or payment-mutation API.
 
-Disconnecting an integration stops its authorized future collection and affects access to source-backed evidence; it does not by itself erase previously collected records. Deleting data held by AMLOK does not delete originals held independently by an external bank or business system.
+The approved cancellation terms provide for no notice period, immediate processing cutoff, closure at the end of the request month, and a refund of all unused credits, including promotional credits, without remaining-term or cancellation-fee deductions. Your support contact confirms cutoff, reconciliation, refund destination and issuance, the deletion scope, and any records retained under applicable obligations. Bank receipt is expected 7-10 business days after issuance. Export needed information before cancellation and review [account management](/support/account-management).
 
-Account cancellation is requested through support or your account manager. Its commercial cutoff, closure and refund terms are separate from verifying data deletion. Export required evidence before access ends and retain the applicable confirmations. See [account management](/support/account-management) and [cancellation and refunds](/pricing/refunds-and-payouts).
+Disconnecting a source stops future authorized retrieval according to the connection's revocation behavior. It does not itself erase earlier records, cancel billing, or delete the original information held by a bank or business-data provider. Define the treatment of backups, legal holds, and final billing records separately from workspace access.
 
 ## Access and correction requests
 
-Determine who receives and answers requests, how identity and scope are verified, and how AMLOK assists the responsible organization. Search supplied information and relevant derived records. Correcting a source record may require reviewing affected analysis.
+Determine who receives and answers requests, how identity and scope are verified, and how Amlok assists the responsible organization. Search supplied information and relevant derived records. Correcting a source record may require reviewing affected analysis.
 
 Apply the legal response deadline for the jurisdiction and request. Service response targets are separate from legal deadlines.
 
 See [Canadian requirements](/security/canada), [Quebec privacy](/security/quebec), and [United States requirements](/security/united-states).
 
-Any separately retained financial or dispute records must have a defined purpose, access scope and retention period. Support confirms these with your institution; retaining financial reconciliation records does not authorize continued collection or analysis of borrower data.
+The agreed deletion record should distinguish workspace data from necessary billing, refund, security, and legally retained records. Specify the purpose, permitted access, retention period, and completion evidence for each retained category. A billing cycle or month-end closure does not extend a privacy-law or source-provider deletion deadline.
+
+## Website storage and requests
+
+The marketing website, public documentation, and authenticated Console serve different purposes. Necessary session or security storage is separate from visitor preferences, optional booking interactions, and independent provider-account storage. Review the website [Cookies Policy](https://amlok.io/cookies) rather than assuming all browser storage belongs to the same service.
+
+Website email links prepare a draft in your email application; Amlok receives it when you send it. Cal.com scheduling is a separate interaction. Do not put borrower documents, bank credentials, payment secrets, or production records in meeting forms, documentation questions, public issues, or ordinary email. See [privacy requests](https://amlok.io/privacy-requests) for request routing.
+
+## Data lifecycle and responsibility
+
+Identify the information by its purpose and stage, not only by the name of the provider carrying it. A single workflow can involve institutional records, personal information in business documents, an individual's independent provider account, and Amlok's own account-administration records.
+
+| Stage | Information and activity | Control to establish |
+| --- | --- | --- |
+| Account access | Teammate identity, memberships, authentication and session metadata. | Named users, least privilege, MFA policy, account lifecycle, and access review. |
+| Connection authorization | Subject, account/source, purpose, permitted data, and permission status. | Authority to connect, notices, consent where applicable, and expiry/revocation handling. |
+| Collection | Authorized financial records, verification observations, and uploaded documents. | Source entitlements, data minimization, protected transfer, and separation of business from consumer purposes. |
+| Preparation | Normalization, classification, linkage, and calculation inputs. | Provenance, observed/ingested times, entity matching, permitted transformations, and missing-data handling. |
+| Assessment | Evidence, derived attributes, results, limitations, and versions. | Intended-use validation, human review, source restrictions, and traceable explanations. |
+| Reporting and export | Records made available to authorized institutional users or systems. | Source and role authorization, scoped links, protected recipients, and downstream retention. |
+| Service operation | Security events, request metadata, billing and support records. | Limited access, diagnostic minimization, purpose-specific retention, and approved support channels. |
+| Exit and disposal | Access removal, return or deletion, holds, and backup expiry. | Authorized scope, verified execution, justified exceptions, and completion records. |
+
+Your institution normally determines the purposes of its borrower assessments and portfolio monitoring. Amlok processes agreed institutional data under documented instructions and assists with relevant requests. Amlok separately administers its own customer relationship, account access, security, and billing records. The activity and applicable agreement determine the legal role; do not assume the same role for every item in the table.
+
+## Privacy assessments and changes
+
+Before introducing a new source, purpose, data population, model use, or recipient, assess necessity, proportionality, rights, sensitivity, and foreseeable effects on people. Include personal information embedded in business records, such as guarantor details or transaction counterparties. Determine which privacy or transfer assessment is required for the applicable jurisdiction and activity.
+
+Record the purpose, legal authority, data flow, access, retention, provider role, location, risks, safeguards, and decision. Revisit that record when a material change affects the assumptions. Canadian processing does not remove the separate review of processing outside Québec, source restrictions, or automated-decision requirements.
+
+Do not reuse a permissioned financial-data connection for a new purpose merely because the connection remains technically available. Where a change requires new notice, permission, contract terms, or institutional approval, resolve that requirement before the new processing.
+
+## Individual-request workflow
+
+Send requests concerning Amlok's own account or website information to [support@amlok.tech](mailto:support@amlok.tech). For records processed for a financial institution, identify the institution where possible so the request can reach the party responsible for the decision and response. Amlok assists within its role and agreement.
+
+1. **Identify the request.** Record the request date, relevant person, institution, data category, and requested access, correction, deletion, restriction, portability, consent withdrawal, or other applicable right. Do not request more identification than necessary.
+2. **Verify authority.** Use a proportionate identity check and, for an authorized representative, establish the authorization and applicable requirements. Protect the verification material separately from the ordinary request correspondence.
+3. **Locate relevant records.** Consider source records, account information, derived assessments, exports and recipients, operational records, and any applicable hold. Do not equate a search of the current profile with a complete search of retained information.
+4. **Assess the response.** Apply the relevant legal deadline, permitted exceptions, responsibilities, and restrictions on disclosing another person's information. Track any lawful extension or refusal with its reason and required notice.
+5. **Carry out and verify the action.** Provide the authorized response, record corrections and affected outputs, or verify deletion/restriction within the approved scope. Identify any retained category and its justification.
+6. **Close and preserve the request record.** Record the result, response date, unresolved issues, and applicable complaint, appeal, or escalation route. Exercise of applicable privacy rights must be handled consistently with legal protections against retaliation or discrimination.
+
+The rights available depend on the person, activity, and applicable law. A service target does not replace a statutory deadline. See the [Privacy Policy](https://amlok.io/privacy) and [privacy-request guidance](https://amlok.io/privacy-requests).
+
+## Corrections and consequential decisions
+
+A corrected input can affect an entity match, financial calculation, derived attribute, or assessment. Preserve the provenance of the correction and identify the affected versions rather than silently replacing the explanation for an earlier decision. Review whether the institution needs a new assessment, a corrected record, or communication to an authorized recipient.
+
+Your institution remains responsible for credit decisions and legally required notices. A person requesting an explanation or review should be routed to the responsible institution, with Amlok providing relevant information within its role. The review should address the actual information and factors used, not a generic generated description. See [AI governance](/security/ai-governance).
+
+## Holds, backups, and deletion records
+
+Separate records that can be deleted from records that must be retained for a specified legal, security, accounting, or dispute purpose. A hold should identify its authority, scope, owner, access restrictions, and review or release condition. It should not become an indefinite justification to retain unrelated data.
+
+For backups and other recovery copies, document the applicable expiry or deletion process and safeguards preventing ordinary reuse of deleted information. If a backup is restored, reapply relevant deletion and access restrictions before returning data to users. Amlok's contractual Canadian processing restriction continues to cover backup and support handling.
+
+A completion record should identify the scope, execution date, affected systems and providers, verification performed, remaining copies or exceptions, and responsible owner. Do not claim that Amlok deleted a source institution's independent records or that access revocation alone erased every stored copy.

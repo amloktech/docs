@@ -1,9 +1,10 @@
 ---
 title: "Due diligence"
-description: "Scope, evidence, and shared responsibilities for an enterprise security review."
+description: "Scope an Amlok security review across Azure, Stripe, AI assurance, privacy, open banking, provider evidence, and institutional responsibilities."
+keywords: ["due diligence", "assurance", "controls", "provider evidence"]
 ---
 
-AMLOK security reviews focus on the products and deployment your institution will use. Agree the review scope and available materials with your AMLOK contact.
+Amlok security reviews focus on the products and deployment your institution will use. Agree the review scope and available materials with your Amlok contact.
 
 ## Scope the review
 
@@ -14,33 +15,91 @@ Identify the products, deployment, sources, jurisdictions, information sensitivi
 | Topic | Review scope |
 | --- | --- |
 | Service boundary | Architecture, data flows, environments, responsibilities, and processing locations. |
-| Standards alignment | SOC 2 Trust Services Criteria and ISO/IEC 27001 control mapping, implementation scope, and operating evidence. |
+| Standards alignment | SOC 2/SOC 3, ISO/IEC 27001 and 42001, AIUC-1, PCI DSS, NIST, and applicable legal and regulatory mappings, with scoped evidence and assessment periods. |
 | Governance | Approved policies, owners, risk assessment, exceptions, and staff procedures. |
 | Access and encryption | Configuration, access reviews, key-management design, and tenant-boundary tests. |
 | Secure development | Change records, scan coverage, vulnerability handling, and remediation evidence. |
 | Independent testing | Actual scope, date, findings, remediation, and retest status where testing has occurred. |
 | Privacy | Processing schedule, notices, assessments, permissions, request handling, and retention. |
-| Providers | Current register, locations, agreements, and change procedures. |
+| Providers | Azure hosting; Stripe billing; Flinks/Plaid financial data; Baselayer verification; Google/Microsoft/GitHub identity; GitHub software delivery; Cloudflare domains/DNS/website; Cal.com scheduling; Mintlify documentation; contractual Canadian processing, data scope, and change procedures. |
+| Payments | Actual collection flow, PCI boundary, billing access, payment-event integrity, reconciliation, and retained information. |
+| Open banking and FDX | Implemented provider version/profile, consent, revocation, source coverage, and any actual conformance or accreditation evidence. |
 | Continuity | Recovery design, backup configuration, dependency plans, and results of completed restoration exercises where available. |
 | Incidents | Approved response process, contacts, notification terms, and available exercise evidence. |
 | AI governance | Intended use, validation, limitations, explanations, changes, and institutional approval. |
 
-Evidence should identify system, version, scope, date or observation period, and limitations. Assess provider documentation for the service it covers and the responsibilities remaining with AMLOK and the customer.
+Evidence should identify system, version, scope, date or observation period, and limitations. Assess provider documentation for the service it covers and the responsibilities remaining with Amlok and the customer.
+
+## Classify the evidence
+
+Separate Amlok assurance from Microsoft or Stripe provider assurance. An audit report, management-system certificate, API specification, privacy law, and supervisory guideline answer different questions. Record the assessed entity, covered services, relevant controls, exclusions, period, and responsibilities. Do not treat a framework listing as proof of certification, regulator approval, FDX membership, or accreditation.
+
+Review [standards](/security/standards), [payments and PCI](/security/payments-and-pci), and [open banking and FDX](/security/open-banking-and-fdx) for the relevant scope.
 
 ## Agreements and onboarding
 
-Record instructions, confidentiality, permitted providers and locations, incident coordination, rights assistance, retention, return or deletion, review rights, and exit support in the agreement.
+Record instructions, confidentiality, permitted providers, Canadian processing including storage/backups/support access, incident coordination, rights assistance, retention, return or deletion, review rights, and exit support in the agreement. Separate provider activities performed independently, such as an individual provider account, from processing on Amlok's behalf. Reconcile the evidence with the [Trust Center](https://amlok.io/trust), [Privacy Policy](https://amlok.io/privacy), and [provider register](/security/hosting-and-subprocessors).
 
 Before production processing, establish responsible contacts and approval for source access, configuration, model use, and consequential actions. Agree the handling of material changes and unresolved exceptions.
 
 ## Security materials under NDA
 
-AMLOK can provide available security assurance materials under a signed nondisclosure agreement (NDA), including applicable service-provider SOC reports, control mappings, security policies, and supporting due-diligence documentation. Access is subject to the document owner's distribution permissions and the scope of your review.
+Amlok can provide available security assurance materials under a signed nondisclosure agreement (NDA), including applicable service-provider SOC reports, control mappings, security policies, and supporting due-diligence documentation. Access is subject to the document owner's distribution permissions and the scope of your review.
 
-Each report identifies the organization and service it covers, its assessment period, and any scope limitations. Provider reports support assessment of the covered dependency alongside AMLOK's own controls and operating evidence.
+Each report identifies the organization and service it covers, its assessment period, and any scope limitations. Provider reports support assessment of the covered dependency alongside Amlok's own controls and operating evidence.
 
 ## Requesting materials
 
-Contact [privacy@amlok.io](mailto:privacy@amlok.io) or your AMLOK business contact to define scope, complete the NDA, and request the required materials. Sensitive architecture, test results, provider details, and operating evidence are shared through an agreed secure channel with appropriate access restrictions.
+Contact [support@amlok.tech](mailto:support@amlok.tech) or your Amlok business contact to define scope, complete the NDA, and request the required materials. Sensitive architecture, test results, provider details, and operating evidence are shared through an agreed secure channel with appropriate access restrictions.
 
 See [Canadian requirements](/security/canada) for institutional oversight and [platform security](/security/platform-security) for service controls.
+
+## Build a reviewable evidence package
+
+Use one evidence register for the service you intend to deploy. Each entry should identify its owner, applicable product/environment, evidence type, version or observation period, source, distribution restriction, expiration or next review trigger, finding, and any customer responsibility. This makes gaps and overlapping provider reports visible without equating unlike evidence.
+
+| Control area | Useful evidence | What your reviewer should resolve |
+| --- | --- | --- |
+| Human identity | Role matrix, current MFA policy, invitation/account flows, access review and removal evidence. | Who may approve access; actual workspace scope; recovery and privileged-account handling. |
+| Machine access | Key scope/expiry/revocation behavior, secret handling, credential inventory and rotation evidence. | Ownership of service credentials and behavior when a creator loses authority. |
+| Tenant separation | Cross-workspace/environment denial tests covering records, events, exports, receipts and downloads. | Whether the institution's data separation requirement matches the application boundary. |
+| Data movement | Current flow diagram, source permissions, provider register, and processing schedule. | Necessary data for each recipient, Canadian storage/backup/support scope, and independent-provider roles. |
+| Storage and encryption | Scoped transport/storage configuration, identity permissions, secret and backup access. | Coverage of each service and any requirement for customer-controlled keys or private networking. |
+| API reliability | Duplicate/retry tests, recovery receipts, capacity behavior and delivery diagnostics. | How accepted work and financial effects remain consistent through timeouts and retries. |
+| Audit and monitoring | Representative redacted events, access controls, alert ownership and notification tests. | Completeness for material actions, diagnostic minimization, retention, and investigation capability. |
+| Development and vulnerabilities | Release-specific checks, review/approval evidence, scan coverage, findings and retests. | Actual implemented process, untested boundaries, unresolved risk, and remediation ownership. |
+| Continuity | Protected-data inventory, restore permissions, completed recovery exercise and reconciliation results. | Measured recovery against agreed objectives and handling of provider or regional dependency failure. |
+| Privacy and exit | Request workflow, processing assessments, retention/hold schedule, deletion and provider coordination evidence. | Responsible party, applicable deadlines, backup treatment, retained exceptions, and proof of completion. |
+| AI/model use | Intended-use record, provenance, task/population validation, explanation review, change and challenge records. | Whether evidence supports the institution's particular consequential use. |
+
+Use [identity and access](/security/identity-and-access), [API and integration security](/security/api-and-integration-security), and [operations and resilience](/security/operations-and-resilience) to understand the controls behind these requests.
+
+## Read assurance documents in context
+
+For a report or certificate, confirm the assessed legal entity, issuing organization, covered system and locations, applicable criteria or standard version, assessment period, and any exclusions. Where an assurance document includes exceptions, complementary customer controls, or reliance on another provider, evaluate those conditions for your use.
+
+A point-in-time configuration, a period-of-operation report, and a design document support different conclusions. Check for a gap between the period covered and your intended use and request available subsequent-change information. Do not infer a clean assessment, uninterrupted control operation, or broad coverage from a document's title alone.
+
+For penetration testing or other independent assessment, request the authorized summary, tested surfaces, date, method, material findings, remediation status, and retest evidence. Avoid circulating detailed exploit material beyond the permitted audience. For model validation, review the actual task, population, data cutoff, outcomes, and unresolved limitations.
+
+## Supplier oversight
+
+Review each supplier for its actual role and data access. A financial-data provider, identity provider, software-delivery service, and documentation host have different risk and assurance needs. Record critical dependencies and feasible alternatives or continuity measures according to service materiality.
+
+The review should cover approved services and onward providers, confidentiality, permitted use, Canadian processing, security and incident assistance, rights requests, retention and exit, assurance access, and material-change handling. Independent-provider terms and customer-selected destinations need their own review. A public inventory does not create a fixed notification or objection period beyond the agreement and law.
+
+Revisit the assessment when service scope, data categories, processing locations, ownership, material controls, or important dependencies change. Preserve the decision and any conditions of use. See [hosting and subprocessors](/security/hosting-and-subprocessors).
+
+## Responsibility and exception register
+
+Assign a responsible party for each requirement. Distinguish Amlok application controls, provider infrastructure controls, and institution-operated users, integrations, policies, endpoints, and decisions. Record an agreed exception with its risk, mitigating control, owner, expiry or review trigger, and condition for closure.
+
+Examples of items requiring explicit agreement include mandatory MFA, user review frequency, approved recipients, high-availability design, recovery objectives, notification timing, audit access, retention, independent assessment scope, and allowed secondary data use. Do not treat a list of framework names as the agreement itself.
+
+Before connecting live information, reconcile the evidence, configuration, agreement, and institution's approval. Record unresolved conditions and the authorized decision to proceed, limit the scope, or defer a workflow. A Sandbox demonstration and a provider certificate do not replace release-specific acceptance or institutional model approval.
+
+## Continuing review and exit
+
+Maintain the review as the service changes rather than relying only on the onboarding packet. Track applicable assurance periods, material changes, incidents, access reviews, validation results, and outstanding actions according to the institution's risk process and agreement.
+
+At exit, confirm processing cutoff, required exports, secure recipient and format, financial reconciliation, credential and user-access removal, retained records, deletion/provider coordination, and backup treatment. Obtain completion evidence for the agreed steps. See [privacy and data handling](/security/privacy) and [account management](/support/account-management).

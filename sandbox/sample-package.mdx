@@ -52,7 +52,7 @@ The full example history remains 36 complete months; current underwriting metric
 
 The source history covers **36 complete calendar months before the run's creation month**. A run created in November 2026 contains business activity from November 1, 2023 through October 31, 2026. The history is fixed for that run, including later recovery or refresh actions. Leap days are included.
 
-Balances and settlement statuses describe the snapshot at the history cutoff. A payout scheduled after that cutoff remains pending in this frozen example, even if you load or inspect it later. `extensions.sandbox.history_window` identifies that boundary; collection timestamps record when AMLOK generated and ingested the sample.
+Balances and settlement statuses describe the snapshot at the history cutoff. A payout scheduled after that cutoff remains pending in this frozen example, even if you load or inspect it later. `extensions.sandbox.history_window` identifies that boundary; collection timestamps record when Amlok generated and ingested the sample.
 
 <Note>
 Completed assessments, frozen evidence and previously issued documents retain their original contents. Retained source records keep their IDs and financial values, and older captured versions can still show the coverage metadata recorded at that time. Read current connection coverage, the current bank-account record and newly issued statements for the available 36-month collection. Newly loaded samples use the 36-month `history_window` throughout; historical audit metadata describes its capture, not additional currently available activity.
@@ -68,7 +68,7 @@ Use `extensions.sandbox.history_window` for the activity boundaries. Exclude rec
 
 The underwriting observation window remains the **latest twelve complete months**. The 36-month transaction history is not added together and labeled annual revenue. Prior-year comparisons, current balances and pending processor settlements remain distinct. Retrieve the full historical collection through the data endpoints; the risk package freezes the observations used in its assessment.
 
-Canadian businesses report in **CAD**; US businesses report in **USD**. Your simulated AMLOK wallet and API consumption remain **CAD**. Business revenue and financing currency do not change the currency of your AMLOK invoice.
+Canadian businesses report in **CAD**; US businesses report in **USD**. Your simulated Amlok wallet and API consumption remain **CAD**. Business revenue and financing currency do not change the currency of your Amlok invoice.
 
 ### Follow the money
 
@@ -103,7 +103,7 @@ The illustrative card tariff is 2.9% + 0.30, with original fees retained after r
 
 ### Business history versus workspace activity
 
-Each business has 36 complete months of operating activity, with separate opening-balance context. The workspace, API requests, invitations, verification checks, scenario actions and AMLOK billing records keep their **actual execution dates**. Loading samples does not fabricate three years of customer access or AMLOK charges. Scheduled future installments are explicitly marked as scheduled.
+Each business has 36 complete months of operating activity, with separate opening-balance context. The workspace, API requests, invitations, verification checks, scenario actions and Amlok billing records keep their **actual execution dates**. Loading samples does not fabricate three years of customer access or Amlok charges. Scheduled future installments are explicitly marked as scheduled.
 
 New sample runs use this history automatically. The catalog version identifies the sample generation used for a run. Use [Sandbox data setup](/console/sandbox) to replace a workspace's samples when you choose to. A reset clears Sandbox data and requires confirmation; loading the new catalog never resets a workspace silently.
 

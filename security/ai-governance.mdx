@@ -1,41 +1,138 @@
 ---
 title: "AI and model governance"
-description: "Intended use, evidence, human review, validation, and change controls for underwriting and monitoring."
+description: "Define intended use, evidence, validation, human oversight, and AI assurance scope for Amlok Insights and Signal in regulated credit workflows."
+keywords: ["AI governance", "Amlok Insights", "Amlok Signal", "ISO 42001", "AIUC-1", "NIST AI RMF", "OSFI E-23"]
 ---
 
-Use this guide to establish how your institution will validate, approve, and oversee AMLOK workflows. Agree the required explanations, records, and review controls for your deployment.
+Use this guide to establish how your institution validates, approves, and oversees Amlok Insights and Signal. Agree the explanations, review criteria, records, and responsibilities required for your lending product and population.
 
-## Define intended use
+## Define intended use and responsibility
 
-Document the lending product, population, sources, outputs, and permitted actions. Distinguish extraction and analysis from recommendations, policy evaluation, and decisions affecting an applicant or account.
+For Insights, define the full-underwriting assessment scope and evidence-review criteria. For Signal, define the monitored subject, evidence changes, and observations that need review. A monitoring signal alone is not a verified adverse finding.
 
-For Insights, define the assessment scope and evidence-review criteria. For Signal, define which changes produce an observation or risk alert. A monitoring signal alone should not be treated as a verified adverse finding. Your institution decides when and how to intervene.
+Document the population, sources, permitted purposes, outputs, limitations, and users for each workflow. Separate extraction and analysis from your institution's policy decisions. Your institution decides when and how to intervene and performs borrower outreach, collections, credit-limit changes, and other interventions in its own systems. Amlok does not provide servicing cases, tasks, borrower messages, or an action-approval workflow.
 
-## Evidence and limitations
+## Compare the governance frameworks
 
-Establish the traceability required for your workflow, including source references, timestamps, transformations, policy and model versions, and the basis for material outputs. Identify missing or stale information, uncertain matches, and conflicting evidence.
+| Framework | What it addresses | How to use it in your review |
+| --- | --- | --- |
+| [ISO/IEC 42001](https://www.iso.org/standard/42001) | The AI management system and its governance, risk, responsibilities, and improvement processes. | Establish the management-system and use-case scope, owners, assessments, and applicable evidence. |
+| [AIUC-1](https://standard.aiuc-1.com/learn/about) | Technical and operational safeguards for scoped AI agents. | Evaluate the specific agent boundary, control mapping, tests, limitations, and supporting assessment. |
+| [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) | Voluntary AI risk management, with a separate generative-AI profile. | Organize governance, context, measurement, and risk treatment. It is not a government certification. |
+| [OSFI E-23](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/guideline-e-23-model-risk-management-2027) | Model-risk guidance for relevant Canadian financial institutions, including externally developed models. | Review inventory, validation, monitoring, change, and institutional accountability. The revised guideline takes effect May 1, 2027. |
+| [Federal Reserve SR 26-2](https://www.federalreserve.gov/frrs/guidance/supervisory-guidance-on-model-risk-management.htm) | Current U.S. supervisory guidance for applicable predictive models. | Scope statistical, quantitative and other included models separately. Generative and agentic AI are expressly excluded. |
 
-Explanations must reflect the actual analysis. Generated prose does not substitute for evidence or a reliable record of decision factors. Customers must approve the meaning and use of outputs before relying on them.
+These frameworks complement applicable privacy, fair-lending, consumer-reporting, and human-rights requirements. They do not replace those obligations or your institution's own validation and approval.
 
-## Validation and monitoring
+## AIUC-1 assessment areas
 
-| Review area | Questions to resolve |
+Use AIUC-1 to review agent-specific risk alongside your broader security and AI management program. Its [six domains](https://standard.aiuc-1.com/learn/about) provide the following review areas:
+
+| Domain | Questions for the scoped service |
 | --- | --- |
-| Fitness for purpose | Does testing represent the lending product and population? |
-| Data quality | Are coverage, freshness, missingness, linkage errors, and transformations understood? |
-| Performance | What errors occur, how material are they, and when must the system abstain or escalate? |
-| Fairness | Have discrimination risks, proxy variables, and differing outcomes been assessed? |
-| Robustness | How are misleading documents, adversarial inputs, outages, and instruction injection handled? |
-| Change management | Which changes require notice, revalidation, approval, or rollback? |
+| Data and privacy | What information can an agent access, use, disclose, retain, or send to another service? How are sensitive data and secrets protected? |
+| Security | How are adversarial inputs, prompt injection, unauthorized access and actions, and exposed interfaces assessed? |
+| Safety | How are harmful or out-of-scope outputs identified, tested, and escalated for human review? |
+| Reliability | What checks address unsupported statements, invalid outputs, and unsafe tool calls? |
+| Accountability | Who owns incidents, changes, vendor review, traceability, and corrective action? |
+| Society | What controls address misuse of agent capabilities, including cyber misuse? |
 
-OSFI's revised E-23 addresses institutional model governance, including externally developed models, and takes effect on **May 1, 2027**. The institution remains accountable for model use. See [E-23](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/guideline-e-23-model-risk-management-2027) for scope and transition planning.
+[AIUC-1 certification](https://standard.aiuc-1.com/aiuc-1-certification) applies to defined systems and requires independent assessment, quarterly technical evaluations, and annual re-certification. Review the agents, standard version, applicable controls, and results covered by any assessment. A framework mapping is distinct from a certificate or a conclusion about every Amlok workflow.
 
-## Human review and consequential actions
+## Evidence and explanations
 
-Define who in your institution reviews, challenges and validates assessment outputs and what evidence it retains. AMLOK provides evidence and risk signals. Your institution performs all borrower outreach, collections, credit-limit changes and other interventions in its own systems. AMLOK has no servicing cases, tasks, borrower messages or action-approval workflow.
+Establish the traceability required for your workflow: source references, observation times, transformations, policy and calculation versions, and the basis for material outputs. Identify missing or stale information, uncertain matches, incomplete searches, and conflicting evidence.
 
-Review [Quebec automated-decision requirements](/security/quebec) and [US credit-decision requirements](/security/united-states). Human involvement does not eliminate privacy, fairness, or recordkeeping responsibilities.
+Explanations must reflect the actual analysis. Generated prose does not substitute for a reliable record of the factors used in a consequential decision. Missing evidence must not be interpreted as a zero, a verified fact, or an absence of risk.
 
-## Training and provider terms
+| Review area | Evidence to agree |
+| --- | --- |
+| Fitness for purpose | Product, population, task definition, acceptance criteria, and representative evaluation data. |
+| Data quality | Coverage, freshness, missingness, linkage errors, transformations, and provenance. |
+| Performance | Task-specific errors, materiality, uncertainty, escalation, and limitations. |
+| Fairness | Protected-group harms, proxy-variable review, relevant outcomes, and mitigation. |
+| Robustness | Testing against misleading documents, adversarial inputs, outages, and instruction injection. |
+| Change management | Changes requiring notice, revalidation, approval, or rollback. |
+| Ongoing review | Monitoring responsibilities, review cadence, incident thresholds, and corrective-action ownership. |
 
-Document whether each system uses customer information for inference, training, evaluation, or another purpose. Establish restrictions for AMLOK and external providers covering logs, retention, location, and secondary use. See [privacy and data handling](/security/privacy).
+Validation must match the intended deployment. Historical research or results from a different population do not establish accuracy, calibration, fairness, or suitability for your current lending use case.
+
+## Human oversight and individual rights
+
+Define reviewers who can challenge an output, inspect source evidence, correct information, and make the relevant institutional decision. Record the evidence and review outcome in the institution's approved process.
+
+For exclusively automated decisions within scope, [Québec requirements](/security/quebec) include notice and applicable explanation, correction, and review mechanisms. [United States requirements](/security/united-states) address actual adverse-action reasons and relevant state automated-decision rules. Human involvement does not remove privacy, fairness, notice, or recordkeeping responsibilities.
+
+## Data use and external providers
+
+Separate customer-requested inference from training, evaluation, service improvement, or other secondary use. Agree permitted purposes, retention, logs, processing locations, provider restrictions, and any authorization needed for a separate purpose. A data connection does not itself authorize training or unrelated reuse.
+
+Amlok's platform uses Azure. Amlok-related contracted provider processing is restricted to Canada, including storage, backups, and support access. This location commitment does not authorize training or unrelated secondary use. Review the approved model workflow, processing boundary, and applicable provider terms in [hosting and subprocessors](/security/hosting-and-subprocessors). An Azure assurance report or AI-service capability does not establish that a particular Amlok model, deployment, or training use has been independently evaluated. Request the scoped materials through [due diligence](/security/due-diligence).
+
+## Read an assessment as an evidence package
+
+Review the output together with its borrower and participant scope, observation window, reporting currency, source references, evidence set, and applicable product/policy versions. The package describes what was assessed at a particular point in time. A newer source record or policy does not silently change the basis of an older result.
+
+Detailed financial attributes identify their definition and calculation context, supporting input manifests, and availability. Source identity and timestamps matter: a transaction outside the observation window or evidence belonging to a different subject must not become support for the current assessment. Records with unresolved input ownership must be treated as unavailable rather than as a supported zero.
+
+Use [risk-package methodology](/api-reference/risk-package-methodology), the [risk-package contract](/api-reference/risk-package), and [financial attributes](/data-model/financial-attributes) to review the actual fields and semantics. Distinguish institution-declared application information from independently collected source evidence. Both may be useful, but they establish different facts.
+
+| Question | What to inspect |
+| --- | --- |
+| Whose finances are represented? | Borrower and participant identity, source ownership, selected accounts, and any unresolved match. |
+| What was known at the time? | Observation window, as-of cutoff, source observation/ingestion times, and subsequent changes. |
+| What supports a number? | Attribute definition, units, currency, included input records, calculation version, and missing inputs. |
+| What is unavailable? | Coverage, missing-data reasons, unsupported sources, and limitations rather than assumed zeros. |
+| What changed? | Previous and current result versions, source changes, policy/configuration changes, and funded-deal context where relevant. |
+| What decision follows? | The institution's approved policy and authorized review; a signal or derived attribute is not itself an executed intervention. |
+
+## Explainability and challenge
+
+A useful explanation connects a material conclusion to evidence, calculation, and policy. It should allow a reviewer to distinguish an observed fact from an inference, inspect conflicting or incomplete information, and understand how a limitation affects the result.
+
+For a consequential institutional decision, retain the actual reasons and factors used, the evidence available at the time, and the reviewer or decision process. A plausible narrative produced after the fact does not establish why the decision was made. An aggregate model feature ranking is also different from an explanation of an individual decision.
+
+Define how reviewers can challenge a match or calculation, obtain a source correction, assess the impact on affected versions, and record their resolution. Where applicable law requires notice, reasons, correction, or human review, route the request to the institution responsible for the decision and obtain the necessary supporting evidence. Do not assume that adding a human approval step removes those duties.
+
+## Validation design and interpretation
+
+Specify a validation plan for the lending product, jurisdiction, population, sources, and task before relying on a performance claim. Separate extraction accuracy, entity resolution, transaction classification, financial calculation, risk discrimination, probability calibration, and early-warning lead time. A result on one task does not establish performance on another.
+
+| Validation dimension | Practical review |
+| --- | --- |
+| Reference standard | Who established the correct answer, how disagreements were resolved, and whether the labels are independent of the system being tested. |
+| Sample and denominator | Subjects, records, events, exclusions, missing outcomes, and the unit used in each reported metric. |
+| Temporal validity | Information available at the decision cutoff and separation of training, tuning, calibration, and final evaluation. |
+| Entity and data separation | Related entities, repeated documents, and shared sources that could leak between evaluation partitions. |
+| Operating threshold | Precision/recall or other relevant error tradeoffs at the threshold your reviewers will actually use. |
+| Calibration | Whether predicted probabilities correspond to observed outcomes for the relevant horizon and population. |
+| Coverage and abstention | Which cases are assessable, which remain uncertain or unavailable, and how those cases are handled. |
+| Fairness and proxy effects | Relevant groups, lawful access to evaluation attributes, outcome differences, uncertainty, and possible proxy features. |
+| Robustness | Missing sources, stale records, unusual documents, contradictory inputs, source outages, and malicious instructions. |
+| Business impact | A measured institutional outcome with a defined baseline and controls, separate from a technical accuracy metric. |
+
+Report intervals or uncertainty where appropriate and retain failed cases as part of the evaluation. Historical data or a scenario projection does not demonstrate that a past loss would have been prevented. Sandbox examples establish test behavior, not real borrower performance. Use the [research evaluation protocol](/research/evaluation) and [model card](/research/model-card) for the separate research evidence boundary.
+
+## Agent and document safety
+
+Treat documents, transaction descriptions, external records, and provider responses as untrusted input. Text embedded in a source is evidence to assess, not authority to change the institution's instructions, permissions, or lending policy. Evaluate attempts to induce unrelated data access, disclose secrets, misstate a result, or trigger an unauthorized action.
+
+For each approved agent or automated stage, record its permitted inputs, tools, outputs, stopping conditions, and escalation path. Test whether it respects source permissions, workspace boundaries, and missing-evidence states. Apply structured checks to numerical claims and source references instead of relying only on fluent output.
+
+The institution owns interventions in its systems. Amlok's assessment and monitoring APIs do not authorize an agent to transfer funds, contact borrowers, approve a loan, or change collections activity. Any institution-built automation consuming outputs needs its own authorization, safeguards, and validation.
+
+## Model inventory and change review
+
+Maintain the review record for the actual model or workflow: owner, version, intended use, source requirements, outputs, material limitations, approved population, validation evidence, provider dependencies, and authorization to use it. Establish which changes require renewed review, including new model versions, source formats, extraction rules, matching behavior, calculation definitions, policy inputs, and population shifts.
+
+For a material change, compare relevant outputs on a controlled dataset, investigate regressions, review affected explanations, and document the approval and rollback approach. Preserve the ability to identify which version produced a retained output. A model-management framework does not itself establish that every change has passed an independent assessment.
+
+Ongoing oversight should examine source coverage and freshness, input drift, error patterns, unavailable results, reviewer challenges, and outcome performance when outcomes are available. Choose review frequency and escalation thresholds for the use case and service terms; do not infer an automatic retraining schedule or guaranteed detection of every drift event.
+
+## Training, evaluation, and customer data
+
+Before any secondary use, identify whether information is used for inference, evaluation, annotation, training, or service improvement; the authorized population; the permitted recipient; retention; and the source's restrictions on derived information. Permission to perform an assessment is not blanket permission to pool customer records or train a shared model.
+
+De-identification needs its own assessment, including indirect identifiers, reidentification risk, and source restrictions that may continue to apply. Removing a name does not automatically make detailed financial records anonymous or release contractual restrictions.
+
+Research datasets, synthetic Sandbox material, and institutional production records have separate provenance and permission boundaries. The public [training protocol](/research/training) describes a research methodology; it is not a grant to train on customer data or proof that every described experiment has been completed. Record any approved secondary-use arrangement in the processing schedule and reconcile it with the [Privacy Policy](https://amlok.io/privacy).

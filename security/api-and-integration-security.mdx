@@ -1,0 +1,93 @@
+---
+title: "API and integration security"
+sidebarTitle: "API and integrations"
+description: "Protect API keys, permissioned connections, documents, exports, retries, and signed webhook delivery across Amlok environments."
+keywords: ["Amlok", "API security", "webhook signatures", "tenant isolation", "idempotency", "consent"]
+---
+
+Build your integration around an explicit workspace, environment, purpose, and set of permissions. Amlok checks credentials and resource access separately, so possession of an identifier or a general export scope does not grant access to underlying evidence.
+
+## API credential lifecycle
+
+Create an API key as an authorized Owner or Dev in **Dev Tools > API keys**. Choose the permitted profile, environment, and expiration. Keys contain a randomly generated secret, are shown once, and are stored by Amlok as hashes rather than recoverable plaintext. Keep the issued value in your backend secret manager.
+
+Expiration defaults to 90 days and supports 1-365 days. Use the shortest practical duration for your integration and assign an owner who can rotate it. To change permissions or rotate a key, create a replacement, update and verify the integration, then revoke the previous key. Never put a key in source control, browser code, local storage, screenshots, or ordinary support messages.
+
+Every request checks key expiry and revocation, the creator's current workspace access and role, required scopes, and applicable product enablement. Live access must be activated for the workspace. A key belongs to one organization, workspace, and environment; a request parameter cannot select a different tenant.
+
+Read [authentication and access](/api-reference/authentication) for exact profiles and scopes. Sandbox and Live share the public API origin but use distinct credentials and data boundaries. The prefix identifies the environment; switching the Console view does not transform an existing key.
+
+## Resource and source authorization
+
+Amlok applies authorization to linked resources, not just the requested endpoint. This includes borrowers, participants, source connections, evidence, result packages, event feeds, receipts, cursors, and export contents.
+
+| Request | Additional boundary |
+| --- | --- |
+| Read evidence or collected data | Required read scope, permitted source, and resource ownership. |
+| Create or download an export | Export scope plus permissions for the exported content; billing exports also require current Owner authority. |
+| Read an event or delivery | Event scope plus access to the referenced resource. Unauthorized metadata must not disclose the protected event. |
+| Replay a webhook | Permission for the event, its underlying resource, and an existing authorized destination. |
+| Recover an accepted command | Recovery scope and the original operation's permissions in the same workspace/environment. |
+| Use a signed download link | Unexpired link plus current key, role, scope, environment, and source authorization. |
+
+Product profiles constrain product endpoints; shared data and evidence scopes remain workspace-scoped. They are not a substitute for separate workspaces where your institution requires separate data populations. Historical product records and ledger entries do not expose ordinary edit or deletion operations.
+
+## Permissioned borrower connections
+
+Use a short-lived borrower connection session for its intended subject and purpose. Send the borrower the session URL, never your API key. The Hub constrains embedding to the configured origin and applies its session expiry, completion state, and permitted flow.
+
+Financial-data connection permissions are distinct from Console sign-in. Identify the source, requested data, purpose, duration, and required notice before collection. Use only capabilities enabled for your workspace and provider arrangement; a logo or catalog entry does not establish live source access.
+
+Revoking consent restricts the affected connection and suspends dependent processing that needs renewed authorization. The workflow identifies the source requiring reauthorization rather than silently treating unavailable data as current evidence. Obtain fresh permission through the applicable connection flow before resuming.
+
+Revocation does not rewrite already published history or delete the original records held by a bank or provider. Review retention and downstream uses separately in [privacy and data handling](/security/privacy) and [open banking and FDX](/security/open-banking-and-fdx).
+
+## Documents and exports
+
+Uploads are checked against the permitted document type, MIME type, file count, and configured size limits. Filenames are normalized for storage and download, and content hashes support integrity checks. These checks validate the upload contract; they do not prove that every document is authentic or that a file has passed an independent malware analysis. Treat uploaded information as untrusted evidence requiring the appropriate review.
+
+Documents and export objects use private storage. Downloads are served through expiring, signed capabilities and repeat authorization when data is transferred. A link does not contain your API key, and changing the underlying access can invalidate it before its nominal expiry. Treat a download URL as sensitive while valid and avoid placing it in analytics or public tickets.
+
+Export jobs preserve their content boundary, including the source permissions and financial-role checks required for the data. Verify the returned artifact hash when provided, protect downloaded copies within your systems, and apply your retention policy. Expiration of an export or download link does not delete the underlying evidence.
+
+## Request validation and capacity protection
+
+Requests are validated against the published API contract and configured size limits. Authorization is rechecked for transaction-bound work; caller-provided fields do not override tenant ownership. Responses expose structured error codes and request identifiers so you can diagnose failures without supplying secrets or full borrower payloads.
+
+Rate, concurrent-request, and workload-queue controls are shared across keys in the same workspace/environment. Query the effective operational profile rather than assuming another customer's limits. Honor `Retry-After`, use bounded concurrency and backoff with jitter, and distinguish a rate limit from a full processing queue.
+
+See [rate limits](/api-reference/rate-limits), [operating profiles](/api-reference/operating-profile), and [errors](/api-reference/errors). A rejected request or an unavailable source does not establish that processing completed.
+
+## Duplicate protection and recovery
+
+Every product API POST requires an idempotency key. Save one key with the exact intended operation, target, and payload; retry that same command with the same values. A different payload under the same key is rejected.
+
+Full-response replay is available for 24 hours. Accepted-command receipts remain after the response body expires, until workspace deletion. A receipt establishes acceptance, not successful completion. Retrieve the accepted resource and follow its state instead of creating a new command after an ambiguous timeout.
+
+Monitor configuration changes use version checks so concurrent changes can be reconciled instead of silently overwritten. Financial publication and usage records retain their references; retries must not create a second charge for the same accepted work.
+
+Read [idempotency](/api-reference/idempotency) and [request recovery](/api-reference/request-recovery). Preserve your operation name, idempotency key, request IDs, and returned resource ID in a restricted operational record.
+
+## Webhook destination protection
+
+Register a public HTTPS destination with a valid hostname and certificate. Amlok rejects credential-bearing URLs, IP-literal and private/local destinations, and unsupported URL forms. Public DNS resolution is checked on each attempt and the validated address is used for that connection. Redirects are not followed. These controls limit unintended access to internal or changed destinations.
+
+Each destination belongs to one workspace/environment. Use separate destinations and signing secrets for Sandbox and Live. Delivery contains resource references and limited state changes; retrieve sensitive details using an authorized API read.
+
+Amlok signs the timestamp and exact raw body with HMAC-SHA256. Verify the signature before processing, enforce the five-minute timestamp tolerance, and bind the received event to the expected destination. Use constant-time comparison and validate the payload. The signing secret is separate from your API key.
+
+## Delivery integrity and secret rotation
+
+Delivery is at least once and can arrive out of order. Persist an event durably before acknowledging it, deduplicate by the original event ID within its workspace/environment, and apply resource-version checks. A signature proves message integrity and origin under the secret; it does not prove your business action was applied exactly once.
+
+The delivery timeout is 10 seconds, payload limit 64 KiB, and retained-event replay window 30 days. There is one initial attempt and up to six automatic retries. A manual replay preserves the event ID and uses a new delivery timestamp and signature; it does not rerun an assessment or refresh a source.
+
+Signing secrets are encrypted at rest and shown only when issued. Rotation allows a 24-hour overlap to update the receiver. If a secret is compromised, disable the endpoint and replace the affected configuration: an overlap window is for continuity, not immediate revocation of a stolen value.
+
+Use [webhooks and signatures](/api-reference/webhooks) for the exact contract and verification examples, and [delivery recovery](/api-reference/webhook-operations) for retry diagnostics. Reconcile missed notifications against the durable event feed rather than inferring missing business records from delivery failures alone.
+
+## Integration acceptance
+
+Before enabling an institutional workflow, verify least-privilege access, cross-workspace denial, key expiry and revocation, source revocation, missing evidence, duplicate commands, lost responses, webhook signature rejection, duplicate/out-of-order delivery, and download permission changes. Use synthetic data in Sandbox and authorized test data for any approved Live acceptance exercise.
+
+Keep the release, environment, scenarios, expected outcomes, safe correlation IDs, and unresolved exceptions with your acceptance record. Sandbox behavior does not establish provider entitlements, source freshness, or production model validation. See [integration acceptance](/api-reference/integration-acceptance) and [due diligence](/security/due-diligence).

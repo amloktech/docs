@@ -1,0 +1,92 @@
+---
+title: "Open banking and Financial Data Exchange"
+sidebarTitle: "Open banking"
+description: "Understand FDX, Canada's consumer-driven banking framework, connection permissions, and shared responsibilities for Amlok financial-data access."
+keywords: ["FDX", "Financial Data Exchange", "open banking Canada", "consumer-driven banking", "financial data", "consent"]
+---
+
+Use this guide to assess how authorized financial data reaches Amlok Insights and Signal. Review the institution, data provider, connection route, permissions, and processing purpose together. A listed integration, an API standard, and participation in a regulated open-banking framework answer different questions.
+
+## What FDX covers
+
+Financial Data Exchange is a nonprofit technical standards organization. Its FDX API specification supports interoperable, user-permissioned financial data exchange through common data definitions, authorization, secure communication, and consent management. Its work includes security/authentication and technical interoperability. See [FDX's explanation](https://financialdataexchange.org/about-fdx/faqs/) and [standards work streams](https://financialdataexchange.org/about-fdx/work-streams/).
+
+Assess the actual connection and implemented profile before treating a provider as compatible. The use of a financial-data connector alone does not establish a particular FDX version or conformance result. Amlok's [integration catalog](/integrations/index) identifies supported providers; [integration status](/integrations/status) and provider documentation define availability, markets, and limitations.
+
+## Canada's technical standards body
+
+FDX, acting through its Canada Council, is Canada's designated consumer-driven banking technical standards body. The ministerial order is dated November 13, 2026; Finance Canada announced the designation November 20 and the Canada Gazette published it November 21. See the [Finance Canada announcement](https://www.canada.ca/en/department-finance/news/2026/11/canada-takes-next-steps-in-implementing-the-consumer-driven-banking-framework.html) and [designation order](https://gazette.gc.ca/rp-pr/p1/2026/2026-11-21/html/notice-avis-eng.html).
+
+The [FDX Canada profile](https://financialdataexchange.org/fdx-canada/) is still being finalized against Canadian regulations and guidance. Its work includes data formatting, security, consent, error/status information, and conformance requirements. Confirm the published Canadian profile and implementation requirements applicable to your connection rather than assuming that an older global API version is the final Canadian standard.
+
+The [Bank of Canada](https://www.bankofcanada.ca/regulatory-oversight/consumer-driven-banking/) oversees the framework's implementation. Proposed regulations and draft accreditation guidance should be distinguished from final requirements and a provider's confirmed participation status.
+
+## Separate four review questions
+
+| Question | Evidence to request |
+| --- | --- |
+| Is an organization an FDX member? | Membership evidence for the legal entity, if relevant to the review. |
+| Does the connection implement the technical specification? | API/profile version, supported data and operations, security requirements, limitations, and conformance evidence. |
+| Is a product independently certified? | The applicable program, certified product, scope, version, and current evidence. |
+| Is an organization accredited or participating under Canadian law? | Its applicable legal status, authorized activities, and official participation evidence. |
+
+These questions are distinct. Referencing FDX in Amlok documentation does not assert membership, product certification, or Canadian accreditation. Privacy duties and permitted downstream use also remain separate from technical interoperability.
+
+## Amlok provider roles
+
+Amlok uses Flinks and Plaid for authorized financial-data connections and Baselayer for business verification and related risk checks. Each provider receives information within the requested workflow and its permitted scope. Review [hosting and subprocessors](/security/hosting-and-subprocessors) for the Canadian processing commitment, data categories, and distinction between a processor, data provider, and independently operated account service.
+
+Baselayer disclosure does not establish an FDX connection. Flinks or Plaid use does not itself establish the FDX version, Canadian accreditation, or access to every provider product. Preserve the selected country, institution, product, source rights, and availability in [integration status](/integrations/status).
+
+## Connection responsibilities
+
+Use this matrix to document responsibilities for the selected provider and institution. The agreement and actual flow determine the allocation; not every connection contains every role.
+
+| Participant | Responsibility to establish | Review evidence |
+| --- | --- | --- |
+| Individual or authorized business representative | Authority over the source account and understanding of the requested access. | Notices, selected accounts/data, permitted purpose, and grant, expiry, and revocation details. |
+| Source institution or data provider | Source authentication, available records, access permissions, and provider-side restrictions. | Connection terms, authorization result, supported scope, and source freshness. |
+| Connection intermediary, where used | The authorized transport, token/access handling, upstream coverage, and disconnection behavior. | Provider terms, security scope, processing locations, refresh capabilities, and failure/revocation handling. |
+| Amlok | Processing within the agreed Insights or Signal workflow and authorized source scope. | Connection/consent records, provenance, workspace access, permitted-use terms, and retention responsibilities. |
+| Customer institution | Lawful purpose and instructions, lending policy and decisions, notices and rights, and institutional review. | Processing agreement, intended use, reviewer responsibilities, and records required by applicable law. |
+
+Do not send source-account credentials, full financial records, or sensitive tokens through ordinary support messages. Coordinate any necessary evidence through the agreed channel.
+
+## Consent, refresh, and revocation
+
+Before initiating a connection, establish the source, subject/account, permitted purpose, requested data, authorization basis, and relevant notices. For monitoring, confirm that permission supports the intended continuing collection. The ability to retrieve data is not permission to use it for a new purpose.
+
+Review connection and consent status before relying on newly collected evidence. Expired, revoked, interrupted, or incomplete access can change coverage and freshness. Follow [connection recovery](/api-reference/connection-recovery) and [provider refresh guidance](/integrations/data-refresh); provider capability does not establish a universal Amlok refresh interval.
+
+Revoking access or disconnecting a source is separate from deleting information already collected. Apply the agreed retention schedule and applicable legal duties, including required institutional records. Coordinate deletion and retention changes through the agreed process in [privacy and data handling](/security/privacy).
+
+## Data processing and payment boundaries
+
+FDX is a financial-data-sharing standard, not a blanket assurance about every processing operation after collection. Review Azure platform processing, authorized downstream providers, locations, and safeguards in [hosting and subprocessors](/security/hosting-and-subprocessors). Apply [Canadian](/security/canada) or [United States](/security/united-states) requirements according to the parties, information, and activity.
+
+Stripe handles Amlok billing payments. This is distinct from a bank-data connection or an institution's borrower transactions. Amlok supplies risk intelligence through Insights and Signal; the public product API does not provide payment initiation, payouts, transfers, or borrower-servicing commands.
+
+For U.S. connections, the [CFPB's section 1033 resource](https://www.consumerfinance.gov/compliance/compliance-resources/other-applicable-requirements/personal-financial-data-rights/) reports a court stay of the original compliance dates. Review current legal requirements separately from FDX API implementation and contractual source permissions.
+
+## Connection lifecycle evidence
+
+Review the permission and data record across the complete connection, including loss of access. Retaining a source name or a successful connection screen alone does not establish continued authority or complete coverage.
+
+| Stage | Evidence to preserve |
+| --- | --- |
+| Initiation | Institution, subject or authorized representative, provider/product, requested source scope and purpose. |
+| Authorization | Notices and applicable consent, selected accounts or information, grant time and relevant expiry. |
+| Collection | Connection status, source record identifiers, observation and collection times, and coverage or unsupported items. |
+| Continued use | Permitted monitoring purpose, refresh behavior, changed permissions, and evidence freshness. |
+| Interruption | Expiry, provider error, revoked access or another limitation, with affected workflow and required action. |
+| Revocation or exit | Stop/restriction of future collection, dependent workflow state, retained-record basis and deletion coordination. |
+
+Preserve source timestamps and missing-data reasons through normalization and assessment. A connection may return some accounts or periods while leaving others unavailable. Do not present partial history as a complete financial picture or treat an empty provider response as proof of no transactions, debt, or risk.
+
+## Provider and standard acceptance
+
+For a selected FDX or other provider route, confirm the implemented profile/version, authentication and permission flow, supported data and institution coverage, consent lifetime, revocation behavior, error/status semantics, refresh constraints, and any applicable conformance evidence. Resolve each item for the actual provider product and jurisdiction.
+
+Your acceptance exercise should include expired permission, revoked access, partial data, provider interruption, duplicate/out-of-order updates, and source reauthorization. Verify that dependent workflows expose the limitation and resume only with appropriate authority. Follow [connection recovery](/api-reference/connection-recovery) and [API and integration security](/security/api-and-integration-security).
+
+The downstream institution must also assess permitted use, data quality, individual rights, and its lending decisions. Technical interoperability does not establish accuracy of a source, permission for training or onward sharing, or compliance with every financial-sector obligation.

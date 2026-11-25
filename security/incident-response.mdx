@@ -1,11 +1,14 @@
 ---
 title: "Incident response and continuity"
-description: "Investigation, customer coordination, breach assessment, and recovery procedures."
+description: "Review Amlok incident coordination, Azure and Stripe service boundaries, Canadian breach reporting, continuity evidence, and recovery responsibilities."
+keywords: ["incidents", "continuity", "breach reporting", "Azure", "Stripe"]
 ---
+
+Amlok incident review covers the institutional Azure platform and coordination with providers, including Stripe for platform billing. Use the agreed incident channel and preserve the distinction between service, security, privacy, and payment events.
 
 ## Response process
 
-AMLOK's incident-response process covers suspected unauthorized access, credential exposure, integrity problems, cross-tenant access, material disruption, and unintended workflow actions.
+Amlok's incident-response process covers suspected unauthorized access, credential exposure, integrity problems, cross-tenant access, material disruption, and unintended workflow actions.
 
 <Steps>
   <Step title="Triage and contain">Assign an owner, record discovery and event times, establish known facts, and restrict exposure. Preserve relevant evidence during containment.</Step>
@@ -19,7 +22,7 @@ AMLOK's incident-response process covers suspected unauthorized access, credenti
 
 The agreement should define contacts, notification triggers, timing, updates, and assistance with affected-person or regulator communications. A service notification and statutory breach report may have different recipients, thresholds, and deadlines.
 
-Report security concerns and vulnerabilities to [privacy@amlok.io](mailto:privacy@amlok.io), following the [security guidance](/security/overview). Use your agreed incident channel for customer-specific coordination. Do not include credentials or unnecessary borrower information in an initial report. Coordinate sensitive evidence through an agreed secure channel.
+Report security concerns and vulnerabilities to [support@amlok.tech](mailto:support@amlok.tech), using the contact and reporting information in the [Trust Center](https://amlok.io/trust) and [Privacy Policy](https://amlok.io/privacy). Use your agreed incident channel for customer-specific coordination. Do not include credentials or unnecessary borrower information in an initial report. Coordinate sensitive evidence through an agreed secure channel.
 
 ## Canadian breach requirements
 
@@ -29,10 +32,60 @@ Assess provincial requirements and customer-regulator obligations separately. Se
 
 Customer-specific incident communication follows the agreed channels and notification obligations.
 
+## Provider coordination
+
+Identify the affected service and data boundary before assigning a provider issue to the whole platform. Azure application, database, artifact, email, and monitoring services have distinct recovery and investigation paths. Stripe billing events require separate payment-state and reconciliation checks. Do not equate a repeated callback or a pending payment with completed funding.
+
+Financial-data incidents may involve Flinks or Plaid; verification incidents may involve Baselayer. Identify affected Google, Microsoft, or GitHub sign-in separately from GitHub code delivery. Domain/DNS or website events can involve Cloudflare, scheduling events Cal.com, and documentation events Mintlify. Share only evidence necessary for the relevant service and maintain Amlok's contractual Canadian processing restriction, including support access.
+
+Provider notifications and assurance do not replace Amlok or institutional reporting obligations. Share necessary evidence through approved channels and track the recipient, timing, responsibility, and action required. Review the [provider register](/security/hosting-and-subprocessors) for each data boundary.
+
 ## Continuity and recovery
 
-AMLOK's continuity procedures address critical services and dependencies, backup protection, and recovery from provider or regional outages. Recovery-time and recovery-point commitments are deployment-specific and belong in the agreement.
+Amlok's continuity procedures address critical services and dependencies, backup protection, and recovery from provider or regional outages. Recovery-time and recovery-point commitments are deployment-specific and belong in the agreement.
 
 Review restoration results, integrity checks, measured recovery time, potential data loss, and follow-up actions. A stored backup alone does not demonstrate successful restoration.
 
 Distinguish unavailable or stale evidence from a valid zero balance or clean risk result. Define whether processing pauses, continues with identified limitations, or moves to human review.
+
+## Report a suspected event
+
+Use your agreed incident channel or [support@amlok.tech](mailto:support@amlok.tech). Include the affected service and environment, first observed time and time zone, impact, safe request/resource identifiers, and actions already taken. Indicate whether the issue is ongoing and provide an authorized contact for follow-up. Keep credentials, full borrower records, and payment secrets out of the initial message.
+
+Record discovery time separately from the suspected event time. Preserve original timestamps and safe evidence; do not destroy relevant records while attempting to contain exposure. Use an approved restricted channel for material that cannot be safely redacted.
+
+## Scenario-specific containment
+
+| Scenario | Immediate coordination focus | Recovery verification |
+| --- | --- | --- |
+| Suspected account compromise | Review and revoke affected sessions, secure the identity, and inspect membership or configuration changes. | Intended account access and MFA policy are restored; unauthorized changes are investigated. |
+| Exposed API credential | Revoke the affected key, identify its scope and usage, and replace it through an authorized owner. | Old key is rejected; replacement has the intended permissions; potentially accessed records are assessed. |
+| Exposed webhook secret | Disable the affected destination and coordinate replacement and receiver review. | New signatures validate, replay/deduplication is preserved, and the stolen secret no longer authorizes acceptance. |
+| Unexpected data access | Restrict the affected path, preserve correlation records, and assess tenant/source boundaries. | Relevant permissions and negative-access cases are verified before reopening the path. |
+| Missing or unreliable source data | Identify affected connections, permission status, stale evidence, and downstream assessments. | Required authorization and freshness are restored; missing evidence has not become a clean risk result. |
+| Provider or platform outage | Determine affected dependencies, queued work, communication needs, and continuity options. | Reconcile accepted work, result versions, and access restrictions before resuming. |
+| Uncertain payment or credit event | Preserve processor and ledger references and involve the authorized billing owner. | Confirm actual settlement and linked postings; do not create duplicate funding, charges, or refunds. |
+
+Containment scope depends on the event. A single revoked key does not stop every key or background workflow in an organization. A stopped monitor does not cancel the commercial agreement. Confirm the actual boundary of each action.
+
+## Responsibilities and notification decisions
+
+Assign an incident lead and relevant security, engineering, privacy, customer, and provider contacts for the event. Identify who can authorize containment, who maintains the evidence record, and who approves external communications. Your institution should provide contacts authorized to assess its downstream impact and obligations.
+
+Assess data sensitivity, affected people and institutions, whether information was actually accessed or disclosed, duration and scope, protective measures, and foreseeable harm. Keep uncertain facts explicit and update the assessment as evidence improves. A service disruption without personal-data exposure may have a different reporting path from a privacy breach.
+
+Contractual notification, regulator reporting, affected-person notice, insurer coordination, and public service updates have separate triggers and recipients. Apply the actual law and agreement; a provider's report or your final root-cause analysis must not delay a notice that is already required. Amlok assists the responsible institution within its role and terms.
+
+## Evidence and recovery record
+
+The event record should connect the timeline, affected systems and environments, safe correlation identifiers, containment decisions, evidence custodians, provider communications, impact assessment, notifications, recovery checks, and corrective actions. Restrict access according to need and protect the confidentiality of affected information.
+
+Recovery verification should test the original failure condition and relevant boundaries. Check restored memberships and revoked secrets, source authorization, record integrity, job state, duplicate protection, and downstream notifications. If a backup is restored, reapply deletion restrictions and reconcile changes after the recovery point.
+
+Record what was recovered, the time required, known data loss or unresolved work, remaining limitations, and the authority to resume service. Use the evidence to assess any applicable commitment rather than treating the end of an outage as proof of complete recovery.
+
+## Corrective actions and exercises
+
+For material events, identify the contributing conditions and the controls or procedures that require change. Give each action an owner and completion criterion, preserve evidence of the fix, and verify effectiveness. Record remaining risk and any agreed compensating measures.
+
+During due diligence, request the applicable response plan and available exercise or event-review evidence. Assess scenarios, participants, observed gaps, and closure of follow-up actions. An exercise schedule or response-plan document alone does not establish that an exercise was completed. See [operations and resilience](/security/operations-and-resilience).

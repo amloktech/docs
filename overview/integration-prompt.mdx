@@ -84,7 +84,10 @@ PRODUCT FLOWS
   onboarding reference. AMLOK handles baselines and collection. Follow monitoring
   runs, package changes and alerts; use events and delivery attempts for reliable
   notification. Change-driven reassessment is included in Signal. The monthly
-  borrower/business/workspace charge is not multiplied by several monitors.
+  borrower/business/workspace charge occurs on the first successfully published
+  evaluation in each UTC calendar month and is not multiplied by several monitors.
+  Creation, activation or resume alone does not charge; no successful publication
+  means no new monthly debit. Signal does not create an additional Insights charge.
 - Reporting: use billing summary, immutable transactions and typed exports for
   usage, credits, statements, funding, rates and workload. Distinguish available
   credits from cumulative spent credits. Do not introduce held/reserved buckets.
@@ -120,10 +123,14 @@ RELIABILITY AND DATA
 BOUNDARIES
 - Financial APIs provide reporting and exports. Do not create wallet, top-up,
   payment-method, transfer, withdrawal, payout, refund-request, cancellation, or
-  deletion commands. Payment settings and cancellation belong in the portal;
-  enterprise clients may also cancel through their account manager.
+  deletion commands. Console manages the payment settings available to the
+  environment. Request cancellation, refunds, disputes and retention changes
+  through support or the account manager; there is no self-service cancellation
+  or refund command.
 - Respect cancellation and authorization states. Do not resume or replace work
-  after cancellation; processing, deductions, and upcoming top-ups stop then.
+  after a confirmed processing cutoff. Support confirms the cutoff, in-flight
+  funding, final reconciliation and closure. A request or revoked key does not
+  prove that cancellation, a refund or data deletion has completed.
 - AMLOK provides risk assessments and intervention signals. Do not add servicing
   cases, borrower messages, collections, or credit-decision execution. Institution
   staff handle intervention in their own systems.

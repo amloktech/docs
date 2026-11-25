@@ -1,0 +1,94 @@
+---
+title: "Security operations and resilience"
+sidebarTitle: "Operations and resilience"
+description: "Review audit records, monitoring, change assurance, vulnerabilities, secrets, backups, and recovery evidence for your Amlok service."
+keywords: ["Amlok", "audit logs", "security operations", "backup", "business continuity", "vulnerability management"]
+---
+
+Review how your service records important actions, protects operational information, and recovers without losing access controls or duplicating work. Configuration, recorded events, completed tests, and contractual commitments provide different kinds of evidence. Use the applicable deployment and review period for each.
+
+## Audit and operational records
+
+Amlok records account and material administrative actions with an actor, action, target, time, request identifier, and limited contextual metadata. Organization audit access is restricted to authorized Owners. Individual account activity and session controls support users reviewing their own access.
+
+| Record | What it helps establish | Review considerations |
+| --- | --- | --- |
+| Account and organization audit | Who changed access, configuration, credentials, or other material settings. | Authorized audience, action coverage, time range, and correlation with the underlying change. |
+| API request record | Which operation was attempted, its status, duration, environment, and correlation identifier. | Restrict technical records by role; omit credentials and unnecessary request content. |
+| Accepted-command receipt | Whether a specific idempotent command was accepted and which resource it created. | Acceptance is distinct from completion; preserve the original command identity. |
+| Event and delivery history | Resource changes and separate notification attempts, failures, and acknowledgments. | A delivery failure does not erase the event or reverse the underlying operation. |
+| Evidence and result versions | Which observations and versions supported an assessment. | Review provenance, permissions, cutoff time, and limitations. |
+| Financial history | Funding, usage, and linked corrections needed to reconcile a workspace. | Owner-only access, source references, and separate settlement confirmation. |
+
+Audit and product-history protections prevent ordinary application updates from rewriting protected records. Privileged administration, retention and authorized deletion have separate controls. Application-level history protection does not by itself establish an externally certified immutable archive or unlimited retention.
+
+## Diagnostic minimization
+
+Operational records use safe identifiers, event types, statuses, durations, and bounded metadata. Authentication logging suppresses provider token responses and unsafe error detail. Request logs should not contain raw credentials, full borrower documents, or unrestricted request payloads.
+
+When reporting a problem, provide the environment, approximate time, operation, request ID, resource reference, and observed result. Remove authorization headers, signing secrets, cookies, connection tokens, payment secrets, and personal data not needed for the investigation. Use the agreed secure channel if sensitive evidence is necessary.
+
+Your institution should apply the same minimization to its receivers, client logs, monitoring, issue trackers, and exported reports. A protected Amlok response becomes part of your own control boundary when copied into your systems.
+
+## Monitoring and service health
+
+Azure Monitor and Log Analytics provide the operational monitoring layer for the platform. Application signals include request outcomes and latency, queue depth and age, worker activity, delivery attempts, and failures. Interpret each signal against the service and environment it describes.
+
+A health response establishes the check it performs, not end-to-end correctness of every provider, assessment, payment, or notification. A healthy worker can still have a blocked source or a delayed job. A queue delay requires review of cause and age; it is not evidence of a completed result.
+
+For your service review, establish alert recipients, escalation paths, response responsibilities, coverage hours, and tests of the notification path. An alert definition alone does not demonstrate staffed response or a contractual recovery commitment. Service response targets, incident-notification duties, and recovery objectives are separate terms.
+
+## Change and software assurance
+
+Amlok's release workflow includes automated checks for application types, contracts, builds, API behavior, database permissions, and browser behavior. Relevant integration tests exercise tenant boundaries, workspace roles, session and MFA behavior, credential restrictions, duplicate commands, delivery behavior, and historical-record protections. Staging and production use distinct release environments.
+
+Use release-specific results during due diligence: identify what was tested, the version and environment, failed checks, approved exceptions, and the evidence linking the tested change to the released service. A test definition or a prior passing run is not proof of the current release result.
+
+Review dependency risk, code review, independent security testing, vulnerability remediation, and release approval as separate assurance topics. Do not treat a normal application build as a penetration test, a software composition analysis, or independent certification. Agree the evidence required for your institution's risk level in [due diligence](/security/due-diligence).
+
+## Vulnerability reporting and handling
+
+Report suspected vulnerabilities to [support@amlok.tech](mailto:support@amlok.tech). Include the affected service, a concise impact description, safe reproduction steps, approximate time, and relevant request identifiers. Avoid sending production borrower records or secrets. Stop if testing exposes information outside your authorization and coordinate secure disclosure of the evidence.
+
+The review should distinguish a vulnerability report from an active incident. Establish the affected versions, exploitability, actual exposure, containment, remediation, verification, and communication owner. Track corrective actions through verification rather than closing an issue when a code change is merely proposed.
+
+Use only testing that you are authorized to perform. A public reporting address does not establish a bug-bounty program, unrestricted testing permission, or a fixed remediation deadline. Customer-specific notification and response commitments belong in the applicable agreement.
+
+## Secrets and service identities
+
+The Azure platform uses assigned service identities and scoped secret access. Private artifact storage is accessed through authorized services rather than public container access. API keys are stored as hashes; webhook signing secrets require encryption because delivery must use them. These secrets have different rotation and recovery needs.
+
+Review who may obtain or change a secret, which service uses it, its permitted environment, how it is rotated, and how exposure is revoked. Keep production and test credentials separate. Record dependencies before rotation so required recovery information remains available and obsolete credentials are removed.
+
+For compromise, revoke the affected key or disable the affected endpoint immediately where authorized, preserve safe evidence, and coordinate replacement and investigation. Key rotation alone does not establish whether information was accessed or whether notifications are required.
+
+## Backup and restoration scope
+
+Core platform hosting is in Azure Canada Central. Amlok's provider arrangements restrict Amlok-related processing to Canada, including storage, backups, and support access. Review the service-specific processing schedule and any recovery destination before enabling replication or copying data.
+
+Database recovery, document/object recovery, configuration restoration, and identity/secret recovery are distinct tasks. Backup retention, soft-delete protection, versioning, and replication do not each guarantee the others. Confirm the actual protected data, retention window, restoration permissions, and dependency order for your service.
+
+| Recovery area | Evidence to establish |
+| --- | --- |
+| Database and history | Recoverable point, protected records, access roles, integrity checks, and the effect on newer changes. |
+| Documents and exports | Required objects, versions and hashes, missing-object handling, and whether temporary outputs should be recreated. |
+| Identities and secrets | Recovery of required access without reopening revoked credentials or granting broader permissions. |
+| Accepted work | Reconciliation of receipts, jobs, result versions, and usage before retrying or resuming. |
+| Notifications | Durable events, acknowledgment state, deduplication, and replay after receiver recovery. |
+| Source and billing providers | Current authorization and provider state; reconciliation of in-flight or uncertain operations. |
+
+Recovery time objectives and recovery point objectives must be scoped and agreed. Request actual restoration exercises with start and finish times, integrity results, observed data loss, exceptions, and follow-up actions. The presence of a backup or a configured replica is not a measured recovery outcome.
+
+## Continuity and degraded operation
+
+Different disruptions need different responses. A Console outage may affect human review while a data-provider outage affects evidence freshness. A failed notification may leave the resource available through the API. A payment-state uncertainty requires reconciliation rather than assumed credit. Define which workflows stop, which may continue with explicit limitations, and who authorizes resumption.
+
+During restoration, check current membership, revoked credentials, source permissions, and legal deletion restrictions before making recovered data accessible. Reconcile work accepted before interruption using its original identity. Do not generate replacement commands merely because an earlier response or notification was lost.
+
+Read [incident response](/security/incident-response) for triage and notification coordination and [API recovery](/api-reference/request-recovery) for accepted commands.
+
+## Retention and exit responsibilities
+
+Temporary artifacts, replay bodies, audit records, source evidence, financial history, and backups have different lifecycles. Routine expiry of temporary exports is not deletion of the source record. Expiry of a full-response replay body does not remove the accepted-command receipt or permit duplicate execution.
+
+Your agreement and applicable obligations determine the approved retention and deletion schedule. Support coordinates retention changes, exit, refunds, and deletion; ordinary access revocation, Sandbox reset, or month-end closure does not establish erasure of every copy. Use [privacy and data handling](/security/privacy) to scope records, holds, backup treatment, and completion evidence.

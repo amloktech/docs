@@ -1,36 +1,74 @@
 ---
 title: "United States requirements"
-description: "Financial data safeguards, credit decisions, state privacy, and sensitive-data requirements."
+description: "Scope U.S. financial safeguards, fair lending, consumer reporting, privacy, AI, and sanctions requirements for Amlok underwriting and monitoring."
+keywords: ["GLBA", "FCRA", "ECOA", "CCPA", "CPRA", "NYDFS", "OFAC", "AI regulation", "Amlok"]
 ---
 
-For a United States deployment, determine the requirements by legal entity, regulator, state, activity, and information involved.
+For a United States Amlok deployment, determine requirements by legal entity, regulator, state, activity, and information. Identify whether each party supplies software, makes credit decisions, furnishes or uses consumer reports, or performs another regulated function. Your institution owns lending decisions and interventions; Amlok provides Insights underwriting and Signal monitoring.
 
 ## Financial information safeguards
 
-The Gramm-Leach-Bliley Act and the applicable regulator's rules govern relevant financial information. The FTC Safeguards Rule applies to financial institutions within the FTC's jurisdiction; other regulated institutions may have different implementing requirements. Covered institutions must address service-provider safeguards and oversight. See the [FTC guidance](https://www.ftc.gov/business-guidance/resources/ftc-safeguards-rule-what-your-business-needs-know).
+GLBA and the applicable regulator's rules govern covered financial information. The [FTC Safeguards Rule](https://www.ftc.gov/business-guidance/resources/ftc-safeguards-rule-what-your-business-needs-know) applies to financial institutions within the FTC's jurisdiction; other regulated institutions can have different implementing rules. Activities determine coverage, and covered institutions must also oversee service-provider safeguards.
 
-Review the security program, risk assessment, access protection, encryption, monitoring, testing, incident procedures, and contractual safeguards applicable to the service. Agree evidence and responsibilities for the deployment.
+Review the security program, risk assessment, access control, encryption, authentication, supplier oversight, testing, incident response, and applicable reporting duties. Agree the evidence and allocation of responsibilities relevant to Amlok's service. Azure hosting supports the platform's infrastructure boundary; it does not remove application, configuration, data-handling, or institutional responsibilities.
+
+### Financial privacy and permitted disclosure
+
+Review GLBA financial privacy requirements separately from safeguards. The Privacy Rule and applicable Regulation P obligations concern covered consumer financial information, with consumer relationships generally involving financial products or services used primarily for personal, family, or household purposes. A business loan does not automatically make every business record covered consumer information; other privacy and source-use obligations can still apply.
+
+Identify required privacy notices, any sharing-related opt-out, applicable exceptions, and contractual restrictions before disclosing nonpublic personal information. A recipient can face limits on reuse and redisclosure even when it is not itself the institution providing the consumer's financial service. Record why Amlok receives the information and which uses and recipients are permitted. See the [FTC's financial privacy guidance](https://www.ftc.gov/business-guidance/resources/how-comply-privacy-consumer-financial-information-rule-gramm-leach-bliley-act) and your institution's applicable regulator rules.
 
 ## Lending decisions and explanations
 
-The Equal Credit Opportunity Act and Regulation B govern relevant credit decisions and notices. Where a statement of adverse-action reasons is required, it must identify the specific principal reasons. A score or generic reference to an algorithm does not replace the actual reasons. See [Regulation B, section 1002.9](https://www.consumerfinance.gov/rules-policy/regulations/1002/9/).
+ECOA and Regulation B address relevant consumer and business credit decisions. When a statement of adverse-action reasons is required, it must identify the specific principal reasons actually used. A score or generic reference to an algorithm does not replace the required explanation. Review [Regulation B, section 1002.9](https://www.consumerfinance.gov/rules-policy/regulations/1002/2026-07-21/9/).
 
-Establish approved criteria, assess discrimination risk, verify explanations against the actual decision process, and maintain appropriate records. AMLOK outputs must be used within that approved scope. See [AI and model governance](/security/ai-governance).
+Establish approved criteria, discrimination-risk review, explanations tied to the decision, and required records. Amlok evidence must be used within that agreed scope. Your institution determines the credit outcome and handles notices and any subsequent outreach in its own systems. See [AI and model governance](/security/ai-governance).
 
 ## Consumer reporting
 
-If a workflow obtains, supplies, or uses consumer reports, assess the Fair Credit Reporting Act and each party's role. Permissible purpose, accuracy and dispute duties, and relevant adverse-action or risk-based-pricing notices depend on the activity. See the [FTC FCRA overview](https://www.ftc.gov/legal-library/browse/statutes/fair-credit-reporting-act) and [notice guidance](https://www.ftc.gov/business-guidance/resources/using-consumer-reports-credit-decisions-what-know-about-adverse-action-risk-based-pricing-notices).
+If a workflow obtains, supplies, or uses consumer reports, assess the FCRA and each party's role as agency, furnisher, or user. Permissible-purpose controls, accuracy, disputes, and adverse-action or risk-based-pricing notices depend on the activity. See the [FTC FCRA overview](https://www.ftc.gov/legal-library/browse/statutes/fair-credit-reporting-act) and [credit-decision notice guidance](https://www.ftc.gov/business-guidance/resources/using-consumer-reports-credit-decisions-what-know-about-adverse-action-risk-based-pricing-notices).
 
-Do not assume alternative data or a business-lending label removes consumer-reporting obligations. Assess information and actual use, including personal guarantees.
+Alternative data or a business-lending label does not resolve applicability. Review information about individuals, including guarantors, and the intended eligibility use. Document who supplies the report, who decides, and who manages requests or disputes.
 
-## State privacy and breach obligations
+Provider restrictions apply in addition to the FCRA analysis. Baselayer supplies business-verification information under source-specific terms that prohibit covered consumer-eligibility uses. Assessing FCRA applicability does not authorize a use prohibited by those terms. Review the [provider register](/security/hosting-and-subprocessors), [Amlok's provider-data notice](https://amlok.io/privacy#financial-and-verification-providers), and [Baselayer's permitted-use terms](https://baselayer.com/terms-of-service/) before selecting data for a decision.
 
-Map privacy, security, and notification laws applicable to the people, data, and entities involved. Where the CCPA applies, address rights, notices, service-provider terms, and sensitive information. Assess exemptions at the appropriate scope rather than assuming every record of a financial business is exempt. See the [California Attorney General's guidance](https://www.oag.ca.gov/privacy/ccpa).
+## State privacy and automated decisions
 
-State-specific automated-decision, consumer-credit, biometric, and other requirements may need additional analysis. A national statement does not replace a state-by-state deployment assessment.
+Map affected individuals, processing purposes, state thresholds, legal roles, and exemptions. A financial-data exemption does not necessarily exempt unrelated website or marketing processing. Service-provider and contractor terms must match the actual permitted use.
 
-## Health and biometric information
+| Framework | Scope and timing to assess | Deployment review |
+| --- | --- | --- |
+| [CCPA / CPRA](https://www.cppa.ca.gov/regulations/ccpa_updates.html) | California businesses and processing within scope, including role-specific service-provider obligations. The updated regulations took effect January 1, 2026. | Notices, rights, sensitive information, retention, restricted uses, and relevant assessments/audits. |
+| [California ADMT regulations](https://www.cppa.ca.gov/regulations/pdf/ccpa_updates_cyber_risk_admt_appr_text.pdf) | Applicable automated-decision obligations begin January 1, 2027. Definitions, use cases, exceptions, and other assessment schedules require separate review. | Required pre-use notice, access and opt-out rights, and related information about covered decisions. |
+| [Colorado SB26-189](https://www.leg.colorado.gov/bills/SB26-189) | Replaced the older SB24-205 provisions. Covered ADMT developer/deployer duties start January 1, 2027, subject to scope and exemptions. | Intended-use documentation, limitations, human-review instructions, material changes, consumer rights, and compliance records. |
+| [Texas HB149](https://capitol.texas.gov/billlookup/BillSummary.aspx?Bill=HB149&LegSess=89R) | Assess prohibited uses and discrimination requirements. Some disclosure duties concern government or healthcare uses specifically. | Actual use case, affected people, prohibited conduct, and applicable exemptions. |
 
-HIPAA applies to covered entities and business associates within its scope. Processing protected health information for a covered entity may require a business associate agreement and applicable safeguards. See [HHS guidance](https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/index.html).
+Other states' privacy, biometric, breach-notification, and consumer-credit laws may also apply. Assess the relevant states rather than treating this table as a complete national inventory.
 
-Do not send protected health information, biometric templates, or verification media through an ordinary financial-data workflow without first agreeing purpose, legal requirements, supported scope, safeguards, and retention. An external verification provider's test results or assurance reports do not apply to AMLOK's own service.
+## Bank model and third-party governance
+
+The current [Federal Reserve SR 26-2 guidance](https://www.federalreserve.gov/frrs/guidance/supervisory-guidance-on-model-risk-management.htm), issued April 17, 2026, replaced SR 11-7. Its scope includes relevant statistical, quantitative, and non-generative/non-agentic AI models; it expressly excludes generative and agentic AI. Use it for applicable predictive-model review rather than as blanket assurance for every AI component.
+
+Agree documentation, conceptual soundness, validation support, performance/limitations, monitoring, and changes for models used by the bank. Supervisory guidance is distinct from a certification or enforceable standard.
+
+The [interagency third-party risk guidance, SR 23-4](https://www.federalreserve.gov/supervisionreg/srletters/sr2304.htm), addresses banks' planning, diligence, contracts, monitoring, and termination. The [NYDFS guidance on third-party risks](https://www.dfs.ny.gov/industry-guidance/industry-letters/il20251021-guidance-managing-risks-third-party) addresses Part 500 responsibilities of covered entities. Amlok's relevant evidence can support customer reviews of service scope, access, encryption, providers, incidents, continuity, and exit arrangements. A bank's regulated status does not automatically make Amlok a DFS-covered entity.
+
+## Sanctions and activity boundaries
+
+Assess [OFAC requirements](https://ofac.treasury.gov/faqs/11) for relevant U.S. persons, activities, transaction nexus, and program-specific foreign-entity restrictions. Determine the appropriate screening, ownership/control review, escalation, blocking and reporting responsibilities. A screening signal is evidence for review, not a substitute for the legal determination.
+
+Amlok's Stripe integration handles billing for Amlok services. It does not turn the product API into a lending-payment, borrower-repayment, payout, or transfer interface. If your institution undertakes money transmission, collections, or borrower communications elsewhere, evaluate its separate BSA/MSB, licensing, FDCPA/Regulation F, and communications duties for those activities. See [FinCEN's MSB scope](https://www.fincen.gov/resources/money-services-business-msb-registration) and [CFPB debt-collection definitions](https://www.consumerfinance.gov/rules-policy/regulations/1006/2/).
+
+## Open banking
+
+The [CFPB personal financial data rights page](https://www.consumerfinance.gov/compliance/compliance-resources/other-applicable-requirements/personal-financial-data-rights/) reports that the original section 1033 compliance dates were stayed by a court on October 29, 2025. Confirm current requirements and source permissions for your connection rather than relying on the original implementation dates.
+
+Technical standards, legal access authority, provider participation, and downstream use remain separate. See [Open banking and FDX](/security/open-banking-and-fdx).
+
+## Accessibility, communications, and sensitive data
+
+Assess [DOJ website accessibility guidance](https://www.ada.gov/resources/web-guidance/) for the customer-facing service and relevant legal context. Review [CAN-SPAM](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business) for commercial email. These are operational obligations, not certification badges.
+
+HIPAA applies to covered entities and business associates within its scope. Do not send protected health information, biometric templates, or verification media through an ordinary financial-data workflow without first agreeing the purpose, supported scope, legal requirements, safeguards, and retention. See [HHS business-associate guidance](https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/index.html).
+
+Use [standards and control alignment](/security/standards), [privacy and data handling](/security/privacy), and [due diligence](/security/due-diligence) to define the service boundary and request relevant evidence.

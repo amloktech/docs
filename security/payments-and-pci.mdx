@@ -1,0 +1,74 @@
+---
+title: "Stripe payments and PCI scope"
+sidebarTitle: "Payments and PCI"
+description: "Understand Stripe's role in Amlok platform billing, payment-data boundaries, PCI responsibilities, billing records, and your security review."
+keywords: ["Stripe", "payments", "PCI DSS", "billing", "shared responsibility"]
+---
+
+**Stripe is Amlok's payment provider for platform billing.** This covers payment for Amlok services and workspace credits. Your institution's loan disbursements, borrower repayments, and collection activity remain separate from this billing relationship.
+
+## Distinguish the payment and data flows
+
+| Flow | Purpose | Review boundary |
+| --- | --- | --- |
+| Amlok platform billing | Fund agreed service usage and workspace credits. | Billing organization, authorized administrator, activated payment flow, and applicable Stripe processing terms. |
+| Workspace usage and credit reporting | Account for Insights and Signal consumption. | Amlok billing records, authorized workspace, environment, and reconciliation. |
+| Stripe analytical integration | Obtain authorized merchant data for assessment. | Separate connection permissions, source data, and provider availability. |
+| Institution's borrower payments | Repayment, funding, or intervention performed by the institution. | The institution's own systems, providers, and obligations. |
+
+See the [Stripe data integration](/integrations/payments-and-pos/stripe) for source connectivity. Linking that integration does not activate a payment method for Amlok billing.
+
+## Payment availability and administration
+
+Use the payment capabilities available in your activated facility. Sandbox methods and funds are simulated. Owners manage available billing settings through Console with the required authorization and recent authentication. A saved setting is not a settled payment or a credited balance.
+
+The product API provides credit and consumption reporting. It does not provide payment-method, payout, transfer, or refund commands. Follow [account management](/support/account-management) for support-coordinated cancellation, refunds, disputes, and retained records.
+
+## Information and retention
+
+Amlok maintains organization billing-contact information, service consumption, credit history, and relevant funding records. Stripe's processing boundary depends on the activated payment method and integration. Establish what is collected directly by Stripe, what references or limited metadata Amlok retains, and the applicable retention and access controls.
+
+Amlok-related Stripe service processing falls under Amlok's contractual Canadian processing restriction, including storage, backups, and support access. This statement concerns Amlok's contracted processing and does not describe every Stripe service or independent financial-institution activity. Review [hosting and subprocessors](/security/hosting-and-subprocessors) for the complete boundary.
+
+Do not place full card numbers, card security codes, bank credentials, or payment secrets in support messages, borrower documents, or ordinary logs. Use the approved payment flow and secure support channel.
+
+| Review topic | Evidence to establish |
+| --- | --- |
+| Payment collection | The live collection flow, who receives payment credentials, and the actual system boundary. |
+| Access | Authorized billing roles, recent-authentication requirements, payment administration, and audit records. |
+| Payment events | Authenticity checks, duplicate-event handling, reconciliation, and the distinction between pending and completed payments. |
+| Retained information | Payment references and metadata, legal retention, access, deletion, and refund records. |
+| Refunds and cancellation | Approved commercial terms, support ownership, reconciliation, and completion evidence. |
+
+These are review topics for the activated payment service; they do not specify a particular Stripe Checkout, Elements, Connect, or customer-portal integration.
+
+## PCI DSS and shared responsibility
+
+Stripe maintains its own PCI assurance for its covered services. Businesses accepting payments still have responsibilities for their integration, account access, payment pages, data handling, and applicable validation. The correct assessment depends on the payment-data flow. Do not select an SAQ or claim that all Amlok systems are out of scope solely because Stripe is involved.
+
+Provider-hosted payment collection can reduce exposure when payment credentials go directly to the provider. Confirm that behavior for the actual integration before relying on it. See [Stripe's integration security guide](https://docs.stripe.com/security/guide) and [PCI SSC guidance](https://www.pcisecuritystandards.org/pci_security/).
+
+Request the relevant Amlok scope statement and available provider assurance through [due diligence](/security/due-diligence). A provider attestation is evidence about that provider, not an Amlok certificate.
+
+## Financial integrity and operational evidence
+
+Treat payment processing, the Amlok credit ledger, and product publication as related but distinct records. A pending processor attempt is not settled funding. A usage record is not a second incoming payment. A reporting export does not itself issue a refund or finalize reconciliation.
+
+For the activated billing flow, verify how an authorized funding event becomes one referenced credit entry, how a failed or uncertain attempt is resolved, and how duplicate or out-of-order notifications are handled. Retain safe provider references and amount/currency details needed to reconcile the result without exposing payment secrets.
+
+| Situation | Required distinction |
+| --- | --- |
+| Funding request accepted | Acceptance, actual collection, settlement, and credited availability are separate states. |
+| Notification repeated | Deduplicate the event and reconcile the existing payment; do not post another deposit. |
+| Product output published | The applicable usage charge follows the product's publication rule and references its work. |
+| Charge or record corrected | Preserve the original reference and the approved linked correction rather than rewriting historical amounts. |
+| Refund requested | Verify authority, balance, destination and issuance; a support acknowledgment is not proof the refund was sent. |
+| Processor outcome uncertain | Escalate for reconciliation instead of assuming success or starting an unlinked replacement. |
+
+Insights usage is charged with publication of the full underwriting output. Signal's monthly charge is tied to the first successfully published evaluation for the relevant borrower/business and workspace in a UTC month. Creation or activation alone does not establish a debit. Follow the detailed rules in [credits and billing](/pricing/credits-and-billing) and [Signal pricing](/pricing/signal).
+
+## Review before payment activation
+
+Establish the responsible billing administrator, approved payment method and collection flow, payment credential recipient, secure secret handling, authentic event verification, reconciliation ownership, and the procedure for failures, disputes and refunds. Keep Sandbox exercises separate from real collection.
+
+Validate the actual flow rather than inferring it from a saved payment setting or the existence of a Stripe account. Request the applicable payment scope and evidence through [due diligence](/security/due-diligence). A particular Checkout, Elements, Connect, customer portal, card-tokenization, or bank-authorization architecture must be established for the facility in use.

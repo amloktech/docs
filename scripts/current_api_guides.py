@@ -475,11 +475,11 @@ Each workspace has one CAD wallet shared by Insights and Signal. The organizatio
 
 Use `GET /v1/billing/summary` for `available_credits`, cumulative `spent_credits` and a stable reporting snapshot. Read immutable movements with `GET /v1/billing/transactions`; filter by snapshot to reconcile related reads. An adjustment is a linked new entry, not an edit to history.
 
-There are no held or reserved credit categories. In-progress funding is not available credit. Top-up controls, card/ACH methods and cancellation are managed by authorized Owners in the console; the public API provides reporting and exports only.
+There are no held or reserved credit categories. In-progress funding is not available credit. Authorized Owners manage available payment-method and automatic-payment settings in Console for the activated facility. Cancellation, refunds, disputes, and retention changes are coordinated through support or the account manager. The public API provides reporting and exports only.
 
 The default auto-pay trigger is CAD 200 and may be raised. Customer-funded top-ups are at least CAD 500. Processing may continue below the trigger while credits cover the cost. Billing summary `pricing` contains the six effective rates and `commitment`: monthly minimum, quarterly or annual cadence, and calculated payment amount. The default is CAD 1,000/month and annual funding of CAD 12,000; quarterly funding at that minimum is CAD 3,000. This funds the wallet, rather than creating a second monthly usage debit. Saving terms does not collect payment.
 
-Cancellation immediately stops processing, new deductions and upcoming top-ups. Reconcile already-submitted funding without a new collection attempt. At month-end closure, all unused credits, including promotional credits, are refunded to the saved bank account; bank delivery takes 7-10 business days after issuance. Necessary final financial records are retained separately from deleted borrower data. Used credits are non-refundable. See [pricing and credits](/pricing/credits-and-billing).
+The approved cancellation terms require an immediate processing cutoff, month-end closure, and refund of all unused credits, including promotional credits, without cancellation fees or remaining-term deductions. Support confirms the actual cutoff, reconciled funding and usage, refund destination and issuance reference, and the deletion scope or permitted retention. Bank receipt is expected 7-10 business days after issuance. An acknowledgment, provisional statement, revoked key, or calendar date is not completion evidence. Used credits are non-refundable. See [cancellation and refunds](/pricing/refunds-and-payouts).
 
 For detailed usage, credit movements, statements, funding, rates or workload, create a typed billing export. Owner authority and `billing:read` are required at every access step.
 ''')
@@ -707,6 +707,8 @@ Use `https://api.amlok.io` as the API origin. The OpenAPI server excludes `/v1` 
 Generate your language's client from this OpenAPI file. The download contains the complete contract, including normalized evidence variants. Use the endpoint examples and Postman collection to check generated requests in your Sandbox. JSON Schema conditionals and source entitlements remain authoritative when a generator cannot express them as language types.
 
 No packaged SDK is currently distributed. All published client examples and downloads use this same contract.
+
+Available Console payment settings and support-coordinated cancellation, refunds, and retention changes do not become SDK commands.
 ''')
 
     from institution_api_guides import write_guides as write_institution_guides

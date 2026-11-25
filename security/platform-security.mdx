@@ -1,57 +1,67 @@
 ---
 title: "Platform security"
-description: "AMLOK controls for access, infrastructure, application changes, and monitoring."
+description: "Review Amlok's Azure hosting controls, organization and environment boundaries, application access, secret management, storage, and operational review."
+keywords: ["Azure", "platform security", "tenant isolation", "encryption", "access controls"]
 ---
 
-## Identity and access
+Amlok's institutional platform runs on Microsoft Azure. Use this guide to assess the safeguards around your accounts, workspaces, authorized data, and product outputs alongside the processing scope in your agreement.
 
-AMLOK uses individual accounts, least-privilege access, and separation of ordinary and privileged operations. Staff and privileged access use multifactor authentication. Access is approved for a defined purpose, reviewed when responsibilities change, and revoked when no longer required.
+## Application access and tenant boundaries
 
-Production support access is limited to authorized personnel, bounded by purpose and time, and recorded. Emergency access requires a separate review. Service identities and credentials are scoped to their functions, with secrets kept outside application code and customer-facing content.
+Access is checked against the authorized organization, workspace, and environment. Billing administration requires the appropriate owner role and recent authentication. API credentials remain bound to their permitted workspace and environment.
 
-Customer authentication options, roles, and administrator permissions are confirmed during onboarding for your deployment.
+Account authentication supports configured Google, Microsoft, and GitHub sign-in and organization MFA policies. Sign-in uses account identity, email, and basic profile information; it does not grant access to mailboxes, cloud documents, repositories, or bank accounts. Confirm your required MFA policy and permitted sign-in methods during onboarding. Application sign-in configuration does not by itself establish enterprise SSO or a particular identity-provider assurance scope.
 
-## Encryption and key management
+Staging, production, and demo use separate data and secrets. Sandbox and Live permissions and credentials are separately scoped. Review authorization and isolation evidence for the workflows you will use.
 
-AMLOK encrypts restricted information in transit and at rest, including relevant databases, object stores, and backups. Key administration is separated from ordinary data access. Production and non-production environments use separate credentials and access boundaries.
+## Azure service boundaries
 
-Your security review can cover the deployment's transport protection, encryption mechanisms, key management, rotation rules, and recovery arrangements. Agree the configuration details and supporting evidence needed during [due diligence](/security/due-diligence).
-
-## Tenant and environment separation
-
-AMLOK checks authorization at tenant boundaries. Isolation testing covers requests, storage, search indexes, queues, caches, exports, logs, and backups. Development and demonstrations use synthetic or appropriately approved masked data.
-
-Infrastructure controls include restricted database access, controlled network paths, protected storage, monitored configuration changes, and outbound-access limits. Configuration reviews address the deployed environment and its dependencies.
-
-## Secure development
-
-The development process includes peer review, automated checks, dependency and secret scanning, controlled releases, and records of material changes. Vulnerabilities are prioritized by severity, exploitability, exposure, and customer impact.
-
-AMLOK's vulnerability-management policy defines remediation targets and exception procedures. Customer-specific service commitments are set out in the agreement. Where independent testing has been performed, review its scope, date, findings, and remediation against the service and version assessed.
-
-## Logging and monitoring
-
-Security records support investigation of authentication, privilege changes, data access, exports, configuration changes, and material workflow actions. Logs are access-controlled and protected from unauthorized alteration, with sensitive payloads minimized.
-
-Operational procedures assign alert ownership, escalation, log retention, and review responsibilities. Investigations distinguish model-generated observations from verified security events and findings.
-
-## People and suppliers
-
-The security program includes confidentiality obligations, security awareness, access lifecycle procedures, and supplier reviews, with designated responsibilities. Incident-response procedures include exercise planning and follow-up on identified improvements.
-
-Use [due diligence](/security/due-diligence) to agree the evidence needed. See [incident response](/security/incident-response) for investigation and recovery procedures.
-
-## Web-application safeguards
-
-Use [console.amlok.io](https://console.amlok.io) for the customer application and review the [security overview](/security/overview) for the security program. Review the relevant architecture and configuration separately for an enterprise API or dedicated deployment.
-
-| Area | Published application safeguards |
+| Area | Platform configuration and review focus |
 | --- | --- |
-| Transport and edge | TLS 1.3 at the managed edge, HSTS, web-application firewall, and DDoS protection. |
-| Sessions | Signed session cookies with HttpOnly, Secure, and SameSite protections; time-limited, single-use password-reset tokens. |
-| Authorization | Server-enforced roles and access grants, with organization-scoped application records. |
-| Storage and operations | Encryption at rest in the documented managed storage services, restricted production access, and versioned database migrations. |
-| Deployment and monitoring | Immutable deployments traceable to commits, structured error records, and operational monitoring. |
-| Identity verification | Hosted identity verification through the applicable provider flow, with limited-duration handoff tokens. |
+| Hosting | Azure Container Apps runs the Console, account and product services, and background processing. Customer-facing services require HTTPS; account API ingress is private. |
+| Database | Azure Database for PostgreSQL stores persistent state. Public database network access is disabled, production connections verify TLS hostnames, and runtime roles are separated from migration administration. |
+| Artifacts | Azure Blob Storage holds private documents and exports. Containers are not publicly readable, and services use assigned identities rather than storage account keys. Private containers do not imply every storage service uses a private network endpoint. |
+| Secrets | Azure Key Vault supplies scoped runtime secrets through managed service identities, with role-based access and configured deletion protections. |
+| Service communication | The platform configuration includes managed HTTPS and peer transport protections. Assess the actual route and trust boundary for each integration. |
+| Account email | Azure Communication Services delivers transactional account messages; engagement tracking is disabled in this transport. |
 
-See [privacy and data handling](/security/privacy) for privacy requests and policies, and [hosting and subprocessors](/security/hosting-and-subprocessors) for the provider register.
+Microsoft provides the underlying managed-service protections; Amlok is responsible for its application, access, configuration, and data handling. See [shared responsibility](https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility) and [hosting and subprocessors](/security/hosting-and-subprocessors).
+
+## Encryption and processing locations
+
+Review encrypted transport, managed-service encryption at rest, key access, and backup protection for the specific service. Core hosting is in Canada Central. Amlok-related provider processing is contractually restricted to Canada, including backups and support access. Provider-owned account activity and institution-selected destinations have separate roles and terms. Match each service to the processing schedule in [hosting and subprocessors](/security/hosting-and-subprocessors).
+
+Do not infer customer-managed keys, universal private endpoints, cross-region replication, or a particular residency arrangement from Azure hosting alone. Record requirements and the supporting configuration in the service review.
+
+## Operational records and resilience
+
+Azure Monitor and Log Analytics support operational records and configured alerts. Application audit events support review of account, permission, billing, and material workspace changes. Limit sensitive payloads in diagnostic records and use approved access channels.
+
+Assess alert ownership, escalation, recovery exercises, and measured outcomes separately from the existence of a configured alert or backup. Recovery commitments, retention schedules, and high-availability requirements are established for the applicable service. See [incident response and continuity](/security/incident-response).
+
+## Changes and supporting evidence
+
+Review release records, authorization checks, relevant automated tests, vulnerability handling, secret management, and corrective actions for the product and version in scope. Independent assessments must identify the tested boundary, assessment period, findings, and remediation status.
+
+Use [due diligence](/security/due-diligence) to agree required evidence. [AI governance](/security/ai-governance) covers intended use and model risks; [payments and PCI](/security/payments-and-pci) covers the separate Stripe billing boundary.
+
+## Security boundaries through a workflow
+
+A typical workflow crosses several boundaries. Review the controls at each transition instead of treating a single sign-in or encrypted connection as protection for the entire lifecycle.
+
+| Transition | Control boundary | Detailed guide |
+| --- | --- | --- |
+| Teammate enters Console | Invitation, verified identity, MFA policy, revocable session and assigned role. | [Identity and access](/security/identity-and-access) |
+| Institution backend calls Amlok | Scoped key, current authority, environment, product and resource permissions. | [API and integration security](/security/api-and-integration-security) |
+| Borrower authorizes a source | Subject, purpose, selected data, session and provider permission. | [Open banking](/security/open-banking-and-fdx) |
+| Evidence is stored and assessed | Private artifacts, permitted source, lineage, version, access and retention. | [Privacy](/security/privacy) and [AI governance](/security/ai-governance) |
+| Result or event leaves Amlok | Authorized read/export, signed delivery, receiver verification and downstream controls. | [API and integration security](/security/api-and-integration-security) |
+| Service changes or recovers | Release evidence, audit, restricted secrets, restoration checks and reconciled work. | [Operations and resilience](/security/operations-and-resilience) |
+
+## Environment and customer responsibilities
+
+Sandbox supports controlled testing with synthetic scenarios and simulated funds. Live access and product enablement are explicit controls. Keep test keys, signing secrets, destinations and data separate from Live; never use production personal information merely to make a demonstration look realistic.
+
+Amlok protects the application boundaries described in these guides. Your institution protects its devices, user approvals, backend credentials, webhook receivers, exported copies, policy decisions and communications. A provider protects the managed services within its own scope. The agreement and deployment review should resolve responsibilities where those boundaries meet.
+
+For requirements such as customer-managed encryption keys, dedicated infrastructure, enterprise federation, private connectivity, specified recovery objectives or particular assessment coverage, establish the applicable service terms and evidence. Do not infer a feature or contractual commitment from the platform's underlying cloud capabilities.

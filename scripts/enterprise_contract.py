@@ -381,5 +381,5 @@ def extend(g):
     g['write']('data/reporting-api-index.json',g['dump']([o for o in g['OP_INDEX'] if o['group']=='Reporting']))
     g['write']('data/baseline-api-index.json',g['dump']([o for o in g['OP_INDEX'] if o['id'].startswith(('BM','BB'))]))
     g['write']('data/enterprise-api-index.json',g['dump'](new_ops))
-    g['REFINEMENTS'].append('Credits expose only available and spent totals. Signal charges at month start or first activation. Included processing stages require a product context. Added immutable evidence membership, workload visibility, Signal period reports, bootstrap checkpoints, resumable changes, and specified billing export files. No backend was executed.')
+    g['REFINEMENTS'].append('Credits expose only available and spent totals. Signal charges atomically with the first successfully published evaluation per borrower/business/workspace/UTC month; creation or activation alone does not charge. Included processing stages use an internal product context. Added immutable evidence membership, workload visibility, Signal period reports, bootstrap checkpoints, resumable changes, and specified billing export files. No backend was executed.')
     return new_ops

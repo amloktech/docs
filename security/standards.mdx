@@ -1,46 +1,84 @@
 ---
 title: "Standards and control alignment"
-description: "SOC 2 Trust Services Criteria, ISO/IEC 27001, and security practices for regulated financial institutions."
+description: "Review Amlok's assurance frameworks, privacy obligations, financial-sector guidance, and open-banking standards against your service and evidence scope."
+keywords: ["Amlok compliance", "SOC 2", "SOC 3", "ISO 27001", "ISO 42001", "AIUC-1", "FDX", "PCI DSS"]
 ---
 
-AMLOK is built with security controls aligned to the **AICPA Trust Services Criteria used in SOC 2 Type II examinations** and the information-security management principles of **ISO/IEC 27001:2022**. These frameworks inform how we protect financial information, manage access and suppliers, respond to incidents, and maintain accountable operations.
+Use this guide to connect your Amlok security review to the appropriate standards, laws, and regulatory guidance. Define the Insights or Signal service, data flows, jurisdiction, assessment period, and responsibility split before evaluating the supporting evidence.
 
-## SOC 2 control alignment
+A framework reference describes the subject of the review. A certification, independent assurance report, statutory registration, or accreditation has its own issuer, scope, validity, and evidence. Review those items separately through [due diligence](/security/due-diligence).
 
-SOC 2 is an assurance reporting framework. A Type II examination evaluates control design and operating effectiveness over a specified period. Our control alignment focuses on the following outcomes; a customer's review should consider the specific service, controls, and operating evidence within its scope. See the [AICPA SOC resources](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services).
+## Assurance and security frameworks
 
-| Trust Services category | AMLOK control focus |
+| Framework | Type | Control focus | Evidence to review |
+| --- | --- | --- | --- |
+| [SOC 2 Type II](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services) | Independent assurance report | Relevant Trust Services Criteria and control operation over a defined period. | System description, covered criteria, period, auditor opinion, exceptions, subservice organizations, and customer responsibilities. |
+| [SOC 3](https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-3/) | General-use assurance report | High-level assurance on applicable Trust Services Criteria. | Report identity, system and period, and the relationship to more detailed assurance materials. A SOC 3 report does not contain the detailed control testing of SOC 2. |
+| [ISO/IEC 27001:2022](https://www.iso.org/standard/27001) | Information security management system standard | Risk assessment, information protection, access, suppliers, incidents, continuity, and improvement. | Certificate scope and validity where applicable, statement of applicability, risk treatment, and relevant operating evidence. |
+| [ISO/IEC 42001:2023](https://www.iso.org/standard/42001) | AI management system standard | Accountable AI governance, risk and impact assessment, lifecycle controls, and improvement. | Management-system scope, intended uses, assigned responsibilities, assessments, and applicable assurance materials. |
+| [AIUC-1](https://standard.aiuc-1.com/learn/about) | Voluntary AI agent assurance standard | Agent data/privacy, security, safety, reliability, accountability, and societal risk. | In-scope agents, standard version, control mapping, independent evaluation results, and assessment materials. See [AI governance](/security/ai-governance). |
+| [PCI DSS](https://docs.stripe.com/security/guide) | Payment-card security standard | Protection of payment-card data within the applicable integration boundary. | Stripe service scope, Amlok's integration and applicable validation obligations, and the responsibility allocation. |
+| [NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) | Voluntary risk framework | Govern, Identify, Protect, Detect, Respond, and Recover. | A scoped control mapping, risks, priorities, and operating evidence. |
+| [NIST AI RMF](https://www.nist.gov/itl/ai-risk-management-framework) | Voluntary AI risk framework | Governance, context, measurement, and management of AI risks, including relevant generative-AI guidance. | Intended-use assessment, evaluation design, limitations, oversight, and monitoring. |
+
+### SOC 2 review areas
+
+| Trust Services category | Deployment questions |
 | --- | --- |
-| Security | Least privilege, authenticated access, tenant separation, encryption, change control, vulnerability management, and incident response. |
-| Availability | Monitoring, dependency management, backups, recovery procedures, and agreed service commitments. |
-| Processing integrity | Source traceability, validation, reconciliation, exception handling, and controlled workflow execution. |
-| Confidentiality | Purpose-limited access, protected transmission and storage, supplier restrictions, and retention and deletion procedures. |
-| Privacy | Documented purposes, appropriate collection authority, data minimization, individual-rights assistance, and breach assessment. |
+| Security | How are access, tenant boundaries, changes, vulnerabilities, and incidents controlled? |
+| Availability | Which dependencies, recovery procedures, and service commitments are included? |
+| Processing integrity | How are evidence, transformations, exceptions, and assessment outputs checked? |
+| Confidentiality | What limits apply to access, transmission, suppliers, retention, and deletion? |
+| Privacy | How are permitted purposes, collection authority, rights, and breach responsibilities defined? |
 
-## ISO/IEC 27001 alignment
+The criteria and controls covered by a particular report determine what it establishes. Do not assume that every report covers every category or every Amlok deployment.
 
-Our security program follows a risk-based approach to governance, information protection, and continual improvement. It includes policy ownership, risk assessment, access management, secure development, supplier oversight, incident handling, continuity, and review of corrective actions. [ISO/IEC 27001:2022](https://www.iso.org/standard/27001) provides the information-security management system framework for this approach.
+## Canadian privacy and financial frameworks
 
-## Security risk management
+| Framework | Type | Control focus | Evidence to review |
+| --- | --- | --- | --- |
+| PIPEDA | Federal privacy law | Accountable processing, appropriate purposes, safeguards, rights, and breach handling. | Data-flow and purpose records, contractual instructions, rights processes, and breach procedures. |
+| Québec Law 25 | Amendments to provincial privacy law | Governance, impact assessments, sensitive data, exclusively automated decisions, and transfers. | Applicable assessments, notices, explanation/review procedures, and transfer arrangements. |
+| Alberta PIPA | Provincial privacy law | Reasonable collection/use, safeguards, rights, and service-provider transparency. | Provincial scope, privacy practices, cross-border service information, and breach assessment. |
+| British Columbia PIPA | Provincial privacy law | Private-sector processing, protection, access, correction, and retention. | Applicable organization/activity, permissions, records, and rights procedures. |
+| OSFI B-10 | Supervisory guidance | Third-party risk, contracts, monitoring, concentration, and exit. | Service dependencies, supplier review, contract terms, continuity, and exit assistance. |
+| OSFI B-13 | Supervisory guidance | Technology governance, cyber security, operations, and resilience. | Relevant service controls, incident coordination, and security evidence. |
+| OSFI E-23 | Supervisory guidance | Model inventory, validation, monitoring, accountability, and change. | Model and use-case documentation, limitations, validation and monitoring evidence. |
+| OSFI E-21 | Supervisory guidance | Critical operations and operational resilience. | Dependency mapping, recovery arrangements, scenario testing, and incident processes. |
+| Canadian sanctions | Laws and regulations | Restricted parties/activities, ownership and control, and applicable reporting. | Screening scope, escalation, review records, and applicable legal restrictions. |
+| PCMLTFA / FINTRAC | Statutory AML/ATF framework | Covered reporting entities' identification, beneficial ownership, monitoring, records, and reporting. | Entity/activity determination and the agreed verification and evidence responsibilities. |
 
-The [NIST Cybersecurity Framework 2.0](https://www.nist.gov/cyberframework) provides a useful structure for reviewing these practices: Govern, Identify, Protect, Detect, Respond, and Recover. Use it to connect institutional risk requirements to the controls and evidence relevant to your AMLOK deployment.
+Read [Canadian requirements](/security/canada) and [Québec privacy](/security/quebec) for official sources and applicability. Laws and supervisory guidance are not certifications. Institutions retain their own legal responsibilities when using a service provider.
 
-## Financial-sector requirements
+## Open banking and data sharing
 
-Technical safeguards support an institution's compliance program. Applicability depends on the institution's regulator, activities, jurisdiction, and the information processed.
+| Framework | Type | Control focus | Evidence to review |
+| --- | --- | --- | --- |
+| Canada's consumer-driven banking framework | Statutory framework and implementing requirements | Participation, permissioned data access, responsibilities, and oversight. | Applicable participant/provider status, permitted services, consent, and final requirements. |
+| Financial Data Exchange / FDX API | Technical data-sharing standard | Interoperable data formats, secure authorization and exchange, and consent management. | Implemented API/profile version, provider scope, permissions, revocation, and applicable conformance evidence. |
 
-| Area | Relevant requirements | How to scope the AMLOK review |
+FDX's designation as Canada's technical standards body is distinct from an individual participant's accreditation or an implementation's certification. See [Open banking and FDX](/security/open-banking-and-fdx) for current Canadian status and a connection responsibility matrix.
+
+## United States requirements
+
+| Area | Relevant framework | Evidence focus |
 | --- | --- | --- |
-| Canadian privacy | PIPEDA, Alberta and British Columbia private-sector privacy laws, and Quebec's private-sector privacy law as amended by Law 25. | Collection authority, permitted purposes, sensitive information, retention, individual rights, breach response, and cross-border processing. |
-| Canadian regulated institutions | OSFI third-party risk and technology/cyber risk guidance, where applicable to the customer. | Service materiality, oversight, contracts, security evidence, resilience, concentration risk, and exit planning. |
-| US financial information | GLBA and the safeguards requirements applicable to the financial institution and its service providers. | Information security, access, encryption, supplier oversight, incident coordination, and contractual safeguards. |
-| Lending and reporting | ECOA/Regulation B, FCRA where applicable, and relevant state requirements. | Data provenance, permissible use, model governance, human oversight, explanations, notices, and dispute handling. |
-| AI and automated workflows | Applicable institutional model-risk, privacy, lending, and governance requirements. | Intended use, validation, limitations, change control, traceability, and authorized decision-making. |
+| Financial data protection | GLBA and applicable safeguards rules | Security program, service-provider terms, access, encryption, incident coordination, and legal roles. |
+| Credit decisions | ECOA / Regulation B | Actual decision factors, fair-lending review, explanations, notices, and retention. |
+| Consumer reporting | FCRA and relevant state laws | Agency, furnisher and user roles; permissible purpose, accuracy, disputes, and notices. |
+| Privacy and automated decisions | CCPA / CPRA and applicable state AI/privacy requirements | Processing roles, exemptions, rights, assessments, explanations, and oversight. |
+| Financial-institution vendors | NYDFS Part 500 and interagency third-party guidance | Contractual controls, supplier evidence, monitoring, resilience, and incident notification. |
+| Predictive model governance | Federal Reserve SR 26-2 | Applicable model scope, validation, monitoring, and limitations. Generative and agentic AI are outside this guidance's scope. |
+| Sanctions | OFAC requirements | Applicable U.S. nexus, program restrictions, screening, escalation, and records. |
 
-Read the [Canadian](/security/canada), [Quebec](/security/quebec), [United States](/security/united-states), and [AI governance](/security/ai-governance) guides for applicability and primary regulatory sources.
+Use [United States requirements](/security/united-states) for scope and primary sources. A customer's regulated status does not automatically make every vendor subject to every rule that governs the customer.
 
-Payment processing, identity verification, and banking integrations have their own scopes and provider obligations. Vendor assurance applies to the vendor's covered service; it does not automatically extend to every AMLOK workflow. Review any payment-card or other specialized requirements against the actual data flow.
+## Azure and Stripe responsibilities
 
-## Review the evidence
+Amlok uses Microsoft Azure for its platform and Stripe for billing payments. Provider assurance covers the services and systems listed in the provider's reports. Amlok remains responsible for its application, data handling, access decisions, configuration, and contractual obligations. Your institution remains responsible for its permitted use of data and lending decisions.
 
-Available assurance materials, including applicable service-provider SOC reports, can be requested [under NDA](/security/due-diligence#security-materials-under-nda). Start with [due diligence](/security/due-diligence) and [platform security](/security/platform-security). Define the system boundary, review period, controls, responsibilities, and supporting materials with AMLOK. For security and procurement questions, contact [privacy@amlok.io](mailto:privacy@amlok.io).
+Review [hosting and subprocessors](/security/hosting-and-subprocessors), [platform security](/security/platform-security), and [privacy and data handling](/security/privacy). Stripe billing payments are separate from institution lending, borrower repayment, and funds movement. The Amlok product API exposes credit and consumption reporting rather than payment, payout, transfer, or refund commands.
+
+## Request evidence for your service
+
+Specify the service boundary, framework, report period or standard version, customer obligations, and decisions your team needs to support. Request the applicable materials through [due diligence](/security/due-diligence). Review confidential materials under their access terms; provider reports and framework descriptions do not substitute for Amlok-specific evidence.

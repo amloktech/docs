@@ -1,0 +1,87 @@
+---
+title: "Amlok trust whitepaper"
+sidebarTitle: "Trust whitepaper"
+description: "Understand Amlok's service boundaries, Canadian processing, access controls, evidence handling, AI governance, and shared responsibilities."
+keywords: ["Amlok", "trust whitepaper", "security", "privacy", "Canadian processing", "AI governance"]
+---
+
+This whitepaper explains how to assess Amlok's security, privacy, and governance boundaries for an institutional credit workflow. It connects the platform's controls with the responsibilities of your institution and the providers involved. Read it alongside your agreement and the detailed [security documentation](/security/overview).
+
+## Service purpose and responsibility
+
+Amlok Insights performs full underwriting assessments. Amlok Signal monitors changes and supports change-driven reassessment. Both operate on authorized evidence within the agreed workflow. Your institution defines lending policy, validates its use of outputs, and owns credit decisions, notices, borrower communications, and interventions in its systems.
+
+Verification and related checks are stages within the applicable assessment, not separate permission to use every data source. A monitoring signal requires interpretation in context; it does not itself execute a collection action, change a credit limit, or transfer funds. The public product API exposes assessment, monitoring, data, evidence, and reporting capabilities within their authorized scope.
+
+## Platform and data flows
+
+Microsoft Azure hosts the institutional platform, with core hosting in Canada Central. The platform uses managed application hosting, PostgreSQL for persistent state, private Blob Storage for documents and artifacts, Key Vault for scoped secrets, and Azure services for operational monitoring and transactional account email.
+
+The typical flow has four boundaries:
+
+1. **Authorize.** Your institution establishes the subject, purpose, source rights, and permitted workflow. Named users or scoped backend credentials access the appropriate workspace and environment.
+2. **Collect and assess.** Permitted connections and documents supply evidence. Analysis retains source context, relevant versions, and limitations so a reviewer can understand the assessment's basis.
+3. **Deliver.** Authorized users and systems retrieve results and exports. Signed webhooks announce resource changes; sensitive evidence is retrieved separately through authorized reads.
+4. **Retain or exit.** Agreed retention, legal obligations, and documented requests determine continued storage, restricted holds, return, or deletion. Disconnecting a source is distinct from deleting earlier records.
+
+Sandbox and Live have separate credentials, permissions, and data. Sandbox uses synthetic scenarios and simulated funds. Live access, product enablement, and provider capabilities must match the activated service; a test result or catalog entry does not establish production source availability.
+
+See [platform security](/security/platform-security) and [API and integration security](/security/api-and-integration-security).
+
+## Providers and Canadian processing
+
+Amlok's provider arrangements contractually restrict Amlok service-data processing to Canada, including storage, backups, and support access. This describes the services supplied to Amlok, not each provider's headquarters or every product it offers globally. Independent provider accounts and institution-selected destinations retain their own roles and terms.
+
+| Provider | Role and information boundary |
+| --- | --- |
+| Microsoft Azure | Institutional application, storage, secrets, monitoring, and account email. |
+| Stripe | Platform billing and service-credit funding within the activated payment flow. |
+| Flinks | Permitted financial-data connections and associated account, transaction, and connection information. |
+| Plaid | Permitted financial-data connections for the selected country, institution, product, and permissions. |
+| Baselayer | Business verification and related risk observations within the authorized check. |
+| Google | Optional user sign-in and separate authorized staff sign-in using basic identity information. |
+| Microsoft sign-in | Optional identity, profile, and email authentication, separate from Azure hosting. |
+| GitHub | Optional basic sign-in; separately, source versioning and software delivery. |
+| Cloudflare | Domain management, DNS, and public website delivery. |
+| Cal.com | Meeting scheduling when selected, with booking and technical information. |
+| Mintlify | Public documentation hosting and associated visitor interactions. |
+
+A provider listing is not permission to send it every category of information. GitHub sign-in does not grant repository access, and development artifacts are not intended stores for borrower records. Flinks and Plaid data permissions are separate from account sign-in. Baselayer business data remains subject to restrictions on consumer-eligibility use. Review the complete [provider register](/security/hosting-and-subprocessors).
+
+## Identity, access, and protected delivery
+
+Human access uses invitations, verified identity, current membership, and role-based permissions. Owners administer organization and billing responsibilities; Devs manage permitted integration settings; Analysts read permitted product information. Workspace scope is checked on the server rather than inferred from a selected interface or known identifier.
+
+Authenticator MFA and recovery codes are available. An organization can require MFA before workspace access; it is not universally mandatory by default. Sessions are revocable, and sensitive changes require recent identity confirmation. Your institution should approve named users, apply its identity policy, and review access when duties change.
+
+API keys are shown once, stored as hashes, and bound to one organization, workspace, and environment. Requests check expiry, revocation, current authority, scopes, and product access. Export and event permissions also depend on the underlying resource and source. Signed download links expire and repeat authorization at transfer.
+
+Webhook delivery uses HTTPS and signed timestamps with the exact request body. Receivers must verify signatures, persist events, and deduplicate repeated delivery. Idempotency keys and accepted-command receipts support recovery without creating duplicate work after a lost response. These controls complement your own backend, receiver, credential, and endpoint protections. See [identity and access](/security/identity-and-access).
+
+## Evidence, models, and explanations
+
+An assessment must be understood within its subject, observation window, currency, source coverage, and applicable policy and calculation versions. Source references and input manifests support review of material values. Missing information, uncertain ownership, stale data, and conflicting evidence must remain visible rather than become supported zeros or clean risk conclusions.
+
+Review extraction, matching, classification, calculation, prediction, and early-warning performance separately. Validation should identify the task, population, denominator, reference standard, time cutoff, error tradeoffs, uncertainty, and limitations. A historical research result or synthetic scenario does not establish performance for a different lending population or prove that a past loss would have been prevented.
+
+Your institution should retain the actual reasons and evidence used for consequential decisions and provide applicable explanation, correction, and review mechanisms. Generated narrative is not a substitute for that record. Treat external documents and source text as untrusted input, and assess attempts to induce unauthorized disclosure or action.
+
+Customer-requested inference, evaluation, training, and service improvement are different purposes. A data connection does not authorize pooling customer information for training or unrelated reuse. Establish permitted purposes, provider restrictions, and any separately required authorization. See [AI and model governance](/security/ai-governance).
+
+## Operations, resilience, and privacy
+
+Audit records connect material actions to actors, targets, times, and safe request identifiers. Technical records support investigation without requiring credentials or unrestricted borrower payloads in routine diagnostics. Protected history preserves traceability; it does not imply unlimited retention or an externally certified immutable archive.
+
+Release-specific checks and testing support application assurance. Assess independent testing, vulnerability handling, monitoring ownership, and corrective actions through their actual evidence. Backups, restoration, notification delivery, and reconciliation are separate recovery tasks. Agree recovery objectives and review completed exercises; a backup configuration alone is not a measured recovery outcome.
+
+Privacy responsibilities follow the activity and applicable agreement. Your institution determines its borrower-processing purposes; Amlok processes agreed institutional information and separately administers account, security, and billing records. Rights requests require proportionate identity verification, correct routing, relevant record searches, applicable deadlines, and verified completion. Holds and recovery copies need defined access and disposal treatment.
+
+Source revocation, access removal, commercial cancellation, and deletion are distinct actions. Support coordinates retention changes and exit, including retained exceptions and completion evidence. Incident handling similarly separates service impact, privacy reporting, contractual notification, and provider coordination. See [operations and resilience](/security/operations-and-resilience), [privacy](/security/privacy), and [incident response](/security/incident-response).
+
+## Assurance and institutional review
+
+Match assurance to the entity, service, version, locations, assessment period, and controls it covers. A provider's SOC report, an ISO certificate, a regulatory requirement, an FDX specification, and an AI framework answer different questions. This whitepaper describes the service and review boundaries; it is not an independent audit report or certificate.
+
+Use the [standards guide](/security/standards) and [due-diligence process](/security/due-diligence) to request applicable materials, identify customer responsibilities, and resolve exceptions. Available confidential evidence is shared through an agreed process and subject to distribution permissions. Record the institution's approval for the intended use and revisit material changes.
+
+For security, privacy, or procurement coordination, contact [support@amlok.tech](mailto:support@amlok.tech). The [Trust Center](https://amlok.io/trust), [Privacy Policy](https://amlok.io/privacy), and [Terms and Conditions](https://amlok.io/terms) provide the corresponding public service information.

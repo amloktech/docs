@@ -1,51 +1,71 @@
 ---
 title: "Canadian requirements"
-description: "Privacy, financial-sector oversight, data access, and activity-based obligations for Canadian deployments."
+description: "Scope Canadian privacy, financial-sector oversight, sanctions, data-sharing, and activity-based requirements for your Amlok Insights and Signal deployment."
+keywords: ["Canadian privacy", "PIPEDA", "Law 25", "OSFI", "FINTRAC", "FDX", "consumer-driven banking"]
 ---
 
-Use this guide to map the requirements for your Canadian deployment. Applicability depends on the entities, activities, data flows, and institution involved.
+Use this guide to map requirements for your Canadian Amlok deployment. Identify the legal entities, regulator, lending product, information, processing locations, and activities involved. Amlok supplies Insights underwriting and Signal monitoring; your institution owns its lending decisions and performs outreach and interventions in its own systems.
 
 ## Privacy across Canada
 
-PIPEDA applies to personal information in relevant commercial activities, including interprovincial and international flows. Alberta, British Columbia, and Quebec have substantially similar private-sector privacy laws that can govern activity within those provinces. Consider both the organization and the particular processing activity. See the [OPC jurisdiction guidance](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/02_05_d_26/).
+Personal information can appear in business records, including information about owners, guarantors, employees, and customers. Determine the applicable law for the organization and activity rather than treating a business borrower as outside privacy law. PIPEDA can apply to interprovincial and international commercial flows, while substantially similar provincial laws can govern activity within a province. See the [OPC's jurisdiction guidance](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/r_o_p/02_05_d_26/).
 
-| Framework | Deployment review |
+| Framework | Matters to address |
 | --- | --- |
-| PIPEDA | Accountability, appropriate purposes, consent where required, collection limits, safeguards, retention, openness, access, and correction. |
-| Alberta PIPA | Provincial processing requirements, outside-Canada service-provider transparency, and breach assessment. |
-| British Columbia PIPA | Reasonable purposes, consent and exceptions, protection, access, correction, and retention. |
-| Quebec private-sector privacy law, as amended by Law 25 | Governance, assessments, sensitive information, automated decisions, transfers, and rights. See [Quebec privacy](/security/quebec). |
+| [PIPEDA](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/) | Accountability, appropriate purposes, required consent, collection limits, safeguards, retention, access/correction, and breach handling. |
+| [Alberta PIPA](https://www.alberta.ca/organization-responsibilities-for-protecting-personal-information) | Provincial scope, reasonable purposes, rights, protection, breach assessment, and transparency about service providers outside Canada. |
+| [British Columbia PIPA](https://www.oipc.bc.ca/for-private-organizations/) | Private-organization processing, consent and exceptions, protection, access, correction, and retention. |
+| [Québec private-sector privacy law, amended by Law 25](https://www.legisquebec.gouv.qc.ca/en/document/cs/P-39.1) | Governance, impact assessments, sensitive information, exclusively automated decisions, transfers, and individual rights. |
 
-Review [PIPEDA requirements](https://www.priv.gc.ca/en/privacy-topics/privacy-laws-in-canada/the-personal-information-protection-and-electronic-documents-act-pipeda/pipeda_brief/), [Alberta responsibilities](https://www.alberta.ca/organization-responsibilities-for-protecting-personal-information), and [BC guidance](https://www.oipc.bc.ca/for-private-organizations/). Business borrowers can supply personal information about owners and guarantors.
+For Québec, section 12.1 addresses decisions based exclusively on automated processing. Assess notice, requested information about the data and principal factors, correction, and an opportunity to submit observations to a person able to review the decision. Also address applicable system and transfer impact assessments. See [Québec privacy](/security/quebec).
+
+Under [PIPEDA breach guidance](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/privacy-breaches-at-your-business/gd_pb_201810/), assess reporting and notification requirements and record breaches. The [OPC's record guidance](https://www.priv.gc.ca/en/privacy-topics/privacy-for-businesses/privacy-breaches-at-your-business/bir_201920_001/) specifies a minimum 24-month record period after determining that a breach occurred. Agree escalation, assessment, reporting, and individual-notification responsibilities between the institution and Amlok.
+
+PIPEDA does not create a universal Canada-only hosting requirement. Amlok nevertheless contractually restricts its service-provider processing of Amlok service data to Canada, including storage, backups, and support access. Review accountability and comparable protection for any independent or institution-controlled activity, together with provincial, public-sector, contractual, and customer-specific restrictions. See [OPC cross-border guidance](https://www.priv.gc.ca/en/privacy-topics/airports-and-borders/gl_dab_090127/) and [hosting and subprocessors](/security/hosting-and-subprocessors).
 
 ## Financial-institution oversight
 
-OSFI guidance is relevant to federally regulated financial institutions and their use of third parties. It is not automatically binding on every credit union, provincial lender, or software supplier.
+OSFI guidance concerns federally regulated financial institutions. Provincial lenders and credit unions can have different regulators. Agree the evidence and assistance Amlok provides for the customer's applicable obligations; outsourcing does not transfer the institution's accountability.
 
-| Guidance | Matters to address with the institution |
+| Guidance | Review focus |
 | --- | --- |
-| B-10: Third-party risk management | Supplier assessment, materiality, agreements, subcontractors, monitoring, continuity, and exit. |
-| B-13: Technology and cyber risk management | Technology governance, information protection, resilience, incident management, and control evidence. |
-| E-23: Model risk management | Model inventory, intended use, validation, monitoring, change controls, and accountability. |
+| [B-10: Third-party risk management](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/third-party-risk-management-guideline) | Service materiality, diligence, contracts, subcontractors, concentration, monitoring, continuity, and exit. |
+| [B-13: Technology and cyber risk management](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/technology-cyber-risk-management) | Governance, information protection, technology operations, incidents, resilience, and control evidence. |
+| [E-23: Model risk management](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/guideline-e-23-model-risk-management-2027) | Model inventory, intended use, validation, oversight, monitoring, change, and accountability. The revised guideline takes effect May 1, 2027. |
+| [E-21: Operational risk management and resilience](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/operational-risk-management-resilience-guideline) | Critical operations, dependency mapping, disruption tolerances, recovery and scenario testing. OSFI's [transition schedule](https://www.osfi-bsif.gc.ca/en/news/backgrounder-guideline-e-21-operational-risk-resilience) expected full adherence by September 1, 2026. |
+| [B-20: Residential mortgage underwriting](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/residential-mortgage-underwriting-practices-procedures-guideline-2017) | Relevant federally regulated institutions' mortgage underwriting/acquisition, borrower capacity and collateral assessment. It is not general business-lending guidance. |
 
-Outsourcing does not remove institutional accountability. The revised E-23 takes effect on **May 1, 2027**; identify requirements applicable during transition rather than treating that future date as already effective. Sources: [B-10](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/third-party-risk-management-guideline), [B-13](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/technology-cyber-risk-management), and [E-23](https://www.osfi-bsif.gc.ca/en/guidance/guidance-library/guideline-e-23-model-risk-management-2027).
+Review the applicable version and institution scope. OSFI guidance is not a certification of Amlok. See [AI and model governance](/security/ai-governance) for validation responsibilities and the distinction between model assurance and individual lending decisions.
 
-For other institutions, map provincial-regulator requirements separately. Agree information, review rights, and operational assistance required from AMLOK in the service agreement.
+## Sanctions and AML/ATF
 
-## AML and FINTRAC
+Canadian sanctions requirements depend on the applicable regulations, parties, ownership/control, activities, and prohibitions. Establish screening scope, escalation, review, and any reporting duties using [Global Affairs Canada's compliance guidance](https://www.international.gc.ca/world-monde/international_relations-relations_internationales/sanctions/compliance-program-conformite.aspx?lang=eng). A screening result or unresolved match does not itself establish that a transaction is permitted or prohibited.
 
-Reporting-entity obligations under the Proceeds of Crime (Money Laundering) and Terrorist Financing Act depend on sector and activity. FINTRAC's scope includes financial entities, mortgage administrators, brokers and lenders, and specified financing or leasing activities, among others. See [who must report](https://fintrac-canafe.canada.ca/reporting-declaration/info/re-ed-eng.php) and [financing and leasing requirements](https://fintrac-canafe.canada.ca/re-ed/lease-bail-eng).
+The Proceeds of Crime (Money Laundering) and Terrorist Financing Act and its regulations apply to covered reporting entities. Determine the sector and activity using [FINTRAC's reporting-entity guidance](https://fintrac-canafe.canada.ca/reporting-declaration/Info/re-ed-eng). Relevant duties can include identity, beneficial ownership, monitoring, records, and reporting. Amlok analysis supports the agreed evidence workflow; it is not an institution's entire AML program or a regulatory filing.
 
-The institution determines its identification, beneficial-ownership, monitoring, recordkeeping, and reporting duties. Underwriting analysis or a monitoring signal is not, by itself, a completed AML program or regulatory filing. Agree any screening or verification scope expressly.
+## Consumer-driven banking and FDX
 
-## Bank-data access and payments
+FDX, acting through its Canada Council, is the designated technical standards body for Canada's consumer-driven banking framework. The Canadian profile is still being finalized, and framework participation remains distinct from use of a commercial connector. Review [Open banking and FDX](/security/open-banking-and-fdx) for the standard, current framework status, and connection responsibilities.
 
-Consumer-driven banking participation and accreditation are distinct from connecting a commercial data provider. Confirm the current framework, permitted access route, and permissions before relying on a connection. The [Bank of Canada's consumer-driven banking page](https://www.bankofcanada.ca/regulatory-oversight/consumer-driven-banking/) tracks implementation and proposed regulations.
+Permissioned access does not authorize every downstream use. Specify account/data scope, purpose, ongoing collection, expiry, revocation, and retained records. Confirm provider participation and connection coverage rather than inferring them from an integration listing.
 
-If a workflow introduces payment initiation, funds handling, or another payment function, assess the Retail Payment Activities Act before activation. Applicability depends on actual functions, geographic scope, and exclusions. See the [supervisory framework](https://www.bankofcanada.ca/regulatory-oversight/retail-payments/supervisory-framework/).
+## Activity-based requirements
 
-## Communications and product-specific obligations
+| Activity or characteristic | Requirement to assess |
+| --- | --- |
+| Furnishing or using consumer credit reports | Provincial consumer-reporting laws can impose registration, permitted-purpose, accuracy, access/correction and related duties. Determine each party's actual role; see the [Ontario Consumer Reporting Act](https://www.ontario.ca/laws/statute/90c33). |
+| Commercial email or SMS | [CASL](https://crtc.gc.ca/eng/com500/guide.htm) requires an applicable consent basis, identification, and unsubscribe handling, subject to exceptions. B2B messages are not universally exempt. |
+| Ontario operations and public websites | [AODA web requirements](https://www.ontario.ca/page/how-make-websites-accessible) generally require WCAG 2.0 AA for covered public-sector organizations and businesses/nonprofits with 50+ employees. Other accessibility duties can apply below that threshold. |
+| Federally regulated operations | Assess the [Accessible Canada Act](https://www.canada.ca/en/employment-social-development/programs/accessible-canada/act-summary.html); bank-vendor status alone does not determine direct applicability. |
+| Performing payment functions | Assess the [Retail Payment Activities Act registration criteria](https://www.bankofcanada.ca/2026/06/criteria-for-registering-payment-service-providers/) where a covered function is performed as a non-incidental service. Reading financial data is distinct from initiating or transferring funds. |
+| Lending products and personal information | Assess provincial lending, mortgage, human-rights, consumer-protection, language, and any specialized health/public-sector requirements. |
 
-Commercial email and text messages may require consent, sender identification, and an unsubscribe mechanism under CASL, subject to applicable exceptions. Review the [CRTC guidance](https://crtc.gc.ca/eng/internet/anti/reg.htm) for each message type.
+Amlok uses Stripe for its own billing payments. The product API does not expose payment initiation, payouts, transfers, or borrower-servicing commands. Institutions conduct their own lending, repayment, collections, and communications workflows.
 
-Also assess applicable provincial lending, mortgage, consumer-reporting, collections, human-rights, accessibility, and language requirements. Health or public-sector data requires separate analysis. This guide does not enumerate every obligation for every lending product.
+## AI, fairness, and evolving requirements
+
+Review protected-group harms, proxies, evidence quality, oversight, and correction/review pathways. The [Canadian privacy regulators' AI principles](https://www.priv.gc.ca/en/privacy-topics/technology/artificial-intelligence/gd_principles_ai/) provide guidance grounded in existing privacy duties. Relevant [human-rights protections](https://www.ohrc.on.ca/en/policy-discrimination-and-language/relevant-code-provisions) must also be considered.
+
+[Bill C-36](https://www.parl.ca/LegisInfo/en/bill/45-1/c-36) remains proposed legislation rather than an enacted replacement for PIPEDA. The [federal automated-decision directive](https://www.canada.ca/en/government/system/digital-government/digital-government-innovations/responsible-use-ai/automated-decision-making/guide-scope-directive-automated-decision-making.html) does not automatically govern private fintech vendors. Use enacted requirements and your institution's applicable obligations when defining the deployment.
+
+For evidence and responsibility allocation, continue with [standards](/security/standards), [privacy](/security/privacy), and [due diligence](/security/due-diligence).

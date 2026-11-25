@@ -1,6 +1,7 @@
 ---
 title: "Quebec privacy"
-description: "Law 25 considerations for governance, privacy assessments, transfers, and automated decisions."
+description: "Review Quebec privacy accountability, consent, transfers, automated decisions, individual rights, retention, and incident duties."
+keywords: ["Quebec", "Law 25", "privacy", "portability", "confidentiality incidents", "Amlok"]
 ---
 
 Review these requirements with your privacy and legal teams when planning a deployment involving Quebec personal information.
@@ -9,7 +10,13 @@ Review these requirements with your privacy and legal teams when planning a depl
 
 Quebec's private-sector privacy law, as amended by Law 25, includes governance, transparency, and privacy-impact assessment requirements. Review the assessment needed for a project to acquire, develop, or overhaul an information system or electronic service involving personal information. Involve the responsible privacy officer early. See the [CAI assessment guide](https://www.cai.gouv.qc.ca/uploads/pdfs/CAI_GU_EFVP.pdf?gt=obligation).
 
-Document the AMLOK workflow, purposes, sources, people affected, locations, access, retention, providers, risks, and mitigations. Revisit the assessment when the workflow or data use changes materially.
+Document the Amlok workflow, purposes, sources, people affected, locations, access, retention, providers, risks, and mitigations. Revisit the assessment when the workflow or data use changes materially.
+
+## Accountability, notices, and consent
+
+Identify the person responsible for privacy protection, publish the required title and contact details, and document complaint handling and responsibilities through the information lifecycle. Amlok's privacy contact is [support@amlok.tech](mailto:support@amlok.tech); the institution must also identify its own responsible contact. See the [CAI Law 25 overview](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/sujets-et-domaines-dinteret/principaux-changements-loi-25).
+
+Where consent is required, make it clear, informed, purpose-specific, and separate from unrelated terms. Assess the applicable express-consent requirement for sensitive information and any lawful primary-purpose or statutory exception. A broad connection authorization is not permission for unrelated use. Review the [CAI consent guidance](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/consentement-personnes-entreprises) against the actual collection, use, and disclosure.
 
 ## Processing outside Quebec
 
@@ -20,6 +27,18 @@ An assessment is required before relevant communication or entrusted processing 
 When a decision is based exclusively on automated processing of personal information, the person must be informed no later than communication of the decision. On request, information includes the personal information used, the main reasons, factors and parameters, and the right to correct that information. The person must have an opportunity to make observations to a staff member able to review the decision. These requirements can apply to credit decisions. See the [CAI guidance](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/utilisation-communication-renseignements-personnels).
 
 Identify whether the workflow assists a reviewer or decides without human intervention. Assess how it actually operates, rather than relying on a nominal approval step. Configure notices, explanations, correction, and review accordingly.
+
+## Requests, portability, and retention
+
+Route access and correction requests to the organization responsible for the information and identify Amlok's assistance under the processing arrangement. Verify identity and representative authority proportionately; explain applicable limitations and review options. [Section 27 of the private-sector law](https://www.legisquebec.gouv.qc.ca/en/pdf/cs/P-39.1.pdf) also addresses portability: on request, covered computerized information collected from the person must be provided in a structured, commonly used technological format, subject to the serious-practical-difficulties exception. Information created or inferred from personal information is outside that specific portability obligation. Do not confuse portability with an unrestricted entitlement to model code or every derived assessment.
+
+Define retention by purpose and applicable obligations, including any lawful hold. At the end of the permitted period, address destruction or any lawful anonymization process rather than keeping identifiable records indefinitely. De-identification alone does not establish anonymity. Scope active records, exports, recovery copies, and restrictions to reapply after restoration. See [privacy and data handling](/security/privacy) for request and deletion coordination.
+
+## Confidentiality incidents
+
+Maintain a register of all confidentiality incidents involving personal information, including those that do not reach the notification threshold. Assess the risk of serious injury and required notices to the CAI and affected people; take reasonable steps to reduce harm and prevent recurrence. Entrusting information to a provider does not remove the responsible organization's obligations.
+
+The [CAI's private-sector incident guidance](https://www.cai.gouv.qc.ca/protection-renseignements-personnels/information-entreprises-privees/incidents-confidentialite-mesures-securite-entreprises) requires register information to be kept up to date and retained for at least five years after the date or period when the enterprise became aware of the incident. This differs from PIPEDA's minimum record period. Assign applicable reporting, recordkeeping, provider coordination, and affected-person communication duties in the deployment. See [incident response](/security/incident-response).
 
 ## Deployment record
 

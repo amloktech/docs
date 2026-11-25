@@ -9,7 +9,7 @@ metadata:
 
 # AMLOK integration
 
-Read the [OpenAPI contract](https://docs.amlok.io/openapi/amlok.json), [quickstart](https://docs.amlok.io/api-reference/quickstart) and relevant endpoint schemas before implementing requests. AMLOK has one public API with 65 operations under `/v1`. Do not create provider sync jobs, input manifests or workflow executions from client code.
+Read the [OpenAPI contract](https://docs.amlok.io/openapi/amlok.json), [quickstart](https://docs.amlok.io/api-reference/quickstart) and relevant endpoint schemas before implementing requests. AMLOK has one public API with 67 operations under `/v1`. Do not create provider sync jobs, input manifests or workflow executions from client code.
 
 Inspect the customer's existing application, identity mapping and selected products. Use existing permissions, storage and event handling where possible. This skill provides guidance, not permission to access records, transmit messages or execute chargeable requests. Never request credentials in chat or invent hostnames, fields, endpoints, packages or successful results.
 
@@ -33,7 +33,7 @@ Read `GET /v1/configuration` for approved application and pricing schemas, integ
 
 Create `POST /v1/monitors` with funded terms, a risk-package or approved portfolio-onboarding baseline, policy, cadence and connections. Read monitoring runs, alerts and updated packages. Use `PATCH /v1/monitors/{id}` with `If-Match` only for prospective monitoring configuration. Never rewrite historical product evidence or charges.
 
-Signal includes change-driven reassessment and counts each active borrower/business once per workspace/month. A separately requested full underwriting is Insights. Financial APIs expose billing summary, transactions and authorized exports; payment methods, automatic top-ups and cancellation stay in the console.
+Signal includes change-driven reassessment and counts each borrower/business once per workspace per UTC calendar month on its first successfully published evaluation. Creating, activating or resuming a monitor alone does not charge. No successful publication means no new monthly debit. A separately requested full underwriting is Insights. Financial APIs expose billing summary, transactions and authorized exports. Console manages available payment-method and automatic-payment settings; cancellation, refunds, disputes and retention changes are coordinated through support or the account manager. Do not invent self-service cancellation or deletion commands.
 
 ## Reliability and evidence
 

@@ -1,0 +1,85 @@
+---
+title: "Identity and access security"
+sidebarTitle: "Identity and access"
+description: "Configure account access, MFA, sessions, workspace roles, and credential ownership for your Amlok team."
+keywords: ["Amlok", "MFA", "access control", "sessions", "workspace roles", "authentication"]
+---
+
+Control who can enter your organization, which workspaces they can use, and which actions they can perform. Amlok separates human Console accounts, machine API credentials, borrower connection sessions, and webhook signing secrets. Each has its own purpose and permissions.
+
+## Identity boundaries
+
+| Identity | Purpose | Boundary |
+| --- | --- | --- |
+| Console account | A named teammate signs in, reviews permitted records, or administers allowed settings. | Current organization and workspace membership, role, verification, and applicable MFA policy. |
+| API key | Your backend calls the product API. | One organization, workspace, and Sandbox or Live environment, plus explicit scopes, expiration, and the creator's current authority. |
+| Borrower connection session | A borrower completes a specific permissioned connection flow. | A short-lived session for its borrower, purpose, and configured flow; it does not expose your API key. |
+| Webhook signing secret | Your receiver authenticates a delivery from a registered destination. | The specific workspace/environment destination; it does not authorize API reads. |
+
+A resource identifier, a selected workspace in the interface, or a successful sign-in is not permission to access every organization or environment. Access is checked on the server. See [API and integration security](/security/api-and-integration-security).
+
+## Invitation and account verification
+
+Accounts enter through an authorized invitation. Public password self-registration does not grant workspace access. Workspace invitations identify the recipient and assigned role; the recipient must use the matching verified email address. The invitation is checked again when it is accepted, including its expiry, revocation, prior use, and the inviter's current authority.
+
+Invitations expire after 48 hours and cannot be redeemed repeatedly to create additional memberships. An expired or revoked invitation requires a new authorized invitation. Protect the invitation link as a temporary access credential and send it only to the intended teammate.
+
+Owners manage workspace Dev and Analyst invitations. Owner provisioning has a separate administrative boundary; a workspace invitation does not silently grant organization ownership. Review effective access in every relevant workspace, including any organization-level access, when onboarding or removing a teammate.
+
+## Password and provider sign-in
+
+Password accounts use passwords of 12-128 characters and require email verification. Email verification links expire after one hour and verify the address without creating a signed-in session. Password reset links expire after 30 minutes and are single-use; a successful reset invalidates existing sessions. Reset and verification request responses avoid disclosing whether an address has an account.
+
+Configured Google, Microsoft, and GitHub sign-in use basic identity, email, and profile information. Amlok does not request mailbox, cloud-document, repository, or bank-account access through these sign-in flows. Provider tokens are used for the identity exchange; Amlok retains the account association and necessary profile rather than tokens for ongoing access to provider APIs.
+
+Linking a provider account to an existing Amlok account requires matching identity and verification checks. Do not assume a matching display name proves ownership. Organization MFA policy continues to apply when a user chooses provider sign-in.
+
+Social sign-in and enterprise SSO have different administration and assurance scopes. Record any enterprise federation, provisioning, or identity-provider requirements in your service review instead of inferring them from the Microsoft, Google, or GitHub buttons.
+
+## Multi-factor authentication
+
+Amlok supports time-based authenticator codes and recovery codes. Enrollment requires a valid authenticator code before the factor becomes active. Existing password-only sessions are invalidated when enrollment completes. At subsequent sign-in, an enabled factor requires a current authenticator code or an unused recovery code before access is granted.
+
+Recovery codes are single-use. Regenerating them invalidates the previous set, so store the replacement securely and remove superseded copies. Do not keep recovery codes beside the account password or share them with teammates.
+
+MFA is optional unless your organization enables its MFA requirement. With that requirement enabled, users must enroll before accessing the organization's workspaces, including users with workspace-only membership. The requirement prevents enrolled members from disabling MFA while the policy applies. Account security remains accessible so a member can complete enrollment.
+
+Set the policy deliberately during onboarding and review enrollment when adding people or changing access. Do not infer universal mandatory MFA from the availability of the feature. If you lose both the authenticator and recovery codes, contact [support@amlok.tech](mailto:support@amlok.tech) for the applicable verified recovery process; support requests do not themselves bypass account protections.
+
+## Sessions and sensitive changes
+
+Console sessions have a seven-day rolling lifetime with a daily renewal interval. Session cookies are HTTP-only, use SameSite=Lax, and require Secure transport in production. Signing out invalidates the server session. Session credentials are not returned as ordinary profile data for storage in browser local storage.
+
+Account security shows active-session metadata, including creation, expiry, browser information, and IP address. You can revoke an individual session or other sessions. Treat an unfamiliar session as a reason to review the account, revoke access as appropriate, and report suspected exposure.
+
+Sensitive actions require a recent identity confirmation. The confirmation lasts five minutes and is bound to the current session. It applies to actions such as password changes, MFA changes and recovery codes, session revocation, access administration, API keys, webhook configuration, and billing administration. Confirmation uses the applicable password, current factor, or fresh provider identity flow. It is not a permanent exemption from reauthentication.
+
+Password changes revoke other sessions. Password resets revoke existing sessions. Disabling MFA, where policy permits it, signs out sessions. These controls protect account changes; they do not rotate independently issued API keys or webhook secrets.
+
+## Role separation
+
+| Capability | Owner | Dev | Analyst |
+| --- | --- | --- | --- |
+| Read permitted product and evidence records | Yes | Yes | Yes |
+| View aggregate API analytics | Yes | Yes | Yes |
+| Manage API keys and non-billing integration configuration | Yes | Yes | No |
+| View technical request logs | Yes | Yes | No |
+| Manage organization/workspace configuration and team access | Yes | No | No |
+| Administer billing and read financial reporting | Yes | No | No |
+| Rewrite historical evidence, result versions, or ledger entries | No | No | No |
+
+Roles apply within their authorized scope. Billing access also requires current organization Owner authority, including when a machine key is used. A Dev cannot create Owner-only billing access by choosing a broader API profile. Integration scopes do not override membership, source entitlements, or product activation.
+
+Access changes are rechecked server-side, including during sensitive writes. A key's creator must retain the authority needed for the requested operation. Removing or reducing a user's access can therefore affect integrations created by that user. Plan credential ownership before offboarding.
+
+## Access review and offboarding
+
+Use the following review when a teammate joins, changes duties, or leaves:
+
+1. Confirm the individual, approved role, workspace scope, and owner of the approval. Avoid shared human accounts.
+2. Apply your organization MFA policy and verify enrollment. Review permitted provider accounts and account recovery arrangements.
+3. Review existing memberships and invitations; revoke unused invitations and remove access that is no longer needed.
+4. Inventory API keys, webhook destinations, exports, and scheduled integrations associated with the person. Transfer operational responsibility and rotate credentials where exposure or loss of authority requires it.
+5. Review relevant audit activity and confirm the intended access change. Removing a membership does not delete historical records or cancel the institution's agreement.
+
+Your institution owns its user approvals, reviews, endpoints, and devices. Amlok enforces the application permissions and credential boundaries. For operating evidence, use [due diligence](/security/due-diligence); for suspected compromise, use [incident response](/security/incident-response).

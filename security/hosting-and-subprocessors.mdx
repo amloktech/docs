@@ -1,54 +1,110 @@
 ---
 title: "Hosting and subprocessors"
-description: "Review the complete data location and supplier chain for an AMLOK deployment."
+description: "Review Amlok's Canadian processing commitments and provider roles across Azure hosting, Stripe billing, data connections, sign-in, and website services."
+keywords: ["Azure", "Stripe", "Flinks", "Plaid", "Baselayer", "subprocessors", "Canada", "identity providers"]
 ---
 
-Processing locations, approved providers, and data-use restrictions are agreed for your deployment. Review the full data flow before connecting live information.
+Amlok runs its institutional platform on **Microsoft Azure** and uses **Stripe** for platform billing. This register also identifies financial-data and verification providers, optional sign-in services, software-delivery services, and public website services. Review each provider for the information it actually receives in your workflow.
 
-## Agree the processing boundary
+## Canadian processing commitment
 
-Specify where information is stored, processed, backed up, and accessed. Database location alone does not describe the full flow. Include inference, telemetry, search indexes, support access, exports, and disaster recovery.
+Amlok's contracted provider arrangements restrict processing of Amlok service data to **Canada**, including storage, backups, and support access. The core Azure platform is hosted in **Canada Central**. This location statement describes the services supplied to Amlok; it does not describe each provider's corporate headquarters or make a claim about every service that provider offers globally.
 
-| Component | Information to establish |
-| --- | --- |
-| Primary hosting | Provider, region, tenant boundary, and permitted data categories. |
-| Backup and recovery | Regions, replication, access restrictions, retention, and restoration testing. |
-| Model processing | Provider and service, inference location, logging, retention, and training terms. |
-| Operational access | Countries from which personnel and suppliers may access information. |
-| Integrations | Data returned or sent, permissions, provider role, and applicable agreement. |
+A person's separate Google, Microsoft, GitHub, bank, or other provider account remains subject to that provider's own terms. Review independent provider activity, user-selected external links, and institution-controlled destinations separately from processing performed on Amlok's behalf. A Canadian service location does not waive source-provider permissions or requirements for processing outside Québec.
 
-Record Canada-only requirements explicitly and check the whole boundary. Do not infer exclusive Canadian processing from a Canadian primary hosting region.
+## Provider register
 
-## Suppliers and subprocessors
+The [Trust Center](https://amlok.io/trust#subprocessors) presents the same provider inventory. "Subprocessors" is the portal's navigation label; the actual legal role may be a processor, independent identity or data provider, or supplier according to the activity and applicable agreement.
 
-The deployment's register should identify each legal entity, function, data received, locations, onward providers, retention, and safeguards. It should explain how material changes are communicated and reviewed.
-
-Providers may process information on behalf of an institution, act under their own obligations, or supply data under separate terms. An [integration catalog](/integrations) entry is not a declaration that the provider receives data in every deployment.
-
-## Subprocessor categories
-
-This public overview describes service categories and their potential data access. The confidential subprocessor register identifies the legal entities, services, processing locations, and safeguards applicable to your deployment. Request it through your AMLOK contact under a signed nondisclosure agreement (NDA).
-
-| Service category | Purpose | Data categories, where applicable |
+| Provider | Role for Amlok | Information within that role |
 | --- | --- | --- |
-| Hosting and infrastructure | Application hosting, content delivery, edge security, storage, and recovery. | Application records, request metadata, and operational logs. |
-| Payment and billing services | Subscription billing, checkout, and payouts. | Billing identity, payment references, and payout records. |
-| AI and model processing | Authorized analysis and workspace assistance. | Approved prompts, selected context, and generated outputs. |
-| Transactional communications | Service notifications and operational email. | Recipient details and message content. |
-| Identity verification | Authorized document and liveness checks. | Identity attributes, documents, verification images, and results. |
-| Financial-data connectivity | Authorized account connections and data retrieval. | Account information, balances, and transaction records. |
-| Commerce-data connectivity | Authorized store connections and data retrieval. | Store, order, and refund information. |
+| Microsoft Azure | Institutional platform hosting, storage, secrets, monitoring, and account email. | Authorized account, workspace and product records, artifacts, operational metadata, and necessary account-email content. |
+| Stripe | Platform billing and service-credit funding. | Billing identity and the payment information and transaction details required by the activated payment flow. |
+| Flinks | Authorized financial-data connections. | Permitted account and account-holder information, balances, transaction history, and connection references within the selected product and source permissions. |
+| Plaid | Authorized financial-data connections. | Permitted account and account-holder information, balances, transactions, and connection references within the selected country, institution, product, and permissions. |
+| Baselayer | Business verification and related risk checks. | Business identifiers, authorized related-person information where required, submitted verification details, and returned observations within the requested check. |
+| Google | Optional user sign-in, with separate authorized staff-access use. | Account identifier, email and basic profile information needed for authentication, and associated security metadata. |
+| Microsoft sign-in | Optional Microsoft account authentication. | Identity, profile and email information needed for authentication. This role is separate from Azure infrastructure hosting. |
+| GitHub | Optional user sign-in and, separately, project versioning and software delivery. | Sign-in identity and email; development activity involves source code, contributor metadata, build artifacts and relevant operational records. GitHub sign-in does not grant repository access. |
+| Cloudflare | Domain management, authoritative DNS, and public website delivery. | Domain and DNS information, website request metadata, and applicable service-administration records. DNS for the institutional platform is separate from its Azure hosting. |
+| Cal.com | Website meeting scheduling when selected. | Booking contact details, meeting information and associated technical requests. Scheduling is not a channel for borrower records. |
+| Mintlify | Public documentation hosting and documentation-site services. | Published documentation and visitor requests or interactions with the documentation service. It is not the institutional product-record store. |
 
-The applicable processing agreement and confidential register establish which services are used, where processing occurs, and the notice and review process for changes. Model-processing terms address permitted use, retention, and training restrictions for the relevant service.
+These services process Amlok service data under the Canadian commitment above. A provider listing is not permission to send every category of customer information to that provider. Limit each service to its purpose and approved data scope.
 
-Contact [privacy@amlok.io](mailto:privacy@amlok.io) for the register, applicable provider assurance materials, and processing details. See [security materials under NDA](/security/due-diligence#security-materials-under-nda) for the review process.
+## Core platform on Microsoft Azure
 
-## Cross-border processing
+| Service | Role | Information in scope |
+| --- | --- | --- |
+| Azure Container Apps | Console, account and product APIs, administration services, and background processing. | Authorized account, workspace, and product requests and outputs. |
+| Azure Database for PostgreSQL | Persistent account and product state. | Organization records, permissions, product records, billing records, and processing state. |
+| Azure Blob Storage | Private document, evidence, and export storage. | Authorized input documents and generated artifacts. |
+| Azure Key Vault | Scoped secrets used by application services. | Credentials and secrets required for approved service functions. |
+| Azure Communication Services | Account and transactional email. | Recipient details and necessary message content. |
+| Azure Monitor and Log Analytics | Operational records and configured service alerts. | Operational metadata and diagnostics needed to investigate the service. |
+| Azure Container Registry | Platform application images. | Deployment software artifacts. |
 
-PIPEDA does not generally prohibit outsourcing processing outside Canada. The responsible organization remains accountable and must use contractual or other means to provide a comparable level of protection. Transparency and the transfer's circumstances remain important. See the [OPC guidance](https://www.priv.gc.ca/en/privacy-topics/airports-and-borders/gl_dab_090127/).
+Service access is governed by assigned identities and roles. Review [platform security](/security/platform-security) for tenant boundaries, transport protection, and access controls. Hosting on Azure does not establish a particular model, AI service, or training permission; review the approved model workflow and [AI governance](/security/ai-governance).
 
-Quebec adds assessment and agreement requirements for processing outside Quebec, including elsewhere in Canada. Review [Quebec privacy](/security/quebec).
+## Financial data and verification
 
-## Exit and portability
+Amlok uses Flinks and Plaid for permitted financial-data access and Baselayer for business verification and related risk checks. The requested workflow determines which provider receives which information. The presence of a provider does not mean every borrower is sent to every provider, that all provider products are enabled, or that a verification result is complete when evidence is missing.
 
-Agree export format, transition period, access removal, return or deletion, backup treatment, provider coordination, and completion evidence before deployment. Identify records subject to a legal hold or retention obligation.
+[Flinks](https://www.flinks.com/) and [Plaid](https://plaid.com/) have product and institution coverage conditions. Review the Amlok [Flinks guide](/integrations/bank-integrations/flinks), [Plaid Canada guide](/integrations/bank-integrations/plaid-canada-ca), [Plaid U.S. guide](/integrations/bank-integrations/plaid-united-states-us), and [integration status](/integrations/status). [Baselayer](https://baselayer.com/) is disclosed here as a verification provider; this does not create a separate customer-configurable integration or standalone Amlok product.
+
+Baselayer business information is not a consumer report. Do not use it for personal credit, employment, housing, or other consumer eligibility purposes prohibited by its terms. Respect onward-sharing, derivative-use, and secondary-use restrictions for the applicable product and agreement. See [Baselayer service terms](https://baselayer.com/terms-of-service/) and the [Amlok Privacy Policy](https://amlok.io/privacy#financial-and-verification-providers).
+
+Record the source authority, permitted purpose, selected data, provider product, relevant notices and consent, retention, and revocation handling. See [open banking and FDX](/security/open-banking-and-fdx). A source provider's payment capabilities do not imply that Amlok initiates borrower payments.
+
+Stripe platform billing is separate from connecting a merchant's Stripe account as an analytical source. See [payments and PCI scope](/security/payments-and-pci) and the [Stripe data integration](/integrations/payments-and-pos/stripe).
+
+## Identity and software-delivery boundaries
+
+Google, Microsoft, and GitHub sign-in supplies the identity needed for Amlok account access. Signing in does not authorize access to email contents, cloud documents, repositories, or financial accounts. Any separate data connection needs its own authorization. The enabled sign-in method and your organization's access policy determine availability.
+
+GitHub versioning and delivery are distinct from its sign-in role. Source repositories, issues, build logs, and artifacts are not intended channels for production borrower records or payment credentials. Use synthetic or redacted diagnostic material and an approved secure process for any exceptional investigation. A development supplier does not become a blanket recipient of all institutional product data.
+
+## Website, documentation, and browser services
+
+Cloudflare manages domains and DNS and serves the public website. Cal.com loads for scheduling when you choose the booking interaction. Mintlify hosts the public documentation. Review the website [Privacy Policy](https://amlok.io/privacy) and [Cookies Policy](https://amlok.io/cookies) for website storage and external interactions.
+
+External assets, links, and services a visitor chooses to open can receive technical requests. A link, package dependency, integration-catalog entry, or static logo does not by itself establish that the named organization processes institutional data on Amlok's behalf.
+
+## Shared responsibilities and assurance
+
+Microsoft protects the underlying Azure services within its service commitments. Amlok remains responsible for its application, identities, permissions, configuration, data handling, and operational processes. Your institution controls its authorized users, source permissions, permitted purposes, lending policies, and use of outputs. See [Microsoft's shared-responsibility model](https://learn.microsoft.com/en-us/azure/security/fundamentals/shared-responsibility).
+
+A provider's reports cover the services named in those reports. They do not become an Amlok SOC report, ISO certificate, or PCI validation. Match evidence to the services used and assess Amlok's responsibilities separately. Sources: [Azure compliance offerings](https://learn.microsoft.com/en-us/azure/compliance/offerings/) and [Stripe integration security](https://docs.stripe.com/security/guide).
+
+## Processing schedule, changes, and exit
+
+Request the applicable processing schedule through [due diligence](/security/due-diligence). Record the provider legal entity and role, approved services and data categories, Canadian storage/backup/support arrangements, onward providers, restricted uses, retention, incident coordination, and provider-change terms. Review source or independent-controller activities separately. Provider changes follow the applicable agreement and legal requirements; the public register does not create a new fixed notice period.
+
+Before deployment, agree exports, transition assistance, access removal, provider coordination, return or deletion, backup treatment, legally retained records, and completion evidence. An infrastructure default does not define the customer-wide retention period or prove deletion. See [privacy and data handling](/security/privacy) and [incident response](/security/incident-response).
+
+PIPEDA does not generally prohibit foreign outsourcing, but this does not override Amlok's Canadian contractual processing restriction or stricter customer requirements. Québec requires a separate assessment and agreement for relevant processing outside Québec, including another Canadian province. See [OPC cross-border guidance](https://www.priv.gc.ca/en/privacy-topics/airports-and-borders/gl_dab_090127/) and [Québec privacy](/security/quebec).
+
+Contact [support@amlok.tech](mailto:support@amlok.tech) or your Amlok contact for the scoped provider register and available assurance materials.
+
+## Assess a provider's actual data access
+
+Use the register to map your selected workflow rather than sending the same questionnaire to every supplier without regard to access. Confirm the contracted service, data categories, authorized recipients, and technical path for each role.
+
+| Supplier role | Priority questions |
+| --- | --- |
+| Platform infrastructure | Which application records, objects, logs and backups are held; which identities may administer them; and how access and recovery are evidenced. |
+| Billing | Which payment data is received directly, which references Amlok retains, and how events, reconciliation and refunds are coordinated. |
+| Financial data or verification | Which sources and products are authorized, which observations are returned, and which use, sharing, retention or consumer-purpose restrictions apply. |
+| Sign-in | Which identity claims are requested, how an account is linked, and which activity remains part of the person's independent provider account. |
+| Software delivery | Which source, contributor, build and diagnostic material is processed, with production borrower data kept outside ordinary development artifacts. |
+| Public website/documentation/scheduling | Which visitor or booking requests are necessary, when a third-party interaction begins, and how sensitive data is excluded from ordinary submissions. |
+
+Review downstream suppliers and support access as part of the applicable service agreement. Corporate headquarters, a public cloud-region map, or a vendor's general policy does not by itself describe the specific Amlok arrangement.
+
+## Change and incident coordination
+
+For a material supplier change, assess the affected service, data categories, locations, onward processing, access, and customer commitments before relying on the changed arrangement. Apply the notification, authorization, objection or other change terms that actually govern the service; do not assume a universal period.
+
+For a supplier incident, identify whether the issue affects source availability, confidentiality, integrity, sign-in, delivery, billing, or public content. A source outage can reduce evidence coverage even when platform infrastructure is healthy. A public documentation issue does not by itself establish access to institutional product records. Coordinate the necessary investigation and communications within the affected boundary.
+
+Provider exit should address access removal, data return/deletion, justified retained records, backups, and relevant evidence. Where a provider independently holds originals or user-account data, document that separate role rather than claiming Amlok can erase the provider's entire record. See [incident response](/security/incident-response) and [due diligence](/security/due-diligence).
