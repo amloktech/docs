@@ -358,7 +358,7 @@ const bdcResearchLogos = [
   ["goeasy", "https://images.ctfassets.net/fh625txf4dd5/tKuZ2ppr4fF5b5MT2YWfZ/a2cb4fc1d68cf44a1f6553b9b2ad9dc6/goeasy-logo.svg"],
   ["Clearco", "https://cdn.prod.website-files.com/65fde10e62e6a7603e9221cc/660190120ed591c2ca6658f4_clearco-logo-black.webp"],
   ["Romspen", "https://www.romspen.com/wp-content/themes/romspen/dist/assets/img/romspen-logo-color.svg"],
-  ["Lendefied", "https://www.lendefied.com/wp-content/uploads/2024/01/Lendefied.gif"]
+  ["Lendified", "/images/demobdc/lendified.png"]
 ];
 // Qualitative product-scope comparison. Do not convert these descriptions into benchmark scores.
 const bdcAIProviders = [
