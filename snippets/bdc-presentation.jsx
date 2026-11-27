@@ -9,6 +9,7 @@ const bdcSlides = [
   ["After funding", "New signals. A continuous view of risk."],
   ["Use cases", "One engine. Three ways to use it."],
   ["Lending infrastructure", "Infrastructure built for lending."],
+  ["Where we are", "Built in business lending. Expanding across credit."],
   ["The conversation", "Where could better evidence change a decision?"]
 ];
 
@@ -837,7 +838,35 @@ export const BdcPresentation = () => {
         <BdcInfrastructure />
       </section>
 
-      <section className="bdc-slide bdc-closing" hidden={current !== 9} aria-labelledby="bdc-title-9"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-9">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
+      <section className="bdc-slide bdc-market-progress" hidden={current !== 9} aria-labelledby="bdc-title-9">
+        <BdcHeading index={9} />
+        <div className="bdc-market-grid">
+          {[
+            ["shop", "Our foundation", "Business lending", "Our focus to date"],
+            ["people", "Expanding into", "Consumer lending", "Auto and mortgage"],
+            ["shield", "In focus", "Surety bonds", ""],
+            ["layers", "In focus", "Tokenized private credit", ""]
+          ].map(([icon, status, title, detail], i) => <article className={`bdc-market-card${i === 0 ? " bdc-market-foundation" : ""}`} key={title}>
+            <div className="bdc-market-status"><span>{status}</span><BdcIcon name={icon} size={25} /></div>
+            <h3>{title}</h3>
+            {detail && <p>{detail}</p>}
+          </article>)}
+        </div>
+        <div className="bdc-current-underwriting">
+          <div className="bdc-current-deals">
+            <p className="bdc-eyebrow">Currently underwriting</p>
+            <strong>$1M - $5M</strong>
+            <p>Deals in underwriting today</p>
+          </div>
+          <div className="bdc-current-client">
+            <p className="bdc-eyebrow">Client relationship</p>
+            <h3>Working with a client<br />who co-founded Clearco.</h3>
+            <img src={bdcResearchLogos.find(([name]) => name === "Clearco")[1]} alt="Clearco" />
+          </div>
+        </div>
+      </section>
+
+      <section className="bdc-slide bdc-closing" hidden={current !== 10} aria-labelledby="bdc-title-10"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-10">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
     </div>
     <footer className="bdc-footer"><div className="bdc-footer-row"><span className="bdc-footer-context">AMLOK / BDC <span>/ {bdcSlides[current][0]}</span></span><span className="bdc-key-hint">Use ← → to navigate</span><div className="bdc-pagination"><button type="button" onClick={() => goTo(current - 1)} disabled={current === 0} aria-label="Previous slide"><BdcIcon name="back" size={19} /></button><button type="button" onClick={() => goTo(current + 1)} disabled={current === bdcSlides.length - 1} aria-label="Next slide"><BdcIcon name="arrow" size={19} /></button></div></div></footer>
     <dialog className="bdc-overview" ref={overviewRef} aria-labelledby="bdc-overview-title" onClick={e => { if (e.target === e.currentTarget) closeOverview(); }}><div className="bdc-overview-header"><div><p className="bdc-eyebrow">AMLOK / Prepared for BDC</p><h2 id="bdc-overview-title">Presentation overview</h2></div><button type="button" onClick={closeOverview} aria-label="Close slide overview"><BdcIcon name="close" /></button></div><div className="bdc-overview-grid">{bdcSlides.map(([section, title], i) => <button type="button" key={title} className={i === current ? "bdc-overview-current" : ""} aria-current={i === current ? "step" : undefined} onClick={() => { goTo(i); closeOverview(); }}><span className="bdc-eyebrow">{String(i + 1).padStart(2, "0")} / {section}</span><strong>{title}</strong><BdcIcon name="arrow" size={19} /></button>)}</div></dialog>
