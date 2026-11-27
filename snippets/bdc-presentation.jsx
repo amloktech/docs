@@ -616,7 +616,7 @@ const BdcUseCases = () => {
 
 const bdcInfrastructureScreens = [
   { title: "Adjudication & portfolio management", detail: "Portfolio overview", src: "/images/demobdc/lending-overview.png", alt: "Lending workspace showing the active pipeline, portfolio exposure and risk signals" },
-  { title: "Adjudication & portfolio management", detail: "Work queue", src: "/images/demobdc/lending-work-queue.png", alt: "Lending team work queue showing prioritized reviews and supporting context" },
+  { title: "Intake & Onboarding", detail: "Customize the application and onboarding flow", icon: "document", src: "/images/demobdc/intake-onboarding.png", alt: "Intake builder for customizing loan application fields, business and funding sections, and the onboarding flow" },
   { title: "Technical team", detail: "Console, origination and API evidence", src: "/images/demobdc/technical-console.png", alt: "Technical Console showing an origination record, API request and response tabs, and its risk package" },
   { title: "Business", detail: "Business profile and financial health", src: "/images/demobdc/business-financial-health.png", alt: "Business profile showing financial health, onboarding status, verification and connected banking insights" }
 ];
@@ -628,7 +628,7 @@ const BdcInfrastructure = () => {
   return <>
     <div className="bdc-infrastructure-grid">
       {bdcInfrastructureScreens.map(item => <figure className="bdc-infrastructure-card" key={item.src}>
-        <figcaption><div><h3>{item.title}</h3><p>{item.detail}</p></div><BdcIcon name={item.title === "Technical team" ? "layers" : item.title === "Business" ? "shop" : "bank"} size={22} /></figcaption>
+        <figcaption><div><h3>{item.title}</h3><p>{item.detail}</p></div><BdcIcon name={item.icon || (item.title === "Technical team" ? "layers" : item.title === "Business" ? "shop" : "bank")} size={22} /></figcaption>
         <button type="button" className="bdc-infrastructure-screen" onClick={event => openScreen(item, event)} aria-label={`Enlarge ${item.detail}`}>
           <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
           <span className="bdc-infrastructure-enlarge"><BdcIcon name="expand" size={15} />Enlarge</span>
@@ -833,7 +833,7 @@ export const BdcPresentation = () => {
       </section>
 
       <section className="bdc-slide bdc-infrastructure" hidden={current !== 8} aria-labelledby="bdc-title-8">
-        <BdcHeading index={8} intro="Dedicated workspaces for adjudication, portfolio management, technical teams and businesses." />
+        <BdcHeading index={8} intro="Connected workspaces for intake, adjudication, portfolio management, technical teams and businesses." />
         <BdcInfrastructure />
       </section>
 
