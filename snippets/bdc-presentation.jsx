@@ -7,7 +7,7 @@ const bdcSlides = [
   ["Two products", "Insights and Signal"],
   ["The unified process", "Unified data. A stronger underwriting process."],
   ["After funding", "New signals. A continuous view of risk."],
-  ["The value", "Payments become the lending channel."],
+  ["Use cases", "One engine. Three ways to use it."],
   ["The conversation", "Where could better evidence change a decision?"]
 ];
 
@@ -30,7 +30,9 @@ const BdcIcon = ({ name, size = 22 }) => {
     search: "M10 3a7 7 0 1 0 0 14 7 7 0 0 0 0-14m5 12 6 6",
     layers: "m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5",
     lock: "M5 10h14v11H5zM8 10V7a4 4 0 0 1 8 0v3",
-    target: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8"
+    target: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m0 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8",
+    agent: "M12 3v3M9 3h6M5 7h14v13H5zM2 11v5m20-5v5M8 11h1m6 0h1M9 16h6",
+    people: "M9 4a3 3 0 1 0 0 6 3 3 0 0 0 0-6M3 21v-3a6 6 0 0 1 12 0v3M17 4a3 3 0 0 1 0 6m1 4a5 5 0 0 1 3 4v3"
   };
   return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name] || paths.flow} /></svg>;
 };
@@ -554,6 +556,63 @@ const BdcResearch = () => {
   </div>;
 };
 
+// Presentation-only financing choices. No account connection, consent or credit action is performed.
+const bdcUseCasePlans = [
+  { key: "bank", title: "Bank data", amount: "$6,000", contribution: "$9,000", rate: "8.00%", detail: "Use existing bank transactions.", connected: false },
+  { key: "connected", title: "Connected business", amount: "$8,000", contribution: "$7,000", rate: "6.00%", detail: "Connect your business sources.", connected: true },
+  { key: "monitored", title: "Connected + monitored", amount: "$10,000", contribution: "$5,000", rate: "4.00%", detail: "Also allow monitoring for the term.", connected: true }
+];
+const BdcUseCases = () => {
+  const [selected, setSelected] = useState("monitored");
+  const plan = bdcUseCasePlans.find(item => item.key === selected);
+  return <div className="bdc-use-case-grid">
+    <article className="bdc-use-case bdc-use-engine">
+      <header className="bdc-use-case-header"><span className="bdc-eyebrow">01 / Intelligence via API</span><h3>Adjudication &amp;<br />portfolio monitoring engine</h3><p>Turn fragmented activity into a connected view of the business.</p></header>
+      <div className="bdc-use-engine-visual" role="group" aria-label="Separate transaction records become one business profile, an Insights risk package and post-funding Signal alerts">
+        <div className="bdc-use-transactions">
+          {[["card", "Customer receipt", "+$8,450"], ["book", "Supplier invoice", "-$3,200"], ["bank", "Debt repayment", "-$780"]].map(([icon, label, amount]) => <div key={label}><BdcIcon name={icon} size={16} /><span>{label}</span><strong>{amount}</strong></div>)}
+        </div>
+        <svg className="bdc-use-merge" viewBox="0 0 320 44" fill="none" aria-hidden="true"><path d="M40 0v10q0 12 20 12h80q20 0 20 18M280 0v10q0 12-20 12h-80q-20 0-20 18M160 0v42" /><path className="bdc-use-pulse" d="M40 0v10q0 12 20 12h80q20 0 20 18" /></svg>
+        <div className="bdc-use-profile"><div><BdcIcon name="layers" size={22} /><strong>Unified business profile</strong></div><p>Entities resolved. Activity reconciled.</p><div className="bdc-use-profile-tags"><span>Cash flow</span><span>Capacity</span><span>Obligations</span></div></div>
+        <div className="bdc-use-engine-output"><span className="bdc-use-output-icon"><BdcIcon name="document" size={18} /></span><div><strong>Insights</strong><span>Risk package for adjudication</span></div><BdcIcon name="check" size={16} /></div>
+        <div className="bdc-use-signal"><div className="bdc-use-signal-heading"><div><strong>Signal</strong><span>After funding</span></div><BdcIcon name="flow" size={22} /></div><svg viewBox="0 0 320 45" fill="none" aria-label="Illustrative change signal"><path className="bdc-use-chart-baseline" d="M0 30h320" /><path d="M0 30h45l12-8 13 15 15-25 15 18h54l14-8 16 11 13-17 15 5h40l15-10 16 5 20-10h17" /></svg><div className="bdc-use-signal-tags"><span>Cash-flow changes</span><span>New obligations</span></div></div>
+      </div>
+      <p className="bdc-use-case-value">One evidence base.<br /><strong>Decisions and signals in your systems.</strong></p>
+    </article>
+    <article className="bdc-use-case bdc-use-workforce">
+      <header className="bdc-use-case-header"><span className="bdc-eyebrow">02 / AI in your workflows</span><h3>Agentic workforce</h3><p>Coordinate specialist agents across the lending lifecycle.</p></header>
+      <div className="bdc-use-agent-hub"><span><BdcIcon name="agent" size={29} /></span><div><strong>Specialist AI agents</strong><small>Your policies. Connected evidence.</small></div><span className="bdc-use-agent-status" aria-hidden="true" /></div>
+      <ol className="bdc-use-agent-stages">
+        {[
+          ["people", "Verification & onboarding", "Resolve identities and surface evidence gaps."],
+          ["search", "Credit underwriting", "Assess capacity and prepare the risk package."],
+          ["flow", "Portfolio monitoring", "Detect changes and prioritize reviews."],
+          ["document", "Servicing & collections", "Surface signals for your team to intervene."],
+          ["shield", "Fraud & compliance", "Flag inconsistencies and support investigation."]
+        ].map(([icon, title, detail]) => <li key={title}><span className="bdc-use-agent-node"><BdcIcon name={icon} size={18} /></span><div><strong>{title}</strong><p>{detail}</p></div></li>)}
+      </ol>
+      <p className="bdc-use-case-value">Less manual preparation.<br /><strong>Your team keeps decision authority.</strong></p>
+    </article>
+    <article className="bdc-use-case bdc-use-embedded">
+      <header className="bdc-use-case-header"><span className="bdc-eyebrow">03 / Financing in the flow</span><h3>Embedded financials</h3><p>Make each payment an opportunity to access financing.</p></header>
+      <div className="bdc-use-widget">
+        <div className="bdc-use-widget-top"><BdcIcon name="bank" size={18} /><span>Business payment</span><strong>$15,000 <small>CAD</small></strong></div>
+        <div className="bdc-use-widget-title"><img src="/logo/amlok-logo-blue.svg" alt="AMLOK" width="83" height="16" /><span>Choose how to qualify</span></div>
+        <fieldset className="bdc-use-plans"><legend className="bdc-sr-only">Illustrative financing plans for a $15,000 CAD payment</legend>{bdcUseCasePlans.map(item => <label key={item.key} className={selected === item.key ? "bdc-use-plan is-selected" : "bdc-use-plan"}>
+          <input type="radio" name="bdc-use-financing-plan" value={item.key} checked={selected === item.key} onChange={() => setSelected(item.key)} />
+          <div className="bdc-use-plan-title"><strong>{item.title}</strong><span className="bdc-use-radio" aria-hidden="true">{selected === item.key && <BdcIcon name="check" size={12} />}</span></div>
+          <div className="bdc-use-plan-terms"><strong>{item.amount}</strong><span>{item.rate} APR</span></div>
+          {!item.connected && <p>{item.detail}</p>}
+          {item.connected && <span className="bdc-use-providers"><span><img src="/images/demobdc/shopify.svg" alt="" />Shopify</span><span><img src="/images/demobdc/stripe.svg" alt="" />Stripe</span>{item.key === "monitored" && <span><BdcIcon name="flow" size={12} />Monitoring</span>}</span>}
+        </label>)}</fieldset>
+        <p className="bdc-use-plan-selection" role="status">{plan.amount} financed <span>+ {plan.contribution} from your account</span></p>
+        <p className="bdc-use-widget-note">Illustrative options · 6-month term<br />Subject to assessment and lender approval.</p>
+      </div>
+      <p className="bdc-use-case-value">Clear choices. Optional connections.<br /><strong>A path to qualify for better terms.</strong></p>
+    </article>
+  </div>;
+};
+
 export const BdcPresentation = () => {
   const [current, setCurrent] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
@@ -738,23 +797,10 @@ export const BdcPresentation = () => {
         <BdcNote>Coverage and refresh depend on authorized sources. Change-driven reassessment is included in Signal. Your institution owns outreach and decisions; monitoring does not automatically reprice a facility.</BdcNote>
       </section>
 
-      <section className="bdc-slide bdc-widget-value" hidden={current !== 7} aria-labelledby="bdc-title-7">
-        <BdcHeading index={7} intro="Surface financing options at the moment of payment, with underwriting based on the institution's policies and the business's current capacity." />
-        <div className="bdc-widget-value-grid">
-          {[
-            ["card", "Payments as distribution", "Turn existing bank payments into a distribution channel for the institution's lending program, with an offer when a financing need appears."],
-            ["search", "Clarity on qualification", "Show available options and the evidence or permissions that could qualify the business for a higher amount or better terms."],
-            ["flow", "Recurring capital deployment", "Create repeat opportunities to finance existing clients and members as eligible payment needs arise, within policy and exposure limits."],
-            ["document", "Less friction for the business", "Address supplier invoices, inventory and equipment purchases in the payment flow, reducing separate applications, document requests and lender searches."],
-            ["bank", "Stronger client relationships", "Keep financing inside the institution's trusted experience, so businesses can access options where they already manage money."],
-            ["shield", "Growth within risk appetite", "Evaluate each financing need against current capacity and existing obligations, then follow changes through the term with permission."]
-          ].map(([icon, title, body], index) => <article key={title} className={index === 0 ? "bdc-widget-value-card bdc-widget-value-primary" : "bdc-widget-value-card"}><div className="bdc-widget-value-card-top"><BdcIcon name={icon} size={26} /><span>{String(index + 1).padStart(2, "0")}</span></div><h3>{title}</h3><p>{body}</p></article>)}
-        </div>
-        <div className="bdc-widget-focus" role="group" aria-labelledby="bdc-widget-focus-title">
-          <p id="bdc-widget-focus-title">Priority lending products</p>
-          <ul>{["Supplier payments", "Inventory", "Purchase orders", "Working capital"].map(product => <li key={product}>{product}</li>)}</ul>
-        </div>
-        <BdcNote>The institution retains eligibility, pricing, approval and funding authority. Businesses choose whether to use financing and which additional permissions to grant.</BdcNote>
+      <section className="bdc-slide bdc-use-cases" hidden={current !== 7} aria-labelledby="bdc-title-7">
+        <BdcHeading index={7} intro="Bring risk intelligence into your systems, your team's workflows and your client's payment experience." />
+        <BdcUseCases />
+        <BdcNote>Your institution controls policy, approval, funding and intervention. Businesses choose additional data connections and ongoing monitoring.</BdcNote>
       </section>
 
       <section className="bdc-slide bdc-closing" hidden={current !== 8} aria-labelledby="bdc-title-8"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-8">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
