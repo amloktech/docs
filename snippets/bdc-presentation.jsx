@@ -2,6 +2,7 @@
 const bdcSlides = [
   ["The opportunity", "Capacity-based lending"],
   ["The challenge", "A fragmented picture. A moving risk."],
+  ["Industry momentum", "The industry is moving"],
   ["Research", "AI research for better decisions."],
   ["Two products", "Insights and Signal"],
   ["The unified process", "Unified data. A stronger underwriting process."],
@@ -36,6 +37,52 @@ const BdcIcon = ({ name, size = 22 }) => {
 const BdcHeading = ({ index, intro }) => <header className="bdc-heading"><p className="bdc-eyebrow">{String(index + 1).padStart(2, "0")} / {bdcSlides[index][0]}</p><h2 id={`bdc-title-${index}`}>{bdcSlides[index][1]}</h2>{intro && <p className="bdc-intro">{intro}</p>}</header>;
 const BdcNote = ({ children }) => <p className="bdc-note">{children}</p>;
 const BdcSteps = ({ items, className = "" }) => <div className={`bdc-steps ${className}`}>{items.map(([title, body, detail], i) => <div key={title}><span className="bdc-index">{String(i + 1).padStart(2, "0")}</span><h3>{title}</h3><p>{body}</p>{detail && <small>{detail}</small>}</div>)}</div>;
+
+// Bank-reported process results. Keep scope, reporting dates and targets attached to each figure.
+const bdcIndustryExamples = [
+  {
+    bank: "RBC", icon: "target", dimension: "Automated credit decisions",
+    value: "45%", unit: "automatically adjudicated",
+    detail: "Small-business credit as of October 2025. Target: 90% by 2027.",
+    date: "December 2025", source: "Strategic update, slide 19",
+    href: "https://www.rbc.com/investor-relations/_assets-custom/pdf/2025q4strategicupdate.pdf#page=19"
+  },
+  {
+    bank: "Scotiabank", icon: "book", dimension: "Financial analysis",
+    value: "1 hour → <1 min", unit: "initial financial analysis",
+    detail: "Commercial Navigator analyzes new commercial deals, surfacing key ratios, trends and client questions.",
+    date: "November 2026", source: "Commercial Navigator announcement",
+    href: "https://scotiabank.investorroom.com/2026-11-17-Scotiabank-Launches-AI-Powered-Commercial-Navigator-to-Give-Teams-More-Time-with-Clients"
+  },
+  {
+    bank: "CIBC", icon: "document", dimension: "Document processing",
+    value: "16,000 hours", unit: "saved per quarter",
+    detail: "DocuMind processes 63,000 documents a month, supporting lending decisions and fraud detection.",
+    date: "Q3 2026", source: "Quarterly results, slides 4 and 26",
+    href: "https://www.cibc.com/content/dam/cibc-public-assets/about-cibc/investor-relations/pdfs/quarterly-results/2026/q326presentation-en.pdf#page=5"
+  },
+  {
+    bank: "Scotiabank", icon: "layers", dimension: "Credit administration",
+    value: "Up to 30%", unit: "faster completion",
+    detail: "Credit document review digitizes work that previously required manual entry, improving consistency.",
+    date: "November 2026", source: "Commercial Navigator announcement",
+    href: "https://scotiabank.investorroom.com/2026-11-17-Scotiabank-Launches-AI-Powered-Commercial-Navigator-to-Give-Teams-More-Time-with-Clients"
+  },
+  {
+    bank: "TD", icon: "search", dimension: "Application preparation",
+    value: "15 hours → <3 min", unit: "average pre-adjudication processing",
+    detail: "Mortgage documents are reviewed and validated before the underwriting decision.",
+    date: "October 2026", source: "Mortgage AI announcement",
+    href: "https://td.mediaroom.com/2026-10-13-TD-expands-agentic-AI-across-mortgage-operations-to-make-banking-faster,-simpler-and-more-human"
+  },
+  {
+    bank: "BMO", icon: "flow", dimension: "Post-funding reviews",
+    value: "≈15%", unit: "shorter annual-review cycles",
+    detail: "Up to 20% of reviews are automatically triaged, supporting portfolio oversight and prioritization.",
+    date: "March 2026", source: "Investor Day, slide 96",
+    href: "https://www.bmo.com/ir/files/pdfs/BMOInvestorDayPresentation.pdf"
+  }
+];
 
 // Metric names and applicability from downloads/underwriting-metric-catalog.json (2026-11-12.1).
 // Keep every catalog metric in its assigned dimension when this catalog changes.
@@ -572,10 +619,24 @@ export const BdcPresentation = () => {
         <div className="bdc-challenge-impact"><strong>The consequence</strong><p>Slower decisions, more borrower effort, misjudged risk and capacity, and missed opportunities to intervene or reassess.</p></div>
       </section>
 
-      <section className="bdc-slide bdc-research" hidden={current !== 2} aria-labelledby="bdc-title-2"><BdcHeading index={2} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows - where general-purpose AI still falls short.</>} /><BdcResearch /></section>
+      <section className="bdc-slide bdc-industry" hidden={current !== 2} aria-labelledby="bdc-title-2">
+        <BdcHeading index={2} intro="From underwriting to portfolio reviews, Canadian banks are reporting measurable gains." />
+        <div className="bdc-industry-grid">
+          {bdcIndustryExamples.map(({ bank, icon, dimension, value, unit, detail, date, source, href }) => <article className="bdc-industry-card" key={dimension}>
+            <div className="bdc-industry-card-top"><span>{bank}</span><BdcIcon name={icon} size={22} /></div>
+            <h3>{dimension}</h3>
+            <p className="bdc-industry-stat"><strong>{value}</strong><span>{unit}</span></p>
+            <p className="bdc-industry-detail">{detail}</p>
+            <a className="bdc-industry-source" href={href} target="_blank" rel="noopener noreferrer" aria-label={`${bank}: ${source}, ${date} (opens in a new tab)`}><span>Source · {date}</span><BdcIcon name="arrow" size={14} /></a>
+          </article>)}
+        </div>
+        <BdcNote>Bank-reported results for the stated workflows and periods. RBC's 90% is a target; BMO's figures concern annual reviews and triage.</BdcNote>
+      </section>
 
-      <section className="bdc-slide bdc-product-pathways-slide" hidden={current !== 3} aria-labelledby="bdc-title-3">
-        <p className="bdc-eyebrow bdc-product-slide-label" id="bdc-title-3">04 / Two products</p>
+      <section className="bdc-slide bdc-research" hidden={current !== 3} aria-labelledby="bdc-title-3"><BdcHeading index={3} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows - where general-purpose AI still falls short.</>} /><BdcResearch /></section>
+
+      <section className="bdc-slide bdc-product-pathways-slide" hidden={current !== 4} aria-labelledby="bdc-title-4">
+        <p className="bdc-eyebrow bdc-product-slide-label" id="bdc-title-4">05 / Two products</p>
         <div className="bdc-product-pathways">
           <div className="bdc-product-institutions">
             <div className="bdc-product-institution-title"><BdcIcon name="bank" size={28} /><h3>Financial institutions</h3></div>
@@ -602,8 +663,8 @@ export const BdcPresentation = () => {
         <p className="bdc-product-principle">One risk engine. Your institution's policies and credit authority.</p>
       </section>
 
-      <section className="bdc-slide bdc-unified" hidden={current !== 4} aria-labelledby="bdc-title-4">
-        <BdcHeading index={4} />
+      <section className="bdc-slide bdc-unified" hidden={current !== 5} aria-labelledby="bdc-title-5">
+        <BdcHeading index={5} />
         <div className="bdc-unification-map">
           <div className="bdc-unification-sources" aria-label="Connected data sources">
             {[
@@ -638,8 +699,8 @@ export const BdcPresentation = () => {
         <BdcNote>Business-system access is borrower-permissioned. Your institution retains final credit authority.</BdcNote>
       </section>
 
-      <section className="bdc-slide bdc-unified bdc-signal" hidden={current !== 5} aria-labelledby="bdc-title-5">
-        <BdcHeading index={5} intro="Signal compares new evidence with the funded baseline, so your team can see what changed and when to review." />
+      <section className="bdc-slide bdc-unified bdc-signal" hidden={current !== 6} aria-labelledby="bdc-title-6">
+        <BdcHeading index={6} intro="Signal compares new evidence with the funded baseline, so your team can see what changed and when to review." />
         <div className="bdc-signal-map">
           <div className="bdc-signal-inputs" aria-label="Monitored signals">
             {[
@@ -677,8 +738,8 @@ export const BdcPresentation = () => {
         <BdcNote>Coverage and refresh depend on authorized sources. Change-driven reassessment is included in Signal. Your institution owns outreach and decisions; monitoring does not automatically reprice a facility.</BdcNote>
       </section>
 
-      <section className="bdc-slide bdc-widget-value" hidden={current !== 6} aria-labelledby="bdc-title-6">
-        <BdcHeading index={6} intro="Surface financing options at the moment of payment, with underwriting based on the institution's policies and the business's current capacity." />
+      <section className="bdc-slide bdc-widget-value" hidden={current !== 7} aria-labelledby="bdc-title-7">
+        <BdcHeading index={7} intro="Surface financing options at the moment of payment, with underwriting based on the institution's policies and the business's current capacity." />
         <div className="bdc-widget-value-grid">
           {[
             ["card", "Payments as distribution", "Turn existing bank payments into a distribution channel for the institution's lending program, with an offer when a financing need appears."],
@@ -696,7 +757,7 @@ export const BdcPresentation = () => {
         <BdcNote>The institution retains eligibility, pricing, approval and funding authority. Businesses choose whether to use financing and which additional permissions to grant.</BdcNote>
       </section>
 
-      <section className="bdc-slide bdc-closing" hidden={current !== 7} aria-labelledby="bdc-title-7"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-7">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
+      <section className="bdc-slide bdc-closing" hidden={current !== 8} aria-labelledby="bdc-title-8"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-8">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
     </div>
     <footer className="bdc-footer"><nav className="bdc-progress" aria-label="Slide navigation">{bdcSlides.map(([section, title], index) => <button key={title} type="button" aria-label={`Go to slide ${index + 1}: ${section}`} aria-current={current === index ? "step" : undefined} className={index <= current ? "bdc-passed" : ""} onClick={() => goTo(index)} title={`${index + 1}. ${title}`}><span /></button>)}</nav><div className="bdc-footer-row"><span className="bdc-footer-context">AMLOK / BDC <span>/ {bdcSlides[current][0]}</span></span><span className="bdc-key-hint">Use ← → to navigate</span><div className="bdc-pagination"><button type="button" onClick={() => goTo(current - 1)} disabled={current === 0} aria-label="Previous slide"><BdcIcon name="back" size={19} /></button><span><strong>{String(current + 1).padStart(2, "0")}</strong> / {bdcSlides.length}</span><button type="button" onClick={() => goTo(current + 1)} disabled={current === bdcSlides.length - 1} aria-label="Next slide"><BdcIcon name="arrow" size={19} /></button></div></div></footer>
     <dialog className="bdc-overview" ref={overviewRef} aria-labelledby="bdc-overview-title" onClick={e => { if (e.target === e.currentTarget) closeOverview(); }}><div className="bdc-overview-header"><div><p className="bdc-eyebrow">AMLOK / Prepared for BDC</p><h2 id="bdc-overview-title">Presentation overview</h2></div><button type="button" onClick={closeOverview} aria-label="Close slide overview"><BdcIcon name="close" /></button></div><div className="bdc-overview-grid">{bdcSlides.map(([section, title], i) => <button type="button" key={title} className={i === current ? "bdc-overview-current" : ""} aria-current={i === current ? "step" : undefined} onClick={() => { goTo(i); closeOverview(); }}><span className="bdc-eyebrow">{String(i + 1).padStart(2, "0")} / {section}</span><strong>{title}</strong><BdcIcon name="arrow" size={19} /></button>)}</div></dialog>
