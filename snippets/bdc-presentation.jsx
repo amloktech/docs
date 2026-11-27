@@ -630,7 +630,7 @@ export const BdcPresentation = () => {
             <a className="bdc-industry-source" href={href} target="_blank" rel="noopener noreferrer" aria-label={`${bank}: ${source}, ${date} (opens in a new tab)`}><span>Source · {date}</span><BdcIcon name="arrow" size={14} /></a>
           </article>)}
         </div>
-        <BdcNote>Bank-reported results for the stated workflows and periods. RBC's 90% is a target; BMO's figures concern annual reviews and triage.</BdcNote>
+        <div className="bdc-industry-takeaway"><BdcIcon name="flow" size={22} /><p>Agentic workflows and partnerships with third-party providers are helping banks modernize lending.</p></div>
       </section>
 
       <section className="bdc-slide bdc-research" hidden={current !== 3} aria-labelledby="bdc-title-3"><BdcHeading index={3} intro={<>Our Research Lab develops proprietary models, benchmarks and continuous-learning systems<br />for high-risk banking workflows - where general-purpose AI still falls short.</>} /><BdcResearch /></section>
