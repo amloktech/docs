@@ -539,7 +539,7 @@ const BdcResearch = () => {
   return <div className="bdc-research-content">
     <div className="bdc-research-corpus">
       <p className="bdc-eyebrow">AMLOK-reported research</p>
-      <dl className="bdc-research-metrics">{[["275,019", "Closed deals studied"], ["6,322,690", "Metadata records"], ["1,300", "Average data points per business"]].map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      <dl className="bdc-research-metrics">{[["275,019", "Closed deals studied"], ["6,322,690", "Metadata records"], ["1,300", "Average data points per business"], ["13,000+", "Financial attributes"], ["320+", "Transaction categories"]].map(([value, label]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
       <div className="bdc-research-logos" role="group" aria-label="Financial institutions represented in the research">
         <span className="bdc-research-td" role="img" aria-label="TD Bank"><img src="https://www.td.com/content/dam/tdb/images/navigation-header-and-footer/td-logo-desktop.png" alt="" aria-hidden="true" /><span aria-hidden="true">Bank</span></span>
         {bdcResearchLogos.map(([name, src]) => <img key={name} src={src} alt={name} />)}
