@@ -57,7 +57,7 @@ const bdcIndustryExamples = [
   {
     bank: "CIBC", icon: "document", dimension: "Document processing",
     value: "16,000 hours", unit: "saved per quarter",
-    detail: "DocuMind processes 63,000 documents a month, supporting lending decisions and fraud detection.",
+    detail: "Processes 63,000 documents a month, supporting lending decisions and fraud detection.",
     date: "Q3 2026", source: "Quarterly results, slides 4 and 26",
     href: "https://www.cibc.com/content/dam/cibc-public-assets/about-cibc/investor-relations/pdfs/quarterly-results/2026/q326presentation-en.pdf#page=5"
   },
