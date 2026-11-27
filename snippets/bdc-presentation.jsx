@@ -729,7 +729,7 @@ export const BdcPresentation = () => {
         <div className="bdc-product-pathways">
           <div className="bdc-product-institutions">
             <div className="bdc-product-institution-title"><BdcIcon name="bank" size={28} /><h3>Financial institutions</h3></div>
-            <ul aria-label="Institution types"><li>Banks</li><li>Neo-banks</li><li>Credit unions</li></ul>
+            <ul aria-label="Institution types"><li>Banks</li><li>Neo-banks</li><li>Credit unions</li><li>Alternative lenders</li><li>Fintech</li></ul>
           </div>
           <div className="bdc-product-branch" aria-hidden="true"><span /><span /></div>
           <div className="bdc-product-pair">

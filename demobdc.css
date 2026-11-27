@@ -708,11 +708,11 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
 /* Two product pathways for financial institutions. */
 #demobdc-deck .bdc-product-pathways-slide { position:relative; justify-content:center; gap:clamp(20px,3vh,36px); }
 #demobdc-deck .bdc-product-pathways { width:100%; }
-#demobdc-deck .bdc-product-institutions { width:min(100%,760px); margin:0 auto; padding:22px 32px; border:1px solid var(--line); border-radius:8px; background:var(--soft); display:flex; align-items:center; justify-content:space-between; gap:24px; }
+#demobdc-deck .bdc-product-institutions { width:min(100%,1040px); margin:0 auto; padding:22px 32px; border:1px solid var(--line); border-radius:8px; background:var(--soft); display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:24px; }
 #demobdc-deck .bdc-product-institution-title { display:flex; align-items:center; gap:13px; }
 #demobdc-deck .bdc-product-institution-title svg { color:var(--blue); flex-shrink:0; }
 #demobdc-deck .bdc-product-institution-title h3 { font-size:22px; white-space:nowrap; }
-#demobdc-deck .bdc-product-institutions ul { display:flex; gap:12px; padding:0; list-style:none; font-size:13px; color:var(--muted); }
+#demobdc-deck .bdc-product-institutions ul { display:flex; flex-wrap:wrap; justify-content:center; gap:8px 12px; padding:0; list-style:none; font-size:13px; color:var(--muted); }
 #demobdc-deck .bdc-product-institutions li { white-space:nowrap; }
 #demobdc-deck .bdc-product-institutions li+li { border-left:1px solid #bdc9df; padding-left:12px; }
 #demobdc-deck .bdc-product-branch { height:50px; width:calc(50% + 16px); margin:0 auto; display:flex; position:relative; }
@@ -756,6 +756,10 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
   #demobdc-deck .bdc-product-branch::before,#demobdc-deck .bdc-product-branch span { display:none; }
   #demobdc-deck .bdc-product-pair { grid-template-columns:1fr; gap:18px; }
   #demobdc-deck .bdc-product-card { padding:25px; }
+}
+@media screen and (max-width:540px) {
+  #demobdc-deck .bdc-product-institutions ul { gap:8px 16px; }
+  #demobdc-deck .bdc-product-institutions li+li { border-left:0; padding-left:0; }
 }
 @media print {
   #demobdc-deck .bdc-product-card { padding:22px 28px; }
