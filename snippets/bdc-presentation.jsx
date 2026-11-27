@@ -8,6 +8,7 @@ const bdcSlides = [
   ["The unified process", "Unified data. A stronger underwriting process."],
   ["After funding", "New signals. A continuous view of risk."],
   ["Use cases", "One engine. Three ways to use it."],
+  ["Lending infrastructure", "Infrastructure built for lending."],
   ["The conversation", "Where could better evidence change a decision?"]
 ];
 
@@ -613,6 +614,34 @@ const BdcUseCases = () => {
   </div>;
 };
 
+const bdcInfrastructureScreens = [
+  { title: "Adjudication & portfolio management", detail: "Portfolio overview", src: "/images/demobdc/lending-overview.png", alt: "Lending workspace showing the active pipeline, portfolio exposure and risk signals" },
+  { title: "Adjudication & portfolio management", detail: "Work queue", src: "/images/demobdc/lending-work-queue.png", alt: "Lending team work queue showing prioritized reviews and supporting context" },
+  { title: "Technical team", detail: "Console, origination and API evidence", src: "/images/demobdc/technical-console.png", alt: "Technical Console showing an origination record, API request and response tabs, and its risk package" }
+];
+const BdcInfrastructure = () => {
+  const [screen, setScreen] = useState(null);
+  const dialogRef = useRef(null), openerRef = useRef(null);
+  const openScreen = (item, event) => { openerRef.current = event.currentTarget; setScreen(item); dialogRef.current?.showModal(); };
+  const closeScreen = () => dialogRef.current?.close();
+  return <>
+    <div className="bdc-infrastructure-grid">
+      {bdcInfrastructureScreens.map(item => <figure className="bdc-infrastructure-card" key={item.src}>
+        <figcaption><div><h3>{item.title}</h3><p>{item.detail}</p></div><BdcIcon name={item.title === "Technical team" ? "layers" : "bank"} size={22} /></figcaption>
+        <button type="button" className="bdc-infrastructure-screen" onClick={event => openScreen(item, event)} aria-label={`Enlarge ${item.detail}`}>
+          <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
+          <span className="bdc-infrastructure-enlarge"><BdcIcon name="expand" size={15} />Enlarge</span>
+        </button>
+      </figure>)}
+      <figure className="bdc-infrastructure-card bdc-infrastructure-business"><figcaption><div><h3>Business</h3></div><BdcIcon name="shop" size={22} /></figcaption><div className="bdc-infrastructure-placeholder" role="img" aria-label="Empty placeholder for the Business interface" /></figure>
+    </div>
+    <dialog className="bdc-infrastructure-dialog" ref={dialogRef} aria-labelledby="bdc-infrastructure-preview-title" onClose={() => openerRef.current?.focus()} onClick={event => { if (event.target === event.currentTarget) closeScreen(); }}>
+      <header><div><h2 id="bdc-infrastructure-preview-title">{screen?.title}</h2><p>{screen?.detail}</p></div><button type="button" onClick={closeScreen} aria-label="Close interface preview"><BdcIcon name="close" /></button></header>
+      {screen && <img src={screen.src} alt={screen.alt} />}
+    </dialog>
+  </>;
+};
+
 export const BdcPresentation = () => {
   const [current, setCurrent] = useState(0);
   const [fullscreen, setFullscreen] = useState(false);
@@ -634,7 +663,7 @@ export const BdcPresentation = () => {
   }, []);
   useEffect(() => {
     const onKey = e => {
-      if (e.altKey || e.ctrlKey || e.metaKey || overviewRef.current?.open || e.target?.closest("input,select,textarea,[contenteditable=true],.bdc-provider-switch,.bdc-research-dialog")) return;
+      if (e.altKey || e.ctrlKey || e.metaKey || overviewRef.current?.open || e.target?.closest("input,select,textarea,[contenteditable=true],.bdc-provider-switch,.bdc-research-dialog,.bdc-infrastructure-dialog")) return;
       if (["ArrowRight", "PageDown", "ArrowLeft", "PageUp", "Home", "End"].includes(e.key)) e.preventDefault();
       if (e.key === "ArrowRight" || e.key === "PageDown") goTo(current + 1);
       if (e.key === "ArrowLeft" || e.key === "PageUp") goTo(current - 1);
@@ -803,7 +832,12 @@ export const BdcPresentation = () => {
         <BdcNote>Your institution controls policy, approval, funding and intervention. Businesses choose additional data connections and ongoing monitoring.</BdcNote>
       </section>
 
-      <section className="bdc-slide bdc-closing" hidden={current !== 8} aria-labelledby="bdc-title-8"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-8">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
+      <section className="bdc-slide bdc-infrastructure" hidden={current !== 8} aria-labelledby="bdc-title-8">
+        <BdcHeading index={8} intro="Dedicated workspaces for adjudication, portfolio management, technical teams and businesses." />
+        <BdcInfrastructure />
+      </section>
+
+      <section className="bdc-slide bdc-closing" hidden={current !== 9} aria-labelledby="bdc-title-9"><p className="bdc-eyebrow">A focused next step</p><h2 id="bdc-title-9">Where could better evidence <br />change a <span>BDC decision?</span></h2><p className="bdc-closing-lead">Let's choose one real lending question<br />and design the smallest useful pilot around it.</p><BdcSteps items={[["Choose the product", "Where does incomplete evidence constrain the decision?"], ["Define the pathway", "Which verified fact could change an eligible offer?"], ["Agree the evaluation", "What would credit, product and operations need to see?"]]} /><div className="bdc-closing-bottom"><img src="/logo/amlok-logo-white.svg" alt="AMLOK" width="139" height="26" /><span>Infrastructure for financial risk intelligence</span></div></section>
     </div>
     <footer className="bdc-footer"><div className="bdc-footer-row"><span className="bdc-footer-context">AMLOK / BDC <span>/ {bdcSlides[current][0]}</span></span><span className="bdc-key-hint">Use ← → to navigate</span><div className="bdc-pagination"><button type="button" onClick={() => goTo(current - 1)} disabled={current === 0} aria-label="Previous slide"><BdcIcon name="back" size={19} /></button><button type="button" onClick={() => goTo(current + 1)} disabled={current === bdcSlides.length - 1} aria-label="Next slide"><BdcIcon name="arrow" size={19} /></button></div></div></footer>
     <dialog className="bdc-overview" ref={overviewRef} aria-labelledby="bdc-overview-title" onClick={e => { if (e.target === e.currentTarget) closeOverview(); }}><div className="bdc-overview-header"><div><p className="bdc-eyebrow">AMLOK / Prepared for BDC</p><h2 id="bdc-overview-title">Presentation overview</h2></div><button type="button" onClick={closeOverview} aria-label="Close slide overview"><BdcIcon name="close" /></button></div><div className="bdc-overview-grid">{bdcSlides.map(([section, title], i) => <button type="button" key={title} className={i === current ? "bdc-overview-current" : ""} aria-current={i === current ? "step" : undefined} onClick={() => { goTo(i); closeOverview(); }}><span className="bdc-eyebrow">{String(i + 1).padStart(2, "0")} / {section}</span><strong>{title}</strong><BdcIcon name="arrow" size={19} /></button>)}</div></dialog>

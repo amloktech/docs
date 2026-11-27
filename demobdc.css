@@ -1076,3 +1076,58 @@ html[data-current-path="/demobdc"] #content-container > div { padding-top:0!impo
   #demobdc-deck .bdc-use-case-value { font-size:10px; padding-top:10px; }
   #demobdc-deck .bdc-use-merge .bdc-use-pulse { animation:none; }
 }
+
+/* Lending infrastructure: supplied interface previews and a reserved business panel. */
+#demobdc-deck .bdc-infrastructure { max-width:1760px; gap:clamp(16px,2.4vh,26px); padding-block:clamp(18px,3vh,36px); }
+#demobdc-deck .bdc-infrastructure .bdc-heading h2 { max-width:none; font-size:clamp(32px,3.3vw,52px); }
+#demobdc-deck .bdc-infrastructure .bdc-intro { max-width:none; }
+#demobdc-deck .bdc-infrastructure-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:clamp(16px,2vh,24px); }
+#demobdc-deck .bdc-infrastructure-card { display:flex; flex-direction:column; min-width:0; margin:0; overflow:hidden; border:1px solid var(--line); border-radius:9px; background:#fff; }
+#demobdc-deck .bdc-infrastructure-card figcaption { display:flex; justify-content:space-between; align-items:center; gap:16px; min-height:70px; padding:12px 18px; background:var(--soft); border-bottom:1px solid var(--line); }
+#demobdc-deck .bdc-infrastructure-card figcaption h3 { font-size:18px; line-height:1.25; text-wrap:initial; }
+#demobdc-deck .bdc-infrastructure-card figcaption p { margin-top:4px; color:var(--muted); font-size:12px; line-height:1.4; }
+#demobdc-deck .bdc-infrastructure-card figcaption > svg { color:var(--blue); flex-shrink:0; }
+#demobdc-deck .bdc-infrastructure-screen { display:block; position:relative; height:clamp(160px,calc((100dvh - 550px) / 2),360px); width:100%; padding:0; background:#fff; overflow:hidden; text-align:left; }
+#demobdc-deck .bdc-infrastructure-screen img { display:block; width:100%; height:100%; margin:0; border:0; border-radius:0; object-fit:cover; object-position:top; }
+#demobdc-deck .bdc-infrastructure-enlarge { position:absolute; bottom:10px; right:10px; display:flex; align-items:center; gap:7px; padding:7px 10px; color:var(--blue); border:1px solid var(--line); border-radius:5px; background:#fff; font-size:11px; box-shadow:0 2px 8px #1018280d; }
+#demobdc-deck .bdc-infrastructure-screen:hover .bdc-infrastructure-enlarge { color:#fff; background:var(--blue); border-color:var(--blue); }
+#demobdc-deck .bdc-infrastructure-screen:focus-visible { outline-offset:-4px; }
+#demobdc-deck .bdc-infrastructure-placeholder { flex:1; min-height:160px; margin:16px; border:1px dashed #becbe3; border-radius:5px; background:#f8faff; }
+#demobdc-deck .bdc-infrastructure-dialog { width:calc(100vw - 48px); max-width:1800px; max-height:calc(100dvh - 36px); margin:auto; padding:18px; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:#fff; overflow:auto; }
+#demobdc-deck .bdc-infrastructure-dialog::backdrop { background:#101c3a99; backdrop-filter:blur(5px); }
+#demobdc-deck .bdc-infrastructure-dialog header { display:flex; justify-content:space-between; align-items:center; gap:20px; margin-bottom:14px; }
+#demobdc-deck .bdc-infrastructure-dialog h2 { font-size:22px; font-weight:600; letter-spacing:-.025em; }
+#demobdc-deck .bdc-infrastructure-dialog p { font-size:12px; color:var(--muted); margin-top:3px; }
+#demobdc-deck .bdc-infrastructure-dialog header button { display:grid; place-items:center; width:36px; height:36px; flex-shrink:0; background:var(--soft); border-radius:5px; }
+#demobdc-deck .bdc-infrastructure-dialog > img { display:block; width:100%; max-height:calc(100dvh - 155px); object-fit:contain; margin:0; border:1px solid var(--line); border-radius:5px; }
+@media screen and (min-width:901px) and (max-height:800px) {
+  #demobdc-deck .bdc-infrastructure { padding-block:12px; gap:14px; }
+  #demobdc-deck .bdc-infrastructure .bdc-heading h2 { font-size:34px; margin-top:5px; }
+  #demobdc-deck .bdc-infrastructure .bdc-intro { font-size:13px; margin-top:7px; }
+  #demobdc-deck .bdc-infrastructure-grid { gap:14px; }
+  #demobdc-deck .bdc-infrastructure-card figcaption { min-height:56px; padding:9px 14px; }
+  #demobdc-deck .bdc-infrastructure-card figcaption h3 { font-size:15px; }
+  #demobdc-deck .bdc-infrastructure-card figcaption p { margin-top:3px; font-size:10px; }
+  #demobdc-deck .bdc-infrastructure-screen { height:max(150px,calc((100dvh - 370px) / 2)); }
+  #demobdc-deck .bdc-infrastructure-placeholder { min-height:0; margin:12px; }
+}
+@media screen and (max-width:900px) {
+  #demobdc-deck .bdc-infrastructure-grid { grid-template-columns:1fr; gap:18px; }
+  #demobdc-deck .bdc-infrastructure-screen { height:auto; aspect-ratio:1.73; }
+  #demobdc-deck .bdc-infrastructure-screen img { height:auto; object-fit:contain; }
+  #demobdc-deck .bdc-infrastructure-placeholder { min-height:180px; }
+  #demobdc-deck .bdc-infrastructure-dialog { width:calc(100vw - 20px); padding:12px; }
+  #demobdc-deck .bdc-infrastructure-dialog h2 { font-size:17px; }
+}
+@media print {
+  #demobdc-deck .bdc-infrastructure { padding:10mm; gap:5mm; }
+  #demobdc-deck .bdc-infrastructure .bdc-heading h2 { font-size:30px; }
+  #demobdc-deck .bdc-infrastructure .bdc-intro { font-size:12px; margin-top:7px; }
+  #demobdc-deck .bdc-infrastructure-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:4mm; }
+  #demobdc-deck .bdc-infrastructure-card figcaption { min-height:12mm; padding:2mm 3mm; }
+  #demobdc-deck .bdc-infrastructure-card figcaption h3 { font-size:13px; }
+  #demobdc-deck .bdc-infrastructure-card figcaption p { font-size:10px; }
+  #demobdc-deck .bdc-infrastructure-screen { height:55mm; }
+  #demobdc-deck .bdc-infrastructure-placeholder { min-height:0; margin:3mm; }
+  #demobdc-deck .bdc-infrastructure-enlarge,#demobdc-deck .bdc-infrastructure-dialog { display:none!important; }
+}
