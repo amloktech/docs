@@ -617,7 +617,8 @@ const BdcUseCases = () => {
 const bdcInfrastructureScreens = [
   { title: "Adjudication & portfolio management", detail: "Portfolio overview", src: "/images/demobdc/lending-overview.png", alt: "Lending workspace showing the active pipeline, portfolio exposure and risk signals" },
   { title: "Adjudication & portfolio management", detail: "Work queue", src: "/images/demobdc/lending-work-queue.png", alt: "Lending team work queue showing prioritized reviews and supporting context" },
-  { title: "Technical team", detail: "Console, origination and API evidence", src: "/images/demobdc/technical-console.png", alt: "Technical Console showing an origination record, API request and response tabs, and its risk package" }
+  { title: "Technical team", detail: "Console, origination and API evidence", src: "/images/demobdc/technical-console.png", alt: "Technical Console showing an origination record, API request and response tabs, and its risk package" },
+  { title: "Business", detail: "Business profile and financial health", src: "/images/demobdc/business-financial-health.png", alt: "Business profile showing financial health, onboarding status, verification and connected banking insights" }
 ];
 const BdcInfrastructure = () => {
   const [screen, setScreen] = useState(null);
@@ -627,13 +628,12 @@ const BdcInfrastructure = () => {
   return <>
     <div className="bdc-infrastructure-grid">
       {bdcInfrastructureScreens.map(item => <figure className="bdc-infrastructure-card" key={item.src}>
-        <figcaption><div><h3>{item.title}</h3><p>{item.detail}</p></div><BdcIcon name={item.title === "Technical team" ? "layers" : "bank"} size={22} /></figcaption>
+        <figcaption><div><h3>{item.title}</h3><p>{item.detail}</p></div><BdcIcon name={item.title === "Technical team" ? "layers" : item.title === "Business" ? "shop" : "bank"} size={22} /></figcaption>
         <button type="button" className="bdc-infrastructure-screen" onClick={event => openScreen(item, event)} aria-label={`Enlarge ${item.detail}`}>
           <img src={item.src} alt={item.alt} loading="lazy" decoding="async" />
           <span className="bdc-infrastructure-enlarge"><BdcIcon name="expand" size={15} />Enlarge</span>
         </button>
       </figure>)}
-      <figure className="bdc-infrastructure-card bdc-infrastructure-business"><figcaption><div><h3>Business</h3></div><BdcIcon name="shop" size={22} /></figcaption><div className="bdc-infrastructure-placeholder" role="img" aria-label="Empty placeholder for the Business interface" /></figure>
     </div>
     <dialog className="bdc-infrastructure-dialog" ref={dialogRef} aria-labelledby="bdc-infrastructure-preview-title" onClose={() => openerRef.current?.focus()} onClick={event => { if (event.target === event.currentTarget) closeScreen(); }}>
       <header><div><h2 id="bdc-infrastructure-preview-title">{screen?.title}</h2><p>{screen?.detail}</p></div><button type="button" onClick={closeScreen} aria-label="Close interface preview"><BdcIcon name="close" /></button></header>
